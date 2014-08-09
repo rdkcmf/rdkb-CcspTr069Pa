@@ -1,0 +1,65 @@
+#######################################################################
+#   Copyright [2014] [Cisco Systems, Inc.]
+# 
+#   Licensed under the Apache License, Version 2.0 (the \"License\");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an \"AS IS\" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+#######################################################################
+
+#
+include $(CCSP_ROOT_DIR)/arch/ccsp_common.mk
+#
+#	set up source and object targets
+#
+source_files := $(call add_files_from_src,,'*.c')
+source_files += $(call add_files_from_arch,,'*.c')
+source_files += $(call add_files_from_board,,'*.c')
+
+obj_files := $(addprefix $(ComponentBuildDir)/,$(source_files:%.c=%.o))
+
+target := $(ComponentBuildDir)/CcspTr069PaSsp
+
+-include $(obj_files:.o=.d)
+
+#
+#	set up include paths
+#
+INCPATH += $(ComponentSrcDir)/include
+INCPATH += $(ComponentSrcDir)/DslhManagementServer
+INCPATH += $(call get_board_or_arch_src_path,)
+
+INCFLAGS := $(addprefix -I, $(INCPATH))
+
+$(target): $(obj_files)
+
+#
+#	set up targets
+#
+all: $(target)
+
+.PHONY: all clean install
+
+clean:
+	rm -rf $(ComponentBuildDir)
+    
+install_targets :=  $(CCSP_OUT_DIR)/ccsp_msg.cfg
+# config directories from both arch, arch-board, arch-board-customer
+install_targets += $(wildcard $(ComponentArchCfgDir)/*)
+install_targets += $(wildcard $(ComponentBoardCfgDir)/*)
+install_targets += $(wildcard $(ComponentBoardCustomCfgDir)/*)
+
+install:
+	@echo "Installing TR69-PA Installables"
+	@install -d -m 0755 $(CCSP_OUT_DIR)/tr069pa
+	@install -m 0755 $(target) $(CCSP_OUT_DIR)/tr069pa
+	@install -m 0644 $(install_targets) $(CCSP_OUT_DIR)/tr069pa
+	
+LDFLAGS   += -lccsp_common
