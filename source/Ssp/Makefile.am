@@ -2,16 +2,16 @@ AM_CFLAGS = -D_ANSC_LINUX
 AM_CFLAGS += -D_ANSC_USER
 AM_CFLAGS += -D_ANSC_LITTLE_ENDIAN_
 AM_CFLAGS += -D_CCSP_CWMP_TCP_CONNREQ_HANDLER
-AM_LDFLAGS = -L$(top_builddir)/../CcspCommonLibrary/lib
+AM_LDFLAGS = -L$(top_srcdir)/../CcspCommonLibrary/lib
 AM_LDFLAGS += -lccsp_common
 
 AM_CPPFLAGS = -Wall -Werror
 ACLOCAL_AMFLAGS = -I m4
 hardware_platform = i686-linux-gnu
 bin_PROGRAMS = CcspTr069PaSsp
-CcspTr069PaSsp_CPPFLAGS = -I/var/tmp/pc-rdkb/include/dbus-1.0 -I/var/tmp/pc-rdkb/include -I$(top_builddir)/../CcspCommonLibrary/source/ccsp/custom -I$(top_builddir)/../CcspCommonLibrary/source/ccsp/include -I$(top_builddir)/../CcspCommonLibrary/source/debug_api/include -I$(top_builddir)/../CcspCommonLibrary/source/cosa/include -I$(top_builddir)/../CcspCommonLibrary/source/cosa/include/linux -I$(top_builddir)/../CcspCommonLibrary/source/ccsp/components/include -I$(top_builddir)/../CcspCommonLibrary/source/cosa/package/slap/include -I$(top_builddir)/../CcspCommonLibrary/source/ccsp/components/common/MessageBusHelper/include -I$(top_builddir)/../CcspCommonLibrary/source/util_api/http/include -I$(top_builddir)/../CcspCommonLibrary/source/util_api/ansc/include -I$(top_builddir)/../CcspCommonLibrary/source/util_api/tls/include -I$(top_builddir)/../CcspCommonLibrary/source/util_api/web/include -I$(top_builddir)/../CcspCommonLibrary/source/util_api/stun/include -I$(top_builddir)/source/DslhManagementServer -I$(top_builddir)/source/include $(CPPFLAGS)
+CcspTr069PaSsp_CPPFLAGS = -I/var/tmp/pc-rdkb/include/dbus-1.0 -I/var/tmp/pc-rdkb/include -I$(top_srcdir)/../CcspCommonLibrary/source/ccsp/custom -I$(top_srcdir)/../CcspCommonLibrary/source/ccsp/include -I$(top_srcdir)/../CcspCommonLibrary/source/debug_api/include -I$(top_srcdir)/../CcspCommonLibrary/source/cosa/include -I$(top_srcdir)/../CcspCommonLibrary/source/cosa/include/linux -I$(top_srcdir)/../CcspCommonLibrary/source/ccsp/components/include -I$(top_srcdir)/../CcspCommonLibrary/source/cosa/package/slap/include -I$(top_srcdir)/../CcspCommonLibrary/source/ccsp/components/common/MessageBusHelper/include -I$(top_srcdir)/../CcspCommonLibrary/source/util_api/http/include -I$(top_srcdir)/../CcspCommonLibrary/source/util_api/ansc/include -I$(top_srcdir)/../CcspCommonLibrary/source/util_api/tls/include -I$(top_srcdir)/../CcspCommonLibrary/source/util_api/web/include -I$(top_srcdir)/../CcspCommonLibrary/source/util_api/stun/include -I$(top_srcdir)/source/DslhManagementServer -I$(top_srcdir)/source/include $(CPPFLAGS)
 CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.c \
-    $(top_builddir)/source-pc/ccsp_tr069_pa_custom_apis.c \
+    $(top_srcdir)/source-pc/ccsp_tr069_pa_custom_apis.c \
     ../CcspCwmpAcsConnection/ccsp_cwmp_acsco_process.c \
     ../CcspCwmpAcsConnection/ccsp_cwmp_acsco_states.c \
     ../CcspCwmpAcsConnection/ccsp_cwmp_acsco_base.c \
@@ -75,4 +75,4 @@ CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_states.c \
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_build.c
 
-CcspTr069PaSsp_LDFLAGS =  -L$(top_builddir)/../CcspCommonLibrary/lib -lccsp_common
+CcspTr069PaSsp_LDFLAGS =  -L$(top_srcdir)/../CcspCommonLibrary/lib -lccsp_common
