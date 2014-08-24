@@ -9,8 +9,7 @@ ACLOCAL_AMFLAGS = -I m4
 hardware_platform = i686-linux-gnu
 bin_PROGRAMS = CcspTr069PaSsp
 CcspTr069PaSsp_CPPFLAGS = -I$(top_srcdir)/source/DslhManagementServer -I$(top_srcdir)/source/include $(CPPFLAGS)
-CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.c \
-    $(top_srcdir)/source-pc/ccsp_tr069_pa_custom_apis.c \
+CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.c ccsp_tr069_pa_custom_apis.c \
     ../CcspCwmpAcsConnection/ccsp_cwmp_acsco_process.c \
     ../CcspCwmpAcsConnection/ccsp_cwmp_acsco_states.c \
     ../CcspCwmpAcsConnection/ccsp_cwmp_acsco_base.c \
