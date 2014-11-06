@@ -292,6 +292,16 @@ CcspCwmpCpecoRemove
         CcspTr069PaFreeMemory(pMyObject->PAMapperFile);
     }
 
+    if ( pMyObject->SdmXmlFile )
+    {
+        CcspTr069PaFreeMemory(pMyObject->SdmXmlFile);
+    }
+
+    if ( pMyObject->OutboundIfName )
+    {
+        CcspTr069PaFreeMemory(pMyObject->OutboundIfName);
+    }
+
     AnscCoRemove((ANSC_HANDLE)pMyObject);
 
     return  ANSC_STATUS_SUCCESS;
@@ -601,6 +611,8 @@ CcspCwmpCpecoInitialize
     pMyObject->PAName                   = CcspTr069PaCloneString(CCSP_TR069PA_DEF_NAME);
     pMyObject->CRName                   = CcspTr069PaCloneString(CCSP_CR_DEF_NAME);
     pMyObject->PAMapperFile             = NULL;
+    pMyObject->SdmXmlFile               = NULL;
+    pMyObject->OutboundIfName           = NULL;
 
     pMyObject->GetCcspCwmpAcsBroker         = CcspCwmpCpecoGetCcspCwmpAcsBroker;
     pMyObject->GetCcspCwmpProcessor      = CcspCwmpCpecoGetCcspCwmpProcessor;
@@ -656,6 +668,8 @@ CcspCwmpCpecoInitialize
     pMyObject->SetPAMapperFile          = CcspCwmpCpecoSetPAMapperFile;
     pMyObject->SetSDMXmlFilename        = CcspCwmpCpecoSetSDMXmlFilename;
     pMyObject->GetSDMXmlFilename        = CcspCwmpCpecoGetSDMXmlFilename;
+    pMyObject->SetOutboundIfName        = CcspCwmpCpecoSetOutboundIfName;
+    pMyObject->GetOutboundIfName        = CcspCwmpCpecoGetOutboundIfName;
     pMyObject->GetMsgBusHandle          = CcspCwmpCpecoGetMsgBusHandle;
     pMyObject->GetParamNotification     = CcspCwmpCpecoGetParamNotification;
     pMyObject->SetParamNotification     = CcspCwmpCpecoSetParamNotification;

@@ -434,6 +434,7 @@ typedef  ANSC_STATUS
     char*                           PAMapperFile;                                           \
     char*                           PANameWithPrefix;                                       \
     char*                           SdmXmlFile;                                             \
+    char*                           OutboundIfName;                                         \
                                                                                             \
     BOOL                            bBootstrapInformScheduled;                              \
     BOOL                            bBootInformScheduled;                                   \
@@ -508,6 +509,8 @@ typedef  ANSC_STATUS
     PFN_CWMPCPECO_GETNAME2          GetCRBusPath;                                           \
     PFN_CWMPCPECO_SETNAME           SetPAMapperFile;                                        \
     PFN_CWMPCPECO_SETNAME           SetSDMXmlFilename;                                      \
+    PFN_CWMPCPECO_GETNAME           GetOutboundIfName;                                      \
+    PFN_CWMPCPECO_SETNAME           SetOutboundIfName;                                      \
     PFN_CWMPCPECO_GETNAME           GetSDMXmlFilename;                                      \
     PFN_CWMPCPECO_GET_CONTEXT       GetMsgBusHandle;                                        \
     PFN_CWMPCPECO_GET_NOTIF         GetParamNotification;                                   \

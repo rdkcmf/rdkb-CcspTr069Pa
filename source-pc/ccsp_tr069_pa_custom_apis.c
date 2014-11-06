@@ -111,6 +111,18 @@ CcspCwmpsoInformCustom1
 {
 }
 
+ANSC_STATUS
+CcspCwmpsoInformPopulateTRInformationCustom
+    (
+        PCCSP_CWMP_PARAM_VALUE          pCwmpParamValueArray,
+        ULONG                           *ulPresetParamCount,
+        BOOL                            bDevice20OrLater
+    )
+{
+    return ANSC_STATUS_SUCCESS;
+}
+
+
 CCSP_STRING
 CcspManagementServer_GetPeriodicInformTimeStrCustom
     (
@@ -230,6 +242,17 @@ int
 CcspTr069PaSsp_InitCcspCwmpCfgIf_Custom(ANSC_HANDLE hCcspCwmpCpeController)
 {
     return 0;
+}
+
+
+ANSC_STATUS
+CcspManagementServer_GenerateDefaultUsername
+    (
+        CCSP_STRING                 pDftUsername,
+        PULONG                      pulLength
+    )
+{
+    return  ANSC_STATUS_FAILURE;
 }
 
 ANSC_STATUS

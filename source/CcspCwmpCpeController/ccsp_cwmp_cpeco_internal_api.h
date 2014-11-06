@@ -318,6 +318,19 @@ CcspCwmpCpecoGetSDMXmlFilename
         ANSC_HANDLE                 hThisObject
     );
 
+ANSC_STATUS
+CcspCwmpCpecoSetOutboundIfName
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pName
+    );
+
+char*
+CcspCwmpCpecoGetOutboundIfName
+    (
+        ANSC_HANDLE                 hThisObject
+    );
+
 ANSC_HANDLE
 CcspCwmpCpecoGetMsgBusHandle
     (

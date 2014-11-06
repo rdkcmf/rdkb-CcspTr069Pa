@@ -87,8 +87,11 @@ extern char* openssl_client_dev_certificate_file;
 extern char* openssl_client_private_key_file;
 #endif
 
-#define CCSP_TR069PA_CFG_Name_Outbound_If       "outbound_interface"
-extern char* ccsp_tr069pa_outbound_if;
+#define CCSP_TR069PA_CFG_Name_Outbound_If       "OutboundInterface"
+extern char* g_Tr069PaOutboundIfName;
+
+#define CCSP_TR069PA_CFG_Name_AcsDefAddr        "AcsDefaultAddress"
+extern char* g_Tr069PaAcsDefAddr;
 
 static ANSC_STATUS  
 CcspTr069PaSsp_XML_GetMultipleItemWithSameName
@@ -230,7 +233,7 @@ CcspTr069PaSsp_LoadCfgFile
         PANSC_XML_DOM_NODE_OBJECT       pRootNode          = (PANSC_XML_DOM_NODE_OBJECT)NULL;
         PANSC_XML_DOM_NODE_OBJECT       pChildNode         = (PANSC_XML_DOM_NODE_OBJECT)NULL;
         char*                           pXMLIterator       = pXMLContent;
-
+        
         pRootNode   = (PANSC_XML_DOM_NODE_OBJECT)
             AnscXmlDomParseString((ANSC_HANDLE)NULL, (PCHAR*)&pXMLIterator, uBufferSize);
         if ( pRootNode == NULL )
@@ -241,20 +244,22 @@ CcspTr069PaSsp_LoadCfgFile
         }
 
 #ifdef   _ANSC_USE_OPENSSL_
-            pChildNode = (PANSC_XML_DOM_NODE_OBJECT)
+        pChildNode = (PANSC_XML_DOM_NODE_OBJECT)
             AnscXmlDomNodeGetChildByName(pRootNode, CCSP_TR069PA_CFG_Name_Certificates);
         if ( pChildNode != NULL) {
             CcspTr069PaSsp_XML_GetMultipleItemWithSameName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
             CcspTr069PaSsp_XML_GetOneItemByName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_dev, &openssl_client_dev_certificate_file);
             CcspTr069PaSsp_XML_GetOneItemByName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_pkey, &openssl_client_private_key_file);
-                    }
+        }
 #endif
+        
+        CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, CCSP_TR069PA_CFG_Name_Outbound_If, &g_Tr069PaOutboundIfName);
 
-        CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, CCSP_TR069PA_CFG_Name_Outbound_If, &ccsp_tr069pa_outbound_if);
-
+        CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, CCSP_TR069PA_CFG_Name_AcsDefAddr, &g_Tr069PaAcsDefAddr);
+        
         returnStatus = ANSC_STATUS_SUCCESS;
     }
-
+    
 EXIT:
     AnscFreeMemory(pXMLContent);
     return  returnStatus;
@@ -298,12 +303,6 @@ CcspTr069PaSsp_CcspCwmpCfgNoRPCMethods
         CCSP_CWMP_CFG_RPC_METHOD_NO_GetOptions           |
         CCSP_CWMP_CFG_RPC_METHOD_NO_ScheduleInform       |
         CCSP_CWMP_CFG_RPC_METHOD_NO_Upload;
-
-//Not used	
-#if 0
-//#ifdef _COSA_E4200_
-    ulNoMethods |= CCSP_CWMP_CFG_RPC_METHOD_NO_ChangeDUState;
-#endif
 
     return ulNoMethods;
 }
@@ -373,21 +372,6 @@ CcspTr069PaSsp_GetCustomForcedInformParams
      * names, this API allocates the memory returned and caller will release it */          
 
 	char*							pFIPs = NULL;
-#if 0
-//Not Used	
-//#ifdef _COSA_E4200_
-	if ( !pFIPs ) pFIPs = (char*)CcspTr069PaAllocateMemory(512);
-
-	if ( pFIPs )
-	{
-		_ansc_sprintf
-			(
-				pFIPs, 
-				"%s", 
-				"InternetGatewayDevice.WANDevice.1.WANEthernetInterfaceConfig.MACAddress"
-			);
-	}
-#endif
 
 	if(!pFIPs)
 	{

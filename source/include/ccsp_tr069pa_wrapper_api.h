@@ -94,10 +94,10 @@ CcspTr069PaAllocateMemory
     return ptr;
 }
 
-
+#if 0
 #define  CcspTr069PaReallocateMemory(mPtr, mNewBlockSize)       \
     AnscReAllocateMemory(mPtr, mNewBlockSize)
-
+#endif
 
 #define  CcspTr069PaFreeMemory(mPtr)                            \
     AnscFreeMemory(mPtr)

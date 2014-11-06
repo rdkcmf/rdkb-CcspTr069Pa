@@ -66,6 +66,7 @@
 #include "ccsp_base_api.h"
 #include "stdio.h"
 #include "string.h"
+
 // may have multiple components, so this name may be dynamic
 //#define CCSP_MANAGEMENT_SERVER_COMPONENT_NAME_BASE  "com.cisco.spvtg.ccsp.managementServer"
 #define CCSP_MANAGEMENT_SERVER_COMPONENT_VERSION    (int)1
@@ -82,6 +83,7 @@
 #define _MemoryObjectName "com.cisco.spvtg.ccsp.tr069pa.Memory."
 #define _LoggingObjectName "com.cisco.spvtg.ccsp.tr069pa.Logging."
 
+#define TR69_INTERNAL_ERROR             9002
 #define TR69_INVALID_ARGUMENTS          9003
 #define TR69_INVALID_PARAMETER_NAME     9005
 #define TR69_INVALID_PARAMETER_TYPE     9006
@@ -145,6 +147,7 @@ enum
     ManagementServerConnectionRequestURLID,
     ManagementServerConnectionRequestUsernameID,
     ManagementServerConnectionRequestPasswordID,
+    ManagementServerACSOverrideID,
     ManagementServerUpgradesManagedID,
     ManagementServerX_CISCO_COM_DiagCompleteID,
     ManagementServerKickURLID,
@@ -229,12 +232,15 @@ typedef struct _msParameterValSetting
     unsigned char backupStatus;  /* cross compiler may set char as "unsigned char", so negative values cannot be assigned. */
 } msParameterValSetting;
 
+#define  CCSP_TR069PA_DFT_PARAM_VAL_SETTINGS_NUMBER     32
+
 typedef struct _msParameterValSettingArray
 {
-    int sessionID;
-    unsigned int writeID;
-    int size;
-    msParameterValSetting *msParameterValSettings;
+    int                             sessionID;
+    unsigned int                    writeID;
+    int                             size;
+    unsigned int                    currIndex;
+    msParameterValSetting *         msParameterValSettings;
 } msParameterValSettingArray;
 
 /* Called by init function to fill in parameter values from PSM.

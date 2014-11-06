@@ -289,6 +289,14 @@ CcspCwmpsoInformCustom1
        PCCSP_CWMP_CFG_INTERFACE pCcspCwmpCfgIf
     );
     
+extern ANSC_STATUS
+CcspCwmpsoInformPopulateTRInformationCustom
+    (
+        PCCSP_CWMP_PARAM_VALUE          pCwmpParamValueArray,
+        ULONG                           *ulPresetParamCount,
+        BOOL                            bDevice20OrLater
+    );
+
 ANSC_STATUS
 CcspCwmpsoInform
     (
@@ -327,6 +335,9 @@ CcspCwmpsoInform
 	BOOL							bIGD				 = TRUE;
     PSLAP_VARIABLE          		pSlapValue			 = NULL;
     BOOL                            bInitialContact      = pCcspCwmpProcessor->GetInitialContact(pCcspCwmpProcessor); 
+
+    BOOL                            bValChange           = FALSE;
+    BOOL                            bBootStrap           = FALSE;
 
     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->GetCwmpRpcTimeout )
     {
@@ -400,11 +411,11 @@ CcspCwmpsoInform
             paramName,
             &pCwmpDeviceId->SerialNumber
         );
-                    
+
 	if ( !pCwmpDeviceId->Manufacturer ||
-         !pCwmpDeviceId->OUI ||
-		 !pCwmpDeviceId->ProductClass ||
-		 !pCwmpDeviceId->SerialNumber )
+             !pCwmpDeviceId->OUI          ||
+             !pCwmpDeviceId->ProductClass ||
+             !pCwmpDeviceId->SerialNumber )
 	{
 		CcspTr069PaTraceWarning(("WARNING: failed to get Manufacturer/OUI/ProductClass/SerialNumber! 'informed' may be rejected by ACS!\n"));
 	}
@@ -448,8 +459,10 @@ CcspCwmpsoInform
      *      - Device.DeviceSummary
      *      - Device.DeviceInfo.HardwareVersion
      *      - Device.DeviceInfo.SoftwareVersion
-     *      - Device.ManagementServer.ConnectionRequestURL
+     *      - Device.DeviceInfo.ProvisioningCode
      *      - Device.ManagementServer.ParameterKey
+     *      - Device.ManagementServer.ConnectionRequestURL
+     *      - Device.ManagementServer.AliasBasedAddressing
      *      - Device.LAN.IPAddress
      *
      */
@@ -465,39 +478,10 @@ CcspCwmpsoInform
         pCcspCwmpCfgIf->GetDevDataModelVer(pCcspCwmpCfgIf->hOwnerContext, &ulDevDMVerMajor, &ulDevDMVerMinor);
         bDevice20OrLater = (ulDevDMVerMajor >= 2);
 
-        pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.DeviceSummary"                        );
-        pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.HardwareVersion"           );
-        pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.SoftwareVersion"           );
-        pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.ManagementServer.ConnectionRequestURL");
-        pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.ManagementServer.ParameterKey"        );
-
-        if ( !bDevice20OrLater )
+        returnStatus = CcspCwmpsoInformPopulateTRInformationCustom(pCwmpParamValueArray, &ulPresetParamCount, bDevice20OrLater);
+        if ( returnStatus != ANSC_STATUS_SUCCESS )
         {
-            pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.GatewayInfo.ManufacturerOUI"      );
-            pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.GatewayInfo.ProductClass"         );
-            pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.GatewayInfo.SerialNumber"         );
-
-            pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.LAN.IPAddress"                    );
-            pCwmpParamValueArray[ulPresetParamCount++].Name  = CcspTr069PaCloneString("Device.LAN.MACAddress"                   );
-        }
-
-        if ( !pCwmpParamValueArray[0].Name ||
-             !pCwmpParamValueArray[1].Name ||
-             !pCwmpParamValueArray[2].Name ||
-             !pCwmpParamValueArray[3].Name ||
-             !pCwmpParamValueArray[4].Name ||
-             ( !bDevice20OrLater && 
-                    (
-                    !pCwmpParamValueArray[5].Name || 
-                    !pCwmpParamValueArray[6].Name || 
-                    !pCwmpParamValueArray[7].Name || 
-                    !pCwmpParamValueArray[8].Name || 
-                    !pCwmpParamValueArray[9].Name )
-             ) )
-        {
-            returnStatus = ANSC_STATUS_RESOURCES;
-
-            goto  EXIT1;
+            goto EXIT1;
         }
     }
     else
@@ -554,93 +538,115 @@ CcspCwmpsoInform
 		}
 	}
 
-    /*
-     * When the Inform call results from a change to one or more parameter values (due to cause
-     * other than being set by the ACS itself) that the ACS has marked for notification (either
-     * active or passive) via SetParameterAttributes, all of the changed parameters must also be
-     * included in the ParameterList. However, we must make sure the same parameter is not included
-     * twice by comparing the parameter name to all pre-defined parameters.
-     */
     ulParamIndex = ulPresetParamCount;
 
-    for ( i = 0; i < pMyObject->ModifiedParamCount; i++ )
-    {
-        if ( pMyObject->ModifiedParamArray[i] )
+    // for "O BOOTSTRAP", all parameters are treated as in their original values, thus all "4 VALUE CHANGE" should be suppressed.
+    for( i = 0; i < pMyObject->EventCount; i ++)
+    { 
+        if ( AnscEqualString(((PCCSP_CWMP_EVENT)pMyObject->EventArray[i])->EventCode, CCSP_CWMP_INFORM_EVENT_NAME_Bootstrap, TRUE) )
         {
-            CcspTr069PaTraceDebug(("CcspCwmpsoInform -- adding VC parameter <%s>.\n", pMyObject->ModifiedParamArray[i]));
+            bBootStrap = TRUE;
+            break;
+        }
+    }
 
-            if ( CcspTr069PA_IsNamespaceInvisible
+    if ( !bBootStrap )
+    {
+        /*
+         * When the Inform call results from a change to one or more parameter values (due to cause
+         * other than being set by the ACS itself) that the ACS has marked for notification (either
+         * active or passive) via SetParameterAttributes, all of the changed parameters must also be
+         * included in the ParameterList. However, we must make sure the same parameter is not included
+         * twice by comparing the parameter name to all pre-defined parameters.
+        */
+
+        for ( i = 0; i < pMyObject->ModifiedParamCount; i++ )
+        {
+            if ( pMyObject->ModifiedParamArray[i] )
+            {
+                CcspTr069PaTraceDebug(("CcspCwmpsoInform -- adding VC parameter <%s>.\n", pMyObject->ModifiedParamArray[i]));
+
+                if ( CcspTr069PA_IsNamespaceInvisible
                      (
                          pCcspCwmpCpeController->hTr069PaMapper,
                          pMyObject->ModifiedParamArray[i]
                      ) )
-            {
-                CcspTr069PaTraceDebug(("CcspCwmpsoInform -- should not contain any invisible parameters.\n"));
-
-                continue;
-            }
+                {
+                    CcspTr069PaTraceDebug(("CcspCwmpsoInform -- should not contain any invisible parameters.\n"));
+                    continue;
+                }
             
-            for ( j = 0; j < ulPresetParamCount; j++ )
-            {
-                if ( AnscEqualString
+                for ( j = 0; j < ulPresetParamCount; j++ )
+                {
+                    if ( AnscEqualString
                         (
                             pMyObject->ModifiedParamArray[i],
                             pCwmpParamValueArray[j].Name,
                             TRUE
                         ) )
-                {
-                    break;
+                    {
+                        if ( CCSP_CWMP_NOTIFICATION_off != 
+                            pCcspCwmpProcessor->CheckParamAttrCache
+                                ( (ANSC_HANDLE)pCcspCwmpProcessor, pMyObject->ModifiedParamArray[i]) )
+                        {    
+                            // printf("<RT> CcspCwmpsoInform -- VC parameter <%s> notification is %d. \n", pMyObject->ModifiedParamArray[i], 
+                            //    pCcspCwmpProcessor->CheckParamAttrCache( (ANSC_HANDLE)pCcspCwmpProcessor, pMyObject->ModifiedParamArray[i]));
+                            bValChange = TRUE;
+                        }
+
+                        break;
+                    }
                 }
-            }
 
-            if ( j >= ulPresetParamCount )
-            {
-                int                 dataType;
+                if ( j >= ulPresetParamCount )
+                {
+                    int                 dataType;
 
-                /* give the namespace last check to make sure the notification has been turned off */
-                if ( CCSP_CWMP_NOTIFICATION_off == 
+                    /* give the namespace last check to make sure the notification has been turned off */
+                    if ( CCSP_CWMP_NOTIFICATION_off == 
                         pCcspCwmpProcessor->CheckParamAttrCache
                             ( (ANSC_HANDLE)pCcspCwmpProcessor, pMyObject->ModifiedParamArray[i]) )
-                {
-                    continue;
-                }
+                    {
+                        continue;
+                    }
 
-                pCwmpParamValueArray[ulParamIndex].Name = CcspTr069PaCloneString(pMyObject->ModifiedParamArray[i]);
+                    pCwmpParamValueArray[ulParamIndex].Name = CcspTr069PaCloneString(pMyObject->ModifiedParamArray[i]);
                 
-                dataType = 
-                    pCcspCwmpCpeController->GetParamDataType
-                        (
-                            (ANSC_HANDLE)pCcspCwmpCpeController,
-                            pMyObject->ModifiedParamArray[i]
-                        );
+                    dataType = 
+                        pCcspCwmpCpeController->GetParamDataType
+                            (
+                                (ANSC_HANDLE)pCcspCwmpCpeController,
+                                pMyObject->ModifiedParamArray[i]
+                            );
 
-                pCwmpParamValueArray[ulParamIndex].Tr069DataType = dataType;
+                    pCwmpParamValueArray[ulParamIndex].Tr069DataType = dataType;
 
-                SlapAllocVariable(pCwmpParamValueArray[ulParamIndex].Value);
-                pCwmpParamValueArray[ulParamIndex].Value->Syntax = SLAP_VAR_SYNTAX_TYPE_string;
-                pCwmpParamValueArray[ulParamIndex].Value->Variant.varString = CcspTr069PaCloneString(pMyObject->ModifiedParamValueArray[i]);
+                    SlapAllocVariable(pCwmpParamValueArray[ulParamIndex].Value);
+                    pCwmpParamValueArray[ulParamIndex].Value->Syntax = SLAP_VAR_SYNTAX_TYPE_string;
+                    pCwmpParamValueArray[ulParamIndex].Value->Variant.varString = CcspTr069PaCloneString(pMyObject->ModifiedParamValueArray[i]);
 
-                if ( pCwmpParamValueArray[ulParamIndex].Name )
-                {
-                    ulParamIndex++;
+                    if ( pCwmpParamValueArray[ulParamIndex].Name )
+                    {
+                        ulParamIndex++;
+                        bValChange = TRUE;
+                    }
+                    // printf("<RT> CcspCwmpsoInform -- VC parameter <%s> ADDED.\n", pMyObject->ModifiedParamArray[i]);
                 }
             }
         }
     }
 
-/* We cannot do this because value change may happen on forced inform parameter(s)
-    if ( ulParamIndex <= ulPresetParamCount )
+    if ( bBootStrap || !bValChange ) // "0 BOOTSTRAP" or NO passive/active VALUE CHANGE to be reported
     {
         pMyObject->DiscardCwmpEvent((ANSC_HANDLE)pMyObject, CCSP_CWMPSO_EVENTCODE_ValueChange);
 
         if ( pMyObject->EventCount == 0 )
         {
             returnStatus = ANSC_STATUS_DISCARD;
-            
+
             goto  EXIT1;
         }
     }
-*/
 
     CcspTr069PaTraceDebug(("CcspCwmpsoInform -- Start to get the parameter values.\n"));
 
@@ -675,23 +681,31 @@ CcspCwmpsoInform
                         &pValue
                     );
 
-				if ( pValue )
-				{
-        	        SlapAllocVariable(pSlapValue);
-
-	                if ( pSlapValue )
-                	{
+                if ( pValue && pValue[0] != '\0' )
+                {
+                    SlapAllocVariable(pSlapValue);
+                    
+                    if ( pSlapValue )
+                    {
             	        pSlapValue->Syntax = SLAP_VAR_SYNTAX_string;
-        	            pSlapValue->Variant.varString = pValue;
+                        pSlapValue->Variant.varString = pValue;
     	                pCwmpParamValueArray[i].Value = pSlapValue;
-	                    pCwmpParamValueArray[i].Tr069DataType = 
-							pCcspCwmpCpeController->GetParamDataType
-								(
-									(ANSC_HANDLE)pCcspCwmpCpeController, 
-									pCwmpParamValueArray[i].Name
-								);
-	                }
-				}
+                        pCwmpParamValueArray[i].Tr069DataType = 
+                            pCcspCwmpCpeController->GetParamDataType
+                            (
+                                (ANSC_HANDLE)pCcspCwmpCpeController, 
+                                pCwmpParamValueArray[i].Name
+                             );
+                    }
+                }
+                else { // parameter value is empty
+
+                    if (_ansc_strcmp(pCwmpParamValueArray[i].Name, "Device.ManagementServer.ConnectionRequestURL") == 0)
+                    {
+                        returnStatus = ANSC_STATUS_FAILURE;
+                        goto EXIT1;
+                    }
+                }
             }
         }
     }
@@ -700,19 +714,18 @@ CcspCwmpsoInform
      * some test suites such as CD-Router complains its missing and we got failures
      */
     SlapAllocVariable(pSlapValue);
-	if ( pSlapValue )
-	{
-		char*						pValue = NULL;
-		BOOL						bValue = FALSE;
+    if ( pSlapValue )
+    {
+        char*			    pValue = NULL;
+        BOOL			    bValue = FALSE;
         char*                       pPName = NULL;
             
-        pPName  = 
-			bIGD ? "InternetGatewayDevice.ManagementServer.AliasBasedAddressing" :
-				   "Device.ManagementServer.AliasBasedAddressing";
+        pPName  =  bIGD ? "InternetGatewayDevice.ManagementServer.AliasBasedAddressing" :
+            "Device.ManagementServer.AliasBasedAddressing";
 
         /* check if this parameter has been included */
-       for ( j = 0; j < ulParamIndex; j++ )
-       {
+        for ( j = 0; j < ulParamIndex; j++ )
+        {
            if ( AnscEqualString
                (
                    pPName,
@@ -726,38 +739,38 @@ CcspCwmpsoInform
 
         if ( j >= ulParamIndex )
         {
-        pCwmpParamValueArray[ulParamIndex].Name  = CcspTr069PaCloneString(pPName);
+            pCwmpParamValueArray[ulParamIndex].Name  = CcspTr069PaCloneString(pPName);
 
-	    pCcspCwmpCpeController->GetParamStringValue
-    	    (
+	        pCcspCwmpCpeController->GetParamStringValue
+    	       (
         	    (ANSC_HANDLE)pCcspCwmpCpeController,
             	pCwmpParamValueArray[ulParamIndex].Name,
 	            &pValue
-    	    );
+    	       );
 
-		if ( pValue )
-		{
-			bValue = 
-				!AnscEqualString(pValue, "0", TRUE) ||
-				AnscEqualString(pValue, "TRUE", FALSE);
-		}
+		    if ( pValue )
+		    {
+			    bValue = 
+				    !(AnscEqualString(pValue, "0", TRUE) || AnscEqualString(pValue, "false", FALSE)) ||
+                    AnscEqualString(pValue, "TRUE", FALSE);
+		    }
 
-        pSlapValue->Syntax = SLAP_VAR_SYNTAX_string;
-        pSlapValue->Variant.varString = bValue ? AnscCloneString("1") : AnscCloneString("0");
-        pCwmpParamValueArray[ulParamIndex].Value = pSlapValue;
-		pCwmpParamValueArray[ulParamIndex].Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_Boolean;
+            pSlapValue->Syntax = SLAP_VAR_SYNTAX_string;
+            pSlapValue->Variant.varString = bValue ? AnscCloneString("1") : AnscCloneString("0");
+            pCwmpParamValueArray[ulParamIndex].Value = pSlapValue;
+		    pCwmpParamValueArray[ulParamIndex].Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_Boolean;
 
-        ulParamIndex++;
+            ulParamIndex++;
         }
-	}
+    }
 
     /* include the WAN connection IP address defined by TR-098 */
-	if ( bIGD )
-	{
-    	char*                       pDefWanConnection     = NULL;
+    if ( bIGD )
+    {
+        char*                       pDefWanConnection     = NULL;
         char*                       pDefWanConnIfIpv4Addr = NULL;
-		char*						pConnReqUrl           = NULL;
-
+        char*			    pConnReqUrl           = NULL;
+            
         pDefWanConnection = CcspManagementServer_GetFirstUpstreamIpAddress(pCcspCwmpCpeController->PANameWithPrefix);
         if ( pDefWanConnection )
         {
@@ -765,16 +778,16 @@ CcspCwmpsoInform
             for ( j = 0; j < ulParamIndex; j++ )
             {
                 if ( AnscEqualString
-                        (
-                            pDefWanConnection,
-                            pCwmpParamValueArray[j].Name,
-                            TRUE
-                        ) )
+                     (
+                      pDefWanConnection,
+                      pCwmpParamValueArray[j].Name,
+                      TRUE
+                      ) )
                 {
                     break;
                 }
             }
-                                                                                                                                    
+            
             if ( j >= ulParamIndex )
             {
 			pConnReqUrl = CcspManagementServer_GetConnectionRequestURL(pCcspCwmpCpeController->PANameWithPrefix);
@@ -885,7 +898,8 @@ CcspCwmpsoInform
         goto  EXIT2;
     }
 
-    CcspTr069PaTraceCritical(("CPE Inform Message:\n%s\n", pWmpsoAsyncReq->SoapEnvelope));
+    CcspTr069PaTraceDebug(("CPE Inform Message:\n%s\n", pWmpsoAsyncReq->SoapEnvelope));
+    // printf("<RT> CPE Inform Message:\n%s\n", pWmpsoAsyncReq->SoapEnvelope);
 
     do
     {
@@ -931,11 +945,11 @@ CcspCwmpsoInform
                 AnscQueuePopEntryByLink(&pMyObject->AsyncReqQueue, &pWmpsoAsyncReq->Linkage);
                 AnscQueuePopEntryByLink(&pMyObject->SavedReqQueue, &pWmpsoAsyncReq->Linkage);
 
-                CcspTr069PaTraceCritical(("====================\nTR069 Session Timeout\n====================\n"));
+                CcspTr069PaTraceDebug(("====================\nTR069 Session Timeout\n====================\n"));
             }
             else
             {
-                CcspTr069PaTraceCritical(("====================\nTR069 Fault\n====================\n"));
+                CcspTr069PaTraceDebug(("====================\nTR069 Fault\n====================\n"));
             }
 
             /*
