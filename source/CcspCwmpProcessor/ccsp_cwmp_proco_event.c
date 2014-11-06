@@ -102,7 +102,7 @@ CcspCwmppoSysReadySignalProcTask
     returnStatus = pMyObject->PushAllVcToBackend((ANSC_HANDLE)pMyObject);
 #endif
 
-#ifndef _COSA_VZ_IPC
+#ifndef CONFIG_CCSP_CWMP_SESSION_EVENT_TURN_OFF_MOINITOR_CB
     returnStatus =
         pCcspCwmpCpeController->MonitorOpState
             (
@@ -161,7 +161,7 @@ CcspCwmppoSysReadySignalProcTask
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
     }*/
 
-#ifndef _COSA_VZ_IPC
+#ifndef CONFIG_CCSP_CWMP_SESSION_EVENT_WAIT_FOR_CONN_REQ_URL
     /* put Inform message sending on hold until ConnectionRequestURL is ready (non-empty) */
     while ( pMyObject->bActive && !pConnReqUrl )
     {

@@ -81,7 +81,8 @@ extern INT              g_iTraceLevel;
 extern BOOL             RegisterWanInterfaceDone;
 extern char             *pFirstUpstreamIpAddress;
 
-extern  char* _SupportedDataModelConfigFile;
+extern char             *g_Tr069PaAcsDefAddr;
+extern char             *_SupportedDataModelConfigFile;
 static CCSP_BOOL        s_MS_Init_Done  = FALSE;
 
 /* CcspManagementServer_Init is called by PA to register component and
@@ -274,20 +275,83 @@ CcspManagementServer_GetURL
         CCSP_STRING                 ComponentName
     )
 {
-    return CcspManagementServer_CloneString(objectInfo[ManagementServerID].parameters[ManagementServerURLID].value);
+    CCSP_STRING pStr = objectInfo[ManagementServerID].parameters[ManagementServerURLID].value;
+
+    if ( pStr && AnscSizeOfString(pStr) > 0 )
+    {
+        return  CcspManagementServer_CloneString(pStr);
+    }
+    else  
+    {
+        if(g_Tr069PaAcsDefAddr && AnscSizeOfString(g_Tr069PaAcsDefAddr) > 0)
+        {
+            if(pStr)
+            {
+                CcspManagementServer_Free(pStr);
+                objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = NULL;
+            }
+            objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(g_Tr069PaAcsDefAddr);
+            return CcspManagementServer_CloneString(g_Tr069PaAcsDefAddr);
+        }
+        else 
+        {
+            return  CcspManagementServer_CloneString("");
+        }
+    }
 }
 
 /* CcspManagementServer_GetUsername is called to get
  * Device.ManagementServer.Username.
  * Return value - the parameter value.
  */
+
+/*DH  Customizable default username generation, platform specific*/
+ANSC_STATUS
+CcspManagementServer_GenerateDefaultUsername
+    (
+        CCSP_STRING                 pDftUsername,
+        PULONG                      pulLength
+    );
+
 CCSP_STRING
 CcspManagementServer_GetUsername
     (
         CCSP_STRING                 ComponentName
     )
 {
-    return CcspManagementServer_CloneString(objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value);
+    CCSP_STRING pStr = objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value;
+
+    //    AnscTraceWarning(("%s -- ComponentName = %s...\n", __FUNCTION__, ComponentName));
+
+    // setting pStr to empty string "" will get the default username back
+    if ( pStr && AnscSizeOfString(pStr) > 0 )
+    {
+        return  CcspManagementServer_CloneString(pStr);
+    }
+    else  
+    {
+        char        DftUsername[72] = {0};
+        ULONG       ulLength        = sizeof(DftUsername) - 1;
+        ANSC_STATUS returnStatus    = CcspManagementServer_GenerateDefaultUsername(DftUsername, &ulLength);
+
+        if ( returnStatus != ANSC_STATUS_SUCCESS )
+        {
+            AnscTraceWarning(("%s -- default username generation failed, return the empty one!\n", __FUNCTION__));
+            return  CcspManagementServer_CloneString("");
+        }
+        else
+        {
+            // Save Username -- TBD  save it to PSM
+            if ( pStr )
+            {
+                CcspManagementServer_Free(pStr);
+                objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value = NULL;
+            }
+            objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value = CcspManagementServer_CloneString(DftUsername);
+
+            return  CcspManagementServer_CloneString(DftUsername);
+        }
+    }
 }
 
 /* CcspManagementServer_GetPassword is called to get
@@ -296,14 +360,12 @@ CcspManagementServer_GetUsername
  */
 
 /*DH  Customizable default password generation, platform specific*/
-#ifdef CONFIG_VENDOR_CUSTOMER_COMCAST || _COSA_SIM_
 ANSC_STATUS
 CcspManagementServer_GenerateDefaultPassword
     (
         CCSP_STRING                 pDftPassword,
         PULONG                      pulLength
     );
-#endif
 
 CCSP_STRING
 CcspManagementServer_GetPassword
@@ -311,42 +373,39 @@ CcspManagementServer_GetPassword
         CCSP_STRING                 ComponentName
     )
 {
+    CCSP_STRING  pStr = objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value;
 
-#ifdef CONFIG_VENDOR_CUSTOMER_COMCAST || _COSA_SIM_
-    
-    CCSP_STRING                     pStr;
-    char                            DftPassword[72];
-    ANSC_STATUS                     returnStatus;
+    //    AnscTraceWarning(("%s -- ComponentName = %s...\n", __FUNCTION__, ComponentName));
 
-    pStr = objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value;
-
-    if ( AnscSizeOfString(pStr) == 0 )
-    {
-        ULONG                       ulLength;
-
-        ulLength     = sizeof(DftPassword) - 1;
-        returnStatus = CcspManagementServer_GenerateDefaultPassword(DftPassword, &ulLength);
-
-        if ( returnStatus != ANSC_STATUS_SUCCESS )
-        {
-            AnscTraceWarning(("CcspManagementServer_GetPassword -- default password generation failed, return the empty one!\n"));
-            return  CcspManagementServer_CloneString(pStr);
-        }
-        else
-        {
-            return  CcspManagementServer_CloneString(DftPassword);
-        }
-    }
-    else
+    // setting pStr to empty string "" will get the default password back
+    if ( pStr && AnscSizeOfString(pStr) > 0 )
     {
         return  CcspManagementServer_CloneString(pStr);
     }
+    else 
+    {
+        char          DftPassword[72] = {0};
+        ULONG         ulLength        = sizeof(DftPassword) - 1;
+        ANSC_STATUS   returnStatus    = CcspManagementServer_GenerateDefaultPassword(DftPassword, &ulLength);
 
-#else
+        if ( returnStatus != ANSC_STATUS_SUCCESS )
+        {
+            AnscTraceWarning(("%s-- default password generation failed, return the empty one!\n", __FUNCTION__));
+            return  CcspManagementServer_CloneString("");
+        }
+        else
+        {
+            //  Save the password -- TBD  save it to PSM
+            if ( pStr )
+            {
+                CcspManagementServer_Free(pStr);
+                objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value = NULL;
+            }
+            objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value = CcspManagementServer_CloneString(DftPassword);
 
-    return CcspManagementServer_CloneString(objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value);   
-
-#endif
+            return  CcspManagementServer_CloneString(DftPassword);
+        }
+    }
 }
 
 /* CcspManagementServer_GetPeriodicInformEnable is called to get
@@ -421,34 +480,7 @@ CcspManagementServer_GetPeriodicInformTimeStr
         CCSP_STRING                 ComponentName
     )
 {
-    /*
-    if(!objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value){
-        objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value = CcspManagementServer_CloneString("0001-01-01T00:00:00Z");
-    }
-    */
-
-    // Per COMCAST, set to <Midnight UTC> as default if empty or in 1970 or earlier. RTian 10/18/2013
-    int year;
-    if ( !objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value ||
-         sscanf(objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value, "%d", &year) < 1 ||
-         year <= 1970 ) 
-    {
-        #include <time.h>
-        time_t now;
-        struct tm utc;
-        char buf[32];
-        
-        time(&now);
-        gmtime_r(&now, &utc);
-        _ansc_sprintf(buf, "%04d-%02d-%02dT00:00:00", utc.tm_year+1900, utc.tm_mon+1, utc.tm_mday);
-        
-        if(objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value) 
-            CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value);
-
-        objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value
-            = CcspManagementServer_CloneString(buf);
-    }
-    return CcspManagementServer_CloneString(objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value);
+    return CcspManagementServer_GetPeriodicInformTimeStrCustom(ComponentName);
 }
 /* CcspManagementServer_GetParameterKey is called to get
  * Device.ManagementServer.ParameterKey.
@@ -477,32 +509,32 @@ CcspManagementServer_SetParameterKey
     )
 {
     /* If it is called by PA, set it directly to PSM. */
-	int								res;
-	char							recordName[256];
+    int								res;
+    char							recordName[256];
 
-	if ( objectInfo[ManagementServerID].parameters[ManagementServerParameterKeyID].value ) {
+    if ( objectInfo[ManagementServerID].parameters[ManagementServerParameterKeyID].value ) {
         CcspManagementServer_Free((void*)objectInfo[ManagementServerID].parameters[ManagementServerParameterKeyID].value);
-	}
+    }
 
-	objectInfo[ManagementServerID].parameters[ManagementServerParameterKeyID].value = 
-		CcspManagementServer_CloneString(pParameterKey);
-
-	_ansc_sprintf(recordName, "%s.%sParameterKey.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);
-
-	CcspTraceInfo2("ms", ("Writing ParameterKey <%s> into PSM key <%s> ...\n", pParameterKey, recordName));
-
+    objectInfo[ManagementServerID].parameters[ManagementServerParameterKeyID].value = 
+        CcspManagementServer_CloneString(pParameterKey);
+    
+    _ansc_sprintf(recordName, "%s.%sParameterKey.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);    
+    
+    CcspTraceInfo2("ms", ("Writing ParameterKey <%s> into PSM key <%s> ...\n", pParameterKey, recordName));
+    
     res = PSM_Set_Record_Value2 
              (
-         	bus_handle,
-            CcspManagementServer_SubsystemPrefix,
-            recordName,
-            ccsp_string,
+                  bus_handle,
+                  CcspManagementServer_SubsystemPrefix,
+                  recordName,
+                  ccsp_string,
                   pParameterKey
               );
-
+    
     if(res != CCSP_SUCCESS){
         CcspTraceWarning2("ms", ("Failed to write ParameterKey <%s> into PSM!\n", pParameterKey));
-	}
+    }
     
     return res;
 }
@@ -649,7 +681,40 @@ CcspManagementServer_GetConnectionRequestUsername
         CCSP_STRING                 ComponentName
     )
 {
-    return CcspManagementServer_CloneString(objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestUsernameID].value);
+    // return CcspManagementServer_CloneString(objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestUsernameID].value);
+    CCSP_STRING pStr = objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestUsernameID].value;
+
+    //    AnscTraceWarning(("%s -- ComponentName = %s...\n", __FUNCTION__, ComponentName));
+
+    // setting pStr to empty string "" will get the default username back
+    if ( pStr && AnscSizeOfString(pStr) > 0 )
+    {
+        return  CcspManagementServer_CloneString(pStr);
+    }
+    else  
+    {
+        char        DftUsername[72] = {0};
+        ULONG       ulLength        = sizeof(DftUsername) - 1;
+        ANSC_STATUS returnStatus    = CcspManagementServer_GenerateDefaultUsername(DftUsername, &ulLength);
+
+        if ( returnStatus != ANSC_STATUS_SUCCESS )
+        {
+            AnscTraceWarning(("%s -- default username generation failed, return the empty one!\n", __FUNCTION__));
+            return  CcspManagementServer_CloneString("");
+        }
+        else
+        {
+            // Save Username -- TBD  save it to PSM
+            if ( pStr )
+            {
+                CcspManagementServer_Free(pStr);
+                objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestUsernameID].value = NULL;
+            }
+            objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestUsernameID].value = CcspManagementServer_CloneString(DftUsername);
+
+            return  CcspManagementServer_CloneString(DftUsername);
+        }
+    }
 }
 
 /* CcspManagementServer_GetConnectionRequestPassword is called to get
@@ -664,6 +729,30 @@ CcspManagementServer_GetConnectionRequestPassword
     )
 {
     return CcspManagementServer_CloneString(objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestPasswordID].value);
+}
+
+/* CcspManagementServer_GetACSOverride is called to get
+ * Device.ManagementServer.ACSOverride.
+ * Return value - the parameter value.
+ */
+CCSP_BOOL
+CcspManagementServer_GetACSOverride
+    (
+        CCSP_STRING                 ComponentName
+    )
+{
+    if(AnscEqualString(objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value, "0", FALSE) ||
+       AnscEqualString(objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value, "false", FALSE)) return FALSE;
+    else return TRUE;
+}
+
+CCSP_STRING
+CcspManagementServer_GetACSOverrideStr
+    (
+        CCSP_STRING                 ComponentName
+    )
+{
+    return CcspManagementServer_GetBooleanValue(objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value, "0");
 }
 
 /* CcspManagementServer_GetUpgradesManaged is called to get
@@ -966,7 +1055,7 @@ CcspManagementServer_GetNATDetectedStr
  * Device.ManagementServer.AliasBasedAddressing
  * Return value - the parameter value
  */
-// This is required by Comcast with a permanent value of FALSE.  RTian 12/19/2013
+// Currently set to a permanent value of FALSE.  
 CCSP_BOOL
 CcspManagementServer_GetAliasBasedAddressing
     (
@@ -1451,3 +1540,4 @@ CcspManagementServer_StunBindingChanged
     }
 }
 #endif
+

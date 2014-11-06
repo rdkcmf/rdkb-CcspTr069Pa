@@ -69,6 +69,7 @@
 
 
 
+#ifndef  _CCSP_TR069PA_ACTIVE_DURING_REBOOT
 ANSC_STATUS
 CcspCwmppoStopCwmpTask
     (
@@ -87,6 +88,7 @@ CcspCwmppoStopCwmpTask
 
     return  ANSC_STATUS_SUCCESS;
 }
+#endif
 
 /**********************************************************************
 

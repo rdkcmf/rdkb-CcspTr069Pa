@@ -51,6 +51,8 @@
         *   CcspCwmpCpecoSetPAMapperFile
         *   CcspCwmpCpecoSetSDMXmlFilename
         *   CcspCwmpCpecoGetSDMXmlFilename
+        *   CcspCwmpCpecoSetOutboundIfName
+        *   CcspCwmpCpecoGetOutboundIfName
         *   CcspCwmpCpecoGetMsgBusHandle
         *   CcspCwmpCpecoGetParamNotification
         *   CcspCwmpCpecoSetParamNotification
@@ -1829,6 +1831,34 @@ CcspCwmpCpecoGetSDMXmlFilename
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
 
     return  pMyObject->SdmXmlFile;
+}
+
+
+ANSC_STATUS
+CcspCwmpCpecoSetOutboundIfName
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pName
+    )
+{
+    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
+
+    pMyObject->OutboundIfName = pName;
+
+    return  returnStatus;
+}
+
+char*
+CcspCwmpCpecoGetOutboundIfName
+    (
+        ANSC_HANDLE                 hThisObject
+    )
+{
+    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
+
+    return  pMyObject->OutboundIfName;
 }
 
 /**********************************************************************

@@ -1281,13 +1281,15 @@ CcspCwmppoMpaGetParameterValues
             );
 
 
-        if ( nRet != CCSP_SUCCESS || ulFcArraySize == 0 ) 
+	//dpotter
+        if ( ulFcArraySize == 0 ) 
         {
             /* there must be at least one FC that matches the namespace */
             CcspTr069PaTraceDebug(("GPV - no FC owns namespace <%s>\n", pParamName));
-            returnStatus      = ANSC_STATUS_BAD_NAME;
-
-            goto EXIT2;
+            returnStatus = ANSC_STATUS_BAD_NAME; 
+         
+            //Do not thow a SoapFault causes 9005 error
+            goto EXIT1;
         } 
 
         for ( j = 0; j < ulFcArraySize; j ++ )

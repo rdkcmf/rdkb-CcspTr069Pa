@@ -19,7 +19,7 @@
 //
 
 #ifdef __GNUC__
-#if (!defined _BUILD_ANDROID) && (!defined _NO_EXECINFO_H_)
+#if (!defined _BUILD_ANDROID) && (!defined _COSA_VEN501_) && (!defined _NO_EXECINFO_H_)
 #include <execinfo.h>
 #endif
 #endif
@@ -53,7 +53,8 @@ char* openssl_client_dev_certificate_file = NULL;
 char* openssl_client_private_key_file = NULL;
 #endif
 
-char* ccsp_tr069pa_outbound_if = NULL;
+char* g_Tr069PaOutboundIfName = NULL;
+char* g_Tr069PaAcsDefAddr = NULL;
 
 #define  CCSP_TR069PA_CFG_FILE                      "./ccsp_tr069_pa_cfg.xml"
 #define  CCSP_TR069PA_DEF_MAPPER_XML_FILE           "./ccsp_tr069_pa_mapper.xml"
@@ -112,8 +113,8 @@ int  display_menu()
 
 int  display_info()
 {
-	CcspTr069PaTraceInfo(("\n\n"));
-	CcspTr069PaTraceInfo(("        ***************************************************************\n"));
+    CcspTr069PaTraceInfo(("\n\n"));
+    CcspTr069PaTraceInfo(("        ***************************************************************\n"));
     CcspTr069PaTraceInfo(("        ***                                                         ***\n"));
     CcspTr069PaTraceInfo(("        ***   CCSP TR-069 PA Program                                ***\n"));
     CcspTr069PaTraceInfo(("        ***                                                         ***\n"));
@@ -131,13 +132,23 @@ int  display_info()
 static void _print_stack_backtrace(void)
 {
 #ifdef __GNUC__
-#if (!defined _BUILD_ANDROID) && (!defined _NO_EXECINFO_H_)
-	void* tracePtrs[100];
-char** funcNames = NULL;
-	int i, count = 0;
+#if (!defined _BUILD_ANDROID) && (!defined _COSA_VEN501_) && (!defined _COSA_SIM_)
+    void* tracePtrs[100];
+    char** funcNames = NULL;
+    int i, count = 0;
 
-	count = backtrace( tracePtrs, 100 );
-	backtrace_symbols_fd( tracePtrs, count, 2 );
+    int fd;
+    const char* path = "/nvram/tr069passp_backtrace";
+    fd = open(path, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    if (fd < 0)
+    {
+        fprintf(stderr, "failed to open backtrace file: %s", path);
+        return;
+    }
+    
+    count = backtrace( tracePtrs, 100 );
+    backtrace_symbols_fd( tracePtrs, count, fd );
+    close(fd);
 
 	funcNames = backtrace_symbols( tracePtrs, count );
 
@@ -370,19 +381,19 @@ int main(int argc, char* argv[])
     else
     {
         CcspTr069PaTraceWarning(("Core dump is NOT opened, backtrace if possible\n"));
-    signal(SIGTERM, sig_handler);
-    signal(SIGINT, sig_handler);
-    /*signal(SIGCHLD, sig_handler);*/
-    signal(SIGUSR1, sig_handler);
-    signal(SIGUSR2, sig_handler);
-
-    signal(SIGSEGV, sig_handler);
-    signal(SIGBUS, sig_handler);
-    signal(SIGKILL, sig_handler);
-    signal(SIGFPE, sig_handler);
-    signal(SIGILL, sig_handler);
-    signal(SIGQUIT, sig_handler);
-    signal(SIGHUP, sig_handler);
+        signal(SIGTERM, sig_handler);
+        signal(SIGINT, sig_handler);
+        /*signal(SIGCHLD, sig_handler);*/
+        signal(SIGUSR1, sig_handler);
+        signal(SIGUSR2, sig_handler);
+        
+        signal(SIGSEGV, sig_handler);
+        signal(SIGBUS, sig_handler);
+        signal(SIGKILL, sig_handler);
+        signal(SIGFPE, sig_handler);
+        signal(SIGILL, sig_handler);
+        signal(SIGQUIT, sig_handler);
+        signal(SIGHUP, sig_handler);
     }
 
     display_info();
@@ -629,7 +640,7 @@ int  engage_tr069pa()
         return  0;
     }
 
-    CcspTr069PaSsp_LoadCfgFile(CCSP_TR069PA_CFG_FILE); 
+    CcspTr069PaSsp_LoadCfgFile(CCSP_TR069PA_CFG_FILE);
 
     CcspTr069PaSsp_InitCcspCwmpCfgIf();
     ssp_BbhmInitWebAcmIf();
@@ -665,6 +676,11 @@ int  engage_tr069pa()
         if ( pCcspCwmpTcpcrHandler )
         {
             pCcspCwmpTcpcrHandler->SetWebAcmIf((ANSC_HANDLE)pCcspCwmpTcpcrHandler, (ANSC_HANDLE)&webAcmIf);
+        }
+
+        if ( g_Tr069PaOutboundIfName && g_Tr069PaOutboundIfName[0])
+        {
+            status = g_pCcspCwmpCpeController->SetOutboundIfName((ANSC_HANDLE)g_pCcspCwmpCpeController, g_Tr069PaOutboundIfName);
         }
 
         status = g_pCcspCwmpCpeController->Engage((ANSC_HANDLE)g_pCcspCwmpCpeController);

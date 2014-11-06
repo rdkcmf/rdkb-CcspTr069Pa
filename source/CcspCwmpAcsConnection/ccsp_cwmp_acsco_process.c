@@ -118,6 +118,17 @@ CcspCwmpAcscoConnect
     	    }
 
 	        pHttpClient->SetSessionIdleTimeout((ANSC_HANDLE)pHttpClient, ulSessionIdleTimeout);
+
+            // fprintf(stderr, "<RT> %s: OutboundIfName = '%s'\n", __FUNCTION__, pCcspCwmpCpeController->OutboundIfName ? pCcspCwmpCpeController->OutboundIfName : "NULL");
+            if ( pCcspCwmpCpeController->OutboundIfName && pCcspCwmpCpeController->OutboundIfName[0] 
+                    &&  AnscSizeOfString(pCcspCwmpCpeController->OutboundIfName) < HTTP_MAX_DEVICE_NAME_SIZE)
+            {
+                AnscCopyString(pHttpClient->Property.BindToDevice.DeviceName, pCcspCwmpCpeController->OutboundIfName);
+            }
+            else
+            {
+                pHttpClient->Property.BindToDevice.DeviceName[0] = '\0';
+            }
 		}
     }
 

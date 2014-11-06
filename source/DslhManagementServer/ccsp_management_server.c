@@ -66,12 +66,13 @@
 #include "slap_definitions.h"
 #include "ccsp_psm_helper.h"
 #include "ansc_string.h"
+#include "dslh_definitions_database.h"
 
 #define TEMP_SIZE 23
 
 char *CcspManagementServer_ComponentName = NULL;
 char *CcspManagementServer_SubsystemPrefix = NULL;
-msParameterValSettingArray parameterSetting;
+msParameterValSettingArray parameterSetting = {0};
 name_spaceType_t *CcspManagementServer_Namespace;
 /* Make sure that CcspManagementServer_RegisterWanInterface is successfully done. */
 BOOL RegisterWanInterfaceDone = FALSE;  
@@ -94,6 +95,8 @@ char *pPAMComponentPath = NULL;
 
 char *pFirstUpstreamIpInterface = NULL;
 char *pFirstUpstreamIpAddress = NULL;
+
+int g_ACSChangedURL = 0;
 
 char * pDTXml = "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\
 <DT>\
@@ -206,9 +209,9 @@ msParameterInfo managementServerParameters[] =
     { "ConnectionRequestURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
     { "ConnectionRequestUsername", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
     { "ConnectionRequestPassword", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
+    { "ACSOverride", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
     { "UpgradesManaged", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
     { "X_CISCO_COM_DiagComplete", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-// #if 0 //Not used anymore
 #ifndef _COSA_VEN501_
     { "KickURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
     { "DownloadProgressURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
@@ -227,7 +230,6 @@ msParameterInfo managementServerParameters[] =
     { "STUNMinimumKeepAlivePeriod", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) },
     { "NATDetected", NULL, ccsp_boolean, CCSP_RO, ~((unsigned int)0) },
     { "AliasBasedAddressing", NULL, ccsp_boolean, CCSP_RO, ~((unsigned int)0) },
-// #if 0 //Not used anymore
 #ifndef _COSA_VEN501_
     { "X_CISCO_COM_ConnectionRequestURLPort", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
     { "X_CISCO_COM_ConnectionRequestURLPath", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) }
@@ -293,7 +295,6 @@ CcspManagementServer_FillInObjectInfo()
     objectInfo[DeviceID].parameters = NULL;
 
     objectInfo[ManagementServerID].name = CcspManagementServer_CloneString(_ManagementServerObjectName);
-// #if 0 //Not used anymore
 #ifndef _COSA_VEN501_
     objectInfo[ManagementServerID].numberOfChildObjects = 2;
     objectInfo[ManagementServerID].childObjectIDs = 
@@ -314,8 +315,7 @@ CcspManagementServer_FillInObjectInfo()
     objectInfo[DeviceInfoID].numberOfParameters = 0;
     objectInfo[DeviceInfoID].parameters = NULL;
 
-// #if 0 //Not used anymore
-#ifndef _COSA_VEN501_    
+#ifndef _COSA_VEN501_
     objectInfo[AutonomousTransferCompletePolicyID].name = CcspManagementServer_CloneString(_AutonomousTransferCompletePolicyObjectName);
     objectInfo[AutonomousTransferCompletePolicyID].numberOfChildObjects = 0;
     objectInfo[AutonomousTransferCompletePolicyID].numberOfParameters = AutonomousTransferCompletePolicyNumOfParameters;
@@ -369,7 +369,7 @@ CcspManagementServer_FillInObjectInfo()
     objectInfo[Tr069paID].parameters = tr069paParameters;
     objectInfo[Tr069paID].parameters[Tr069paNameID].value = CcspManagementServer_CloneString("com.cisco.spvtg.ccsp.tr069pa");
     objectInfo[Tr069paID].parameters[Tr069paVersionID].value = CcspManagementServer_CloneString("1.0");
-    objectInfo[Tr069paID].parameters[Tr069paAuthorID].value = CcspManagementServer_CloneString("Kang Quan");
+    objectInfo[Tr069paID].parameters[Tr069paAuthorID].value = CcspManagementServer_CloneString("CCSP Team");
     objectInfo[Tr069paID].parameters[Tr069paHealthID].value = CcspManagementServer_CloneString("Green");
     objectInfo[Tr069paID].parameters[Tr069paStateID].value = CcspManagementServer_CloneString("2");
     objectInfo[Tr069paID].parameters[Tr069paDTXmlID].value = CcspManagementServer_CloneString(pDTXml);
@@ -402,62 +402,19 @@ CcspManagementServer_FillInObjectInfo()
         objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value
             = CcspManagementServer_CloneString("0");
 
-#if 0
-//Not used anymore_
-//#ifdef  _COSA_E4200_
-        _ansc_sprintf(buf, "%d", 51005);
-#else
-        _ansc_sprintf(buf, "%d", CWMP_PORT);
-#endif        
+        // _ansc_sprintf(buf, "%d", 51005);
+        
+        _ansc_sprintf(buf, "%d", CWMP_PORT);      
+
         objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPortID].value 
             = CcspManagementServer_CloneString(buf);
 
         /* Now PA is started before PAM. We can't get it now We will try to get from PAM directly when do INFORM */
         objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPathID].value 
             = NULL;
-        
-        /*        
-        objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformEnableID].value
-            = CcspManagementServer_CloneString("0");
-
-        objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformIntervalID].value
-            = CcspManagementServer_CloneString("86400");
-        */
-
-        // Per COMCAST, init the following parameters to their defaults.  RTian 10/18/2013
-        {
-            objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformEnableID].value
-                = CcspManagementServer_CloneString("1");
-
-            objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformIntervalID].value
-                = CcspManagementServer_CloneString("150");
-            
-            { 
-                #include <time.h>
-                time_t now;
-                struct tm utc;
-                char buf[32];
-
-                time(&now);
-                gmtime_r(&now, &utc);
-                _ansc_sprintf(buf, "%04d-%02d-%02dT00:00:00", utc.tm_year+1900, utc.tm_mon+1, utc.tm_mday);
-                
-                objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value
-                    = CcspManagementServer_CloneString(buf);
-            }
-            
-            objectInfo[ManagementServerID].parameters[ManagementServerDefaultActiveNotificationThrottleID].value
-                = CcspManagementServer_CloneString("30");
-            
-            objectInfo[ManagementServerID].parameters[ManagementServerCWMPRetryMinimumWaitIntervalID].value
-                = CcspManagementServer_CloneString("5");
-            
-            objectInfo[ManagementServerID].parameters[ManagementServerCWMPRetryIntervalMultiplierID].value
-                = CcspManagementServer_CloneString("2000");
-        }
-
+    
         objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestURLID].notification = 1;
-
+            
         _ansc_sprintf(buf, "%d", STUN_PORT);
         objectInfo[ManagementServerID].parameters[ManagementServerSTUNServerPortID].value 
             = CcspManagementServer_CloneString(buf);
@@ -483,20 +440,16 @@ CcspManagementServer_FillInObjectInfo()
     /* The program will crash if try to free the parameter values directly assigned by initialization. */
     int i, j, res;
     char pRecordName[1000] = {0};
-#if 0
-    SLAP_VARIABLE slapVar;
-    slapVar.Syntax = SLAP_VAR_SYNTAX_string;
-#endif
+
     size_t len1 = strlen(CcspManagementServer_ComponentName);
     size_t len2, len3;
     char* pValue = NULL;
     strncpy(pRecordName, CcspManagementServer_ComponentName, len1);
     pRecordName[len1] = '.';
-// #if 0 //Not used anymore_
 #ifndef _COSA_VEN501_
     for(i = ManagementServerID; i<=DUStateChangeComplPolicyID; i++){ /* Assume no persistent state for com. objects. */
-// #else
-//        for(i = ManagementServerID; i<= DeviceInfoID; i++){ /* Assume no persistent state for com. objects. */
+#else
+        for(i = ManagementServerID; i<= DeviceInfoID; i++){ /* Assume no persistent state for com. objects. */
 #endif
         len2 = strlen(objectInfo[i].name);
         strncpy(&pRecordName[len1+1], objectInfo[i].name, len2);
@@ -505,16 +458,6 @@ CcspManagementServer_FillInObjectInfo()
             strncpy(&pRecordName[len1+len2+1], objectInfo[i].parameters[j].name, len3);
             strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
             pRecordName[len1+len2+len3+7] = '\0';
-#if 0
-            SlapInitVariable(&slapVar);
-            res = PSM_Get_Record_Value(
-                bus_handle,
-                pRecordName,
-                /* Store everything as string here. */
-                /*objectInfo[i].parameters[j].type, */ 
-                ccsp_string,
-                &slapVar);
-#endif
 
             res = PSM_Get_Record_Value2(
                 bus_handle,
@@ -530,10 +473,6 @@ CcspManagementServer_FillInObjectInfo()
                         "ms",
                         ("PSM_Get_Record_Value2 returns %d, name=<%s>, value=<%s>\n", res, pRecordName, pValue ? pValue : "NULL")
                     );
-
-                /* objectInfo[i].parameters[j].value = CcspManagementServer_CloneString(slapVar.Variant.varString);
-                SlapCleanVariable(&slapVar);
-                */
         
                 /* free default value */
                 if ( objectInfo[i].parameters[j].value )
@@ -677,18 +616,6 @@ ANSC_STATUS CcspManagementServer_RegisterNameSpace()
     {
         _ansc_sprintf(CrName, "%s", CCSP_DBUS_INTERFACE_CR);
     }
-
-    /* CcspBaseIf_registerBase has issue to handle component name with prefix. The component name has to be without prefix. */
-    /*returnStatus =
-        CcspBaseIf_registerBase
-            (
-                bus_handle,
-                CrName,
-                CcspManagementServer_ComponentName,
-                CCSP_MANAGEMENT_SERVER_COMPONENT_VERSION,
-                CCSP_DBUS_PATH_MS,
-                CcspManagementServer_SubsystemPrefix
-            );*/
 
     for(i=0; i<SupportedDataModelID; i++)  
     {
@@ -912,7 +839,7 @@ CcspManagementServer_RegisterWanInterface()
 
     /*this macro should be DM_IGD. But currently the root name switch is not finish. DM_IGD is not defined. */
 #if 0
-//#if defined(_COSA_E4200_) || defined(_COSA_VEN501_)
+//#if defined(_COSA_VEN501_)
     /* We get Address path name directly for TR-098*/
 
     char * parameterNames[1];
@@ -1062,19 +989,6 @@ CcspManagementServer_RegisterWanInterface()
         return ANSC_STATUS_FAILURE;
     }
 
-#if 0 /* PA will set up this event handling callback, when parameterValueChange signal is received by PA, PA will give MS FC a chance to handle it */
-    // Register value change event.
-    res = CcspBaseIf_Register_Event(
-        bus_handle,
-        pPAMComponentName,
-        "parameterValueChangeSignal");
-    if(res != CCSP_Message_Bus_OK){
-        CcspTraceWarning(("CcspManagementServer_RegisterWanInterface CcspBaseIf_Register_Event failure: %d\n", res));
-        return res;
-    }
-    //CcspBaseIf_Set_Default_Event_Callback(bus_handle, CcspCcspManagementServer_EvtCallback);
-#endif
-
     CcspManagementServer_GenerateConnectionRequestURL(FALSE, NULL);
     RegisterWanInterfaceDone = TRUE;
 
@@ -1160,41 +1074,6 @@ ANSC_STATUS CcspManagementServer_GenerateConnectionRequestURL(
     }
     
     strcat(result, "/");
-
-#if 0    
-//#ifdef     _COSA_E4200_
-    if ( !objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPathID].value )
-    {
-        if(!pPAMComponentName || !pPAMComponentPath) CcspManagementServer_DiscoverComponent();
-        if(pPAMComponentName && pPAMComponentPath)
-        {
-            char * parameterNames[1];
-            parameterNames[0] = CcspManagementServer_CloneString("InternetGatewayDevice.DeviceInfo.SerialNumber");
-
-            parameterValStruct_t **parameterval = NULL;
-            int val_size = 0;
-            int res = CcspBaseIf_getParameterValues(
-                bus_handle,
-                pPAMComponentName,
-                pPAMComponentPath,
-                parameterNames,
-                1,
-                &val_size,
-                &parameterval);
-            if(parameterNames[0]) CcspManagementServer_Free(parameterNames[0]);
-            if( (res==CCSP_SUCCESS) && (val_size > 0) && (AnscSizeOfString(parameterval[0]->parameterValue) > 0) ) {
-                CcspTraceDebug2("ms", ("CcspManagementServer_RegisterWanInterface SerialNumber is: %s\n", parameterval[0]->parameterValue));
-
-                objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPathID].value = 
-                        CcspManagementServer_CloneString(parameterval[0]->parameterValue);
-
-                free_parameterValStruct_t (bus_handle, val_size, parameterval);
-            }
-            else
-                CcspTraceDebug2("ms", ("CcspManagementServer_RegisterWanInterface gets SerialNumber fail..\n"));
-        }
-    }
-#endif
 
     if(objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPathID].value)
         strcat(result, objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPathID].value);
@@ -1302,96 +1181,6 @@ int CcspManagementServer_GetParameterID(
             return i;
     }
     return -1;
-    /*switch (objectID){
-        case ManagementServerID:
-            if(AnscEqualString(paraName, "EnableCWMP", TRUE)) 
-                return ManagementServerEnableCWMPID;
-            else if(AnscEqualString(paraName, "URL", TRUE)) 
-                return ManagementServerURLID;
-            else if(AnscEqualString(paraName, "Username", TRUE)) 
-                return ManagementServerUsernameID;
-            else if(AnscEqualString(paraName, "Password", TRUE)) 
-                return ManagementServerPasswordID;
-            else if(AnscEqualString(paraName, "PeriodicInformEnable", TRUE)) 
-                return ManagementServerPeriodicInformEnableID;
-            else if(AnscEqualString(paraName, "PeriodicInformInterval", TRUE)) 
-                return ManagementServerPeriodicInformIntervalID;
-            else if(AnscEqualString(paraName, "PeriodicInformTime", TRUE)) 
-                return ManagementServerPeriodicInformTimeID;
-            else if(AnscEqualString(paraName, "ParameterKey", TRUE)) 
-                return ManagementServerParameterKeyID;
-            else if(AnscEqualString(paraName, "ConnectionRequestURL", TRUE)) 
-                return ManagementServerConnectionRequestURLID;
-            else if(AnscEqualString(paraName, "ConnectionRequestUsername", TRUE)) 
-                return ManagementServerConnectionRequestUsernameID;
-            else if(AnscEqualString(paraName, "ConnectionRequestPassword", TRUE)) 
-                return ManagementServerConnectionRequestPasswordID;
-            else if(AnscEqualString(paraName, "UpgradesManaged", TRUE)) 
-                return ManagementServerUpgradesManagedID;
-            else if(AnscEqualString(paraName, "KickURL", TRUE)) 
-                return ManagementServerKickURLID;
-            else if(AnscEqualString(paraName, "DownloadProgressURL", TRUE)) 
-                return ManagementServerDownloadProgressURLID;
-            else if(AnscEqualString(paraName, "DefaultActiveNotificationThrottle", TRUE)) 
-                return ManagementServerDefaultActiveNotificationThrottleID;
-            else if(AnscEqualString(paraName, "CWMPRetryMinimumWaitInterval", TRUE)) 
-                return ManagementServerCWMPRetryMinimumWaitIntervalID;
-            else if(AnscEqualString(paraName, "CWMPRetryIntervalMultiplier", TRUE)) 
-                return ManagementServerCWMPRetryIntervalMultiplierID;
-            else if(AnscEqualString(paraName, "UDPConnectionRequestAddress", TRUE)) 
-                return ManagementServerUDPConnectionRequestAddressID;
-            else if(AnscEqualString(paraName, "UDPConnectionRequestAddressNotificationLimit", TRUE)) 
-                return ManagementServerUDPConnectionRequestAddressNotificationLimitID;
-            else if(AnscEqualString(paraName, "STUNEnable", TRUE)) 
-                return ManagementServerSTUNEnableID;
-            else if(AnscEqualString(paraName, "STUNServerAddress", TRUE)) 
-                return ManagementServerSTUNServerAddressID;
-            else if(AnscEqualString(paraName, "STUNServerPort", TRUE)) 
-                return ManagementServerSTUNServerPortID;
-            else if(AnscEqualString(paraName, "STUNUsername", TRUE)) 
-                return ManagementServerSTUNUsernameID;
-            else if(AnscEqualString(paraName, "STUNPassword", TRUE)) 
-                return ManagementServerSTUNPasswordID;
-            else if(AnscEqualString(paraName, "STUNMaximumKeepAlivePeriod", TRUE)) 
-                return ManagementServerSTUNMaximumKeepAlivePeriodID;
-            else if(AnscEqualString(paraName, "STUNMinimumKeepAlivePeriod", TRUE)) 
-                return ManagementServerSTUNMinimumKeepAlivePeriodID;
-            else if(AnscEqualString(paraName, "NATDetected", TRUE)) 
-                return ManagementServerNATDetectedID;
-            else if(AnscEqualString(paraName, "X_CISCO_COM_ConnectionRequestURLPort", TRUE)) 
-                return ManagementServerX_CISCO_COM_ConnectionRequestURLPortID;
-            else if(AnscEqualString(paraName, "X_CISCO_COM_ConnectionRequestURLPath", TRUE)) 
-                return ManagementServerX_CISCO_COM_ConnectionRequestURLPathID;
-            else return -1;
-        case AutonomousTransferCompletePolicyID:
-            if(AnscEqualString(paraName, "Enable", TRUE)) 
-                return AutonomousTransferCompletePolicyEnableID;
-            else if(AnscEqualString(paraName, "TransferTypeFilter", TRUE)) 
-                return AutonomousTransferCompletePolicyTransferTypeFilterID;
-            else if(AnscEqualString(paraName, "ResultTypeFilter", TRUE)) 
-                return AutonomousTransferCompletePolicyResultTypeFilterID;
-            else if(AnscEqualString(paraName, "FileTypeFilter", TRUE)) 
-                return AutonomousTransferCompletePolicyFileTypeFilterID;
-            else return -1;
-        case DUStateChangeComplPolicyID:
-            if(AnscEqualString(paraName, "Enable", TRUE)) 
-                return DUStateChangeComplPolicyEnableID;
-            else if(AnscEqualString(paraName, "OperationTypeFilter", TRUE)) 
-                return DUStateChangeComplPolicyOperationTypeFilterID;
-            else if(AnscEqualString(paraName, "ResultTypeFilter", TRUE)) 
-                return DUStateChangeComplPolicyResultTypeFilterID;
-            else if(AnscEqualString(paraName, "FaultCodeFilter", TRUE)) 
-                return DUStateChangeComplPolicyFaultCodeFilterID;
-            else return -1;
-        default:
-            if(AnscEqualString(paraName, "URL", TRUE)) 
-                return SupportedDataModelURLID;
-            else if(AnscEqualString(paraName, "URN", TRUE)) 
-                return SupportedDataModelURNID;
-            else if(AnscEqualString(paraName, "Features", TRUE)) 
-                return SupportedDataModelFeaturesID;
-            else return -1;
-    }*/
 }
 
 //Custom
@@ -1578,6 +1367,9 @@ void CcspManagementServer_GetSingleParameterValue(
         case ManagementServerConnectionRequestPasswordID:
             val->parameterValue = NULL;
             break;
+        case ManagementServerACSOverrideID:
+            val->parameterValue = CcspManagementServer_GetACSOverrideStr(NULL);
+            break;
         case ManagementServerUpgradesManagedID:
             val->parameterValue = CcspManagementServer_GetUpgradesManagedStr(NULL);
             break;
@@ -1636,7 +1428,7 @@ void CcspManagementServer_GetSingleParameterValue(
             val->parameterValue = CcspManagementServer_GetConnectionRequestURLPath(NULL);
             break;
         case ManagementServerX_CISCO_COM_DiagCompleteID:
-            val->parameterValue = CcspManagementServer_CloneString("0");
+            val->parameterValue = CcspManagementServer_CloneString("false");
             break;
         default: break;
         }
@@ -2003,8 +1795,31 @@ int CcspManagementServer_ValidateParameterValues(
     char *invalidParaName = NULL;
     parameterSetting.sessionID = sessionId;
     parameterSetting.writeID = writeID;
-    parameterSetting.size = 0;
-    parameterSetting.msParameterValSettings = CcspManagementServer_Allocate(size * sizeof(msParameterValSetting));
+    unsigned int                    prevIndex   = 0;
+
+    if ( parameterSetting.msParameterValSettings == NULL )
+    {
+        if ( size > CCSP_TR069PA_DFT_PARAM_VAL_SETTINGS_NUMBER )
+        {
+            parameterSetting.size                   = size;
+        }
+        else
+        {
+            parameterSetting.size                   = CCSP_TR069PA_DFT_PARAM_VAL_SETTINGS_NUMBER;
+        }
+        parameterSetting.msParameterValSettings = CcspManagementServer_Allocate(sizeof(msParameterValSetting) * parameterSetting.size);
+        parameterSetting.currIndex              = 0;
+
+        if ( parameterSetting.msParameterValSettings == NULL )
+        {
+            returnStatus = TR69_INTERNAL_ERROR;
+            *invalidParameterName = CcspManagementServer_CloneString("Insufficient Resources");
+            return  returnStatus;
+        }
+    }
+
+    prevIndex = parameterSetting.currIndex;
+
     int i = 0;
     for(; i<size; i++)
     {
@@ -2048,28 +1863,122 @@ int CcspManagementServer_ValidateParameterValues(
                 continue;
             }
 
+            /*
+             *  Check if we still have enough buffer and double the size if needed
+             */
+            if ( parameterSetting.currIndex >= parameterSetting.size )
+            {
+                msParameterValSetting*      pNewSettings    = NULL;
+                AnscTraceWarning
+                    ((
+                        "CcspManagementServer_ValidateParameterValues -- enlarge array size from %d to %d!\n",
+                        parameterSetting.size,
+                        parameterSetting.size * 2
+                    ));
+
+                pNewSettings = CcspManagementServer_Allocate(sizeof(msParameterValSetting) * parameterSetting.size * 2);
+
+                if ( !pNewSettings )
+                {
+                    returnStatus = TR69_INTERNAL_ERROR;
+                    *invalidParameterName = CcspManagementServer_CloneString("Insufficient Resources");
+                    return  returnStatus;
+                }
+                else
+                {
+                    /* Free the old array and replace it with the new one */
+                    AnscCopyMemory(pNewSettings, parameterSetting.msParameterValSettings, sizeof(msParameterValSetting) * parameterSetting.size);
+                    CcspManagementServer_Free(parameterSetting.msParameterValSettings);
+                    parameterSetting.msParameterValSettings = pNewSettings;
+                    parameterSetting.size *= 2;
+                }
+            }
+
             int res = 0;
             if(objectID == ManagementServerID){
                 switch (parameterID)
                 {
                 case ManagementServerEnableCWMPID:
                 case ManagementServerPeriodicInformEnableID:
+                case ManagementServerACSOverrideID:
                 case ManagementServerUpgradesManagedID:
                 case ManagementServerSTUNEnableID:
                 case ManagementServerNATDetectedID:
                     res = CcspManagementServer_ValidateBoolean(val[i].parameterValue);
                     if(res == -1 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else if(res == 0) parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString("0");
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString("1");
+                    else if(res == 0) parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("0");
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("1");
                     break;
                 case ManagementServerURLID:
+                {
+                    int res = CCSP_FAILURE;
+                    int ACSChangedURL = 0;
+                    int ACSOverride = CcspManagementServer_GetACSOverride(NULL);
+                    char *pValue = NULL;
+
+                    // printf("<RT> %s - WriteID = %d, URL = '%s'\n", __FUNCTION__, writeID, val[i].parameterValue ? val[i].parameterValue : "NULL");
+
+                    res = PSM_Get_Record_Value2(
+                                bus_handle,
+                                CcspManagementServer_SubsystemPrefix,
+                                "dmsb.ManagementServer.ACSChangedURL",
+                                NULL,
+                                &pValue);
+                    if ( res == CCSP_SUCCESS)
+                    {
+                        // printf("<RT> ACSChangedURL from PSM_Get = '%s'\n", pValue ? pValue : "NULL");
+                        if (AnscEqualString(pValue, "0", FALSE) == TRUE)  ACSChangedURL = 0;
+                        else ACSChangedURL = 1;
+                    }
+                    else 
+                    {
+                        CcspTraceWarning(("%s - Cannot get PSM value for '%s'\n", __FUNCTION__, "dmsb.ManagementServer.ACSChangedURL"));
+                        returnStatus = TR69_INTERNAL_ERROR;
+                    }
+                    if(pValue) CcspManagementServer_Free(pValue);
+
+                    if ( returnStatus == 0)  /* check writeID */
+                    {
+                        switch( writeID )
+                        {
+                            case (DSLH_MPA_ACCESS_CONTROL_SNMP): /* from CM Config file */
+                            {
+                                //printf("ACSOverride = %d, ACSChangedURL = %d\n", ACSOverride, ACSChangedURL);  
+                                if ( !ACSOverride && ACSChangedURL ) returnStatus = TR69_UPDATE_NON_WRITABLE_PARAMETER;      
+                            }
+                            break;
+
+                            case (DSLH_MPA_ACCESS_CONTROL_ACS): /* from ACS */
+                            {
+                                char *url = NULL;
+                                if ( !ACSChangedURL ) 
+                                {
+                                    url = CcspManagementServer_GetURL(NULL);
+                                    if (AnscEqualString(val[i].parameterValue, url, TRUE) == FALSE) g_ACSChangedURL = 1; 
+                                    if (url) CcspManagementServer_Free(url);
+                                }
+                            }
+                            break;
+
+                            default:
+                            break;
+                        }
+                    }
+
+                    if ( returnStatus == 0) /* check parameter value */
+                    {
+                        if(CcspManagementServer_ValidateURL(val[i].parameterValue) != 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
+                        else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    }
+                }
+                    break;          
                 case ManagementServerConnectionRequestURLID:
                 case ManagementServerKickURLID:
                 case ManagementServerDownloadProgressURLID:
                 case ManagementServerUDPConnectionRequestAddressID:
                 case ManagementServerSTUNServerAddressID:
                     if(CcspManagementServer_ValidateURL(val[i].parameterValue) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerUsernameID:
                 case ManagementServerPasswordID:
@@ -2080,43 +1989,43 @@ int CcspManagementServer_ValidateParameterValues(
                 case ManagementServerX_CISCO_COM_ConnectionRequestURLPortID:
                 case ManagementServerX_CISCO_COM_ConnectionRequestURLPathID:
                     if(CcspManagementServer_ValidateStrLen(val[i].parameterValue, 256) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerPeriodicInformIntervalID:
                     if(CcspManagementServer_ValidateINT(val[i].parameterValue, TRUE, 1, FALSE, 0) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerCWMPRetryMinimumWaitIntervalID:
                     if(CcspManagementServer_ValidateINT(val[i].parameterValue, TRUE, 1, TRUE, 65535) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerCWMPRetryIntervalMultiplierID:
                     if(CcspManagementServer_ValidateINT(val[i].parameterValue, TRUE, 1000, TRUE, 65535) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerSTUNMinimumKeepAlivePeriodID:
                 case ManagementServerDefaultActiveNotificationThrottleID:
                     if(CcspManagementServer_ValidateINT(val[i].parameterValue, TRUE, 0, FALSE, 0) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerUDPConnectionRequestAddressNotificationLimitID:
-                    parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerSTUNServerPortID:
                     if(CcspManagementServer_ValidateINT(val[i].parameterValue, TRUE, 0, TRUE, 65535) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerPeriodicInformTimeID:
                     if(CcspManagementServer_ValidateDateTime(val[i].parameterValue) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerParameterKeyID:
                     if(CcspManagementServer_ValidateStrLen(val[i].parameterValue, 32) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case ManagementServerSTUNMaximumKeepAlivePeriodID:
                     if(CcspManagementServer_ValidateINT(val[i].parameterValue, TRUE, -1, FALSE, 0) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 default: break;
                 }
@@ -2127,16 +2036,16 @@ int CcspManagementServer_ValidateParameterValues(
                 case AutonomousTransferCompletePolicyEnableID:
                     res = CcspManagementServer_ValidateBoolean(val[i].parameterValue);
                     if(res == -1 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else if(res == 0) parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString("0");
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString("1");
+                    else if(res == 0) parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("0");
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("1");
                     break;
                 case AutonomousTransferCompletePolicyTransferTypeFilterID:
                 case AutonomousTransferCompletePolicyResultTypeFilterID:
-                    parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 case AutonomousTransferCompletePolicyFileTypeFilterID:
                     if(CcspManagementServer_ValidateStrLen(val[i].parameterValue, 1024) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 default: break;
                 }
@@ -2147,13 +2056,13 @@ int CcspManagementServer_ValidateParameterValues(
                 case DUStateChangeComplPolicyEnableID:
                     res = CcspManagementServer_ValidateBoolean(val[i].parameterValue);
                     if(res == -1 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else if(res == 0) parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString("0");
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString("1");
+                    else if(res == 0) parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("0");
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("1");
                     break;
                 case DUStateChangeComplPolicyOperationTypeFilterID:
                 case DUStateChangeComplPolicyResultTypeFilterID:
                 case DUStateChangeComplPolicyFaultCodeFilterID:
-                    parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 default: break;
                 }
@@ -2164,12 +2073,12 @@ int CcspManagementServer_ValidateParameterValues(
                 case LoggingEnableID:
                     res = CcspManagementServer_ValidateBoolean(val[i].parameterValue);
                     if(res == -1 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else if(res == 0) parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString("false");
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString("true");
+                    else if(res == 0) parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("false");
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("true");
                     break;
                 case LoggingLogLevelID:
                     if(CcspManagementServer_ValidateINT(val[i].parameterValue, FALSE, 0, FALSE, 0) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                    else parameterSetting.msParameterValSettings[parameterSetting.size].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
+                    else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
                     break;
                 default: break;
                 }
@@ -2180,12 +2089,17 @@ int CcspManagementServer_ValidateParameterValues(
 	      CcspManagementServer_ValidateParameterValuesCustom(sessionId,writeID,val,size,invalidParameterName);
             }
             
-            if(returnStatus != 0)
-                if(!invalidParaName) invalidParaName = CcspManagementServer_CloneString(val[i].parameterName);
-            parameterSetting.msParameterValSettings[parameterSetting.size].objectID = objectID;
-            parameterSetting.msParameterValSettings[parameterSetting.size].parameterID = parameterID;
-            parameterSetting.msParameterValSettings[parameterSetting.size].backupStatus = BackupNewValue;
-            parameterSetting.size++;
+            if( returnStatus != 0 )
+            {
+                if (!invalidParaName )
+                {
+                    invalidParaName = CcspManagementServer_CloneString(val[i].parameterName);
+                }
+            }
+            parameterSetting.msParameterValSettings[parameterSetting.currIndex].objectID = objectID;
+            parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterID = parameterID;
+            parameterSetting.msParameterValSettings[parameterSetting.currIndex].backupStatus = BackupNewValue;
+            parameterSetting.currIndex++;
         }
     }
     int j;
@@ -2202,10 +2116,20 @@ int CcspManagementServer_ValidateParameterValues(
             }
         }
     }
-    if(parameterSetting.size < size) {
-        if(returnStatus == 0) returnStatus = TR69_INVALID_ARGUMENTS;
+
+    if ( parameterSetting.currIndex == prevIndex )
+    {
+        if ( returnStatus == 0 )
+        {
+            returnStatus = TR69_INVALID_ARGUMENTS;
+        }
     }
-    if(invalidParaName) *invalidParameterName = invalidParaName;
+
+    if ( invalidParaName )
+    {
+        *invalidParameterName = invalidParaName;
+    }
+
     return returnStatus;
 }
 
@@ -2255,9 +2179,9 @@ int CcspManagementServer_CommitParameterValues()
     slapVar.Syntax = SLAP_VAR_SYNTAX_string;
     
     int valueChangeSize = 0;
-    parameterSigStruct_t *val = CcspManagementServer_Allocate(parameterSetting.size * sizeof(parameterSigStruct_t));
+    parameterSigStruct_t *val = CcspManagementServer_Allocate(parameterSetting.currIndex * sizeof(parameterSigStruct_t));
 
-    for(; i<parameterSetting.size; i++)
+    for(; i<parameterSetting.currIndex; i++)
     {
         objectID = parameterSetting.msParameterValSettings[i].objectID;
         parameterID = parameterSetting.msParameterValSettings[i].parameterID;
@@ -2307,15 +2231,7 @@ int CcspManagementServer_CommitParameterValues()
         strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
         pRecordName[len1+len2+len3+7] = '\0';
         slapVar.Variant.varString = objectInfo[objectID].parameters[parameterID].value;
-#if 0
-        res = PSM_Set_Record_Value(
-            bus_handle,
-            pRecordName,
-            /* Store everything as string here. */
-            /*objectInfo[objectID].parameters[parameterID].type, */ 
-            ccsp_string,
-            &slapVar);
-#endif
+
         res = PSM_Set_Record_Value2(
             bus_handle,
             CcspManagementServer_SubsystemPrefix,
@@ -2328,6 +2244,28 @@ int CcspManagementServer_CommitParameterValues()
             CcspManagementServer_RollBackParameterValues();
             goto EXIT1;
         }
+
+        if ( objectID == ManagementServerID && parameterID == ManagementServerURLID && g_ACSChangedURL == 1)
+        {
+            res = PSM_Set_Record_Value2
+                    (
+                        bus_handle,
+                        CcspManagementServer_SubsystemPrefix,
+                        "dmsb.ManagementServer.ACSChangedURL",
+                        ccsp_string,
+                        "1"
+                    );
+            if(res != CCSP_SUCCESS)
+            {
+                CcspTraceWarning2("ms", ( "CcspManagementServer_CommitParameterValues PSM write failure %d!=%d: %s----%s.\n", 
+                    res, CCSP_SUCCESS, "dmsb.ManagementServer.ACSChnagedURL", "1")); 
+                /* It seems that only chance to invoke roll back is PSM save error. */
+                CcspManagementServer_RollBackParameterValues();
+                goto EXIT1;
+            }
+            else g_ACSChangedURL = 0;
+        }
+
         if(objectID < SupportedDataModelID) objectCommitedStatus[objectID] = 1;
 
         if(objectID == LoggingID){
@@ -2387,7 +2325,7 @@ int CcspManagementServer_RollBackParameterValues()
     pRecordName[len1] = '.';
     slapVar.Syntax = SLAP_VAR_SYNTAX_string;
 
-    for(; i<parameterSetting.size; i++)
+    for(; i<parameterSetting.currIndex; i++)
     {
         objectID = parameterSetting.msParameterValSettings[i].objectID;
         parameterID = parameterSetting.msParameterValSettings[i].parameterID;
@@ -2440,7 +2378,7 @@ int CcspManagementServer_FreeParameterSetting()
         return 0;
     }
     int i = 0;
-    for(; i<parameterSetting.size; i++)
+    for(; i<parameterSetting.currIndex; i++)
     {
         if(parameterSetting.msParameterValSettings[i].parameterValue) {
             CcspManagementServer_Free(parameterSetting.msParameterValSettings[i].parameterValue);
@@ -2451,6 +2389,7 @@ int CcspManagementServer_FreeParameterSetting()
         CcspManagementServer_Free(parameterSetting.msParameterValSettings);
         parameterSetting.msParameterValSettings = NULL;
     }
+    parameterSetting.currIndex = 0;
     parameterSetting.size = 0;
     return 0;
 }
@@ -2541,63 +2480,6 @@ CcspManagementServer_RestoreDefaultValues
     int                             i, j, res          = 0;
     
     CcspManagementServer_RestoreDefaultValuesCustom();
-
-#if 0
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value);
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("0");
-
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerURLID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerURLID].value);
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString("https://cpe-ems0345.verizon.com/cwmpWeb/CPEMgt");
-
-    /* Username, Password */
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value);
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value = CcspManagementServer_CloneString(g_SerialNumber);
-
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value);
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value = CcspManagementServer_CloneString("newFiOSTVUser1");
-
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformEnableID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformEnableID].value);
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformEnableID].value = CcspManagementServer_CloneString("1");
-
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformIntervalID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformIntervalID].value );
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformIntervalID].value = CcspManagementServer_CloneString("30");
-
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value);
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value = CcspManagementServer_CloneString("0001-01-01T00:00:00");
-
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestUsernameID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestUsernameID].value);
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestUsernameID].value = CcspManagementServer_CloneString("acsserver");
-
-    if ( objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestPasswordID].value )
-    {
-        CcspManagementServer_Free(objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestPasswordID].value);
-    }
-    objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestPasswordID].value = CcspManagementServer_CloneString("password");
-#endif
 
     return returnStatus;
 }

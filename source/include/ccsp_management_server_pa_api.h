@@ -402,6 +402,22 @@ CcspManagementServer_SetConnectionRequestPassword
         CCSP_STRING                 pConnectionRequestPassword                    
     );
 
+/* CcspManagementServer_GetACSOverride is called to get
+ * Device.ManagementServer.ACSOverride.
+ * Return value - the parameter value.
+ */
+CCSP_BOOL
+CcspManagementServer_GetACSOverride
+    (
+        CCSP_STRING                 ComponentName
+    );
+
+CCSP_STRING
+CcspManagementServer_GetACSOverrideStr
+    (
+        CCSP_STRING                 ComponentName
+    );
+
 /* CcspManagementServer_GetUpgradesManaged is called to get
  * Device.ManagementServer.UpgradesManaged.
  * Return value - the parameter value.

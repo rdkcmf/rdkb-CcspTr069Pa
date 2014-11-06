@@ -1217,7 +1217,7 @@ CcspCwmpSoappoBuildSoapReq_TransferComplete
             _ansc_sprintf
                 (
                     pNodeName,
-                    "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
+                    "%.4d-%.2d-%.2dT%.2d:%.2d:%.2d",
                     pTime->Year,
                     pTime->Month,
                     pTime->DayOfMonth,
@@ -1258,7 +1258,7 @@ CcspCwmpSoappoBuildSoapReq_TransferComplete
             _ansc_sprintf
                 (
                     pNodeName,
-                    "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
+                    "%.4d-%.2d-%.2dT%.2d:%.2d:%.2d",
                     pTime->Year,
                     pTime->Month,
                     pTime->DayOfMonth,
@@ -2179,7 +2179,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousTransferComplete
             _ansc_sprintf
                 (
                     pNodeName,
-                    "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
+                    "%.4d-%.2d-%.2dT%.2d:%.2d:%.2d",
                     pTime->Year,
                     pTime->Month,
                     pTime->DayOfMonth,
@@ -2220,7 +2220,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousTransferComplete
             _ansc_sprintf
                 (
                     pNodeName,
-                    "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
+                    "%.4d-%.2d-%.2dT%.2d:%.2d:%.2d",
                     pTime->Year,
                     pTime->Month,
                     pTime->DayOfMonth,

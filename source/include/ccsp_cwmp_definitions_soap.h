@@ -83,7 +83,11 @@
 #define  PART_RESPONSE_NAME               "Response"
 
 #define  CCSP_CWMP_NAMESPACE_NAME         "xmlns:cwmp"
-#define  CCSP_CWMP_NAMESPACE_VALUE        "urn:dslforum-org:cwmp-1-0"
+#if defined(CONFIG_CWMP_NAMESPACE_VALUE_1_2)
+    #define  CCSP_CWMP_NAMESPACE_VALUE        "urn:dslforum-org:cwmp-1-2"
+#else
+    #define  CCSP_CWMP_NAMESPACE_VALUE        "urn:dslforum-org:cwmp-1-0"
+#endif
 
 #define  SOAP_XSI_NAMESPACE_NAME          "xsi"
 #define  SOAP_XSI_NAMESPACE_VALUE         "http://www.w3.org/2001/XMLSchema-instance"
