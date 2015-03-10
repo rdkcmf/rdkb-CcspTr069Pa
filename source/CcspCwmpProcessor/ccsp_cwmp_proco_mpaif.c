@@ -80,7 +80,7 @@
             {                                                                   \
                 CCSP_STRING     pReturnStr  = NULL;                             \
                                                                                 \
-                CcspTr069PaTraceWarning(("%s - Param CWMP to DmInt\n", __FUNCTION__));\
+                CcspTr069PaTraceDebug(("%s - Param CWMP to DmInt\n", __FUNCTION__));\
                                                                                 \
                 pReturnStr =                                                    \
                     CcspTr069PA_MapInstNumCwmpToDmInt                           \
@@ -3327,7 +3327,7 @@ CcspCwmppoMpaDeleteObject
      *        the SOAP responder.
      *      - The SOAP faultstring sub-element MUST contain the string "CWMP fault".
      *      - The SOAP detail element MUST contain a Fault structure defined in the
-     *        "urn:dslforum-org:cwmp-1-0" namespace.
+     *        "urn:dslforum-org:cwmp-1-2" namespace.
      */
     pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
 

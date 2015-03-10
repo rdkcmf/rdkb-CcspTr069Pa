@@ -48,7 +48,7 @@ char*                               g_Tr069_PA_Name         = g_Tr069PaName;
 extern char*                        pComponentName;
 
 #ifdef   _ANSC_USE_OPENSSL_
-char* openssl_client_ca_certificate_files; //  = OPENSSL_CLIENT_CA_CERT_FILES;  // defined in user_openssl.c
+extern char* openssl_client_ca_certificate_files; //  = OPENSSL_CLIENT_CA_CERT_FILES;  // defined in user_openssl.c
 char* openssl_client_dev_certificate_file = NULL;
 char* openssl_client_private_key_file = NULL;
 #endif
@@ -139,7 +139,7 @@ static void _print_stack_backtrace(void)
 
     int fd;
     const char* path = "/nvram/tr069passp_backtrace";
-    fd = open(path, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    fd = open(path, O_RDWR | O_CREAT);
     if (fd < 0)
     {
         fprintf(stderr, "failed to open backtrace file: %s", path);
