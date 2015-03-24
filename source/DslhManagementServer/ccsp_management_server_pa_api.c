@@ -375,7 +375,6 @@ CcspManagementServer_GetPassword
 {
     CCSP_STRING  pStr = objectInfo[ManagementServerID].parameters[ManagementServerPasswordID].value;
 
-    //    AnscTraceWarning(("%s -- ComponentName = %s...\n", __FUNCTION__, ComponentName));
 
     // setting pStr to empty string "" will get the default password back
     if ( pStr && AnscSizeOfString(pStr) > 0 )

@@ -121,6 +121,9 @@
             <Name>Device.ManagementServer.ConnectionRequestPassword</Name>
         </Param>
         <Param>
+            <Name>Device.ManagementServer.ACSOverride</Name>
+        </Param>
+        <Param>
             <Name>Device.ManagementServer.UpgradesManaged</Name>
         </Param>
         <Param>
@@ -1085,6 +1088,12 @@
             <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_APIsolation</Name>
         </Param>
         <Param>
+            <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_ApplySettingSSID</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_ApplySetting</Name>
+        </Param>
+        <Param>
             <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_BasicRate</Name>
         </Param>
         <Param>
@@ -1760,6 +1769,30 @@
             <Name>Device.Routing.RIP.InterfaceSetting.{i}.SendRA</Name>
         </Param>
         <Param>
+            <Name>Device.Routing.RouteInformation.Enable</Name>
+        </Param>
+        <Param>
+            <Name>Device.Routing.RouteInformation.InterfaceSettingNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.Routing.RouteInformation.InterfaceSetting.{i}.Status</Name>
+        </Param>
+        <Param>
+            <Name>Device.Routing.RouteInformation.InterfaceSetting.{i}.Interface</Name>
+        </Param>
+        <Param>
+            <Name>Device.Routing.RouteInformation.InterfaceSetting.{i}.SourceRouter</Name>
+        </Param>
+        <Param>
+            <Name>Device.Routing.RouteInformation.InterfaceSetting.{i}.PreferredRouteFlag</Name>
+        </Param>
+        <Param>
+            <Name>Device.Routing.RouteInformation.InterfaceSetting.{i}.Prefix</Name>
+        </Param>
+        <Param>
+            <Name>Device.Routing.RouteInformation.InterfaceSetting.{i}.RouteLifetime</Name>
+        </Param>
+        <Param>
             <Name>Device.Hosts.HostNumberOfEntries</Name>
         </Param>
         <Param>
@@ -1776,6 +1809,9 @@
         </Param>
         <Param>
             <Name>Device.Hosts.Host.{i}.LeaseTimeRemaining</Name>
+        </Param>
+        <Param>
+            <Name>Device.Hosts.Host.{i}.AssociatedDevice</Name>
         </Param>
         <Param>
             <Name>Device.Hosts.Host.{i}.Layer1Interface</Name>
@@ -1797,6 +1833,21 @@
         </Param>
         <Param>
             <Name>Device.Hosts.Host.{i}.Active</Name>
+        </Param>
+        <Param>
+            <Name>Device.Hosts.Host.{i}.X_COMCAST-COM_LastChange</Name>
+        </Param>
+        <Param>
+            <Name>Device.Hosts.Host.{i}.IPv4AddressNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.Hosts.Host.{i}.IPv6AddressNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.Hosts.Host.{i}.IPv4Address.{i}.IPAddress</Name>
+        </Param>
+        <Param>
+            <Name>Device.Hosts.Host.{i}.IPv6Address.{i}.IPAddress</Name>
         </Param>
         <Param>
             <Name>Device.DNS.Client.Enable</Name>
@@ -1854,6 +1905,48 @@
         </Param>
         <Param>
             <Name>Device.DNS.Relay.Forwarding.{i}.Type</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.DiagnosticsState</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.Interface</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.HostName</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.DNSServer</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.Timeout</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.NumberOfRepetitions</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.SuccessCount</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.ResultNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.Result.{i}.Status</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.Result.{i}.AnswerType</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.Result.{i}.HostNameReturned</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.Result.{i}.IPAddresses</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.Result.{i}.DNSServerIP</Name>
+        </Param>
+        <Param>
+            <Name>Device.DNS.Diagnostics.NSLookupDiagnostics.Result.{i}.ResponseTime</Name>
         </Param>
         <Param>
             <Name>Device.Firewall.Config</Name>
@@ -2063,6 +2156,9 @@
             <Name>Device.DHCPv4.Server.Pool.{i}.OptionNumberOfEntries</Name>
         </Param>
         <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.ClientNumberOfEntries</Name>
+        </Param>
+        <Param>
             <Name>Device.DHCPv4.Server.Pool.{i}.StaticAddress.{i}.Enable</Name>
         </Param>
         <Param>
@@ -2076,6 +2172,45 @@
         </Param>
         <Param>
             <Name>Device.DHCPv4.Server.Pool.{i}.StaticAddress.{i}.X_CISCO_COM_DeviceName</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Option.{i}.Enable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Option.{i}.Alias</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Option.{i}.Tag</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Option.{i}.Value</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.Alias</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.Chaddr</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.Active</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.IPv4AddressNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.OptionNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.IPv4Address.{i}.IPAddress</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.IPv4Address.{i}.LeaseTimeRemaining</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.Option.{i}.Tag</Name>
+        </Param>
+        <Param>
+            <Name>Device.DHCPv4.Server.Pool.{i}.Client.{i}.Option.{i}.Value</Name>
         </Param>
         <Param>
             <Name>Device.DHCPv6.ClientNumberOfEntries</Name>
@@ -2552,6 +2687,120 @@
             <Name>Device.X_CISCO_COM_DeviceControl.MultiHomedBridgingStatus</Name>
         </Param>
         <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.DeviceMode</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.ResetDefaultEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.RebootDevice</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.FactoryReset</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.UserChangedFlags</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.DeviceConfigStatus</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.DeviceConfigIgnore</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.SNMPEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.HTTPEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.HTTPPort</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.HTTPSEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.HTTPSPort</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.WanAddressMode</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.WanStaticIPAddress</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.WanStaticSubnetMask</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.WanStaticGatewayIP</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.WanSecondIPAddress</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.WanSecondIPRipAdvertised</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.WanBackupDefaultGateway</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.EnableZeroConfig</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.IGMPSnoopingEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.WebUITimeout</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.EnableMonitorUserChangedPs</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.UserOpComponents</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.UserChangedParams</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntryNumberOs</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanMode</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanNetwork</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanNetworksAllow</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanSubnetMask</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanIPAddress</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanDhcpServer</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanNaptEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanNaptOnDhcp</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanTos</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanDhcp125</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanHnap</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanUpnp</Name>
+        </Param>
+        <Param>
             <Name>Device.X_CISCO_COM_IGMP.IGMPEnable</Name>
         </Param>
         <Param>
@@ -2969,6 +3218,120 @@
             <Name>Device.IPv6rd.InterfaceSetting.{i}.TunneledInterface</Name>
         </Param>
 
+		<!-- Device.RouterAdvertisement.{i}. -->
+        <Param>
+            <Name>Device.RouterAdvertisement.Enable</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSettingNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Enable</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Status</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Alias</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Interface</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.ManualPrefixes</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Prefixes</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.MaxRtrAdvInterval</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.MinRtrAdvInterval</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.MaxRtrAdvInterval</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvDefaultLifetime</Name>
+        </Param>	
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvManagedFlag</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvOtherConfigFlag</Name>
+        </Param>		
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvMobileAgentFlag</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvPreferredRouterFlag</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvNDProxyFlag</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvLinkMTU</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvReachableTime</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvRetransTimer</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.AdvCurHopLimit</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.OptionNumberOfEntries</Name>
+        </Param>	
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Option.{i}.Enable</Name>
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Option.{i}.Alias</Name>
+        </Param>
+        <Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Option.{i}.Tag</Name>	
+        </Param>
+	<Param>
+            <Name>Device.RouterAdvertisement.InterfaceSetting.{i}.Option.{i}.Value</Name>
+        </Param>
+		<!-- Device.NeighborDiscovery. -->
+        <Param>
+            <Name>Device.NeighborDiscovery.Enable</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSettingNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.Enable</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.Status</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.Alias</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.Interface</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.RetransTimer</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.RtrSolicitationInterval</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.MaxRtrSolicitations</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.NUDEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.RSEnable</Name>
+        </Param>
+		
         <!-- INVISIBLE parameters under "Device." -->
         <Param invisible="true">
             <Name>Com.Cisco.Spvtg.Ccsp.Command.FactoryReset</Name>

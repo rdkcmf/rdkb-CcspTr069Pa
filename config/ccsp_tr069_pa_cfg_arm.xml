@@ -17,7 +17,7 @@
 -->
 
 <!-- This file resides in boards/intel_usg_arm/ -->
-<ccsp_tr069pa_cfg_intel_usg_arm>
+<ccsp_tr069pa_cfg>
 
     <!-- for OpenSsl -->
     <certificates>
@@ -28,6 +28,9 @@
     </certificates>    
 
     <!-- outbound interface binding, could be empty to use default route -->
-    <outbound_interface>eth0</outbound_interface>
+    <OutboundInterface>erouter0</OutboundInterface>
 
-</ccsp_tr069pa_cfg_intel_usg_arm>
+    <!-- default ACS server address -->
+    <AcsDefaultAddress></AcsDefaultAddress>
+
+</ccsp_tr069pa_cfg>
