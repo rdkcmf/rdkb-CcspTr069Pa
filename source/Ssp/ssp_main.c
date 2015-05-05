@@ -376,6 +376,7 @@ int main(int argc, char* argv[])
     if (is_core_dump_opened())
     {
         signal(SIGUSR1, sig_handler);
+        signal(SIGPIPE, SIG_IGN);
         CcspTr069PaTraceWarning(("Core dump is opened, do not catch signal\n"));
     }
     else
@@ -394,6 +395,7 @@ int main(int argc, char* argv[])
         signal(SIGILL, sig_handler);
         signal(SIGQUIT, sig_handler);
         signal(SIGHUP, sig_handler);
+        signal(SIGPIPE, SIG_IGN);
     }
 
     display_info();
