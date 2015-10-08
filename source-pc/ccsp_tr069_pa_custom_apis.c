@@ -148,8 +148,13 @@ CcspManagementServer_GetPeriodicInformTimeStrCustom
         CCSP_STRING                 ComponentName
     )
 {
-
-return "";
+    time_t t = time(NULL);
+    struct tm timeStruct = *localtime(&t);
+    char *timeString = malloc(21);
+  // SOAP UTC datetime format is YYYY-MM-DDTHH:MM:SSZ
+    sprintf(timeString, "%4d-%02d-%02dT%02d:%02d:%02dZ", timeStruct.tm_year + 1900, timeStruct.tm_mon + 1, timeStruct.tm_mday, timeStruct.tm_hour, timeStruct.tm_min, timeStruct.tm_sec);
+ 
+    return timeString;
 }
 
 CCSP_VOID
