@@ -117,7 +117,7 @@ int  CcspManagementServer_SetCommit(
 {
     if(commit)
     {
-        CcspManagementServer_CommitParameterValues();
+        CcspManagementServer_CommitParameterValues(writeID);
     }
     /* Free the allocated data. */
     CcspManagementServer_FreeParameterSetting();

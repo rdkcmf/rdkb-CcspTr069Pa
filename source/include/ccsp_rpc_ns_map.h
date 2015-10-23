@@ -92,7 +92,8 @@
 /**********************************************************************
     RPC 'FactoryReset'
 **********************************************************************/
-#define  CCSP_NS_FACTORYRESET                       "com.cisco.spvtg.ccsp.command.FactoryReset"
+//#define  CCSP_NS_FACTORYRESET                       "com.cisco.spvtg.ccsp.command.FactoryReset"
+#define  CCSP_NS_FACTORYRESET                       "Device.X_CISCO_COM_DeviceControl.FactoryReset"
 
 
 /**********************************************************************

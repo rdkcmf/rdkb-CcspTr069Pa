@@ -4812,10 +4812,10 @@ CcspCwmpsoMcoFactoryReset
         ULONG                       ulArraySize     = 1;
         int                         iStatus         = 0;
         SLAP_VARIABLE               slapVar;
-        char                        value[2]        = {'1', 0};
+        char                       value[] = "Router,Wifi,VoIP,Dect,MoCA";
 
         ParamValue.Name          = CCSP_NS_FACTORYRESET;
-        ParamValue.Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_Boolean;
+        ParamValue.Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_String;
         ParamValue.Value         = &slapVar;
 
         SlapInitVariable(&slapVar);
@@ -4943,7 +4943,8 @@ void
 CcspCwmpsoAsyncReboot()
 {
     AnscSleep(3*1000);
-    system("reboot");
+    system("/fss/gw/rdklogger/backupLogs.sh");
+    //system("reboot");
 }
 #endif
 

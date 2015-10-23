@@ -340,7 +340,7 @@ void CcspManagementServer_GetSingleParameterAttributes(
 
 /* Commit the parameter setting stored in parameterSetting.
  */
-int CcspManagementServer_CommitParameterValues();
+int CcspManagementServer_CommitParameterValues(unsigned int writeID);
 
 /* Roll back the parameters already being committed.
  */

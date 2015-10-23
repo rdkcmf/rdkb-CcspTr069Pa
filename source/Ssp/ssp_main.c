@@ -53,6 +53,10 @@
 #endif
 #endif
 
+#ifdef FEATURE_SUPPORT_RDKLOG
+#include "rdk_debug.h"
+#endif
+
 #include "ssp_global.h"
 
 PCCSP_CWMP_CPE_CONTROLLER_OBJECT    g_pCcspCwmpCpeController    = NULL;
@@ -259,6 +263,15 @@ void sig_handler(int sig)
     	signal(SIGPIPE, sig_handler); /* reset it to this function */
     	CcspTr069PaTraceInfo(("SIGPIPE received!\n"));
     }
+	else if ( sig == SIGALRM ) {
+
+    	signal(SIGALRM, sig_handler); /* reset it to this function */
+    	CcspTr069PaTraceInfo(("SIGALRM received!\n"));
+		RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
+		RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
+		TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
+		TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
+    }
     else {
     	/* get stack trace first */
     	_print_stack_backtrace();
@@ -309,6 +322,8 @@ int main(int argc, char* argv[])
     int                             rpc_ip_num =0;
     BOOL                            bRunAsDaemon = TRUE;
     BOOL                            bShowDebugLog = FALSE;
+    char                            cmd[1024]          = {0};
+    FILE                           *fd                 = NULL;
 
 #ifdef   _DEBUG
     /*AnscSetTraceLevel(CCSP_TRACE_LEVEL_DEBUG);*/
@@ -362,6 +377,9 @@ int main(int argc, char* argv[])
     {
         AnscCopyString(g_PaMapperXmlFile, CCSP_TR069PA_DEF_MAPPER_XML_FILE);
     }
+#ifdef FEATURE_SUPPORT_RDKLOG
+	rdk_logger_init("/fss/gw/lib/debug.ini");
+#endif
 
     CcspTr069PaTraceDebug(("<%s>: PaName=%s, CrName=%s, Xml=%s, Subsys=%s\n", __FUNCTION__, g_Tr069PaName, g_CrName, g_PaMapperXmlFile, g_Subsystem));
 
@@ -415,6 +433,7 @@ int main(int argc, char* argv[])
         signal(SIGQUIT, sig_handler);
         signal(SIGHUP, sig_handler);
         signal(SIGPIPE, SIG_IGN);
+		signal(SIGALRM, sig_handler);
     }
 
     display_info();
@@ -425,6 +444,26 @@ int main(int argc, char* argv[])
     }
 
     cmd_dispatch('e');
+
+	RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
+	RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
+	TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
+	TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
+
+	/*This is used for ccsp recovery manager */
+    
+     printf(" ***************** Ccsp Tr69 process is up  Creatting PID file **** \n");
+    fd = fopen("/var/tmp/CcspTr069PaSsp.pid", "w+");
+    if ( !fd )
+    {
+        CcspTraceWarning(("Create /var/tmp/CcspTr069PaSsp.pid error. \n"));
+    }
+    else
+    {
+        sprintf(cmd, "%d", getpid());
+        fputs(cmd, fd);
+        fclose(fd);
+    }
 
     if ( bRunAsDaemon ) 
     {

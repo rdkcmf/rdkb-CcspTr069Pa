@@ -104,6 +104,7 @@
 
 #include "ccsp_cwmp_proco_global.h"
 
+int g_flagToStartCWMP = 0;
 
 /**********************************************************************
 
@@ -164,6 +165,12 @@ CcspCwmppoEngage
 
         return  returnStatus;
     }
+
+    do
+    {
+       printf("TR69 PA: Waiting for Setup env...\n");
+
+    }while( g_flagToStartCWMP==0);
 
     /*
      * A CPE MUST call the Inform method to initiate a transaction sequence whenever a connection
