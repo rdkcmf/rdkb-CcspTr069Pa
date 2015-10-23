@@ -93,8 +93,26 @@
 
 #include "ccsp_cwmp_sesso_global.h"
 #include "slap_definitions.h"
-
-
+#include "Tr69_Tlv.h"
+#define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
+#include "ccsp_tr069pa_mapper_api.h"
+#define  CcspCwmppoMpaMapParamInstNumDmIntToCwmp(pParam)                        \
+            {                                                                       \
+                CCSP_STRING     pReturnStr  = NULL;                                 \
+                                                                                    \
+                CcspTr069PaTraceWarning(("%s - Param DmInt to CWMP\n", __FUNCTION__));\
+                                                                                    \
+                pReturnStr =                                                        \
+                    CcspTr069PA_MapInstNumDmIntToCwmp(pParam);                      \
+                                                                                    \
+                if ( pReturnStr )                                                   \
+                {                                                                   \
+                    /* we are responsible for releasing the original string */      \
+                    CcspTr069PaFreeMemory(pParam);                                  \
+                    pParam = pReturnStr;                                            \
+                }                                                                   \
+            }
+static int tlvFileFlag = 0;
 /**********************************************************************
 
     caller:     owner of this object
@@ -885,7 +903,7 @@ CcspCwmpsoInform
     else
     {
         CcspTr069PaTraceDebug(("CcspCwmpsoInform -- Start to build the soap message.\n"));
-
+		int x = 0;
         AnscZeroMemory(request_id, 16);
         _ansc_itoa    (pMyObject->GlobalRequestID++, request_id, 10);
 
@@ -893,6 +911,17 @@ CcspCwmpsoInform
         pWmpsoAsyncReq->Method       = CCSP_CWMP_METHOD_Inform;
         pWmpsoAsyncReq->MethodName   = CcspTr069PaCloneString("Inform");
         pWmpsoAsyncReq->RequestID    = CcspTr069PaCloneString(request_id);
+		 for(x = 0;x<ulParamIndex;x++)
+		 {
+			char *temp = NULL;
+			temp = (char *)malloc(sizeof(char)*strlen(pCwmpParamValueArray[x].Name));
+			strcpy(temp,pCwmpParamValueArray[x].Name);
+			CcspCwmppoMpaMapParamInstNumDmIntToCwmp(temp);
+			pCwmpParamValueArray[x].Name = CcspTr069PaCloneString(temp);
+			free(temp);
+		 }
+
+		
         pWmpsoAsyncReq->SoapEnvelope =
             pCcspCwmpSoapParser->BuildSoapReq_Inform
                 (
@@ -987,7 +1016,8 @@ CcspCwmpsoInform
 
         if ( pCwmpSoapResponse )
         {
-                pMyObject->AcsMaxEnvelopes = (ULONG)pCwmpSoapResponse->hRepArguments;
+			
+                 pMyObject->AcsMaxEnvelopes = (ULONG)pCwmpSoapResponse->hRepArguments;
 
                 /*
                  * ACS indicates the maximum number of SOAP envelopes in a single HTTP post that the ACS
@@ -1062,6 +1092,31 @@ CcspCwmpsoInform
                 }
                 else
                 {
+			if(tlvFileFlag == 0)
+			{				
+				tlvFileFlag = 1;
+				FILE * file= fopen(TR69_TLVDATA_FILE, "rb");
+				Tr69TlvData *object=malloc(sizeof(Tr69TlvData));
+				if (file != NULL) 
+				{
+					fread(object, sizeof(Tr69TlvData), 1, file);
+					fclose(file);					
+				}				
+
+				if (object->Tr69Enable == 0)
+				{
+					file= fopen(TR69_TLVDATA_FILE, "wb");
+					if (file != NULL) 
+					{
+						fseek(file, 0, SEEK_SET);			
+						object->Tr69Enable = 1;
+						fwrite(object, sizeof(Tr69TlvData), 1, file);
+						fclose(file);						
+					}
+				}
+				free(object);
+			}
+			
                     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->NotifyEvent )
                     {
                         BOOL                bHasBootEvent = FALSE;

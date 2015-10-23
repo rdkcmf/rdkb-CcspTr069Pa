@@ -94,8 +94,28 @@
 
 
 #include "ccsp_cwmp_proco_global.h"
-
-
+#include "ccsp_tr069pa_mapper_api.h"
+#define  CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParam)                        \
+            /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/                           \
+            {                                                                   \
+                CCSP_STRING     pReturnStr  = NULL;                             \
+                                                                                \
+                CcspTr069PaTraceWarning(("%s - Param CWMP to DmInt\n", __FUNCTION__));\
+                                                                                \
+                pReturnStr =                                                    \
+                    CcspTr069PA_MapInstNumCwmpToDmInt                           \
+                        (                                                       \
+                            pParam                                              \
+                        );                                                      \
+                                                                                \
+                if ( pReturnStr )                                               \
+                {                                                               \
+                    /* Entries in pParamNameArray cannot be freed */            \
+                    /* CcspTr069PaFreeMemory(pParam); */                        \
+                    pParam = pReturnStr;                                        \
+                }                                                               \
+            }
+extern int g_flagToStartCWMP;
 /**********************************************************************
 
     caller:     owner of this object
@@ -722,6 +742,7 @@ CcspCwmppoInitParamAttrCache
 
     if ( pRecords )
     {
+	g_flagToStartCWMP = 1;
         CcspTr069PaFreeMemory(pRecords);
     }
 
@@ -910,6 +931,7 @@ CcspCwmppoUpdateSingleParamAttr
     char                            key[CCSP_BASE_PARAM_LENGTH*2];
     int                             nCcspError = CCSP_SUCCESS;
 
+	CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamName);
     _ansc_sprintf
         (
             key, 
@@ -1291,6 +1313,7 @@ CcspCwmppoSyncRemoteNamespace
     
         free_componentStruct_t(hMBusHandle, NumComp, ppComp);
     }
+
 
 EXIT:
     CcspTr069PaFreeMemory(pCrNameWithPrefix);

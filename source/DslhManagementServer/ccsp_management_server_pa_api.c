@@ -77,13 +77,16 @@
 #include "ansc_platform.h"
 //#include "ccsp_base_api.h"
 #include "string.h"
+#include "stdio.h"
 #include "ccsp_management_server.h"
 #include "ccsp_management_server_pa_api.h"
 #include "ccsp_supported_data_model.h"
 #include "ccsp_psm_helper.h"
 #include "ccsp_cwmp_cpeco_interface.h"
 #include "ccsp_cwmp_ifo_sta.h"
-
+#include "Tr69_Tlv.h"
+#define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
+#define TR69_DEFAULT_URL_FILE "/etc/url"
 PFN_CCSPMS_VALUECHANGE  CcspManagementServer_ValueChangeCB;
 CCSP_HANDLE             CcspManagementServer_cbContext;
 CCSP_HANDLE             CcspManagementServer_cpeContext;
@@ -121,6 +124,87 @@ CcspManagementServer_InitCustom
         CCSP_HANDLE             cpeContext,
         CCSP_STRING             sdmXmlFilename
     );
+
+void ReadTr69TlvData()
+{
+	FILE *fp;
+	char buff[255];
+	Tr69TlvData *object2=malloc(sizeof(Tr69TlvData));
+	FILE * file= fopen(TR69_TLVDATA_FILE, "rb");
+	if (file != NULL) 
+	{
+		fread(object2, sizeof(Tr69TlvData), 1, file);
+		fclose(file);
+		// Check if it's a fresh bootup / boot after factory reset / TR69 was never enabled
+		// If TR69 was never enabled, then we will always take URL from boot config file.
+		if((object2->FreshBootUp == 1) || (object2->Tr69Enable == 0))
+		{
+			object2->FreshBootUp = 0;
+			objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(object2->URL);
+			//on Fresh bootup / boot after factory reset, if the URL is empty, set default URL value
+			if(AnscEqualString(object2->URL, "", TRUE))
+			{
+				FILE * urlfile= fopen(TR69_DEFAULT_URL_FILE, "r");
+				if (urlfile != NULL)
+				{
+					char url[256] = "";
+					fread(url, sizeof(url), 1, urlfile);
+					fclose(urlfile);
+					strip_line(url);
+					objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(url);
+				}
+				else
+				{
+					printf("Cannot open default url file: \"%s\"\n", TR69_DEFAULT_URL_FILE);
+				}
+			}
+			else
+			{
+				objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(object2->URL);
+			}
+			// Here, we need to check what is the value that we got through boot config file and update TR69 PA
+			if(object2->EnableCWMP == 1)
+				objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("true");
+			else
+				objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("false");
+		}
+		// During normal boot-up check if TR69 was enabled in device anytime.
+		// If TR69 was enabled at least once URL will be already updated. 
+		// But we need to get the latest flag value from boot-config file.
+		if ((object2->FreshBootUp == 0) && (object2->Tr69Enable == 1))
+		{
+			/* If TR69Enabled is already enabled, then no need to read URL.
+		   	Update only EnableCWMP value to bbhm. */
+			if(object2->EnableCWMP == 1)
+			{
+				objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("true");
+			}
+			else if(object2->EnableCWMP == 0)
+			{
+				/* There are possibilities that SNMP can enable TR69. In that case, bbhm will have updated value.
+			   	We will make the TLV file in sync with the bbhm values.
+			   	In next boot-up EnableCWMP will again update value from boot-config file*/			
+				if(AnscEqualString(objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value, "1", FALSE) ||
+           			AnscEqualString(objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value, "true", FALSE))
+				{
+					object2->EnableCWMP = 1;
+				}			
+			}
+		}
+		/* setting cursor at begining of the file & open file in write mode */
+		file= fopen(TR69_TLVDATA_FILE, "wb");
+		if (file != NULL) 
+		{
+			fseek(file, 0, SEEK_SET);
+			/* Write the updated object2 to the file*/
+			fwrite(object2, sizeof(Tr69TlvData), 1, file);
+			free(object2);
+			fclose(file);
+		}
+	}
+	else
+		printf("TLV data file is missing!!!\n");
+}
 
 CCSP_VOID
 CcspManagementServer_Init
@@ -220,7 +304,7 @@ CcspManagementServer_Init
     }
 
     s_MS_Init_Done = TRUE;
-
+    ReadTr69TlvData();
     char str[100] = {0};
     _ansc_ultoa(g_ulAllocatedSizeCurr, str, 10);
     objectInfo[MemoryID].parameters[MemoryMinUsageID].value = CcspManagementServer_CloneString(str);
@@ -337,14 +421,12 @@ CcspManagementServer_GetUsername
         CCSP_STRING                 ComponentName
     )
 {
-    CCSP_STRING pStr = objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value;
+    
+    CCSP_STRING pUsername = objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value;
 
-    //    AnscTraceWarning(("%s -- ComponentName = %s...\n", __FUNCTION__, ComponentName));
-
-    // setting pStr to empty string "" will get the default username back
-    if ( pStr && AnscSizeOfString(pStr) > 0 )
+    if ( pUsername && AnscSizeOfString(pUsername) > 0 )
     {
-        return  CcspManagementServer_CloneString(pStr);
+        return  CcspManagementServer_CloneString(pUsername);
     }
     else  
     {
@@ -354,19 +436,19 @@ CcspManagementServer_GetUsername
 
         if ( returnStatus != ANSC_STATUS_SUCCESS )
         {
-            AnscTraceWarning(("%s -- default username generation failed, return the empty one!\n", __FUNCTION__));
+            AnscTraceWarning(("%s -- default username generation failed\n", __FUNCTION__));
             return  CcspManagementServer_CloneString("");
         }
         else
         {
             // Save Username -- TBD  save it to PSM
-            if ( pStr )
+            if ( pUsername )
             {
-                CcspManagementServer_Free(pStr);
+                CcspManagementServer_Free(pUsername);
                 objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value = NULL;
             }
             objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value = CcspManagementServer_CloneString(DftUsername);
-
+            AnscTraceWarning(("%s -- default username generation Success %s\n", __FUNCTION__, objectInfo[ManagementServerID].parameters[ManagementServerUsernameID].value));
             return  CcspManagementServer_CloneString(DftUsername);
         }
     }
@@ -378,12 +460,14 @@ CcspManagementServer_GetUsername
  */
 
 /*DH  Customizable default password generation, platform specific*/
+//#ifdef CONFIG_VENDOR_CUSTOMER_COMCAST || _COSA_SIM_
 ANSC_STATUS
 CcspManagementServer_GenerateDefaultPassword
     (
         CCSP_STRING                 pDftPassword,
         PULONG                      pulLength
     );
+//#endif
 
 CCSP_STRING
 CcspManagementServer_GetPassword

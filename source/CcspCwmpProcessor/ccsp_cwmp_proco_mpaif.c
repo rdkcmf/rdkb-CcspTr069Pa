@@ -92,13 +92,13 @@
 /**********************************************************************
                                   MACROS
 **********************************************************************/
-
+#define COSA_CURRENT_SUPPORT_VERSION              "1"
 #define  CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParam)                        \
             /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/                           \
             {                                                                   \
                 CCSP_STRING     pReturnStr  = NULL;                             \
                                                                                 \
-                CcspTr069PaTraceDebug(("%s - Param CWMP to DmInt\n", __FUNCTION__));\
+                CcspTr069PaTraceWarning(("%s - Param CWMP to DmInt\n", __FUNCTION__));\
                                                                                 \
                 pReturnStr =                                                    \
                     CcspTr069PA_MapInstNumCwmpToDmInt                           \
@@ -108,8 +108,8 @@
                                                                                 \
                 if ( pReturnStr )                                               \
                 {                                                               \
-                    /* we are responsible for releasing the original string */  \
-                    CcspTr069PaFreeMemory(pParam);                              \
+                    /* Entries in pParamNameArray cannot be freed */            \
+                    /* CcspTr069PaFreeMemory(pParam); */                        \
                     pParam = pReturnStr;                                        \
                 }                                                               \
             }
@@ -148,7 +148,8 @@
                     pParam = pReturnStr;                                            \
                 }                                                                   \
             }
-
+#define MAX_NO_WIFI_PARAM 10
+#define MAX_WIFI_PARAMNAME_LEN 50
 /**********************************************************************
                                   MACROS
 **********************************************************************/
@@ -615,13 +616,16 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
+	CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)pCcspCwmpCpeController->hMsgBusHandle;
     PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     ULONG                           ulSessionID          = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_VALUE          pParameterValueArray = (PCCSP_CWMP_PARAM_VALUE     )pParamValueArray;
+	PCCSP_CWMP_PARAM_VALUE          pParameterRadio      = (PCCSP_CWMP_PARAM_VALUE     )NULL;
     ULONG                           ulParameterCount     = (ULONG                      )0;
     char*                           pFaultParamName      = (char*                      )NULL;
     BOOL                            bFaultEncountered    = (BOOL                       )FALSE;
+	BOOL                            bRadioRestartEn      = (BOOL                       )FALSE;
     ULONG                           i                    = 0;
     QUEUE_HEADER                    FcNsListQueue;
     int                             nRet;
@@ -637,6 +641,10 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     BOOL                            bSucc                = TRUE;
     int                             nCcspError           = CCSP_SUCCESS;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
+	char							ParamName[MAX_NO_WIFI_PARAM][MAX_WIFI_PARAMNAME_LEN];
+	int								noOfParam;
+	char wifiFcName[50];
+	char wifiDbusPath[50];
 #ifndef  _CCSP_TR069_PA_INTERCEPT_ACS_CREDENTIAL_
     BOOL                            bAcsCredChanged      = FALSE;
 #endif
@@ -731,6 +739,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     
     for ( i = 0; i < ulArraySize; i++ )
     {
+	
 #ifndef  _CCSP_TR069_PA_INTERCEPT_ACS_CREDENTIAL_
         if ( !bAcsCredChanged && 
              ( _ansc_strstr(pParameterValueArray[i].Name, ".ManagementServer.Username") || 
@@ -739,10 +748,15 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
             bAcsCredChanged = TRUE;
         }
 #endif
+	
+		if(!strcmp(pParameterValueArray[i].Name,"Device.X_COMCAST_COM_CM.ReinitCmMac"))
+		{
+			// We need to internally query DeviceControl object.
+			AnscCopyString(pParameterValueArray[i].Name,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac");
+		}
 
         /* identify which sub-system(s) the parameter resides */
         NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
-
         CcspTr069PA_GetNamespaceSubsystems
             (
                 pCcspCwmpCpeController->hTr069PaMapper,
@@ -773,7 +787,6 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                 pParameterValueArray[i].Name,
                 TRUE
             );
-
 
         if ( nRet != CCSP_SUCCESS )
         {
@@ -829,16 +842,31 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         }
         else
         {
-            PCCSP_PARAM_VALUE_INFO  pValueInfo;
+				PCCSP_PARAM_VALUE_INFO  pValueInfo;
+				char aMem[50];
+				char *pParamN = &aMem;
+				pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
+				pValueInfo      = &pNsList->Args.paramValueInfo;
 
-            pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
-            pValueInfo      = &pNsList->Args.paramValueInfo;
-
-            pValueInfo->parameterName  = pParameterValueArray[i].Name;
-            pValueInfo->parameterValue = pParameterValueArray[i].Value->Variant.varString;
-            pValueInfo->type           = CcspTr069PA_Cwmp2CcspType(pParameterValueArray[i].Tr069DataType);
-
-            AnscQueuePushEntry(&pFcNsList->NsList, &pNsList->Linkage);
+				pValueInfo->parameterName  = pParameterValueArray[i].Name;
+				pValueInfo->parameterValue = pParameterValueArray[i].Value->Variant.varString;
+				pValueInfo->type           = CcspTr069PA_Cwmp2CcspType(pParameterValueArray[i].Tr069DataType);
+				AnscQueuePushEntry(&pFcNsList->NsList, &pNsList->Linkage);
+				if(!strcmp(pFcNsList->FCName,"eRT.com.cisco.spvtg.ccsp.wifi"))
+				{
+					printf("---- SPV for WiFi ---\n");
+					AnscCopyString(wifiFcName,pFcNsList->FCName);
+					AnscCopyString(wifiDbusPath,pFcNsList->DBusPath);
+					bRadioRestartEn = TRUE;
+					if(i<MAX_NO_WIFI_PARAM)
+					{
+						AnscCopyString(pParamN,pValueInfo->parameterName);
+						CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
+						AnscCopyString(ParamName[i],pParamN);
+						noOfParam = i;
+					}
+					
+				}
         }
     }
 
@@ -908,6 +936,17 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
             pInvalidParam = NULL;
 
+	    if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.RebootDevice"))
+	    {	
+                    	CcspTr069PaTraceWarning
+                            (
+                                (
+                                    "RDKB_REBOOT : RebootDevice triggered from TR69 with value '%s'\n", 
+                                     pParamValues
+                                )
+                            );
+		}
+
 
             nResult = 
                 CcspBaseIf_setParameterValues
@@ -925,6 +964,12 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
 
             CcspTr069PaFreeMemory(pParamValues);
+
+	    if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
+	    {	
+			/* If not success send appropriate parameter name*/
+			pInvalidParam=CcspTr069PaCloneString("Device.X_COMCAST_COM_CM.ReinitCmMac");
+		}
 
             if ( nResult != CCSP_SUCCESS )
             {
@@ -1002,12 +1047,14 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                 break;
             }
 
-            if ( pInvalidParam )
+
+
+			if ( pInvalidParam )
             {
                 CcspTr069PaFreeMemory(pInvalidParam);
             }
-        }
 
+		}
         if ( nResult == CCSP_SUCCESS )
         {
             j = nNumFCs;
@@ -1036,6 +1083,119 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                 CcspTr069PaTraceDebug(("SetCommit on FC %s, status = %d\n", pFcNsList->FCName, nResult));
             }
         }
+			if(bRadioRestartEn)
+			{
+
+			pParamValues = 
+					(parameterValStruct_t*)CcspTr069PaAllocateMemory
+						(
+							sizeof(parameterValStruct_t) * nNsCount
+						);
+
+				if ( !pParamValues )
+				{
+					returnStatus = ANSC_STATUS_RESOURCES;
+					goto EXIT2;
+				}
+				bRadioRestartEn = FALSE;
+				pInvalidParam = NULL;
+
+				char*   faultParam = NULL;
+				BOOL bRestartRadio1 = FALSE;
+				BOOL bRestartRadio2 = FALSE;
+				int nreq = 0,x,index;
+				int SSID =0,apply_rf;
+				parameterValStruct_t *val = NULL;
+				parameterValStruct_t val_set[4] = { { "Device.WiFi.Radio.1.X_CISCO_COM_ApplySettingSSID","1", ccsp_int}, 
+												{ "Device.WiFi.Radio.1.X_CISCO_COM_ApplySetting", "true", ccsp_boolean},
+												{ "Device.WiFi.Radio.2.X_CISCO_COM_ApplySettingSSID","2", ccsp_int},
+												{ "Device.WiFi.Radio.2.X_CISCO_COM_ApplySetting", "true", ccsp_boolean}};
+				for(x =0; x<= noOfParam; x++)
+				{
+				if(!strncmp(ParamName[x],"Device.WiFi.Radio.1.",20))
+					{
+						bRestartRadio1 = TRUE; 
+					}
+				else if(!strncmp(ParamName[x],"Device.WiFi.Radio.2.",20))
+					{
+						bRestartRadio2 = TRUE;
+					}
+					else{
+						
+							if((!strncmp(ParamName[x],"Device.WiFi.SSID.",17)))
+							{
+								
+								sscanf(ParamName[x],"Device.WiFi.SSID.%d",&index);
+								printf("index = %d\n",index);
+								SSID = (1 << ((index)-1));
+								apply_rf = (2  - ((index)%2));
+								printf("apply_rf = %d\n",apply_rf);
+								if(apply_rf == 1)
+									{
+										bRestartRadio1 = TRUE;
+									}
+									else if(apply_rf == 2)
+									{
+										bRestartRadio2 = TRUE;
+									}				
+								
+							}
+							else if(!strncmp(ParamName[x],"Device.WiFi.AccessPoint.",24))
+							{
+								sscanf(ParamName[x],"Device.WiFi.AccessPoint.%d",&index);
+								SSID = (1 << ((index)-1));
+								apply_rf = (2  - ((index)%2));
+								if(apply_rf == 1)
+									{
+										bRestartRadio1 = TRUE; 
+										
+									}
+								else if(apply_rf == 2)
+									{
+										bRestartRadio2 = TRUE; 
+									
+									}
+							}
+							
+						}
+				}
+				if((bRestartRadio1 == TRUE) && (bRestartRadio2 == TRUE))
+				{
+					printf("Need to restart both the Radios\n");
+					val = val_set;
+					nreq = 4;
+				}
+				else if(bRestartRadio1)
+				{
+					printf("Need to restart Radio 1\n");
+					val = val_set;
+					nreq = 2;
+				}
+				else if(bRestartRadio2)
+				{
+					printf("Need to restart Radio 2\n");
+					val = &val_set[2];
+					nreq = 2;
+				}
+
+				nResult = CcspBaseIf_setParameterValues
+				(
+					bus_info, 
+					wifiFcName, 
+					wifiDbusPath,
+					0, 0x0,   /* session id and write id */
+					val, 
+					nreq, 
+					TRUE,   /* no commit */
+					&faultParam
+				);	
+
+                if (nResult != CCSP_SUCCESS && faultParam)
+                {
+                    AnscTraceError(("Error:Failed to SetValue for param '%s'\n", faultParam));
+                    bus_info->freefunc(faultParam);
+                }
+            }
     }
 
     if ( bSucc )
@@ -1228,10 +1388,11 @@ CcspCwmppoMpaGetParameterValues
     BOOL                            bParamNameArrayEmpty = FALSE;
     char*                           pRootObjName         = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
 
+	BOOL bDataModelReq = FALSE;
     *ppParamValueArray = NULL;
     *pulArraySize      = 0;
     *phSoapFault       = (ANSC_HANDLE)NULL;
-
+	
     AnscQueueInitializeHeader(&FcNsListQueue);
     AnscQueueInitializeHeader(&FcGpvResultListQueue);
 
@@ -1278,9 +1439,17 @@ CcspCwmppoMpaGetParameterValues
             /* empty string */
             pParamName = pRootObjName; 
         }
-
-        /* identify which sub-system(s) the parameter or partial name could reside */
-        NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
+	if(!strcmp(pParamName,"Device.RootDataModelVersion"))
+	{
+		pParamName = CcspTr069PaCloneString("Device.DeviceInfo.Manufacturer");
+		bDataModelReq = TRUE;
+	}
+		if(!strcmp(pParamName,"Device.X_COMCAST_COM_CM.ReinitCmMac"))
+		{
+				AnscCopyString(pParamName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac");
+		}
+			/* identify which sub-system(s) the parameter or partial name could reside */
+			NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
 
         CcspTr069PA_GetNamespaceSubsystems
             (
@@ -1290,24 +1459,30 @@ CcspCwmppoMpaGetParameterValues
                 &NumSubsystems,
                 !bExcludeInvNs
             );
-        
-        /* query namespace manager for the namespace on identified sub-system */
-        CCSP_TR069PA_DISCOVER_FC
+        if(!strcmp(pParamName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
+	{
+			CCSP_TR069PA_DISCOVER_FC
+            	(
+                pParamName,
+                TRUE
+            	);
+	}
+	else{
+        	/* query namespace manager for the namespace on identified sub-system */
+        	CCSP_TR069PA_DISCOVER_FC
             (
                 pParamName,
                 FALSE
             );
+	}
 
-
-	//dpotter
-        if ( ulFcArraySize == 0 ) 
+        if ( nRet != CCSP_SUCCESS || ulFcArraySize == 0 ) 
         {
             /* there must be at least one FC that matches the namespace */
             CcspTr069PaTraceDebug(("GPV - no FC owns namespace <%s>\n", pParamName));
-            returnStatus = ANSC_STATUS_BAD_NAME; 
-         
-            //Do not thow a SoapFault causes 9005 error
-            goto EXIT1;
+            returnStatus      = ANSC_STATUS_BAD_NAME;
+
+            goto EXIT2;
         } 
 
         for ( j = 0; j < ulFcArraySize; j ++ )
@@ -1463,6 +1638,48 @@ CcspCwmppoMpaGetParameterValues
                     /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
                     CcspCwmppoMpaMapParamInstNumDmIntToCwmp(pParamValues[k]->parameterName);
                     CcspCwmppoMpaMapParamInstNumDmIntToCwmp(pParamValues[k]->parameterValue);
+                    if(0 == strcmp(pParamValues[k]->parameterName,"Device.DeviceInfo.SoftwareVersion"))
+                    {
+
+                        FILE *readImage;
+                        char buff[200];
+                        char tmp[200];
+                        strcpy(tmp,pParamValues[k]->parameterValue);
+							
+                        readImage = popen("cat /fss/gw/version.txt | grep imagename | cut -d'=' -f2", "r");
+                        if(readImage == NULL)
+                        {
+                              CcspTr069PaTraceError(("RDKB Software image name is NULL\n"));
+                        }
+                        else
+                        {
+
+                           if(fgets(buff, sizeof(buff), readImage)!=NULL)
+                           {
+                              strip_line(buff);
+                              strcat(tmp,"_");
+                              strcat(tmp,buff);
+                              pParamValues[k]->parameterValue=AnscCloneString(tmp);
+                              
+                           }
+				
+                           pclose(readImage);
+                        }
+                     }
+					 if(bDataModelReq == TRUE)
+					 {
+						 if(0 == strcmp(pParamValues[k]->parameterName,"Device.DeviceInfo.Manufacturer"))
+						 {
+							pParamValues[k]->parameterName = CcspTr069PaCloneString("Device.RootDataModelVersion");
+							pParamValues[k]->parameterValue = CcspTr069PaCloneString(COSA_CURRENT_SUPPORT_VERSION);
+						 }
+						 bDataModelReq =FALSE;
+					 }
+                     if(0 == strcmp(pParamValues[k]->parameterName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
+                     {
+        				AnscCopyString(pParamValues[k]->parameterName , "Device.X_COMCAST_COM_CM.ReinitCmMac");
+	
+				     }
 
                     /* filter out namespace that is not supported by this PA, or invisible
                      * to cloud server through this PA
@@ -2334,7 +2551,9 @@ CcspCwmppoMpaSetParameterAttributes
             {
                 pNsList       = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
                 pSLinkEntryNs = AnscQueueGetNextEntry(pSLinkEntryNs);
-
+				 /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ // fix RDKB-405
+                CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
+                //CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramValueInfo.parameterValue);
                 pParamAttributes[k++] = pNsList->Args.paramAttrInfo;
 
                 pNsList->Args.paramAttrInfo.parameterName = NULL;
@@ -2727,9 +2946,12 @@ CcspCwmppoMpaGetParameterAttributes
             {
                 pNsList       = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
                 pSLinkEntryNs = AnscQueueGetNextEntry(pSLinkEntryNs);
-
-                pParamNames[k++] = pNsList->Args.paramValueInfo.parameterName;
+                /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ //fix RDKB-405
+                CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
+               // pParamNames[k++] = pNsList->Args.paramValueInfo.parameterName;
+			   pParamNames[k++] = pNsList->Args.paramAttrInfo.parameterName;
                 pNsList->Args.paramValueInfo.parameterName = NULL;
+				 pNsList->Args.paramAttrInfo.parameterName = NULL;
             }
 
 
@@ -2764,7 +2986,8 @@ CcspCwmppoMpaGetParameterAttributes
                 for ( k = 0; k < nCcspAttrArraySize; k ++ )
                 {
                     if ( !ppCcspAttrArray[k] ) continue;      /* some FC returns NULL, robustness check */
-            
+					/*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ //fix RDKB-405
+                    CcspCwmppoMpaMapParamInstNumDmIntToCwmp(ppCcspAttrArray[k]->parameterName);
                     /* filter out namespace that is not supported by this PA, or invisible
                      * to cloud server through this PA
                      */
@@ -3141,6 +3364,9 @@ CcspCwmppoMpaAddObject
         goto EXIT2;
     }
 
+
+    CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pObjName);
+
     /* query namespace manager for the namespace on identified sub-system */
     CCSP_TR069PA_DISCOVER_FC
         (
@@ -3390,7 +3616,7 @@ CcspCwmppoMpaDeleteObject
 
         goto EXIT2;
     }
-
+    CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pObjName);
     /* query namespace manager for the namespace on identified sub-system */
     CCSP_TR069PA_DISCOVER_FC
         (

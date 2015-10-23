@@ -1,0 +1,4 @@
+[gerrit]
+host=gerrit.teamccp.com
+port=29418
+project=rdk/rdkb/components/opensource/ccsp/CcspTr069Pa/generic
