@@ -32,6 +32,13 @@
    limitations under the License.
 **********************************************************************/
 
+void strip_line (char *str)
+{
+    if (NULL==str)
+        return;
+    int len = strlen(str);
+    str[len-1] = 0;    
+}
 
 /**********************************************************************
 

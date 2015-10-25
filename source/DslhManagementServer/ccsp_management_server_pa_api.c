@@ -106,6 +106,14 @@ extern char             *g_Tr069PaAcsDefAddr;
 extern char             *_SupportedDataModelConfigFile;
 static CCSP_BOOL        s_MS_Init_Done  = FALSE;
 
+void strip_line (char *str)
+{
+    if (NULL==str)
+        return;
+    int len = strlen(str);
+    str[len-1] = 0;    
+}
+
 /* CcspManagementServer_Init is called by PA to register component and
  * load configuration file.
  * Return value - none.
