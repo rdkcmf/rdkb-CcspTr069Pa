@@ -34,7 +34,7 @@
 
 void strip_line (char *str)
 {
-    if (NULL==str)
+    if (0==str)
         return;
     int len = strlen(str);
     str[len-1] = 0;    
