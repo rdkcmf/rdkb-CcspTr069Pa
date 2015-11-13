@@ -59,6 +59,8 @@
 
 #include "ssp_global.h"
 
+#define DEBUG_INI_NAME  "/etc/debug.ini"
+
 PCCSP_CWMP_CPE_CONTROLLER_OBJECT    g_pCcspCwmpCpeController    = NULL;
 BOOL                                bEngaged                = FALSE;
 
@@ -378,7 +380,7 @@ int main(int argc, char* argv[])
         AnscCopyString(g_PaMapperXmlFile, CCSP_TR069PA_DEF_MAPPER_XML_FILE);
     }
 #ifdef FEATURE_SUPPORT_RDKLOG
-	rdk_logger_init("/fss/gw/lib/debug.ini");
+	rdk_logger_init(DEBUG_INI_NAME);
 #endif
 
     CcspTr069PaTraceDebug(("<%s>: PaName=%s, CrName=%s, Xml=%s, Subsys=%s\n", __FUNCTION__, g_Tr069PaName, g_CrName, g_PaMapperXmlFile, g_Subsystem));
