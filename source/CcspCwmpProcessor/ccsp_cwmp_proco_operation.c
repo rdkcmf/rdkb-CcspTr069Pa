@@ -166,12 +166,14 @@ CcspCwmppoEngage
         return  returnStatus;
     }
 
+       printf("TR69 PA: Waiting for Setup env...\n");
     do
     {
-       printf("TR69 PA: Waiting for Setup env...\n");
+       sleep(5); 
 
     }while( g_flagToStartCWMP==0);
 
+       printf("TR69 PA: Setup env completed\n");
     /*
      * A CPE MUST call the Inform method to initiate a transaction sequence whenever a connection
      * to an ACS is established. The CPE must pass in an array of EventStruct, indicating one or
