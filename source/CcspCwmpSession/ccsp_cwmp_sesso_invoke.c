@@ -375,6 +375,14 @@ CcspCwmpsoInform
 
     BOOL                            bValChange           = FALSE;
     BOOL                            bBootStrap           = FALSE;
+	static int bFirstInform = 1;
+	static char Manufacturer[100];
+	static char ManufacturerOUI[100];
+	static char ProductClass[100];
+	static char SerialNumber[100];
+	static char DeviceSummary[100];
+	static char HardwareVersion[100];
+	static char SoftwareVersion[100];
 
     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->GetCwmpRpcTimeout )
     {
@@ -416,7 +424,8 @@ CcspCwmpsoInform
      *      - SerialNumber: Identifier of the particular device that is unique for the
      *                      indicated class of product and manufacturer.
      */
-
+if(bFirstInform)
+{
     _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.Manufacturer");
     pCcspCwmpCpeController->GetParamStringValue
         (
@@ -424,6 +433,8 @@ CcspCwmpsoInform
             paramName,
             &pCwmpDeviceId->Manufacturer
         );
+        if(pCwmpDeviceId->Manufacturer != NULL)
+	strcpy(Manufacturer, pCwmpDeviceId->Manufacturer);
 
     _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.ManufacturerOUI");
     pCcspCwmpCpeController->GetParamStringValue
@@ -432,6 +443,8 @@ CcspCwmpsoInform
             paramName,
             &pCwmpDeviceId->OUI
         );
+        if(pCwmpDeviceId->OUI != NULL)
+	strcpy(ManufacturerOUI, pCwmpDeviceId->OUI);
 
     _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.ProductClass");
     pCcspCwmpCpeController->GetParamStringValue
@@ -440,7 +453,8 @@ CcspCwmpsoInform
             paramName,
             &pCwmpDeviceId->ProductClass
         );
-
+        if(pCwmpDeviceId->ProductClass != NULL)
+	strcpy(ProductClass, pCwmpDeviceId->ProductClass);
     _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.SerialNumber");
     pCcspCwmpCpeController->GetParamStringValue
         (
@@ -449,6 +463,8 @@ CcspCwmpsoInform
             &pCwmpDeviceId->SerialNumber
         );
 
+        if(pCwmpDeviceId->SerialNumber != NULL) 
+		strcpy(SerialNumber, pCwmpDeviceId->SerialNumber);
 	if ( !pCwmpDeviceId->Manufacturer ||
              !pCwmpDeviceId->OUI          ||
              !pCwmpDeviceId->ProductClass ||
@@ -456,6 +472,15 @@ CcspCwmpsoInform
 	{
 		CcspTr069PaTraceWarning(("WARNING: failed to get Manufacturer/OUI/ProductClass/SerialNumber! 'informed' may be rejected by ACS!\n"));
 	}
+}
+else
+{
+
+	pCwmpDeviceId->Manufacturer = CcspManagementServer_CloneString(Manufacturer);
+	pCwmpDeviceId->OUI 			= CcspManagementServer_CloneString(ManufacturerOUI);
+	pCwmpDeviceId->ProductClass = CcspManagementServer_CloneString(ProductClass);
+	pCwmpDeviceId->SerialNumber = CcspManagementServer_CloneString(SerialNumber);
+}
 
     /*
      * The Inform message must contain the current date and time known to the CPE in UTC (defined by original TR-069 spec).
@@ -711,12 +736,42 @@ CcspCwmpsoInform
             if ( i < ulPresetParamCount )
             {
                 pValue = NULL;
+
+				if((!strcmp("Device.ManagementServer.ConnectionRequestURL",pCwmpParamValueArray[i].Name)) ||
+				(!strcmp("Device.ManagementServer.ParameterKey",pCwmpParamValueArray[i].Name))|| (bFirstInform == 1))
+				{
                 pCcspCwmpCpeController->GetParamStringValue
                     (
                         (ANSC_HANDLE)pCcspCwmpCpeController,
                         pCwmpParamValueArray[i].Name,
                         &pValue
                     );
+					if(bFirstInform == 1)
+					{
+						if(!strcmp("Device.DeviceInfo.HardwareVersion",pCwmpParamValueArray[i].Name))
+						{
+							strcpy(HardwareVersion,pValue);
+						}
+						else if(!strcmp("Device.DeviceInfo.SoftwareVersion",pCwmpParamValueArray[i].Name))
+						{
+							strcpy(SoftwareVersion,pValue);
+						}
+						
+					}
+				}
+				else
+				{
+						if(!strcmp("Device.DeviceInfo.HardwareVersion",pCwmpParamValueArray[i].Name))
+						{
+							pValue = CcspManagementServer_CloneString(HardwareVersion);
+						}
+						else if(!strcmp("Device.DeviceInfo.SoftwareVersion",pCwmpParamValueArray[i].Name))
+						{
+							pValue = CcspManagementServer_CloneString(SoftwareVersion);
+						}
+						
+
+				}
 
                 if ( pValue && pValue[0] != '\0' )
                 {
@@ -746,7 +801,7 @@ CcspCwmpsoInform
             }
         }
     }
-
+bFirstInform = 0;
     /* special handling of AliasBasedAddressing - backend does not support it, but
      * some test suites such as CD-Router complains its missing and we got failures
      */
