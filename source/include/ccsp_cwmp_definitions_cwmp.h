@@ -563,6 +563,7 @@ _CCSP_CWMP_DEVICE_ID
     char*                           OUI;
     char*                           ProductClass;
     char*                           SerialNumber;
+    char*                           ProvisioningCode;
 }
 CCSP_CWMP_DEVICE_ID,  *PCCSP_CWMP_DEVICE_ID;
 
@@ -574,7 +575,12 @@ CCSP_CWMP_DEVICE_ID,  *PCCSP_CWMP_DEVICE_ID;
                                                                                             \
                 device_id->Manufacturer = NULL;                                             \
             }                                                                               \
+            if ( device_id->ProvisioningCode )                                                  \
+            {                                                                               \
+                CcspTr069PaFreeMemory(device_id->ProvisioningCode);                             \
                                                                                             \
+                device_id->ProvisioningCode = NULL;                                             \
+            }                                                                               \
             if ( device_id->OUI )                                                           \
             {                                                                               \
                 CcspTr069PaFreeMemory(device_id->OUI);                                      \

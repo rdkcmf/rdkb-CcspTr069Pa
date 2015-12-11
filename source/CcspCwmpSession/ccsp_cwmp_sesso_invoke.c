@@ -379,6 +379,7 @@ CcspCwmpsoInform
 	static char Manufacturer[100];
 	static char ManufacturerOUI[100];
 	static char ProductClass[100];
+    static char ProvisioningCode[100];
 	static char SerialNumber[100];
 	static char DeviceSummary[100];
 	static char HardwareVersion[100];
@@ -465,9 +466,21 @@ if(bFirstInform)
 
         if(pCwmpDeviceId->SerialNumber != NULL) 
 		strcpy(SerialNumber, pCwmpDeviceId->SerialNumber);
+
+    _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.ProvisioningCode");
+    pCcspCwmpCpeController->GetParamStringValue
+        (
+            (ANSC_HANDLE)pCcspCwmpCpeController,
+            paramName,
+            &pCwmpDeviceId->ProvisioningCode
+        );
+        if(pCwmpDeviceId->ProvisioningCode != NULL)
+        strcpy(ProvisioningCode, pCwmpDeviceId->ProvisioningCode);
+
 	if ( !pCwmpDeviceId->Manufacturer ||
              !pCwmpDeviceId->OUI          ||
              !pCwmpDeviceId->ProductClass ||
+             !pCwmpDeviceId->ProvisioningCode ||
              !pCwmpDeviceId->SerialNumber )
 	{
 		CcspTr069PaTraceWarning(("WARNING: failed to get Manufacturer/OUI/ProductClass/SerialNumber! 'informed' may be rejected by ACS!\n"));
@@ -480,6 +493,7 @@ else
 	pCwmpDeviceId->OUI 			= CcspManagementServer_CloneString(ManufacturerOUI);
 	pCwmpDeviceId->ProductClass = CcspManagementServer_CloneString(ProductClass);
 	pCwmpDeviceId->SerialNumber = CcspManagementServer_CloneString(SerialNumber);
+    pCwmpDeviceId->ProvisioningCode = CcspManagementServer_CloneString(ProvisioningCode);
 }
 
     /*
@@ -737,48 +751,56 @@ else
             {
                 pValue = NULL;
 
-				if((!strcmp("Device.ManagementServer.ConnectionRequestURL",pCwmpParamValueArray[i].Name)) ||
-				(!strcmp("Device.ManagementServer.ParameterKey",pCwmpParamValueArray[i].Name))|| (bFirstInform == 1))
-				{
-                pCcspCwmpCpeController->GetParamStringValue
-                    (
+         	if((!strcmp("Device.ManagementServer.ConnectionRequestURL",pCwmpParamValueArray[i].Name)) ||
+		  (!strcmp("Device.ManagementServer.ParameterKey",pCwmpParamValueArray[i].Name))|| (bFirstInform == 1))
+		  {
+                     pCcspCwmpCpeController->GetParamStringValue
+                     (
                         (ANSC_HANDLE)pCcspCwmpCpeController,
                         pCwmpParamValueArray[i].Name,
                         &pValue
-                    );
-					if(bFirstInform == 1)
-					{
-						if(!strcmp("Device.DeviceInfo.HardwareVersion",pCwmpParamValueArray[i].Name))
-						{
-							strcpy(HardwareVersion,pValue);
-						}
-						else if(!strcmp("Device.DeviceInfo.SoftwareVersion",pCwmpParamValueArray[i].Name))
-						{
-							strcpy(SoftwareVersion,pValue);
-						}
-						
-					}
-				}
-				else
+                     );
+			if(bFirstInform == 1)
+			{
+				if(!strcmp("Device.DeviceInfo.HardwareVersion",pCwmpParamValueArray[i].Name))
 				{
-						if(!strcmp("Device.DeviceInfo.HardwareVersion",pCwmpParamValueArray[i].Name))
-						{
-							pValue = CcspManagementServer_CloneString(HardwareVersion);
-						}
-						else if(!strcmp("Device.DeviceInfo.SoftwareVersion",pCwmpParamValueArray[i].Name))
-						{
-							pValue = CcspManagementServer_CloneString(SoftwareVersion);
-						}
-						
-
+					strcpy(HardwareVersion,pValue);
 				}
-
-                if ( pValue && pValue[0] != '\0' )
+				else if(!strcmp("Device.DeviceInfo.SoftwareVersion",pCwmpParamValueArray[i].Name))
+				{
+					strcpy(SoftwareVersion,pValue);
+				}
+                                else if(!strcmp("Device.DeviceInfo.ProvisioningCode",pCwmpParamValueArray[i].Name))
+                                {
+                                        strcpy(ProvisioningCode,pValue);
+                                }
+					
+			}
+	     }
+             else
+             {
+		if(!strcmp("Device.DeviceInfo.HardwareVersion",pCwmpParamValueArray[i].Name))
+		{
+			pValue = CcspManagementServer_CloneString(HardwareVersion);
+		}
+		else if(!strcmp("Device.DeviceInfo.SoftwareVersion",pCwmpParamValueArray[i].Name))
+		{
+			pValue = CcspManagementServer_CloneString(SoftwareVersion);
+		}
+                else if(!strcmp("Device.DeviceInfo.ProvisioningCode",pCwmpParamValueArray[i].Name))
                 {
-                    SlapAllocVariable(pSlapValue);
-                    
-                    if ( pSlapValue )
-                    {
+                        pValue = CcspManagementServer_CloneString(ProvisioningCode);
+                }
+				
+
+            }
+
+            if ( pValue && pValue[0] != '\0' )
+            {
+                 SlapAllocVariable(pSlapValue);
+                  
+                 if ( pSlapValue )
+                 {
             	        pSlapValue->Syntax = SLAP_VAR_SYNTAX_string;
                         pSlapValue->Variant.varString = pValue;
     	                pCwmpParamValueArray[i].Value = pSlapValue;
