@@ -149,6 +149,7 @@ CcspCwmpsoInformPopulateTRInformationCustom
     pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.SoftwareVersion"           );
     pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.ManagementServer.ConnectionRequestURL");
     pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.ManagementServer.ParameterKey"        );
+    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.ProvisioningCode"        );
 
     if ( !bDevice20OrLater )
     {
@@ -164,13 +165,14 @@ CcspCwmpsoInformPopulateTRInformationCustom
          !pCwmpParamValueArray[index_start+2].Name ||
          !pCwmpParamValueArray[index_start+3].Name ||
          !pCwmpParamValueArray[index_start+4].Name ||
+         !pCwmpParamValueArray[index_start+5].Name ||
          ( !bDevice20OrLater && 
             (
-            !pCwmpParamValueArray[index_start+5].Name || 
             !pCwmpParamValueArray[index_start+6].Name || 
             !pCwmpParamValueArray[index_start+7].Name || 
             !pCwmpParamValueArray[index_start+8].Name || 
-            !pCwmpParamValueArray[index_start+9].Name )
+            !pCwmpParamValueArray[index_start+9].Name || 
+            !pCwmpParamValueArray[index_start+10].Name )
         ) )
     {
         returnStatus = ANSC_STATUS_RESOURCES;
