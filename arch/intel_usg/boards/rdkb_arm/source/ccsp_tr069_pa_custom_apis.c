@@ -99,7 +99,7 @@ static int  DefaultPasswordGenerated = 0;
 static char* DeviceDefaultPassword      = NULL;
 //static char* SharedKey = NULL;
 static char SharedKey[256] = {'\0'};
-#define SHAREDKEYPATH "/etc/sharedkey"
+#define SHAREDKEYPATH "/usr/ccsp/tr069pa/sharedkey"
 //#define SHAREDKEYPATH "/nvram/sharedkey"
 #define SHAREDKEY "5a6d87cfac9b67ef8f34a6adccd271581feeba0d4354c6441645b0c3ad94f4c0"
 
