@@ -764,14 +764,17 @@ else
 			{
 				if(!strcmp("Device.DeviceInfo.HardwareVersion",pCwmpParamValueArray[i].Name))
 				{
+                                        if(pValue != NULL)
 					strcpy(HardwareVersion,pValue);
 				}
 				else if(!strcmp("Device.DeviceInfo.SoftwareVersion",pCwmpParamValueArray[i].Name))
 				{
+                                        if(pValue != NULL)
 					strcpy(SoftwareVersion,pValue);
 				}
                                 else if(!strcmp("Device.DeviceInfo.ProvisioningCode",pCwmpParamValueArray[i].Name))
                                 {
+                                        if(pValue != NULL)
                                         strcpy(ProvisioningCode,pValue);
                                 }
 					
