@@ -103,15 +103,6 @@ static char SharedKey[256] = {'\0'};
 //#define SHAREDKEYPATH "/nvram/sharedkey"
 #define SHAREDKEY "5a6d87cfac9b67ef8f34a6adccd271581feeba0d4354c6441645b0c3ad94f4c0"
 
-
-void strip_line (char *str)
-{
-    if (NULL==str)
-        return;
-    int len = strlen(str);
-    str[len-1] = 0;    
-}
-
 CCSP_VOID
 CcspCwmpsoStartRetryTimerCustom
     (
