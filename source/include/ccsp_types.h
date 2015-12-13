@@ -170,5 +170,14 @@ CCSP_VARIABLE, *PCCSP_VARIABLE;
     } while (0)
 
 
+static inline
+void strip_line (char *str)
+{
+       if (0==str)
+               return;
+       int len = strlen(str);
+       str[len-1] = 0;
+}
+
 #endif
 

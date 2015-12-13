@@ -31,15 +31,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 **********************************************************************/
-
-/*void strip_line (char *str)
-{
-    if (0==str)
-        return;
-    int len = strlen(str);
-    str[len-1] = 0;    
-}*/
-
 /**********************************************************************
 
     module:	ccsp_cwmp_proco_mpaif.c
