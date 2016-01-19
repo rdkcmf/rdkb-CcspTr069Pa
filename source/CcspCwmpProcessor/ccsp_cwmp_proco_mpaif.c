@@ -936,16 +936,55 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
 	    if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.RebootDevice"))
 	    {	
+                
+                    
+            if((strstr(pParamValues->parameterValue,"Router")!=NULL && strstr(pParamValues->parameterValue,"Wifi")!=NULL && strstr(pParamValues->parameterValue,"VoIP")!=NULL && strstr(pParamValues->parameterValue,"MoCA")!=NULL)||strstr(pParamValues->parameterValue,"Device")!=NULL)
+ {   
+                        
                     	CcspTr069PaTraceWarning
                             (
                                 (
                                     "RDKB_REBOOT : RebootDevice triggered from TR69 with value '%s'\n", 
-                                     pParamValues
+                                     pParamValues->parameterValue
                                 )
                             );
-		}
+ }
+ 
+}
 
+ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.FactoryReset"))
+ {
+        
+       
+  if((strstr(pParamValues->parameterValue,"Router")!=NULL && strstr(pParamValues->parameterValue,"Wifi")!=NULL && strstr(pParamValues->parameterValue,"VoIP")!=NULL)||strstr(pParamValues->parameterValue,"Router")!=NULL)
+  {	
+                        
+                    	CcspTr069PaTraceWarning
+                            (
+                                (
+                                    "RDKB_REBOOT : FactoryReset triggered from TR69 with value '%s'\n",pParamValues->parameterValue
+                                )
+                            );
+  }
+ }
 
+if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.DeviceMode"))
+{	                         
+              
+                
+             if(strstr(pParamValues->parameterValue,"multiSsid")!=NULL||strstr(pParamValues->parameterValue,"cableHome11")!=NULL||strstr(pParamValues->parameterValue,"Ipv4")!=NULL||strstr(pParamValues->parameterValue,"Ipv6")!=NULL||strstr(pParamValues->parameterValue,"Dualstack")!=NULL)
+             {   
+                        
+                    	CcspTr069PaTraceWarning
+                            (
+                                (
+                                    "RDKB_REBOOT : RebootDevice triggered from TR69 with value '%s'\n", 
+                                     pParamValues->parameterValue
+                                )
+                            );
+             }
+}
+ 
             nResult = 
                 CcspBaseIf_setParameterValues
                     (
