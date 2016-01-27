@@ -121,9 +121,6 @@
             <Name>Device.ManagementServer.ConnectionRequestPassword</Name>
         </Param>
         <Param>
-            <Name>Device.ManagementServer.ACSOverride</Name>
-        </Param>
-        <Param>
             <Name>Device.ManagementServer.UpgradesManaged</Name>
         </Param>
         <Param>
@@ -198,6 +195,9 @@
             <Name>Device.ManagementServer.DUStateChangeComplPolicy.FaultCodeFilter</Name>
         </Param>
 
+		<Param>
+            <Name>Device.RootDataModelVersion</Name>
+        </Param>
         <!-- vice.DeviceInfo.SupportedDataModel.{i}. -->
         <Param>
             <Name>Device.DeviceInfo.SupportedDataModel.{i}.URL</Name>
@@ -309,10 +309,33 @@
         <Param>
             <Name>Device.DeviceInfo.NetworkProperties.TCPImplementation</Name>
         </Param>
-
-        <!-- Comcast specific Device.DeviceInfo. parameters -->
         <Param>
-            <Name>Device.DeviceInfo.X_COMCAST-COM_xfinitywifiCapable</Name>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM.Ops.UploadLogsNow</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM.Ops.LogsUploadStatus</Name>
+        </Param>
+        <!-- Comcast specific Device.DeviceInfo. Parameters -->
+        <Param>
+            <Name>Device.DeviceInfo.X_COMCAST-COM_xfinitywifiCapableCPE</Name>
+        </Param>
+	<Param>
+            <Name>Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUICapable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIWebURL</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_CaptivePortalEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_COMCAST-COM_AP_MAC</Name>
         </Param>
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_CM_MAC</Name>
@@ -327,12 +350,32 @@
             <Name>Device.DeviceInfo.X_COMCAST-COM_WAN_IP</Name>
         </Param>
         <Param>
+            <Name>Device.DeviceInfo.X_COMCAST-COM_WAN_IPv6</Name>
+        </Param>
+        <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_MTA_MAC</Name>
         </Param>
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_MTA_IP</Name>
         </Param>
-        
+	<Param>
+            <Name>Device.DeviceInfo.X_CISCO_COM_ProcessorSpeed</Name>
+        </Param>
+	<Param>
+            <Name>Device.DeviceInfo.X_CISCO_COM_FirmwareName</Name>
+        </Param>
+		<Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_LoggerEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_LogLevel</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_COMCAST-COM_rdkbPlatformCapable</Name>
+        </Param>
+	    <Param>
+            <Name>Device.X_CISCO_COM_MTA.Dect.SoftwareVersion</Name>
+        </Param>
 
         <Param>
             <Name>Device.SoftwareModules.ExecEnvNumberOfEntries</Name>
@@ -562,6 +605,21 @@
         <Param>
             <Name>Device.UserInterface.X_CISCO_COM_RemoteAccess.EndIp</Name>
         </Param>
+	<Param>
+            <Name>Device.UserInterface.X_CISCO_COM_RemoteAccess.HttpEnable</Name>
+        </Param>
+	<Param>
+            <Name>Device.UserInterface.X_CISCO_COM_RemoteAccess.HttpsEnable</Name>
+        </Param>
+	<Param>
+            <Name>Device.UserInterface.X_CISCO_COM_RemoteAccess.StartIpV6</Name>
+        </Param>
+	<Param>
+            <Name>Device.UserInterface.X_CISCO_COM_RemoteAccess.EndIpV6</Name>
+        </Param>
+	<Param>
+            <Name>Device.UserInterface.PasswordReset</Name>
+        </Param>
         <Param>
             <Name>Device.InterfaceStackNumberOfEntries</Name>
         </Param>
@@ -612,6 +670,9 @@
         </Param>
         <Param>
             <Name>Device.Ethernet.Interface.{i}.MaxBitRate</Name>
+        </Param>
+        <Param>
+            <Name>Device.Ethernet.Interface.{i}.CurrentBitRate</Name>
         </Param>
         <Param>
             <Name>Device.Ethernet.Interface.{i}.DuplexMode</Name>
@@ -971,6 +1032,42 @@
             <Name>Device.MoCA.Interface.{i}.AssociatedDevice.{i}.Active</Name>
         </Param>
         <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTable.MeshTxNodeTableNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTable.MeshTxNodeTable.{i}.MeshRxNodeTableNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTable.MeshTxNodeTable.{i}.MeshTxNodeId</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTable.MeshTxNodeTable.{i}.MeshRxNodeTable.{i}.MeshRxNodeId</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTable.MeshTxNodeTable.{i}.MeshRxNodeTable.{i}.MeshPHYTxRate</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.DeviceName</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.SSID</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.BSSID</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.Band</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.Channel</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.SecurityMode</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.Encryption</Name>
+        </Param>
+        <Param>
             <Name>Device.WiFi.RadioNumberOfEntries</Name>
         </Param>
         <Param>
@@ -1073,7 +1170,7 @@
             <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_DTIMInterval</Name>
         </Param>
         <Param>
-            <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_BeaconInterval</Name>
+            <Name>Device.WiFi.Radio.{i}.X_COMCAST-COM_BeaconInterval</Name>
         </Param>
         <Param>
             <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_CTSProtectionMode</Name>
@@ -1087,14 +1184,41 @@
         <Param>
             <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_APIsolation</Name>
         </Param>
-        <Param>
+	<Param>
             <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_ApplySettingSSID</Name>
         </Param>
-        <Param>
+	<Param>
             <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_ApplySetting</Name>
         </Param>
+	<Param>
+	    <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_ReverseDirectionGrant</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_HTTxStream</Name>
+	</Param>
+	<Param>
+		<Name>Device.WiFi.Radio.{i}.X_CISCO_COM_HTRxStream</Name>
+	</Param>
+	<Param>
+		<Name>Device.WiFi.Radio.{i}.X_CISCO_COM_STBCEnable</Name>
+	</Param>
         <Param>
             <Name>Device.WiFi.Radio.{i}.X_CISCO_COM_BasicRate</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.X_COMCAST-COM_CarrierSenseThresholdRange</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.X_COMCAST-COM_CarrierSenseThresholdInUse</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.X_COMCAST-COM_ChannelSwitchingCount</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.BeaconPeriod</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.BasicDataTransmitRates</Name>
         </Param>
         <Param>
             <Name>Device.WiFi.Radio.{i}.Stats.BytesSent</Name>
@@ -1119,6 +1243,51 @@
         </Param>
         <Param>
             <Name>Device.WiFi.Radio.{i}.Stats.DiscardPacketsReceived</Name>
+        </Param>
+	 <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.PLCPErrorCount</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.FCSErrorCount</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.InvalidMACCount</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.PacketsOtherReceived</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_NoiseFloor</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_ChannelUtilization</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_ActivityFactor</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_CarrierSenseThreshold_Exceeded</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_RetransmissionMetirc</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_MaximumNoiseFloorOnChannel</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_MaximumNoiseFloorOnChannel</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_MedianNoiseFloorOnChannel</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_RadioStatisticsMeasuringRate</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_RadioStatisticsMeasuringInterval</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_StatisticsStartTime</Name>
         </Param>
         <Param>
             <Name>Device.WiFi.SSID.{i}.Enable</Name>
@@ -1192,6 +1361,24 @@
         <Param>
             <Name>Device.WiFi.SSID.{i}.Stats.UnknownProtoPacketsReceived</Name>
         </Param>
+       <Param>
+            <Name>Device.WiFi.SSID.{i}.Stats.RetransCount</Name>
+        </Param>
+       <Param>
+            <Name>Device.WiFi.SSID.{i}.Stats.FailedRetransCount</Name>
+        </Param>
+       <Param>
+            <Name>Device.WiFi.SSID.{i}.Stats.RetryCount</Name>
+        </Param>
+       <Param>
+            <Name>Device.WiFi.SSID.{i}.Stats.MultipleRetryCount</Name>
+        </Param>
+       <Param>
+            <Name>Device.WiFi.SSID.{i}.Stats.ACKFailureCount</Name>
+        </Param>
+       <Param>
+            <Name>Device.WiFi.SSID.{i}.Stats.AggregatedPacketCount</Name>
+        </Param>
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.Enable</Name>
         </Param>
@@ -1222,9 +1409,36 @@
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.UAPSDEnable</Name>
         </Param>
+	<Param>
+	    <Name>Device.WiFi.AccessPoint.{i}.IsolationEnable</Name>
+	</Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_BssMaxNumSta</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.MaxAssociatedDevices</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.X_COMCAST-COM_AssociatedDevicesHighWatermarkThreshold</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.X_COMCAST-COM_AssociatedDevicesHighWatermarkThresholdReached</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.X_COMCAST-COM_AssociatedDevicesHighWatermark</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.X_COMCAST-COM_AssociatedDevicesHighWatermarkDate</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.X_COMCAST-COM_MAC_FilteringMode</Name>
+        </Param>
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.AssociatedDeviceNumberOfEntries</Name>
         </Param>
+	<Param>
+	    <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTableNumberOfEntries</Name>
+	</Param>
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MACFilter.Enable</Name>
         </Param>
@@ -1253,9 +1467,6 @@
             <Name>Device.WiFi.AccessPoint.{i}.Security.KeyPassphrase</Name>
         </Param>
         <Param>
-            <Name>Device.WiFi.AccessPoint.{i}.Security.X_CISCO_COM_KeyPassphrase</Name>
-        </Param>
-        <Param>
             <Name>Device.WiFi.AccessPoint.{i}.Security.RekeyingInterval</Name>
         </Param>
         <Param>
@@ -1266,6 +1477,48 @@
         </Param>
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.Security.RadiusSecret</Name>
+        </Param>
+		<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_CISCO_COM_EncryptionMethod</Name>
+        </Param>
+		<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_CISCO_COM_RadiusReAuthInterval</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_CISCO_COM_DefaultKey</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_KeyPassphrase</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_WEPKey</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.RadiusServerRetries</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.RadiusServerRequestTimeout</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.PMKLifetime</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.PMKCaching</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.PMKCacheInterval</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.MaxAuthenticationAttempts</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.BlacklistTableTimeout</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.IdentityRequestRetryInterval</Name>
+        </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.QuietPeriodAfterFailedAuthentication</Name>
         </Param>
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.WPS.Enable</Name>
@@ -1298,6 +1551,114 @@
             <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Active</Name>
         </Param>
         <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesSent</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesReceived</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_OperatingStandard</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_OperatingChannelBandwidth</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_SNR</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_InterferenceSources</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_DataFramesSentAck</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_DataFramesSentNoAck</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_BytesSent</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_BytesReceived</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_RSSI</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_MinRSSI</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_MaxRSSI</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_Disassociations</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_AuthenticationFailures</Name>
+        </Param>
+	<Param>
+	    <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.DeviceName</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.MACAddress</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Enable</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.DiagnosticsState</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.Radio</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.SSID</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.BSSID</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.Mode</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.Channel</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.SignalStrength</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.SecurityModeEnabled</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.EncryptionMode</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.OperatingFrequencyBand</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.SupportedStandards</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.OperatingStandards</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.OperatingChannelBandwidth</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.BeaconPeriod</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.Noise</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.BasicDataTransferRates</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.DTIMPeriod</Name>
+	</Param>
+	<Param>
+	    <Name>Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.X_COMCAST-COM_ChannelUtilization</Name>
+	</Param>
+        <Param>
             <Name>Device.PPP.InterfaceNumberOfEntries</Name>
         </Param>
         <Param>
@@ -1312,7 +1673,7 @@
         <Param>
             <Name>Device.PPP.Interface.{i}.Name</Name>
         </Param>
-        <Param>
+	<Param>
             <Name>Device.PPP.Interface.{i}.LastChange</Name>
         </Param>
         <Param>
@@ -1518,6 +1879,9 @@
         </Param>
         <Param>
             <Name>Device.IP.Interface.{i}.IPv4Address.{i}.Enable</Name>
+        </Param>
+	<Param>
+            <Name>Device.IP.Interface.{i}.IPv4Address.{i}.Status</Name>
         </Param>
         <Param>
             <Name>Device.IP.Interface.{i}.IPv4Address.{i}.Alias</Name>
@@ -1768,6 +2132,28 @@
         <Param>
             <Name>Device.Routing.RIP.InterfaceSetting.{i}.SendRA</Name>
         </Param>
+	<Param>
+            <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_SendVersion</Name>
+        </Param>
+	<Param>
+            <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_ReceiveVersion</Name>
+        </Param>
+	<Param>
+            <Name>Device.Routing.RIP.X_CISCO_COM_UpdateInterval</Name>
+        </Param>
+	<Param>
+            <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_AuthenticationType</Name>
+        </Param>
+	<Param>
+            <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_Md5KeyValue</Name>
+        </Param>
+	<Param>
+            <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_Md5KeyID</Name>
+        </Param>
+	<Param>
+            <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_Neighbor</Name>
+        </Param>
+	
         <Param>
             <Name>Device.Routing.RouteInformation.Enable</Name>
         </Param>
@@ -1792,6 +2178,9 @@
         <Param>
             <Name>Device.Routing.RouteInformation.InterfaceSetting.{i}.RouteLifetime</Name>
         </Param>
+	<Param>
+	    <Name>Device.Hosts.X_CISCO_COM_ConnectedDeviceNumber</Name>
+	</Param>
         <Param>
             <Name>Device.Hosts.HostNumberOfEntries</Name>
         </Param>
@@ -1804,14 +2193,23 @@
         <Param>
             <Name>Device.Hosts.Host.{i}.IPAddress</Name>
         </Param>
+	<Param>
+            <Name>Device.Hosts.Host.{i}.DHCPClient</Name>
+        </Param>
+	<Param>
+            <Name>Device.Hosts.Host.{i}.LeaseTimeRemaining</Name>
+        </Param>
+	<Param>
+            <Name>Device.Hosts.Host.{i}.X_COMCAST-COM_LastChange</Name>
+        </Param>
+	<Param>
+            <Name>Device.Hosts.Host.{i}.AssociatedDevice</Name>
+        </Param>
         <Param>
             <Name>Device.Hosts.Host.{i}.AddressSource</Name>
         </Param>
         <Param>
             <Name>Device.Hosts.Host.{i}.LeaseTimeRemaining</Name>
-        </Param>
-        <Param>
-            <Name>Device.Hosts.Host.{i}.AssociatedDevice</Name>
         </Param>
         <Param>
             <Name>Device.Hosts.Host.{i}.Layer1Interface</Name>
@@ -1833,9 +2231,6 @@
         </Param>
         <Param>
             <Name>Device.Hosts.Host.{i}.Active</Name>
-        </Param>
-        <Param>
-            <Name>Device.Hosts.Host.{i}.X_COMCAST-COM_LastChange</Name>
         </Param>
         <Param>
             <Name>Device.Hosts.Host.{i}.IPv4AddressNumberOfEntries</Name>
@@ -1957,6 +2352,9 @@
         <Param>
             <Name>Device.Firewall.LastChange</Name>
         </Param>
+	<Param>
+            <Name>Device.NAT.X_Comcast_com_EnablePortMapping</Name>
+        </Param>
         <Param>
             <Name>Device.NAT.InterfaceSettingNumberOfEntries</Name>
         </Param>
@@ -2001,6 +2399,170 @@
         </Param>
         <Param>
             <Name>Device.NAT.PortMapping.{i}.Interface</Name>
+        </Param>
+
+	<Param>
+            <Name>Device.NAT.X_Comcast_com_EnableHSPortMapping</Name>
+        </Param>
+	<Param>
+            <Name>Device.NAT.PortMapping.{i}.X_CISCO_COM_InternalClientV6</Name>
+        </Param>
+	<Param>
+		<Name>Device.NAT.X_CISCO_COM_DMZ.Enable</Name>
+	</Param>
+	<Param>
+		<Name>Device.NAT.X_CISCO_COM_DMZ.IPv6Host</Name>
+	</Param>
+	<Param>
+		<Name>Device.NAT.X_CISCO_COM_DMZ.InternalIP</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.Enable</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Enable</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.Enable</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.AllowAll</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.BlockedSiteNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.ServiceNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.DeviceNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.BlockedSite.{i}.BlockMethod</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.BlockedSite.{i}.Site</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.BlockedSite.{i}.AlwaysBlock</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.BlockedSite.{i}.StartTime</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.BlockedSite.{i}.EndTime</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.BlockedSite.{i}.BlockDays</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Service.{i}.Description</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Service.{i}.Protocol</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Service.{i}.StartPort</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Service.{i}.EndPort</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Service.{i}.AlwaysBlock</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Service.{i}.StartTime</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Service.{i}.EndTime</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.Service.{i}.BlockDays</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.TrustedUserNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.TrustedUser.{i}.Trusted</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.TrustedUser.{i}.HostDescription</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.TrustedUser.{i}.IPAddress</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedSites.TrustedUser.{i}.IPAddressType</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.TrustedUserNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.TrustedUser.{i}.Trusted</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.TrustedUser.{i}.HostDescription</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.TrustedUser.{i}.IPAddress</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedServices.TrustedUser.{i}.IPAddressType</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.{i}.Type</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.{i}.Description</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.{i}.MACAddress</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.{i}.AlwaysBlock</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.{i}.StartTime</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.{i}.EndTime</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.{i}.BlockDays</Name>
+	</Param>	
+
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Enable</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.TriggerNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Alias</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Enable</Name>
+        </Param>
+		<Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.TriggerProtocol</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.TriggerPortStart</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.TriggerPortEnd</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.ForwardProtocol</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.ForwardPortStart</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.ForwardPortEnd</Name>
+        </Param>
+        <Param>
+            <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Description</Name>
         </Param>
         <Param>
             <Name>Device.DHCPv4.ClientNumberOfEntries</Name>
@@ -2351,6 +2913,9 @@
             <Name>Device.DHCPv6.Server.Pool.{i}.IANAPrefixes</Name>
         </Param>
         <Param>
+            <Name>Device.DHCPv6.Server.Pool.{i}.PrefixRangeEnd</Name>
+        </Param>
+        <Param>
             <Name>Device.DHCPv6.Server.Pool.{i}.IAPDEnable</Name>
         </Param>
         <Param>
@@ -2367,6 +2932,9 @@
         </Param>
         <Param>
             <Name>Device.DHCPv6.Server.Pool.{i}.OptionNumberOfEntries</Name>
+        </Param>
+	<Param>
+            <Name>Device.DHCPv6.Server.Pool.{i}.LeaseTime</Name>
         </Param>
         <Param>
             <Name>Device.DHCPv6.Server.Pool.{i}.Client.{i}.Alias</Name>
@@ -2491,6 +3059,12 @@
         <Param>
             <Name>Device.UPnP.Device.Capabilities.UPnPDMSoftwareMgmt</Name>
         </Param>
+	<Param>
+            <Name>Device.UPnP.Device.X_CISCO_COM_IGD_AdvertisementPeriod</Name>
+        </Param>
+	<Param>
+            <Name>Device.UPnP.Device.X_CISCO_COM_IGD_TTL</Name>
+        </Param>
         <Param>
             <Name>Device.X_CISCO_COM_DDNS.Enable</Name>
         </Param>
@@ -2530,7 +3104,58 @@
         <Param>
             <Name>Device.X_CISCO_COM_DDNS.Service.{i}.AssociatedConnection</Name>
         </Param>
-        <Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.CleanLog</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.TriggerEmailLog</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.FilterWebTraffic</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.TrafficDetect</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.FilterLanTraffic</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.AllowPassthrough</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailEnable</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailSendTo</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailServer</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailUserName</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailPassword</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailFromAddress</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailFirewallBreach</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.ApplyFirewallSettings</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailParentalControlBreach</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailAlertsOrWarnings</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.EmailSendLogs</Name>
+	</Param>
+	<Param>
             <Name>Device.X_CISCO_COM_Security.Firewall.L2TPPassthrough</Name>
         </Param>
         <Param>
@@ -2540,7 +3165,7 @@
             <Name>Device.X_CISCO_COM_Security.Firewall.IPSecPassthrough</Name>
         </Param>
         <Param>
-            <Name>Device.X_CISCO_COM_Security.Firewall.FilterIDENT</Name>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FilterIdent</Name>
         </Param>
         <Param>
             <Name>Device.X_CISCO_COM_Security.Firewall.FilterNATRedirection</Name>
@@ -2566,6 +3191,55 @@
         <Param>
             <Name>Device.X_CISCO_COM_Security.Firewall.FirewallLevel</Name>
         </Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.Count</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.SourceIP</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.User</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.TargetIP</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.Action</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.OccuranceTime</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.Description</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.TrueStaticIpEnable</Name>
+        </Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FilterHTTP</Name>
+        </Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FilterP2P</Name>
+        </Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FirewallLevelV6</Name>
+        </Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FilterHTTPV6</Name>
+        </Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FilterAnonymousInternetRequestsV6</Name>
+        </Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FilterMulticastV6</Name>
+        </Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FilterP2PV6</Name>
+        </Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_Security.Firewall.FilterIdentV6</Name>
+        </Param>
+
         <Param>
             <Name>Device.X_CISCO_COM_Security.InternetAccess.NumberOfPolicies</Name>
         </Param>
@@ -2663,19 +3337,25 @@
             <Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntryNumberOfEntries</Name>
         </Param>
         <Param>
-            <Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.SourceIP</Name>
+            <Name>Device.X_CISCO_COM_DeviceControl.IGMPProxyEnable</Name>
         </Param>
         <Param>
-            <Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.User</Name>
+            <Name>Device.X_CISCO_COM_DeviceControl.DNSProxyEnable</Name>
         </Param>
         <Param>
-            <Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.TargetIP</Name>
+            <Name>Device.X_CISCO_COM_DeviceControl.TelnetEnable</Name>
         </Param>
         <Param>
-            <Name>Device.X_CISCO_COM_Security.InternetAccess.LogEntry.{i}.Action</Name>
+            <Name>Device.X_CISCO_COM_DeviceControl.SSHEnable</Name>
+        </Param>
+		<Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.HNAPEnable</Name>
         </Param>
         <Param>
             <Name>Device.X_CISCO_COM_DeviceControl.MultiHomedHSDFlag</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_DeviceControl.PowerSavingModeStatus</Name>
         </Param>
         <Param>
             <Name>Device.X_CISCO_COM_DeviceControl.MultiHomedUIPageControl</Name>
@@ -2698,7 +3378,10 @@
         <Param>
             <Name>Device.X_CISCO_COM_DeviceControl.FactoryReset</Name>
         </Param>
-        <Param>
+	<Param>
+            <Name>Device.WiFi.X_CISCO_COM_FactoryResetRadioAndAp</Name>
+        </Param>
+	<Param>
             <Name>Device.X_CISCO_COM_DeviceControl.UserChangedFlags</Name>
         </Param>
         <Param>
@@ -2722,7 +3405,7 @@
         <Param>
             <Name>Device.X_CISCO_COM_DeviceControl.HTTPSPort</Name>
         </Param>
-        <Param>
+	<Param>
             <Name>Device.X_CISCO_COM_DeviceControl.WanAddressMode</Name>
         </Param>
         <Param>
@@ -2740,7 +3423,7 @@
         <Param>
             <Name>Device.X_CISCO_COM_DeviceControl.WanSecondIPRipAdvertised</Name>
         </Param>
-        <Param>
+	<Param>
             <Name>Device.X_CISCO_COM_DeviceControl.WanBackupDefaultGateway</Name>
         </Param>
         <Param>
@@ -2776,7 +3459,7 @@
         <Param>
             <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanSubnetMask</Name>
         </Param>
-        <Param>
+		<Param>
             <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanIPAddress</Name>
         </Param>
         <Param>
@@ -2800,6 +3483,246 @@
         <Param>
             <Name>Device.X_CISCO_COM_DeviceControl.LanManagementEntry.{i}.LanUpnp</Name>
         </Param>
+	<Param>
+	    <Name>Device.X_COMCAST_COM_CM.ReinitCmMac</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.TelephonyDHCPStatus</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.TelephonyTftpStatus</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.TelephonyRegistrationStatus</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISDHCPAttempts</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISTftpAttempts</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.MaxCpeAllowed</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISConfigFileName</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.ToDStatus</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamServiceFlowParams</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamServiceFlowParams</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISDownstreamDataRate</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISUpstreamDataRate</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.MACAddress</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.BPIState</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.NetworkAccess</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpgradeServerIP</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.Market</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.MDDIPOverride</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPAddress</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.BootFileName</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.SubnetMask</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.Gateway</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.TFTPServer</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.TimeServer</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.TimeOffset</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.LeaseTimeRemaining</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.RebindTimeRemaining</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.RenewTimeRemaining</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6Address</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6BootFileName</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6Prefix</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6Router</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6TFTPServer</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6TimeServer</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6LeaseTimeRemaining</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6RebindTimeRemaining</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.IPv6RenewTimeRemaining</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISVersion</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.CMStatus</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISDownstreamScanning</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISDownstreamRanging</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISUpstreamScanning</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISUpstreamRanging</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISTftpStatus</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISDataRegComplete</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.LoopDiagnosticsDetails</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.LoopDiagnosticsStart</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.CoreVersion</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DOCSISDHCPStatus</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.EnableLog</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.LockedUpstreamChID</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.StartDSFrequency</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.CMErrorCodewordsNumberOfEntries</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DocsisLogNumberOfEntries</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannelNumberOfEntries</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamChannelNumberOfEntries</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.CMErrorCodewords.{i}.UnerroredCodewords</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.CMErrorCodewords.{i}.CorrectableCodewords</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.CMErrorCodewords.{i}.UncorrectableCodewords</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.Time</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.EventID</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.EventLevel</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.Description</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.ChannelID</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.Frequency</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.PowerLevel</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.SNRLevel</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.Modulation</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.Octets</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.Correcteds</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.Uncorrectables</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.LockStatus</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamChannel.{i}.ChannelID</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamChannel.{i}.Frequency</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamChannel.{i}.PowerLevel</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamChannel.{i}.ChannelType</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamChannel.{i}.SymbolRate</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamChannel.{i}.Modulation</Name>
+	</Param>
+	<Param>
+            <Name>Device.X_CISCO_COM_CableModem.UpstreamChannel.{i}.LockStatus</Name>
+	</Param>
         <Param>
             <Name>Device.X_CISCO_COM_IGMP.IGMPEnable</Name>
         </Param>
@@ -3217,7 +4140,6 @@
         <Param>
             <Name>Device.IPv6rd.InterfaceSetting.{i}.TunneledInterface</Name>
         </Param>
-
 		<!-- Device.RouterAdvertisement.{i}. -->
         <Param>
             <Name>Device.RouterAdvertisement.Enable</Name>
@@ -3331,8 +4253,234 @@
         <Param>
             <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.RSEnable</Name>
         </Param>
-		
-        <!-- INVISIBLE parameters under "Device." -->
+	
+
+	 <!-- Phase3 hotspot requirements -->
+		<!-- Phase3 hotspot tunnel entries -->
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.TunnelNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Enable</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Status</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.LastChange</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.PrimaryRemoteEndpoint</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.SecondaryRemoteEndpoint</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.ConnectedRemoteEndpoint</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.KeyIdentifierGenerationPolicy</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.KeyIdentifier</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.UseSequenceNumber</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.UseChecksum</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.DSCPMarkPolicy</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.KeepAlivePolicy</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.RemoteEndpointHealthCheckPingCount</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.RemoteEndpointHealthCheckPingInterval</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.RemoteEndpointHealthCheckPingFailThreshold</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.RemoteEndpointHealthCheckPingIntervalInFailure</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.ReconnectToPrimaryRemoteEndpoint</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.EnableCircuitID</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.EnableRemoteID</Name>
+	</Param>
+		<!-- Phase3 hotspot tunnel interface entries -->
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.InterfaceNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Interface.{i}.VLANID</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Interface.{i}.LocalInterfaces</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Interface.{i}.AssociatedBridges</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Interface.{i}.AssociatedBridgesWiFiPort</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.GRENetworkTunnel</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Stats.KeepAliveSent</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Stats.KeepAliveReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Stats.DiscardChecksumReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Stats.DiscardSequenceNumberReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.SSIDNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.SSID.{i}.SSID</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.SSID.{i}.AssociatedDeviceNumberOfEntries</Name>
+	</Param>
+	<Param>
+        <Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.SSID.{i}.AssociatedDevice.{i}.Hostname</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.SSID.{i}.AssociatedDevice.{i}.IPv4Address</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.SSID.{i}.AssociatedDevice.{i}.DHCPv4Status</Name>
+	</Param>
+	
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.InterfaceNumberOfEntries</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Enable</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Status</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Alias</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Name</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.LastChange</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.LowerLayers</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Mode</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.RemoteEndpoint</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.KeyMode</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Key</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.ChecksumEnabled</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.SequenceNumberEnabled</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.TOSMode</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.TOS</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BytesSent</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BytesReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.PacketsSent</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.PacketsReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.ErrorsSent</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.ErrorsReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnicastPacketsSent</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnicastPacketsReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.DiscardPacketsSent</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.DiscardPacketsReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.MulticastPacketsSent</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.MulticastPacketsReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BroadcastPacketsSent</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BroadcastPacketsReceived</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnknownProtoPacketsReceived</Name>
+	</Param>
+ 
+        <!-- WebPA configuration Parameters under "Device." -->
+
+	<Param>
+		<Name>Device.DeviceInfo.Webpa.Enable</Name>
+	</Param>
+	<Param>
+		<Name>Device.DeviceInfo.Webpa.ServerURL</Name>
+	</Param>
+	<Param>
+		<Name>Device.DeviceInfo.Webpa.ServerPort</Name>
+	</Param>
+	<Param>
+		<Name>Device.DeviceInfo.Webpa.DeviceNetworkInterface</Name>
+	</Param>
+	<Param>
+		<Name>Device.DeviceInfo.Webpa.RetryIntervalInSec</Name>
+	</Param>
+	<Param>
+		<Name>Device.DeviceInfo.Webpa.MaxPingWaitTimeInSec</Name>
+	</Param>
+          
+   
+        <!-- INVISIBLE Parameters under "Device." -->
         <Param invisible="true">
             <Name>Com.Cisco.Spvtg.Ccsp.Command.FactoryReset</Name>
         </Param>
@@ -3340,7 +4488,7 @@
             <Name>com.cisco.spvtg.ccsp.rm.Reboot.Enable</Name>
         </Param>
 
-        <!-- INVISIBLE parameters under "com." -->
+        <!-- INVISIBLE Parameters under "com." -->
         <Param invisible="true">
             <Name>com.cisco.spvtg.ccsp.fu.Configuration.Name</Name>
         </Param>
