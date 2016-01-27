@@ -80,7 +80,7 @@
         01/02/2014  initial revision.
 
 **********************************************************************/
-
+#include <openssl/hmac.h>
 #include "ansc_platform.h"
 #include "ccsp_base_api.h"
 #include "ccsp_memory.h"
@@ -95,7 +95,7 @@
 #include "slap_definitions.h"
 #include "ccsp_psm_helper.h"
 #include "ansc_string.h"
-
+#include "stdio.h"
 #include <uuid/uuid.h>
 /* Fake, to be removed */
 #include "ccsp_cwmp_proco_interface.h"
@@ -107,6 +107,21 @@
 
 #include "ccsp_tr069pa_wrapper_api.h"
 extern msObjectInfo *objectInfo;
+extern char *CcspManagementServer_SubsystemPrefix;
+extern void *bus_handle;
+static int  DeviceInfoRetrieved = 0;
+static char DeviceManufacturerOUI[16] = {0}; //"0000CA"
+static char DeviceProductClass[16]    = {0}; // "XF3";
+static char DeviceSerialNumber[32]    = {0};
+static int  DefaultUsernameGenerated = 0;
+static char DefaultUsername[72]      = {0};
+static int  DefaultPasswordGenerated = 0;
+static char* DeviceDefaultPassword      = NULL;
+//static char* SharedKey = NULL;
+static char SharedKey[256] = {'\0'};
+#define SHAREDKEYPATH "/usr/ccsp/tr069pa/sharedkey"
+//#define SHAREDKEYPATH "/nvram/sharedkey"
+#define SHAREDKEY "4155992b42d90eba3aba7765422a1d0a5ee8be922538c7d1371484bd27f07ff6"
 
 CCSP_VOID
 CcspCwmpsoStartRetryTimerCustom
@@ -147,6 +162,7 @@ CcspCwmpsoInformPopulateTRInformationCustom
     pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceSummary"                        );
     pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.HardwareVersion"           );
     pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.SoftwareVersion"           );
+    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.ProvisioningCode"           );
     pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.ManagementServer.ConnectionRequestURL");
     pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.ManagementServer.ParameterKey"        );
 
@@ -164,13 +180,14 @@ CcspCwmpsoInformPopulateTRInformationCustom
          !pCwmpParamValueArray[index_start+2].Name ||
          !pCwmpParamValueArray[index_start+3].Name ||
          !pCwmpParamValueArray[index_start+4].Name ||
-         ( !bDevice20OrLater && 
+         !pCwmpParamValueArray[index_start+5].Name ||
+         ( !bDevice20OrLater &&
             (
-            !pCwmpParamValueArray[index_start+5].Name || 
-            !pCwmpParamValueArray[index_start+6].Name || 
-            !pCwmpParamValueArray[index_start+7].Name || 
-            !pCwmpParamValueArray[index_start+8].Name || 
-            !pCwmpParamValueArray[index_start+9].Name )
+            !pCwmpParamValueArray[index_start+6].Name ||
+            !pCwmpParamValueArray[index_start+7].Name ||
+            !pCwmpParamValueArray[index_start+8].Name ||
+            !pCwmpParamValueArray[index_start+9].Name ||
+            !pCwmpParamValueArray[index_start+10].Name )
         ) )
     {
         returnStatus = ANSC_STATUS_RESOURCES;
@@ -187,7 +204,11 @@ CcspManagementServer_GetPeriodicInformTimeStrCustom
 {
 
     if(!objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value){
-        objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value = CcspManagementServer_CloneString("0001-01-01T00:00:00Z");
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        char p[30];
+        sprintf(p,"%d-%d-%d%s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,"T00:00:00Z");
+        objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value = CcspManagementServer_CloneString(p);
     }
 
     return CcspManagementServer_CloneString(objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value);
@@ -267,28 +288,80 @@ int CcspManagementServer_GetObjectIDCustom(char *p1)
 CCSP_VOID CcspManagementServer_InitDBusCustom(CCSP_Base_Func_CB *cb)
 {
 
-  
+
 }
 
 CCSP_VOID
 CcspManagementServer_FillInObjectInfoCustom(msObjectInfo *objectInfo)
 {
-    objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformEnableID].value
-        = CcspManagementServer_CloneString("0");
+    typedef struct _msParameter{
+        char * name; /* name without a path */
+    } msParameter;
+    msParameter ParamName[] = {
+            {"dmsb.ManagementServer.PeriodicInformEnable"},
+            {"dmsb.ManagementServer.PeriodicInformInterval"},
+            //{"dmsb.ManagementServer.PeriodicInformTime"},
+            {"dmsb.ManagementServer.DefaultActiveNotificationThrottle"},
+            {"dmsb.ManagementServer.CWMPRetryMinimumWaitInterval"},
+            {"dmsb.ManagementServer.CWMPRetryIntervalMultiplier"}
+    };
+    int i = 0;
+    int ArrLen = sizeof(ParamName)/sizeof(char*);
+    for(i = 0;i < ArrLen;i++)
+    {
+        char *pValue = NULL;
+        int res;
+        res = PSM_Get_Record_Value2(
+                bus_handle,
+                CcspManagementServer_SubsystemPrefix,
+                ParamName[i].name,
+                NULL,
+                &pValue);
+        if ( res == CCSP_SUCCESS)
+        {
+            if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.PeriodicInformEnable"))
+            {
+                objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformEnableID].value
+                = CcspManagementServer_CloneString(pValue);
+            }
+            else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.PeriodicInformInterval"))
+            {
+                objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformIntervalID].value
+                = CcspManagementServer_CloneString(pValue);
+            }
+            /*else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.PeriodicInformTime"))
+              {
+                  objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value = CcspManagementServer_CloneString(pValue);
+              }*/
+            else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.DefaultActiveNotificationThrottle"))
+            {
+                objectInfo[ManagementServerID].parameters[ManagementServerDefaultActiveNotificationThrottleID].value
+                = CcspManagementServer_CloneString(pValue);
+            }
+            else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.CWMPRetryMinimumWaitInterval"))
+            {
+                objectInfo[ManagementServerID].parameters[ManagementServerCWMPRetryMinimumWaitIntervalID].value
+                = CcspManagementServer_CloneString(pValue);
+            }
+            else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.CWMPRetryIntervalMultiplier"))
+            {
+                objectInfo[ManagementServerID].parameters[ManagementServerCWMPRetryIntervalMultiplierID].value
+                = CcspManagementServer_CloneString(pValue);
+            }
+        }
+        else
+        {
+            CcspTraceWarning(("%s - Cannot get PSM value for '%s'\n", __FUNCTION__, "dmsb.ManagementServer.ACSChangedURL"));
+            res = TR69_INTERNAL_ERROR;
 
-    objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformIntervalID].value
-        = CcspManagementServer_CloneString("86400");
-  
+        }
+    }
 }
 
-char*
-CcspTr069PaSsp_GetCustomForcedInformParamsCustom
-    (
-        ANSC_HANDLE                 hThisObject,
-	char *			     g_ForcedInformParams
-    )
+char* CcspTr069PaSsp_GetCustomForcedInformParamsCustom (
+       ANSC_HANDLE  hThisObject,
+       char         *g_ForcedInformParams)
 {
-  
   return NULL;
 }
 
@@ -309,6 +382,216 @@ CcspTr069PaSsp_InitCcspCwmpCfgIf_Custom(ANSC_HANDLE hCcspCwmpCpeController)
     return 0;
 }
 
+static ANSC_STATUS CcspTr069PaSsp_GetDeviceInfo
+    (
+    )
+{
+    ANSC_STATUS                     returnStatus           = ANSC_STATUS_SUCCESS;
+    int                             val_size               = 0;
+    parameterValStruct_t**          ppval                  = NULL;
+    char *                          parameterNames[3]      = {NULL, NULL, NULL};
+
+    parameterNames[0] = CcspManagementServer_CloneString("Device.DeviceInfo.ManufacturerOUI");
+    parameterNames[1] = CcspManagementServer_CloneString("Device.DeviceInfo.ProductClass");
+    parameterNames[2] = CcspManagementServer_CloneString("Device.DeviceInfo.SerialNumber");
+
+    returnStatus =
+        CcspManagementServer_UtilGetParameterValues
+            (
+                parameterNames,
+                3,
+                &val_size,
+                &ppval
+            );
+
+    if ( (returnStatus == ANSC_STATUS_SUCCESS) && (val_size ==  3) )
+    {
+        if ( AnscSizeOfString(ppval[0]->parameterValue) > 0 )
+        {
+            _ansc_strcpy(DeviceManufacturerOUI, ppval[0]->parameterValue);
+        }
+        else
+        {
+            AnscTraceWarning(("%s - null ManufacturerOUI!\n", __FUNCTION__));
+            returnStatus = ANSC_STATUS_FAILURE;
+            goto EXIT;
+        }
+
+        if ( AnscSizeOfString(ppval[1]->parameterValue) > 0 )
+        {
+            _ansc_strcpy(DeviceProductClass, ppval[1]->parameterValue);
+        }
+        else
+        {
+            AnscTraceWarning(("%s - null ProductClass!\n", __FUNCTION__));
+            returnStatus = ANSC_STATUS_FAILURE;
+            goto EXIT;
+        }
+
+        if ( AnscSizeOfString(ppval[2]->parameterValue) > 0 )
+        {
+            _ansc_strcpy(DeviceSerialNumber, ppval[2]->parameterValue);
+        }
+        else
+        {
+            AnscTraceWarning(("%s- null SerialNumber!\n", __FUNCTION__));
+            returnStatus = ANSC_STATUS_FAILURE;
+            goto EXIT;
+        }
+    }
+
+    DeviceInfoRetrieved = 1;
+
+EXIT:
+    if(ppval && val_size) { CcspManagementServer_UtilFreeParameterValStruct(val_size, ppval); }
+    CcspManagementServer_Free(parameterNames[0]);
+    CcspManagementServer_Free(parameterNames[1]);
+    CcspManagementServer_Free(parameterNames[2]);
+    return returnStatus;
+}
+
+static ANSC_STATUS
+CcspTr069PaSsp_DeviceDefaultUsernameGenerate ()
+{
+
+    if( !DeviceInfoRetrieved )
+    {
+        if ( CcspTr069PaSsp_GetDeviceInfo() != ANSC_STATUS_SUCCESS)
+        {
+            return ANSC_STATUS_FAILURE;
+        }
+    }
+
+    _ansc_sprintf(DefaultUsername, "%s-%s-%s",
+            DeviceManufacturerOUI, DeviceProductClass, DeviceSerialNumber);
+
+    AnscTraceWarning(("%s -- default username is '%s'\n", __FUNCTION__, DefaultUsername));
+
+    //DefaultUsernameGenerated = 1;
+
+    return ANSC_STATUS_SUCCESS;
+}
+
+//#if 0
+
+char * CcspTr069PaSsp_retrieveSharedKey( void )
+{
+    FILE* fp = NULL;
+    char key [ 256 ];
+    int len = 0;
+
+    if ( (fp = fopen ( SHAREDKEYPATH, "r" )) != NULL )
+    {
+        if ( fgets ( key, sizeof(key), fp ) != NULL )
+        {
+            strip_line(key);
+            len = strlen(key);
+            strncpy(SharedKey,key,len);
+        }
+        else
+        {
+            printf("fgets() failed CcspTr069PaSsp_retrieveSharedKey\n");
+        }
+        fclose(fp);
+    }
+    else
+    {
+        printf("fopen() failed in CcspTr069PaSsp_retrieveSharedKey\n");
+    }
+
+
+    return SharedKey;
+}
+//#endif
+
+static ANSC_STATUS
+CcspTr069PaSsp_DeviceDefaultPasswordGenerate ()
+{
+
+    if( !DeviceInfoRetrieved )
+    {
+        if ( CcspTr069PaSsp_GetDeviceInfo() != ANSC_STATUS_SUCCESS)
+        {
+            return ANSC_STATUS_FAILURE;
+        }
+    }
+
+    {
+        char                            HashStr[128]    = {0};
+        ANSC_CRYPTO_KEY                 key             = {0};
+        ANSC_CRYPTO_HASH                hash            = {0};
+        ULONG                           hashLength      = 0;
+        char *tmp = NULL, *convertTo = NULL;
+        //char shKey [ 256 ];
+        char cmp[64] = {'\0'};
+        char sharedText[128] = {'\0'}, sharedmd[64] = {'\0'};
+        int  iIndex = 0, sharedKey_len = 0, sharedText_len = 0,  sharedmd_len = 0;
+        HMAC_CTX ctx;
+
+        _ansc_sprintf(sharedText, "%s-%s",
+                DeviceManufacturerOUI, DeviceProductClass);
+
+        //strcpy(SharedKey, SHAREDKEY);
+        if(NULL== CcspTr069PaSsp_retrieveSharedKey())
+        {
+            return ANSC_STATUS_FAILURE;
+        }
+        sharedKey_len = strlen(SharedKey);
+
+        sharedText_len = strlen(sharedText);
+
+        HMAC_CTX_init( &ctx);
+        HMAC_Init(   &ctx, SharedKey,  sharedKey_len, EVP_sha256());
+        HMAC_Update( &ctx, (unsigned char *)sharedText, sharedText_len);
+        HMAC_Final(  &ctx, (unsigned char *)sharedmd, (unsigned int *)&sharedmd_len );
+
+        convertTo = cmp;
+        for (iIndex = 0; iIndex < sharedmd_len; iIndex++)
+        {
+            sprintf(convertTo,"%02x", sharedmd[iIndex] & 0xff);
+            convertTo += 2;
+        }
+        DeviceDefaultPassword = (char *) malloc(strlen (cmp) + 3);
+        DeviceDefaultPassword = cmp;
+
+        HMAC_CTX_cleanup( &ctx );
+        AnscTraceWarning(("%s -- default password is '%s', hashLength = %d\n",
+                __FUNCTION__, DeviceDefaultPassword, hashLength));
+
+        //        fprintf(stderr, "<RT> %s -- default password is '%s', hashLength = %d\n",
+        //                          __FUNCTION__, DeviceDefaultPassword, hashLength);
+
+        /*
+         *  Write the password to a file
+         */
+        {
+            FILE*              pFile       = NULL;
+            mode_t             origMod     = umask(0);
+
+            pFile = fopen("/tmp/acsPasswd.txt", "w");
+
+            if ( pFile )
+            {
+                fprintf
+                (
+                        pFile,
+                        "Default password length = %d, first 4 bytes %02X%02X%02X%02X, value = %s\n",
+                        hashLength,
+                        hash.Value[0], hash.Value[1], hash.Value[2], hash.Value[3],
+                        DeviceDefaultPassword
+                );
+
+                fclose(pFile);
+            }
+            umask(origMod);
+        }
+
+        //DefaultPasswordGenerated = 1;
+
+        return ANSC_STATUS_SUCCESS;
+    }
+}
+
 ANSC_STATUS
 CcspManagementServer_GenerateDefaultUsername
     (
@@ -316,7 +599,28 @@ CcspManagementServer_GenerateDefaultUsername
         PULONG                      pulLength
     )
 {
-    return  ANSC_STATUS_FAILURE;
+
+    if( !DefaultUsernameGenerated )
+    {
+        if ( CcspTr069PaSsp_DeviceDefaultUsernameGenerate() != ANSC_STATUS_SUCCESS)
+        {
+            return ANSC_STATUS_FAILURE;
+        }
+    }
+
+    {
+        int len = _ansc_strlen(DefaultUsername);
+        if ( *pulLength < len )
+        {
+            return  ANSC_STATUS_MORE_DATA;
+        }
+        else
+        {
+            *pulLength = len;
+            _ansc_strcpy(pDftUsername, DefaultUsername);
+            return ANSC_STATUS_SUCCESS;
+        }
+    }
 }
 
 ANSC_STATUS
@@ -326,5 +630,26 @@ CcspManagementServer_GenerateDefaultPassword
         PULONG                      pulLength
     )
 {
-    return  ANSC_STATUS_FAILURE;
+    if ( !DefaultPasswordGenerated )
+    {
+        if ( CcspTr069PaSsp_DeviceDefaultPasswordGenerate() != ANSC_STATUS_SUCCESS)
+        {
+            return ANSC_STATUS_FAILURE;
+        }
+    }
+    //else
+    {
+        int len = _ansc_strlen(DeviceDefaultPassword);
+
+        if ( *pulLength < len )
+        {
+            return  ANSC_STATUS_MORE_DATA;
+        }
+        else
+        {
+            *pulLength  = len;
+            _ansc_strcpy(pDftPassword, DeviceDefaultPassword);
+            return  ANSC_STATUS_SUCCESS;
+        }
+    }
 }
