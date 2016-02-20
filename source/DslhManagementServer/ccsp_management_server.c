@@ -984,22 +984,22 @@ CcspManagementServer_RegisterWanInterface()
         CcspTraceWarning(("CcspManagementServer_RegisterWanInterface CcspBaseIf_requestSessionID returns %d\n", res));
         sessionID = 0;
     }
-    parameterAttributeStruct_t val[2];
+    parameterAttributeStruct_t val[1];
     val[0].parameterName = pFirstUpstreamIpAddress;
     val[0].notificationChanged = 1;
     val[0].notification = 1;
     val[0].accessControlChanged = 0;
-    val[1].parameterName = FirstUpstreamIpInterfaceParameterName;
-    val[1].notificationChanged = 1;
-    val[1].notification = 1;
-    val[1].accessControlChanged = 0;
+   // val[1].parameterName = FirstUpstreamIpInterfaceParameterName;
+   // val[1].notificationChanged = 1;
+   // val[1].notification = 1;
+   // val[1].accessControlChanged = 0;
     res = CcspBaseIf_setParameterAttributes(
         bus_handle,
         pPAMComponentName,
         pPAMComponentPath,
         sessionID,
         val,
-        2);
+        1);
 
     CcspBaseIf_informEndOfSession(
         bus_handle,
