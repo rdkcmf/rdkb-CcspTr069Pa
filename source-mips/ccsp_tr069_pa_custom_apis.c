@@ -491,12 +491,15 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
         else
         {
             printf("fgets() failed CcspTr069PaSsp_retrieveSharedKey\n");
+            fclose(fp);
+            return NULL;
         }
         fclose(fp);
     }
     else
     {
         printf("fopen() failed in CcspTr069PaSsp_retrieveSharedKey\n");
+        return NULL;
     }
 
 
