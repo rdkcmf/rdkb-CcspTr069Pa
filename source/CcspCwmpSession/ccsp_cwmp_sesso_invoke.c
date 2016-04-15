@@ -994,7 +994,7 @@ bFirstInform = 0;
 		 for(x = 0;x<ulParamIndex;x++)
 		 {
 			char *temp = NULL;
-			temp = (char *)malloc(sizeof(char)*strlen(pCwmpParamValueArray[x].Name));
+			temp = (char *)malloc(sizeof(char)*(strlen(pCwmpParamValueArray[x].Name) + 1)); // Need to Account for '\0'
 			strcpy(temp,pCwmpParamValueArray[x].Name);
 			CcspCwmppoMpaMapParamInstNumDmIntToCwmp(temp);
 			pCwmpParamValueArray[x].Name = CcspTr069PaCloneString(temp);
