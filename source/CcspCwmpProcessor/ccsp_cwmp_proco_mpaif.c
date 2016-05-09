@@ -1662,7 +1662,10 @@ CcspCwmppoMpaGetParameterValues
             	CcspTr069PaTraceDebug(("GPV failure on FC %s, error = %d\n", pFcNsList->FCName, nResult));
                 nCcspError = CCSP_SUCCESS;
                 returnStatus = ANSC_STATUS_INTERNAL_ERROR;
-                break;
+                if( NULL != pParamValues )
+                	free_parameterValStruct_t(pCcspCwmpCpeController->hMsgBusHandle, nParamCount, pParamValues);
+				goto EXIT2; 
+                
             }
             else
             {
