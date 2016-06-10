@@ -766,6 +766,17 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 			AnscCopyString(pParameterValueArray[i].Name,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac");
 		}
 
+		if(!strcmp(pParameterValueArray[i].Name,"Device.TR069Notify.X_RDKCENTRAL-COM_TR069_Notification"))
+		{
+			continue;
+		}
+
+		
+		if(!strcmp(pParameterValueArray[i].Name,"Device.TR069Notify.X_RDKCENTRAL-COM_Connected-Client"))
+		{
+			continue;
+		}
+
         /* identify which sub-system(s) the parameter resides */
         NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
         CcspTr069PA_GetNamespaceSubsystems
