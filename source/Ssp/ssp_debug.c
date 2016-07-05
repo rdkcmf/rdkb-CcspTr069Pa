@@ -263,7 +263,15 @@ void ssp_testNsSyncWithCR()
 
                     pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT)g_pCcspCwmpCpeController->GetCcspCwmpProcessor((ANSC_HANDLE)g_pCcspCwmpCpeController);
 
+/* 
+* This callback process mechanism moved into CcspCwmppoProcessSysReadySignal() 
+* API. Due to system ready signal handling for TR069 restart process from selfheal scripts.
+*/
+#if 0
                     CcspCwmppoSysReadySignalCB((void*)pCcspCwmpProcessor);
+#else
+					CcspCwmppoProcessSysReadySignal((void*)pCcspCwmpProcessor);
+#endif /* 0 */
                 }
 }
 

@@ -309,6 +309,9 @@ CcspManagementServer_Init
     _ansc_ultoa(g_ulAllocatedSizeCurr, str, 10);
     objectInfo[MemoryID].parameters[MemoryMinUsageID].value = CcspManagementServer_CloneString(str);
 
+	// To check and wait for system ready signal from CR to proceed further
+	waitUntilSystemReady( CcspManagementServer_cbContext );
+
     //    return  (CCSP_HANDLE)bus_handle;
     return;
 }
