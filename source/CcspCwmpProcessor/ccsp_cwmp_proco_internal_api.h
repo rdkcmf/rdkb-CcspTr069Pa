@@ -680,5 +680,14 @@ CcspCwmppoDiagCompleteSignalCB
         void*                       user_data
     );
 
+void 
+CcspCwmppoProcessSysReadySignal
+    (
+		void*	cbContext
+    );
+
+void waitUntilSystemReady(	void*	cbContext);
+
+int checkIfSystemReady(void);
 
 #endif

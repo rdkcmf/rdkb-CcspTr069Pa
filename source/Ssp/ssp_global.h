@@ -97,6 +97,7 @@ int  cancel_tr069pa();
 #include "ccsp_cwmp_helper_api.h"
 void ssp_dumpPiTree();
 extern void CcspCwmppoSysReadySignalCB(void* user_data); /* for simulating reception of systemReady signal */
+extern void CcspCwmppoProcessSysReadySignal (void*	cbContext);
 
 void ssp_testNsSyncWithCR();
 void ssp_testNsAgainstMapper();

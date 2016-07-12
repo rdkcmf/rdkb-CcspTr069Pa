@@ -81,6 +81,7 @@
 
 #include "ccsp_cwmp_proco_global.h"
 
+extern ANSC_HANDLE bus_handle;
 
 static
 ANSC_STATUS
@@ -226,14 +227,118 @@ CcspCwmppoSysReadySignalCB
         void*                       user_data
     )
 {
-    AnscSpawnTask
+	// Touch a file to indicate that tr069 can proceed with further
+	system("touch /var/tmp/tr069paready");
+
+	CcspTr069PaTraceInfo(("Received system ready signal, created /var/tmp/tr069paready file\n"));
+
+	CcspTr069PaTraceInfo(("%s, user_data - 0x%X\n",
+								__FUNCTION__, 
+								(user_data != NULL) ? user_data : 0 ));
+	
+/* 
+* This callback process mechanism moved into CcspCwmppoProcessSysReadySignal() 
+* API. Due to system ready signal handling for TR069 restart process from selfheal scripts.
+*/
+#if 0
+	AnscSpawnTask
         (
             CcspCwmppoSysReadySignalProcTask, 
             (ANSC_HANDLE)user_data, 
             "Tr069PaSysReadyProcTask"
         );
+#endif /* 0 */
+ 
 }
 
+/**
+ * @brief waitUntilSystemReady Function to wait until the system ready signal from CR is received.
+ * This is to delay tr069pa start up until other components on stack are ready.
+ */
+void waitUntilSystemReady(	void*	cbContext)
+{
+	FILE *file;
+	int wait_time = 0;
+
+	// Check received cbContext is NULL or not. If NULL then skip further 
+	// steps
+	if( NULL == cbContext )
+	{
+		CcspTr069PaTraceInfo(("cbContext NULL\n"));
+		return;
+	}
+		  
+	// Wait till Call back touches the indicator to proceed further
+	while((file = fopen("/var/tmp/tr069paready", "r")) == NULL)
+	{
+		CcspTr069PaTraceInfo(("Waiting for system ready signal\n"));
+		// After waiting for 24 * 5 = 120s (2mins) send dbus message to CR to query for system ready
+		if(wait_time == 24)
+		{
+			wait_time = 0;
+			if(checkIfSystemReady())
+			{
+				CcspTr069PaTraceInfo(("Checked CR - System is ready, proceed with tr069 start up\n"));
+				system("touch /var/tmp/tr069paready");
+				break;
+				//Break out, System ready signal already delivered
+			}
+			else
+			{
+				CcspTr069PaTraceInfo(("Queried CR for system ready after waiting for 2 mins, it is still not ready\n"));
+			}
+		}
+		sleep(5);
+		wait_time++;
+	};
+	// In case of tr069pa restart, we should be having tr069pa already touched.
+	// In normal boot up we will reach here only when system ready is received.
+	if(file != NULL)
+	{
+		CcspTr069PaTraceInfo(("/var/tmp/tr069paready file exists, hence can proceed with tr069pa start up\n"));
+		fclose(file);
+
+		// To process further in tr069 process after receving the system ready 
+		// signal from CR
+		CcspCwmppoProcessSysReadySignal( cbContext );
+	}	
+}
+
+/**
+ * @brief checkIfSystemReady Function to query CR and check if system is ready.
+ * This is just in case tr069pa registers for the systemReadySignal event late.
+ * If SystemReadySignal is already sent then this will return 1 indicating system is ready.
+ */
+int checkIfSystemReady(void)
+{
+	char str[256];
+	int val, ret;
+	snprintf(str, sizeof(str), "eRT.%s", CCSP_DBUS_INTERFACE_CR);
+	// Query CR for system ready
+	ret = CcspBaseIf_isSystemReady(bus_handle, str, &val);
+	CcspTr069PaTraceInfo(("checkIfSystemReady(): ret %d, val %d\n", ret, val));
+	return val;
+}
+
+void 
+CcspCwmppoProcessSysReadySignal
+    (
+		void*	cbContext
+    )
+{
+	CcspTr069PaTraceInfo(("%s, cbContext - 0x%X\n",
+								__FUNCTION__, 
+								(cbContext != NULL) ? cbContext : 0 ));
+	if( NULL != cbContext )
+	{
+		AnscSpawnTask
+			(
+				CcspCwmppoSysReadySignalProcTask, 
+				(ANSC_HANDLE)cbContext, 
+				"Tr069PaSysReadyProcTask"
+			);
+	}
+}
 
 void 
 CcspCwmppoDiagCompleteSignalCB
