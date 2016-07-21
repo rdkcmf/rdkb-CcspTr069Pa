@@ -99,7 +99,9 @@
 /**********************************************************************
     RPC 'Reboot'
 **********************************************************************/
-#define  CCSP_NS_REBOOT                             "com.cisco.spvtg.ccsp.rm.Reboot.Enable"
+//#define  CCSP_NS_REBOOT                             "com.cisco.spvtg.ccsp.rm.Reboot.Enable"
+#define  CCSP_NS_REBOOT                   "Device.X_CISCO_COM_DeviceControl.RebootDevice"
+
 
 
 /**********************************************************************
