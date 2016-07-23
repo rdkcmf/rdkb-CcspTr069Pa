@@ -2829,11 +2829,11 @@ CcspCwmpsoMcoReboot
         ULONG                       ulArraySize     = 1;
         int                         iStatus         = 0;
         SLAP_VARIABLE               slapVar;
-        char                        value[2]        = {'1',0};
+        char                        value[12]        = {"Device\0"};
 
 #ifndef DONT_HAVE_RM
         ParamValue.Name          = CCSP_NS_REBOOT;
-        ParamValue.Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_Boolean;
+        ParamValue.Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_String;
         ParamValue.Value         = &slapVar;
 
         SlapInitVariable(&slapVar);
