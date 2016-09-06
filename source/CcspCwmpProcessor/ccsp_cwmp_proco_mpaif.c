@@ -179,9 +179,22 @@ CcspCwmppoAddFunctionalComponents
         ppDbusPathArray = (char**)CcspTr069PaAllocateMemory(sizeof(char*)*NumComp);
         if ( !ppSubsysArray || !ppFcNameArray || !ppDbusPathArray )
         {
-            CcspTr069PaFreeMemory(ppSubsysArray);
-            CcspTr069PaFreeMemory(ppFcNameArray);
-            CcspTr069PaFreeMemory(ppDbusPathArray);
+            /*RDKB-7325, CID-33562, CID-33319, CID-33249; preventing use after free */
+            if(ppSubsysArray)
+            {
+                CcspTr069PaFreeMemory(ppSubsysArray);
+                ppSubsysArray = NULL;
+            }
+            if(ppFcNameArray)
+            {
+                CcspTr069PaFreeMemory(ppFcNameArray);
+                ppFcNameArray = NULL;
+            }
+            if(ppDbusPathArray)
+            {
+                CcspTr069PaFreeMemory(ppDbusPathArray);
+                ppDbusPathArray = NULL;
+            }
         }
         else
         {
@@ -632,7 +645,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
     int                             j;
-    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT];
+    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33447, initialize before use */
     int                             NumSubsystems        = 0;
     char*                           pInvalidParamName    = NULL;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
@@ -861,6 +874,9 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 						AnscCopyString(pParamN,pValueInfo->parameterName);
 						CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
 						AnscCopyString(ParamName[i],pParamN);
+						/*RDKB-7325, CID-33443, free unused resources */
+						CcspTr069PaFreeMemory(pParamN);
+						pParamN = NULL;
 						noOfParam = i;
 					}
 					
@@ -1001,12 +1017,13 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
 
 
             CcspTr069PaFreeMemory(pParamValues);
+            pParamValues = NULL;
 
-	    if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
-	    {	
-			/* If not success send appropriate parameter name*/
-			pInvalidParam=CcspTr069PaCloneString("Device.X_COMCAST_COM_CM.ReinitCmMac");
-		}
+            if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
+            {
+                /* If not success send appropriate parameter name*/
+                pInvalidParam=CcspTr069PaCloneString("Device.X_COMCAST_COM_CM.ReinitCmMac");
+            }
 
             if ( nResult != CCSP_SUCCESS )
             {
@@ -1075,23 +1092,23 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
                     pCwmpSoapFault->SetParamValuesFaultCount++;
 
                     CcspTr069PaFreeMemory(pInvalidParam);
+                    pInvalidParam = NULL;
                 }
 
-            	CcspTr069PaTraceDebug(("SPV failure on FC %s, error = %d\n", pFcNsList->FCName, nResult));
+                CcspTr069PaTraceDebug(("SPV failure on FC %s, error = %d\n", pFcNsList->FCName, nResult));
                 bSucc = FALSE;
                 nCcspError = nResult;
 
                 break;
             }
 
-
-
-			if ( pInvalidParam )
+            if ( pInvalidParam )
             {
                 CcspTr069PaFreeMemory(pInvalidParam);
+                pInvalidParam = NULL;
             }
 
-		}
+        }
         if ( nResult == CCSP_SUCCESS )
         {
             j = nNumFCs;
@@ -1123,6 +1140,7 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
 			if(bRadioRestartEn)
 			{
 
+#if 0 /*RDKB-7325, CID-33526, unused variable, leading to memory leak*/
 			pParamValues = 
 					(parameterValStruct_t*)CcspTr069PaAllocateMemory
 						(
@@ -1134,6 +1152,7 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
 					returnStatus = ANSC_STATUS_RESOURCES;
 					goto EXIT2;
 				}
+#endif				
 				bRadioRestartEn = FALSE;
 				pInvalidParam = NULL;
 
@@ -1417,7 +1436,7 @@ CcspCwmppoMpaGetParameterValues
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
     int                             j;
-    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT];
+    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33228, initialize before use*/
     int                             NumSubsystems        = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
     CCSP_INT                        nCcspError           = CCSP_SUCCESS;
@@ -2031,7 +2050,7 @@ CcspCwmppoMpaGetParameterNames
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
     int                             j;
-    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT];
+    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33169, initialize before use*/
     int                             NumSubsystems        = 0;
     parameterInfoStruct_t**         ParamInfoArray       = NULL;
     int                             nParamInfoArraySize  = 0;
@@ -2389,7 +2408,7 @@ CcspCwmppoMpaSetParameterAttributes
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
     int                             j;
-    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT];
+    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};   /*RDKB-7325, CID-32906, initialize before use */
     int                             NumSubsystems        = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
     char*                           pParamName           = NULL;
@@ -2795,7 +2814,7 @@ CcspCwmppoMpaGetParameterAttributes
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
     int                             j;
-    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT];
+    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};  /*RDKB-7325, CID-32990, initialize before use */
     int                             NumSubsystems        = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
     parameterAttributeStruct_t**    ppCcspAttrArray      = NULL;
@@ -3342,7 +3361,7 @@ CcspCwmppoMpaAddObject
     ULONG                           i;
     int                             nRet;
     CCSP_INT                        nCcspError          = CCSP_SUCCESS;
-    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT];
+    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};  /*RDKB-7325, CID-32935, initialize before use */
     int                             NumSubsystems       = 0;
 
     *pulObjInsNumber = 0;
@@ -3596,7 +3615,7 @@ CcspCwmppoMpaDeleteObject
     ULONG                           i;
     int                             nRet;
     CCSP_INT                        nCcspError          = CCSP_SUCCESS;
-    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT];
+    CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33069, initialize before use */
     int                             NumSubsystems       = 0;
 
     *piStatus    = 0;
