@@ -1534,27 +1534,39 @@ CcspCwmppoDelayUdpConnReqAddrTask
 
     while ( pMyObject->bActive )
     {
-		ULONG						uTimeNow = AnscGetTickInSeconds();
-		ULONG						uNotificationLimit = 0;
+        ULONG                       uTimeNow = AnscGetTickInSeconds();
+        ULONG                       uNotificationLimit = 0;
+        CCSP_STRING                 pNotificationLimit = NULL;
 
-		uNotificationLimit = 
-			CcspManagementServer_GetUDPConnectionRequestAddressNotificationLimit
-				(
-					pCcspCwmpCpeController->PANameWithPrefix
-				);
+        pNotificationLimit = 
+            CcspManagementServer_GetUDPConnectionRequestAddressNotificationLimit
+                (
+                    pCcspCwmpCpeController->PANameWithPrefix
+                );
 
-		if ( uNotificationLimit == 0 || (s_nextUdpConnReqAddrNotifyTime != 0 && uTimeNow >= s_nextUdpConnReqAddrNotifyTime ) )
-		{
-			char* 					pRootObjName = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
-			char					paramName[256];
-			CCSP_STRING				paramValue;
+        /*RDKB-7324, CID-33500, free resource after use*/
+        if(pNotificationLimit)
+        {
+            uNotificationLimit = (ULONG)_ansc_atoi(pNotificationLimit);
+            CcspManagementServer_Free(pNotificationLimit);
+        }
+        else
+        {
+            uNotificationLimit = 0;
+        }
 
-			s_nextUdpConnReqAddrNotifyTime = 0;	/* reset next notification time */
-			s_lastUdpConnReqAddrNotifyTime = uTimeNow;
+        if ( uNotificationLimit == 0 || (s_nextUdpConnReqAddrNotifyTime != 0 && uTimeNow >= s_nextUdpConnReqAddrNotifyTime ) )
+        {
+            char*                   pRootObjName = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
+            char                    paramName[256];
+            CCSP_STRING             paramValue;
 
-			paramValue = CcspManagementServer_GetUDPConnectionRequestAddress(pCcspCwmpCpeController->PANameWithPrefix);
+            s_nextUdpConnReqAddrNotifyTime = 0;	/* reset next notification time */
+            s_lastUdpConnReqAddrNotifyTime = uTimeNow;
 
-			_ansc_sprintf(paramName, "%s.ManagementServer.UDPConnectionRequestAddress", pRootObjName);
+            paramValue = CcspManagementServer_GetUDPConnectionRequestAddress(pCcspCwmpCpeController->PANameWithPrefix);
+
+            _ansc_sprintf(paramName, "%s.ManagementServer.UDPConnectionRequestAddress", pRootObjName);
 
             /* notify value change */
             pCcspCwmpMsoIf->ValueChanged
@@ -1566,17 +1578,19 @@ CcspCwmppoDelayUdpConnReqAddrTask
                     TRUE
                 );
 
-			s_lastUdpConnReqAddrNotifyTime = AnscGetTickInSeconds();
+            s_lastUdpConnReqAddrNotifyTime = AnscGetTickInSeconds();
 
-			break;
-		}
+            break;
+        }
 
-		AnscSleep(1000);
-	}
+        AnscSleep(1000);
+    }
 
     pMyObject->AsyncTaskCount--;
 
-	return	ANSC_STATUS_SUCCESS;
+    
+
+    return    ANSC_STATUS_SUCCESS;
 }
 
 
@@ -2029,39 +2043,53 @@ CcspCwmppoProcessPvcSignal
             /* check if the parameter is set to Active or Passive */
             Notification = pMyObject->CheckParamAttrCache((ANSC_HANDLE)pMyObject, (char*)pVC->parameterName);
 
-			if ( Notification == CCSP_CWMP_NOTIFICATION_active &&
+            if ( Notification == CCSP_CWMP_NOTIFICATION_active &&
                  NULL != _ansc_strstr(pVC->parameterName, ".ManagementServer.UDPConnectionRequestAddress") )
-			{
-				CCSP_UINT			uNotificationLimit = 0;
-				ULONG				uTimeNow = AnscGetTickInSeconds();
+            {
+                CCSP_UINT           uNotificationLimit = 0;
+                CCSP_STRING         pNotificationLimit = NULL;
+                ULONG               uTimeNow = AnscGetTickInSeconds();
 
-				uNotificationLimit = 
-					CcspManagementServer_GetUDPConnectionRequestAddressNotificationLimit
-						(
-							pCcspCwmpCpeController->PANameWithPrefix
-						);
+                uNotificationLimit = 
+                    CcspManagementServer_GetUDPConnectionRequestAddressNotificationLimit
+                        (
+                            pCcspCwmpCpeController->PANameWithPrefix
+                        );
+                /* RDKB-7324, CID-33226, free resource after use
+                ** The charector string required, by "CcspManagementServer_GetUDPConnectionRequestAddressNotificationLimit"
+                ** converting to integer before use.
+                */
+                if(pNotificationLimit)
+                {
+                    uNotificationLimit = (ULONG)_ansc_atoi(pNotificationLimit);
+                    CcspManagementServer_Free(pNotificationLimit);
+                }
+                else
+                {
+                    uNotificationLimit = 0;
+                }
 
-				if ( uNotificationLimit != 0 && s_lastUdpConnReqAddrNotifyTime != 0 &&
+                if ( uNotificationLimit != 0 && s_lastUdpConnReqAddrNotifyTime != 0 &&
                      ( ( uTimeNow >= s_lastUdpConnReqAddrNotifyTime && uTimeNow - s_lastUdpConnReqAddrNotifyTime < uNotificationLimit ) ||
                        ( uTimeNow < s_lastUdpConnReqAddrNotifyTime && 0xFFFFFFFF - s_lastUdpConnReqAddrNotifyTime + uTimeNow < uNotificationLimit  ) ) )
-				{
-					if ( s_nextUdpConnReqAddrNotifyTime == 0 ) /* no task previously scheduled */ 
-					{
-						s_nextUdpConnReqAddrNotifyTime = s_lastUdpConnReqAddrNotifyTime + uNotificationLimit + 1;
-	
-				        AnscSpawnTask
-				            (
-        	    			    (void*)CcspCwmppoDelayUdpConnReqAddrTask,
-				                (ANSC_HANDLE)pMyObject,
-            				    "CcspCwmppoDelayUdpConnReqAddrTask"
-			        	     );
-					}
+                {
+                    if ( s_nextUdpConnReqAddrNotifyTime == 0 ) /* no task previously scheduled */ 
+                    {
+                        s_nextUdpConnReqAddrNotifyTime = s_lastUdpConnReqAddrNotifyTime + uNotificationLimit + 1;
 
-					return;
-				}
+                        AnscSpawnTask
+                            (
+                                (void*)CcspCwmppoDelayUdpConnReqAddrTask,
+                                (ANSC_HANDLE)pMyObject,
+                                "CcspCwmppoDelayUdpConnReqAddrTask"
+                            );
+                    }
 
-				s_lastUdpConnReqAddrNotifyTime = uTimeNow;
-			}
+                    return;
+                }
+
+                s_lastUdpConnReqAddrNotifyTime = uTimeNow;
+            }
 
             /* notify value change */
             pCcspCwmpMsoIf->ValueChanged
