@@ -743,7 +743,7 @@ else
         }
         else
         {
-            char*                   pValue;
+            char*                   pValue = NULL;
 
             CcspTr069PaTraceDebug(("CcspCwmpsoInform -- Start to get parameter value #%d: %s.\n", i, pCwmpParamValueArray[i].Name));
 
@@ -813,15 +813,23 @@ else
                                 (ANSC_HANDLE)pCcspCwmpCpeController, 
                                 pCwmpParamValueArray[i].Name
                              );
+                        pValue = NULL;
                     }
                 }
                 else { // parameter value is empty
-
+                    CcspTr069PaFreeMemory(pValue); /*RDKB-7326, CID-33499, free resource before exit*/
+                    pValue = NULL;
                     if (_ansc_strcmp(pCwmpParamValueArray[i].Name, "Device.ManagementServer.ConnectionRequestURL") == 0)
                     {
                         returnStatus = ANSC_STATUS_FAILURE;
                         goto EXIT1;
                     }
+                }
+                /*RDKB-7326, CID-33499, free resource before exit*/
+                if(pValue)
+                {
+                    CcspTr069PaFreeMemory(pValue);
+                    pValue = NULL;
                 }
             }
         }
@@ -878,7 +886,15 @@ bFirstInform = 0;
 		    pCwmpParamValueArray[ulParamIndex].Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_Boolean;
 
             ulParamIndex++;
+            pSlapValue = NULL; /*RDKB-7326, CID-33388, Once Assigned making pSlapValue NULL*/
         }
+    }
+
+    /*RDKB-7326, CID-33388, free if not used*/
+    if(pSlapValue)
+    {
+        CcspTr069PaFreeMemory(pSlapValue);
+        pSlapValue = NULL;
     }
 
     /* include the WAN connection IP address defined by TR-098 */
@@ -946,15 +962,24 @@ bFirstInform = 0;
                     pSlapValue->Variant.varString = pDefWanConnIfIpv4Addr;
                     pCwmpParamValueArray[ulParamIndex].Value = pSlapValue;
                     pCwmpParamValueArray[ulParamIndex].Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_String;
+                    pSlapValue = NULL; /*RDKB-7326, CID-33388, Once Assigned making pSlapValue NULL*/
+                    pDefWanConnIfIpv4Addr = NULL;/*RDKB-7326, CID-33309, Once Assigned making pDefWanConnIfIpv4Addr NULL*/
                 }
 
+                if(pDefWanConnIfIpv4Addr)
+                {
+                    CcspTr069PaFreeMemory(pDefWanConnIfIpv4Addr);/*RDKB-7326, CID-33309, free if not used*/
+                    pDefWanConnIfIpv4Addr = NULL;
+                }
 				 ulParamIndex++;
 
                  CcspTr069PaFreeMemory(pConnReqUrl); 
+                 pConnReqUrl = NULL;
 			}
             }
             
             CcspTr069PaFreeMemory(pDefWanConnection);			
+            pDefWanConnection = NULL;
         }
 	}
 
