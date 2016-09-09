@@ -590,6 +590,13 @@ CcspTr069PA_PiTreeAddNamespace
                 "."
             );
 
+    /*RDKB-7323, CID-33464, CID-33324, null check before use */
+    if(!pNsTokenChain)
+    {
+        CcspTr069PaTraceWarning(("TR-069 PA mapper file Token creation failed: %s\n", Name));
+        return CCSP_FALSE;
+    }
+
     /* find the last matching node on the tree */
     while ( pNode && (pStringToken = AnscTcUnlinkToken(pNsTokenChain)) )
     {
@@ -628,8 +635,9 @@ CcspTr069PA_PiTreeAddNamespace
 
     if ( !pStringToken )
     {
+        AnscTcFree((ANSC_HANDLE)pNsTokenChain); /*RDKB-7323, CID-33478, free unused resource before exit */
         return  CCSP_TRUE;      /* duplicate namespace, silently dropped */
-    }    
+    }
 
     /* create nodes on the tree for remaining tokens */
     do 
@@ -641,6 +649,7 @@ CcspTr069PA_PiTreeAddNamespace
 
         if ( !pChildNode )
         {
+            AnscTcFree((ANSC_HANDLE)pNsTokenChain); /*RDKB-7323, CID-33478, free unused resource before exit */
             return  CCSP_FALSE;
         }
         else
@@ -1407,6 +1416,13 @@ CcspTr069PA_FindNamespace
                 Namespace,
                 "."
             );
+
+    /*RDKB-7323, CID-33225, CID-33324, null check before use */
+    if(!pNsTokenChain)
+    {
+        CcspTr069PaTraceWarning(("TR-069 PA mapper file Token creation failed ret null: %s\n", Namespace));
+        return  pChildNode;
+    }
 
     /* find the last matching node on the tree */
     while ( pNode && (pStringToken = AnscTcUnlinkToken(pNsTokenChain)) )
