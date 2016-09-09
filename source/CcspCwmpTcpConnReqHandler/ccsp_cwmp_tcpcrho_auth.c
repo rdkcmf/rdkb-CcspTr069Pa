@@ -822,7 +822,7 @@ CcspCwmpTcpcrhoCalcDigestHA2
     PUCHAR                          pHostName    = NULL;
     PUCHAR                          pUriPath     = NULL;
     USHORT                          HostPort     = 0;
-    ANSC_CRYPTO_HASH                MD5Hash;
+    ANSC_CRYPTO_HASH                MD5Hash      = {0}; /*RDKB-7327, CID-32923, initialize before use */
 
     pUriPath = pDigestUri;
 
@@ -1268,16 +1268,16 @@ CcspCwmpTcpcrhoGetDigestAuthInfo
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
     PHTTP_AUTHO_INFO                pAuthInfo    = (PHTTP_AUTHO_INFO          )hAuthInfo;
     char*                           pChal        = (char*)pDigData;
-    char*                           pNext, *pValue, *pValueLast;
+    char*                           pNext = NULL, *pValue= NULL, *pValueLast= NULL;
     ULONG                           ulLen, ulNameLen;
 
     while ( pChal )
     {
-        while ( *pChal == ' ' )
+        /*RDKB-7327, CID-33475, null check before use*/
+        while ( (pChal) && (*pChal == ' ') )
         {
             pChal ++;
         }
-
         if ( !pChal )
         {
             break;
