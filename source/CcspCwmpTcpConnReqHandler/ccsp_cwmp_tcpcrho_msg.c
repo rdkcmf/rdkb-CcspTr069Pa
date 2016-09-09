@@ -552,8 +552,11 @@ CcspCwmpTcpcrhoIsValidConnRequest
                 (char**)&pUrlPathOrg
             );
 
-    if ( status != ANSC_STATUS_SUCCESS )
-    	return FALSE;       /* somehow CR Url is not ready yet */
+    /*RDKB-7328, CID-32947, perform null check before use*/
+    if (( status != ANSC_STATUS_SUCCESS ) || (!pUrlPathOrg))
+    {
+        return FALSE;       /* somehow CR Url is not ready yet */
+    }
 
     pUrlPath = pUrlPathOrg;
 
