@@ -974,6 +974,7 @@ CcspManagementServer_RegisterWanInterface()
     CcspTraceDebug2("ms", ("CcspManagementServer_RegisterWanInterface pFirstUpstreamIpAddress is %s\n", pFirstUpstreamIpAddress));
 
     // Set pFirstUpstreamIpAddress active notification attribute.
+/*
     int priority = 0, sessionID;
     res = CcspBaseIf_requestSessionID (
         bus_handle,   
@@ -984,6 +985,7 @@ CcspManagementServer_RegisterWanInterface()
         CcspTraceWarning(("CcspManagementServer_RegisterWanInterface CcspBaseIf_requestSessionID returns %d\n", res));
         sessionID = 0;
     }
+*/
     parameterAttributeStruct_t val[1];
     val[0].parameterName = pFirstUpstreamIpAddress;
     val[0].notificationChanged = 1;
@@ -997,16 +999,16 @@ CcspManagementServer_RegisterWanInterface()
         bus_handle,
         pPAMComponentName,
         pPAMComponentPath,
-        sessionID,
+        0,
         val,
         1);
-
+/*
     CcspBaseIf_informEndOfSession(
         bus_handle,
         CrName,
         sessionID
         );
-
+*/
     if(res != CCSP_Message_Bus_OK) {
         CcspTraceWarning(("CcspManagementServer_RegisterWanInterface CcspBaseIf_setParameterAttributes returns %d, name=<%s>\n",
             res,
