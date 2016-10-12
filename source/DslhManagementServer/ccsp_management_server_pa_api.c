@@ -131,10 +131,11 @@ void ReadTr69TlvData()
 	char buff[255];
 	Tr69TlvData *object2=malloc(sizeof(Tr69TlvData));
 	FILE * file= fopen(TR69_TLVDATA_FILE, "rb");
-	if (file != NULL) 
+	if ((file != NULL) && (object2))
 	{
 		fread(object2, sizeof(Tr69TlvData), 1, file);
 		fclose(file);
+		file = NULL;
 		// Check if it's a fresh bootup / boot after factory reset / TR69 was never enabled
 		// If TR69 was never enabled, then we will always take URL from boot config file.
 		if((object2->FreshBootUp == 1) || (object2->Tr69Enable == 0))
@@ -200,10 +201,22 @@ void ReadTr69TlvData()
 			fwrite(object2, sizeof(Tr69TlvData), 1, file);
 			free(object2);
 			fclose(file);
+			file = NULL;
 		}
 	}
 	else
 		printf("TLV data file is missing!!!\n");
+
+	/*RDKB-7333, CID-32939, free unused resources before exit */
+	if(object2)
+	{
+		free(object2);
+	}
+	if(file)
+	{
+		fclose(file);;
+	}
+
 }
 
 CCSP_VOID
