@@ -269,8 +269,12 @@ int  CcspManagementServer_GetParameterAttributes(
     }
     //CcspTraceWarning("ms", ( "CcspManagementServer_GetParameterAttributes 1: %d to %d.\n", size, *val_size)); 
 
-    parameterAttributeStruct_t **attr;
+    parameterAttributeStruct_t **attr = NULL;
     attr = CcspManagementServer_Allocate(*val_size*sizeof(parameterAttributeStruct_t *));
+    if(!attr)
+    {
+        return CCSP_FAILURE;
+    }
     memset(attr, 0, *val_size*sizeof(parameterAttributeStruct_t *));
     for(i=0; i < *val_size; i++) attr[i] = CcspManagementServer_Allocate(sizeof(parameterAttributeStruct_t));
 
@@ -287,6 +291,16 @@ int  CcspManagementServer_GetParameterAttributes(
             int parameterID = CcspManagementServer_GetParameterID(objectID, name);
             if(parameterID < 0)
             {
+                /*RDKB-7331, CID-33143, free unused resources before exit */
+                for(i=0; i < *val_size; i++)
+                {
+                    if(attr[i])
+                    {
+                        CcspManagementServer_Free(attr[i]);
+                        attr[i] = NULL;
+                    }
+                }
+                CcspManagementServer_Free(attr);
                 return CCSP_FAILURE;
             }
             CcspManagementServer_GetSingleParameterAttributes(objectID, parameterID, attr[attrID]);
