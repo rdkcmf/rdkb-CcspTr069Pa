@@ -104,6 +104,9 @@ extern  BOOL                                        bEngaged;
 static  BOOL                                        s_bExcludeInvNamespaces = TRUE;
 extern  char                                        g_Subsystem[32];
 
+#define  MAX_NS_AL_LEN                              256   /*RDKB-7336, CID-33191, defining maximum length for NS and AL*/
+#define  MAX_VALUE_ARRAY_LEN                        512   /*RDKB-7336, CID-32893, defining maximum length for NS and AL*/
+#define  MAX_DATA_TYPR_LEN                          32    /*RDKB-7336, CID-32893, defining maximum length for NS and AL*/
 
 #define  ssp_remove_trailing_CRLF(ss)                                               \
     do {                                                                            \
@@ -702,17 +705,17 @@ void ssp_testSPA()
     CCSP_CWMP_SET_PARAM_ATTRIB      spa                = {0};
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault     = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     ANSC_STATUS                     returnStatus;
-    char                            ns[256];
+    char                            ns[MAX_NS_AL_LEN];
     char                            c;
     BOOL                            bChangeNotif       = FALSE;
     ULONG                           ulNotif            = 0;
     BOOL                            bChangeAL          = FALSE;
-    char                            al[64];
+    char                            al[MAX_NS_AL_LEN]; /*RDKB-7336, CID-33191, increasing the memory to avoid out of bound access*/
 
     printf("Input namespace: ");
     fflush(stdin);
     while(getc(stdin) != '\n') ;
-    fgets(ns, 256, stdin);
+    fgets(ns, MAX_NS_AL_LEN, stdin);
 
     ssp_remove_trailing_CRLF(ns);
     if ( ns[0] == 0 )
@@ -750,7 +753,7 @@ void ssp_testSPA()
     {
         printf("Input AccessList: ");
         fflush(stdin);
-        fgets(al, 256, stdin);
+        fgets(al, MAX_NS_AL_LEN, stdin);
 
         ssp_remove_trailing_CRLF(ns);
         if ( al[0] == 0 )
@@ -945,21 +948,21 @@ void ssp_sendValueChangeSignal()
 {
     PCCSP_CWMP_PROCESSOR_OBJECT     pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )g_pCcspCwmpCpeController->hCcspCwmpProcessor;
     ANSC_STATUS                     returnStatus;
-    char                            ns[256];
-    char                            oldValue[512]      = {0};
-    char                            newValue[512]      = {0};
+    char                            ns[MAX_NS_AL_LEN];
+    char                            oldValue[MAX_VALUE_ARRAY_LEN]      = {0};
+    char                            newValue[MAX_VALUE_ARRAY_LEN]      = {0};
     SLAP_VARIABLE                   slapVar            = {0};
     parameterSigStruct_t            vcSig              = {0};
     char*                           ssPrefix           = NULL;
     unsigned int                    writeID            = 0;
-    char                            dataType[16]       = {0};
+    char                            dataType[MAX_DATA_TYPR_LEN]       = {0};
     int                             ret;
     void*                           hBusHandle         = g_pCcspCwmpCpeController->hMsgBusHandle;
 
     printf("Input namespace whose value has changed: ");
     fflush(stdin);
     while(getc(stdin) != '\n') ;
-    fgets(ns, 256, stdin);
+    fgets(ns, MAX_NS_AL_LEN, stdin);
 
     ssp_remove_trailing_CRLF(ns);
     if ( ns[0] == 0 )
@@ -972,7 +975,7 @@ void ssp_sendValueChangeSignal()
 
     printf("New value: ");
     fflush(stdin);
-    fgets(newValue, 511, stdin);
+    fgets(newValue, (MAX_VALUE_ARRAY_LEN-1), stdin);
 
     ssp_remove_trailing_CRLF(newValue);
     
@@ -980,7 +983,7 @@ void ssp_sendValueChangeSignal()
     
     printf("old value: ");
     fflush(stdin);
-    fgets(oldValue, 511, stdin);
+    fgets(oldValue, (MAX_VALUE_ARRAY_LEN-1), stdin);
 
     ssp_remove_trailing_CRLF(oldValue);
     
@@ -988,7 +991,7 @@ void ssp_sendValueChangeSignal()
 
     printf("Input data type (1-String,2-Int,3-Uint,4-Boolean,5-DateTime,6-Base64): ");
     fflush(stdin);
-    fgets(dataType, 32, stdin);
+    fgets(dataType, MAX_DATA_TYPR_LEN, stdin); /*RDKB-7336, CID-32893, defining maximum length for NS and AL*/
 
     ssp_remove_trailing_CRLF(dataType);
 
