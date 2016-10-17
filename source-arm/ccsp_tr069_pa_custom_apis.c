@@ -563,7 +563,9 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
             sprintf(convertTo,"%02x", sharedmd[iIndex] & 0xff);
 	    convertTo += 2;
 	}
-	DeviceDefaultPassword = (char *) malloc(strlen (cmp) + 3);
+	/* RDKB-7335, CID-33495, leaked and unused memory as variable is overrided by cmp 
+	** DeviceDefaultPassword = (char *) malloc(strlen (cmp) + 3);
+	*/
 	DeviceDefaultPassword = cmp;
 
 	HMAC_CTX_cleanup( &ctx );
