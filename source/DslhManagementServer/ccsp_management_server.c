@@ -531,9 +531,14 @@ CcspManagementServer_FillInObjectInfo()
                         pValue ? pValue : "NULL"
                         );
                     );
-
-                objectInfo[i].parameters[j].notification = _ansc_atoi(pValue);
-                if(pValue) CcspManagementServer_Free(pValue);
+                /*RDKB-7329, CID-33414, null check before use */
+                if(pValue){
+                    objectInfo[i].parameters[j].notification = _ansc_atoi(pValue);
+                    CcspManagementServer_Free(pValue);
+                }
+                else{
+                    objectInfo[i].parameters[j].notification = 0;
+                }
                 pValue = NULL;
             }
         }
@@ -811,6 +816,13 @@ CcspManagementServer_UtilGetParameterValues
                     pppval
                 );
 
+        /*RDKB-7329, CID-33436, free unused resources before exit */
+        CcspManagementServer_Free(pComponentName);
+        if(pComponentPath)
+        {
+            CcspManagementServer_Free(pComponentPath);
+        }
+
         if( (res==CCSP_SUCCESS) && (pval_size > 0) )
         {
             return  ANSC_STATUS_SUCCESS;
@@ -821,6 +833,14 @@ CcspManagementServer_UtilGetParameterValues
             return  ANSC_STATUS_FAILURE;
         }
     }
+
+    if(pComponentPath)
+    {
+        CcspManagementServer_Free(pComponentPath);
+    }
+
+    CcspTraceWarning(("CcspManagementServer_UtilGetParameterValues -- getParameterValues failed!\n"));
+    return  ANSC_STATUS_FAILURE;
 }
 
 
@@ -1794,7 +1814,12 @@ static int CcspManagementServer_ValidateDateTime(
 {
     PANSC_UNIVERSAL_TIME pUniversalTime = (PANSC_UNIVERSAL_TIME) SlapVcoStringToCalendarTime(NULL, dt);
     if(!pUniversalTime) return -1;
-    if(pUniversalTime->Year > 2100 || pUniversalTime->Year < 1970) return -1;
+    if(pUniversalTime->Year > 2100 || pUniversalTime->Year < 1970)
+    {
+        CcspManagementServer_Free(pUniversalTime); /*RDKB-7329, CID-33053, free unused resources */
+        return -1;
+    }
+    CcspManagementServer_Free(pUniversalTime); /*RDKB-7329, CID-33053, free unused resources */
     return 0;
 }
 
