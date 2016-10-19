@@ -202,6 +202,7 @@ void ReadTr69TlvData()
 			free(object2);
 			fclose(file);
 			file = NULL;
+			object2 = NULL;
 		}
 	}
 	else
