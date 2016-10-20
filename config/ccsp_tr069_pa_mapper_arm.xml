@@ -2409,18 +2409,6 @@
 	<Param>
 	    <Name>Device.Hosts.X_CISCO_COM_ConnectedDeviceNumber</Name>
 	</Param>
-	<Param>
-	    <Name>Device.Hosts.X_CISCO_COM_ConnectedWiFiNumber</Name>
-	</Param>
-	<Param>
-	    <Name>Device.Hosts.X_RDKCENTRAL-COM_HostVersionId</Name>
-	</Param>
-	<Param>
-	    <Name>Device.Hosts.X_RDKCENTRAL-COM_HostCountPeriod</Name>
-	</Param>
-	<Param>
-	    <Name>Device.Hosts.X_RDKCENTRAL-COM_LMHost_Sync</Name>
-	</Param>
         <Param>
             <Name>Device.Hosts.HostNumberOfEntries</Name>
         </Param>
