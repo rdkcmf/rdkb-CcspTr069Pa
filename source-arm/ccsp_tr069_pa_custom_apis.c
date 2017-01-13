@@ -120,8 +120,8 @@ static char* DeviceDefaultPassword      = NULL;
 //static char* SharedKey = NULL;
 static char SharedKey[256] = {'\0'};
 #define SHAREDKEYPATH "/usr/ccsp/tr069pa/sharedkey"
-//#define SHAREDKEYPATH "/nvram/sharedkey"
-#define SHAREDKEY "5a6d87cfac9b67ef8f34a6adccd271581feeba0d4354c6441645b0c3ad94f4c0"
+
+
 
 CCSP_VOID
 CcspCwmpsoStartRetryTimerCustom
@@ -575,30 +575,6 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
         //        fprintf(stderr, "<RT> %s -- default password is '%s', hashLength = %d\n", 
         //                          __FUNCTION__, DeviceDefaultPassword, hashLength);
         
-        /*
-         *  Write the password to a file
-         */
-        {
-             FILE*              pFile       = NULL;
-             mode_t             origMod     = umask(0);
-
-             pFile = fopen("/tmp/acsPasswd.txt", "w");
-
-             if ( pFile )
-             {
-                 fprintf
-                    (
-                        pFile,
-                        "Default password length = %d, first 4 bytes %02X%02X%02X%02X, value = %s\n",
-                        hashLength,
-                        hash.Value[0], hash.Value[1], hash.Value[2], hash.Value[3],
-                        DeviceDefaultPassword
-                    );
-
-                 fclose(pFile);
-             }
-             umask(origMod);
-        }
 
         //DefaultPasswordGenerated = 1;
     
