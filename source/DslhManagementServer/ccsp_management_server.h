@@ -92,6 +92,7 @@
 
 #define _DeviceObjectName DM_ROOTNAME
 #define _ManagementServerObjectName DM_ROOTNAME"ManagementServer."
+#define _TR069NotifyObjectName DM_ROOTNAME"TR069Notify."
 #define _AutonomousTransferCompletePolicyObjectName DM_ROOTNAME"ManagementServer.AutonomousTransferCompletePolicy."
 #define _DUStateChangeComplPolicyObjectName DM_ROOTNAME"ManagementServer.DUStateChangeComplPolicy."
 #define _ComObjectName "com."
@@ -148,8 +149,9 @@ typedef struct _msObjectInfo{
 #define STBService1ID                           14
 #define X_CISCO_COM_DiagID                      15
 #define CWMPID                                  16
+#define NotifyID                                17
 /*  Place holder for STBService.{i}. */
-#define SupportedDataModelID                    17    /* This has to be the last one since multiple instances are added based on it. */
+#define SupportedDataModelID                    18    /* This has to be the last one since multiple instances are added based on it. */
 
 
 /* each parameter has a fixed array ID. */
@@ -233,6 +235,10 @@ enum
 #define LoggingEnableID         0
 #define LoggingLogLevelID       1
 #define LoggingNumOfParameters  2
+
+#define TR069Notify_TR069_Notification_ID       0
+#define TR069Notify_Connected_ClientID 		    1
+#define TR069NotifyNumOfParameters 				2
 
 #define FALSE 0
 #define TRUE  1

@@ -1566,6 +1566,25 @@ CcspManagementServer_SetLogging_LogLevelStr
     return CcspManagementServer_CloneString("0");  // return CCSP_SUCCESS;
 }
 
+CCSP_STRING
+CcspManagementServer_GetTR069_NotificationStr
+    (
+        CCSP_STRING                 ComponentName
+    )
+{
+    return CcspManagementServer_CloneString(objectInfo[NotifyID].parameters[TR069Notify_TR069_Notification_ID].value);
+}
+
+CCSP_STRING
+CcspManagementServer_GetConnected_ClientStr
+    (
+        CCSP_STRING                 ComponentName
+    )
+{
+    return CcspManagementServer_CloneString(objectInfo[NotifyID].parameters[TR069Notify_Connected_ClientID].value);
+}
+
+
 #ifdef   _CCSP_CWMP_STUN_ENABLED
 CCSP_VOID
 CcspManagementServer_StunBindingChanged

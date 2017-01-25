@@ -320,7 +320,7 @@ CcspCwmppoSetupEnv
             );
 
         pMyObject->MsFcInitDone = TRUE;
-
+#ifndef USE_NOTIFY_COMPONENT
         /* set callback function on Message Bus to handle parameterValueChangeSignal */
         CcspBaseIf_Register_Event(pCcspCwmpCpeController->hMsgBusHandle, NULL, "parameterValueChangeSignal");
 
@@ -331,6 +331,7 @@ CcspCwmppoSetupEnv
                 CcspCwmppoParamValueChangedCB,
                 (void*)pMyObject
             );
+#endif      
 
         if ( !pParamAttrCache )
         {
