@@ -2473,6 +2473,66 @@
             <Name>Device.Hosts.Host.{i}.IPv6Address.{i}.IPAddress</Name>
         </Param>
         <Param>
+            <Name>Device.XHosts.X_CISCO_COM_ConnectedDeviceNumber</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHostNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.Alias</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.PhysAddress</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.IPAddress</Name>
+        </Param>
+        <Param>
+           <Name>Device.XHosts.XHost.{i}.DHCPClient</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.AssociatedDevice</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.Layer1Interface</Name>
+        </Param>
+        <Param>
+             <Name>Device.XHosts.XHost.{i}.Layer3Interface</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.HostName</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.Active</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.LeaseTimeRemaining</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.X_CISCO_COM_ActiveTime</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.X_CISCO_COM_InactiveTime</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.X_COMCAST-COM_LastChange</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.AddressSource</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.X_RDKCENTRAL-COM_Parent</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.X_RDKCENTRAL-COM_DeviceType</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.XIPv4AddressNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.XHosts.XHost.{i}.XIPv6AddressNumberOfEntries</Name>
+        </Param>
+        <Param>
             <Name>Device.DNS.Client.Enable</Name>
         </Param>
         <Param>
