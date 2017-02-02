@@ -4766,6 +4766,9 @@
 	<Param>
 		<Name>Device.DeviceInfo.Webpa.MaxPingWaitTimeInSec</Name>
 	</Param>
+	<Param>
+		<Name>Device.DeviceInfo.X_RDKCENTRAL-COM.MultipleGW</Name>
+	</Param>
           
    
         <!-- INVISIBLE Parameters under "Device." -->
