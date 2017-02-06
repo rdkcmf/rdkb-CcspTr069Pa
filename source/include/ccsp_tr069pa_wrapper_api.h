@@ -225,7 +225,7 @@ CcspTr069PaCloneString(char* src)
     CcspTraceNotice2(g_Tr069_PA_Name, msg)
 
 #define  CcspTr069PaTraceDebug(msg)                             \
-    CcspTraceInfo2(g_Tr069_PA_Name, msg)
+    CcspTraceDebug2(g_Tr069_PA_Name, msg)
 
 #define  CcspTr069PaTraceInfo(msg)                              \
     CcspTraceInfo2(g_Tr069_PA_Name, msg)
