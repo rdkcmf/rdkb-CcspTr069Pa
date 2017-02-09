@@ -1147,7 +1147,7 @@ CcspTr069PA_MapInstNumCwmpToDmInt
     CCSP_INT                        tr069StringSize = strlen(pCwmpString);
     CCSP_STRING                     pDmIntString    = NULL;
 
-    CcspTr069PaTraceNotice(("%s...\n", __FUNCTION__));
+    CcspTr069PaTraceDebug(("%s...\n", __FUNCTION__));
 
     for(i=0; i< NumOfInstanceMaps; i++)
     { 
@@ -1258,7 +1258,7 @@ CcspTr069PA_MapInstNumDmIntToCwmp
     CCSP_INT                        ccspStringSize  = strlen(pDmIntString);
     CCSP_STRING                     pCwmpString     = NULL;
 
-    CcspTr069PaTraceNotice(("%s...\n", __FUNCTION__));
+    CcspTr069PaTraceDebug(("%s...\n", __FUNCTION__));
 
     for(i=0; i< NumOfInstanceMaps; i++)
     { 

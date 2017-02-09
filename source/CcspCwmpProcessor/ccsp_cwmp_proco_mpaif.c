@@ -96,7 +96,7 @@
             {                                                                   \
                 CCSP_STRING     pReturnStr  = NULL;                             \
                                                                                 \
-                CcspTr069PaTraceWarning(("%s - Param CWMP to DmInt\n", __FUNCTION__));\
+                CcspTr069PaTraceDebug(("%s - Param CWMP to DmInt\n", __FUNCTION__));\
                                                                                 \
                 pReturnStr =                                                    \
                     CcspTr069PA_MapInstNumCwmpToDmInt                           \
