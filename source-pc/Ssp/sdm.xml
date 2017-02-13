@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--
    Copyright [2014] [Cisco Systems, Inc.]
@@ -16,10 +16,15 @@
    limitations under the License.
 -->
 
-<!-- This file resides in boards/pc/ -->
-<certificates>
-    <CA>/nvram/cacert.pem</CA>
-    <CA></CA>
-    <DEV></DEV>
-    <PrivateKey></PrivateKey>
-</certificates>    
+<SupportedDataModel>
+	<m1>
+		<URL>aa</URL>
+		<URN>bb</URN>
+		<Features>bb</Features>
+	</m1>
+	<m2>
+		<URL>xx</URL>
+		<URN>yy</URN> 
+		<Features>bb</Features> 
+	</m2>
+</SupportedDataModel>

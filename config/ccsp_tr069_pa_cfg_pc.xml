@@ -21,16 +21,16 @@
 
     <!-- for OpenSsl -->
     <certificates>
-        <CA></CA>
+        <CA>/nvram/cacert.pem</CA>
         <CA></CA>
         <DEV></DEV>
         <PrivateKey></PrivateKey>
     </certificates>   
 
     <!-- outbound interface binding, could be empty to use default route -->
-    <OutboundInterface></OutboundInterface>
+    <OutboundInterface>eth0</OutboundInterface>
 
     <!-- default ACS server address -->
-    <AcsDefaultAddress>http://localhost/</AcsDefaultAddress>
+    <AcsDefaultAddress></AcsDefaultAddress>
 
 </ccsp_tr069pa_cfg>
