@@ -313,7 +313,8 @@ int checkIfSystemReady(void)
 {
 	char str[256];
 	int val, ret;
-	snprintf(str, sizeof(str), "eRT.%s", CCSP_DBUS_INTERFACE_CR);
+	//snprintf(str, sizeof(str), "eRT.%s", CCSP_DBUS_INTERFACE_CR);
+	snprintf(str, sizeof(str), "simu.%s", CCSP_DBUS_INTERFACE_CR);//RDKB-EMU
 	// Query CR for system ready
 	ret = CcspBaseIf_isSystemReady(bus_handle, str, &val);
 	CcspTr069PaTraceInfo(("checkIfSystemReady(): ret %d, val %d\n", ret, val));
