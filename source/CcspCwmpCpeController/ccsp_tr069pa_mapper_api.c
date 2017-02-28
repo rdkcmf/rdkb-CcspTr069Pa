@@ -1216,7 +1216,7 @@ CcspTr069PA_MapInstNumCwmpToDmInt
     }
     else
     {
-        CcspTr069PaTraceWarning(("%s - no mapping for %s \n", __FUNCTION__, pCwmpString));
+        CcspTr069PaTraceDebug(("%s - no mapping for %s \n", __FUNCTION__, pCwmpString));
     }
 
     return  pDmIntString;
@@ -1321,7 +1321,7 @@ CcspTr069PA_MapInstNumDmIntToCwmp
     }
     else
     {
-        CcspTr069PaTraceWarning(("%s - no mapping for %s \n", __FUNCTION__, pDmIntString));
+        CcspTr069PaTraceDebug(("%s - no mapping for %s \n", __FUNCTION__, pDmIntString));
     }
 
     return  pCwmpString;
