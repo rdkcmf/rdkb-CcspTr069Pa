@@ -1710,32 +1710,47 @@ CcspCwmppoMpaGetParameterValues
                     CcspCwmppoMpaMapParamInstNumDmIntToCwmp(pParamValues[k]->parameterValue);
                     if(0 == strcmp(pParamValues[k]->parameterName,"Device.DeviceInfo.SoftwareVersion"))
                     {
+                        char tmp[200]={0};
+                        char paramname[200]={0};
+                        char paramval[200]={0};
+                        int size = 0;
+                        int retval = 0;
 
-                        FILE *readImage;
-                        char buff[200];
-                        char tmp[200];
-                        strcpy(tmp,pParamValues[k]->parameterValue);
-							
-                        readImage = popen("cat /fss/gw/version.txt | grep imagename | cut -d'=' -f2", "r");
-                        if(readImage == NULL)
-                        {
-                              CcspTr069PaTraceError(("RDKB Software image name is NULL\n"));
-                        }
-                        else
-                        {
+			parameterValStruct_t varStruct;
+			varStruct.parameterName = paramname;
+			varStruct.parameterValue = paramval;
 
-                           if(fgets(buff, sizeof(buff), readImage)!=NULL)
-                           {
-                              strip_line(buff);
-                              strcat(tmp,"_");
-                              strcat(tmp,buff);
-                              pParamValues[k]->parameterValue=AnscCloneString(tmp);
-                              
-                           }
+			size = sizeof(paramval);
+			snprintf(paramname, sizeof(paramname), "Device.DeviceInfo.AdditionalSoftwareVersion");
+			retval = COSAGetParamValueByPathName(pCcspCwmpCpeController->hMsgBusHandle, &varStruct, &size);
 				
-                           pclose(readImage);
-                        }
-                     }
+			if ( (retval == ANSC_STATUS_SUCCESS) && (0 != size))
+			{
+				strcpy(tmp,paramval);
+			}
+			else
+			{
+				CcspTr069PaTraceError(("RDKB AdditionalSoftwareVersion is NULL\n"));
+			}
+
+                      if((pParamValues[k]->parameterValue) && (strlen(pParamValues[k]->parameterValue)))
+                      {
+				if(strlen(tmp))
+					strcat(tmp,"_");
+
+	                      strcat(tmp,pParamValues[k]->parameterValue);
+                      }
+                      else
+                      {
+				CcspTr069PaTraceError(("RDKB SoftwareVersion is NULL\n"));
+                      }
+
+                      if(pParamValues[k]->parameterValue)
+                      {
+				CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
+                      }
+                      pParamValues[k]->parameterValue=AnscCloneString(tmp);
+                   }
 					 if(bDataModelReq == TRUE)
 					 {
 						 if(0 == strcmp(pParamValues[k]->parameterName,"Device.DeviceInfo.Manufacturer"))

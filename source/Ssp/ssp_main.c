@@ -75,6 +75,8 @@ static char                         g_PaMapperXmlFile[256]  = {0};
 char*                               g_Tr069_PA_Name         = g_Tr069PaName;
 extern char*                        pComponentName;
 
+extern  PDSLH_DATAMODEL_AGENT_OBJECT    g_DslhDataModelAgent;
+
 #ifdef   _ANSC_USE_OPENSSL_
 extern char* openssl_client_ca_certificate_files; //  = OPENSSL_CLIENT_CA_CERT_FILES;  // defined in user_openssl.c
 char* openssl_client_dev_certificate_file = NULL;
@@ -767,6 +769,15 @@ int  engage_tr069pa()
         }
     }
 
+	if( g_DslhDataModelAgent )
+	{
+		g_DslhDataModelAgent->pPrefix=g_Subsystem;
+	}
+	else
+	{
+		g_DslhDataModelAgent = (PDSLH_DATAMODEL_AGENT_OBJECT)AnscAllocateMemory(sizeof(DSLH_DATAMODEL_AGENT_OBJECT));
+		g_DslhDataModelAgent->pPrefix = g_Subsystem;
+	}
     g_tr069Health = CCSP_COMMON_COMPONENT_HEALTH_Green;
 
     return 0;
@@ -785,6 +796,10 @@ int  cancel_tr069pa()
 
     bEngaged = FALSE;
 
+	if( g_DslhDataModelAgent )
+	{
+		AnscFreeMemory(g_DslhDataModelAgent);
+	}
     return  0;
 }
 

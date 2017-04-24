@@ -72,6 +72,8 @@
 #include "ccsp_base_api.h"
 #include "ccsp_trace.h"
 
+#include "dslh_dmagnt_interface.h"
+
 /*
  *  Define custom trace module ID
  */
