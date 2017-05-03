@@ -204,12 +204,6 @@ CcspCwmpStunmoApplyStunSettings
         CcspTr069PaFreeMemory(pAcsHostName);
     }
 
-    /*
-     * Whenever the STUNEnable parameter in the ManagementServer object is set to true, CPE follow-
-     * ing the requirements of this Annex MUST make use of the procedures defined in STUN (RFC 3489)
-     * to determine whether or not address and/or port translation is taking place between the CPE
-     * and the STUN server.
-     */
     pStunSimpleClient->Cancel                 ((ANSC_HANDLE)pStunSimpleClient);
     pStunSimpleClient->SetClientAddr          ((ANSC_HANDLE)pStunSimpleClient, client_ip4_addr.Value                    );
     pStunSimpleClient->SetClientPort          ((ANSC_HANDLE)pStunSimpleClient, pProperty->ClientPort                    );
@@ -224,13 +218,7 @@ CcspCwmpStunmoApplyStunSettings
     if ( !pCcspCwmpStunInfo->STUNEnable )
     {
         /*
-         * The STUN client MUST remain engaged even STUN is disabled. This requirement is specified
-         * in Annex G of TR-069 Amendment I:
-         *
-         *      "A CPE conforming to this Annex MUST listen for UDP Connection Request
-         *       messages on the port that is has designated for this purpose. This MUST
-         *       be true whether or not the CPE has detected address or port translation
-         *       in use, and whether or not the use of STUN is enabled."
+         * The STUN client MUST remain engaged even STUN is disabled.
          */
         return  ANSC_STATUS_SUCCESS;
     }
