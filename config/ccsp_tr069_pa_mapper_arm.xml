@@ -3201,6 +3201,9 @@
             <Name>Device.DHCPv6.Server.Pool.{i}.IANAPrefixes</Name>
         </Param>
         <Param>
+            <Name>Device.DHCPv6.Server.Pool.{i}.PrefixRangeBegin</Name>
+        </Param>
+        <Param>
             <Name>Device.DHCPv6.Server.Pool.{i}.PrefixRangeEnd</Name>
         </Param>
         <Param>
