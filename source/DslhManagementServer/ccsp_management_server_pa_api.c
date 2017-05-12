@@ -127,6 +127,8 @@ CcspManagementServer_InitCustom
 
 void ReadTr69TlvData()
 {
+	int                             res;
+	char                            recordName[256];
 	FILE *fp;
 	char buff[255];
 	Tr69TlvData *object2=malloc(sizeof(Tr69TlvData));
@@ -138,8 +140,12 @@ void ReadTr69TlvData()
 		file = NULL;
 		// Check if it's a fresh bootup / boot after factory reset / TR69 was never enabled
 		// If TR69 was never enabled, then we will always take URL from boot config file.
+          	AnscTraceWarning(("%s -#- FreshBootUp: %d, Tr69Enable: %d\n", __FUNCTION__, object2->FreshBootUp, object2->Tr69Enable));
 		if((object2->FreshBootUp == 1) || (object2->Tr69Enable == 0))
 		{
+			AnscTraceWarning(("%s -#- Inside FreshBootUp=1 OR Tr69Enable=0 \n", __FUNCTION__));
+			AnscTraceWarning(("%s -#- ACS URL from PSM DB- %s\n", __FUNCTION__, objectInfo[ManagementServerID].parameters[ManagementServerURLID].value));
+			AnscTraceWarning(("%s -#- ACS URL from cmconfig - %s\n", __FUNCTION__, CcspManagementServer_CloneString(object2->URL)));
 			object2->FreshBootUp = 0;
 			objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(object2->URL);
 			//on Fresh bootup / boot after factory reset, if the URL is empty, set default URL value
@@ -152,6 +158,7 @@ void ReadTr69TlvData()
 					fread(url, sizeof(url), 1, urlfile);
 					fclose(urlfile);
 					strip_line(url);
+					AnscTraceWarning(("%s -#- cmconfig file doesnt have an ACS url specified, setting url from TR69_DEFAULT_URL_FILE", __FUNCTION__));
 					objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(url);
 				}
 				else
@@ -174,6 +181,10 @@ void ReadTr69TlvData()
 		// But we need to get the latest flag value from boot-config file.
 		if ((object2->FreshBootUp == 0) && (object2->Tr69Enable == 1))
 		{
+			AnscTraceWarning(("%s -#-  Inside FreshBootUp=0 AND Tr69Enable=1 \n", __FUNCTION__));
+			AnscTraceWarning(("%s -#-  ACS URL from PSM DB- %s\n", __FUNCTION__, objectInfo[ManagementServerID].parameters[ManagementServerURLID].value));
+			AnscTraceWarning(("%s -#-  ACS URL from cmconfig - %s\n", __FUNCTION__, CcspManagementServer_CloneString(object2->URL)));
+
 			/* If TR69Enabled is already enabled, then no need to read URL.
 		   	Update only EnableCWMP value to bbhm. */
 			if(object2->EnableCWMP == 1)
@@ -192,6 +203,24 @@ void ReadTr69TlvData()
 				}			
 			}
 		}
+
+		//Below check is needed to make sure PSM has correct ACS URL. This is required for clients that continue to use ACS url from cmconfig.
+		if(objectInfo[ManagementServerID].parameters[ManagementServerURLID].value == NULL)
+		{
+			if(object2->URL != NULL )
+			{
+				//We are here because, PSM DB doesnt have a valid ACS url but cmconfig has. In this case, setting value from cmconfig to PSM DB
+				AnscTraceWarning(("%s -#- PSM DB reported NULL ACS URL.... Setting URL from cmconfig and continue..\n", __FUNCTION__));
+				objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(object2->URL);
+				_ansc_sprintf(recordName, "%s.%sURL.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);
+				res = PSM_Set_Record_Value2(bus_handle, CcspManagementServer_SubsystemPrefix, recordName, ccsp_string, object2->URL);
+
+				if(res != CCSP_SUCCESS){
+					AnscTraceWarning(("%s -#- Failed to write object2->URL <%s> into PSM!\n", __FUNCTION__, object2->URL));
+				}
+			}
+		}
+
 		/* setting cursor at begining of the file & open file in write mode */
 		file= fopen(TR69_TLVDATA_FILE, "wb");
 		if (file != NULL) 
@@ -395,7 +424,7 @@ CcspManagementServer_GetURL
     )
 {
     CCSP_STRING pStr = objectInfo[ManagementServerID].parameters[ManagementServerURLID].value;
-
+    AnscTraceWarning(("%s -#- ManagementServerURLID_PSM: %s\n", __FUNCTION__, pStr));
     if ( pStr && AnscSizeOfString(pStr) > 0 )
     {
         return  CcspManagementServer_CloneString(pStr);
