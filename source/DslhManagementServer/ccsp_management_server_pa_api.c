@@ -86,7 +86,7 @@
 #include "ccsp_cwmp_ifo_sta.h"
 #include "Tr69_Tlv.h"
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
-#define TR69_DEFAULT_URL_FILE "/etc/url"
+#define TR69_DEFAULT_URL_FILE "/usr/ccsp/tr069pa/url"
 PFN_CCSPMS_VALUECHANGE  CcspManagementServer_ValueChangeCB;
 CCSP_HANDLE             CcspManagementServer_cbContext;
 CCSP_HANDLE             CcspManagementServer_cpeContext;
