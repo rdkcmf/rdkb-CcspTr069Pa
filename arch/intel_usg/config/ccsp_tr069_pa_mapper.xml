@@ -315,6 +315,13 @@
         <Param>
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM.Ops.LogsUploadStatus</Name>
         </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.Logging.xOpsDMUploadLogsNow</Name>
+	</Param>
+        <Param>
+	    <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.Logging.xOpsDMLogsUploadStatus</Name>
+        </Param>
+
         <!-- Comcast specific Device.DeviceInfo. Parameters -->
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_xfinitywifiCapableCPE</Name>
