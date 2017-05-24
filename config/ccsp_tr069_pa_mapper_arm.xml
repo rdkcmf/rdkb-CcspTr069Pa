@@ -338,6 +338,9 @@
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIWebURL</Name>
         </Param>
         <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_ConfigureWiFi</Name>
+        </Param>
+        <Param>
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_CaptivePortalEnable</Name>
         </Param>
         <Param>
