@@ -1224,7 +1224,13 @@
             <Name>Device.WiFi.Radio.{i}.BeaconPeriod</Name>
         </Param>
         <Param>
-            <Name>Device.WiFi.Radio.{i}.BasicDataTransmitRates</Name>
+           <Name>Device.WiFi.Radio.{i}.BasicDataTransmitRates</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.SupportedDataTransmitRates</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.Radio.{i}.OperationalDataTransmitRates</Name>
         </Param>
         <Param>
             <Name>Device.WiFi.Radio.{i}.Stats.BytesSent</Name>
