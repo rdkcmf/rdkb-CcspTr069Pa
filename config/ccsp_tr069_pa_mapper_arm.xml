@@ -1449,6 +1449,9 @@
             <Name>Device.WiFi.AccessPoint.{i}.X_COMCAST-COM_MAC_FilteringMode</Name>
         </Param>
         <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.X_RDKCENTRAL-COM_ManagementFramePowerControl</Name>
+        </Param>
+        <Param>
             <Name>Device.WiFi.AccessPoint.{i}.AssociatedDeviceNumberOfEntries</Name>
         </Param>
 	<Param>
