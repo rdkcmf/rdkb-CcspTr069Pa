@@ -83,7 +83,7 @@
 
 
 #include "ccsp_cwmp_tcpcrho_global.h"
-
+#include "sysevent/sysevent.h"
 
 /**********************************************************************
 
@@ -159,7 +159,7 @@ CcspCwmpTcpcrhoEngage
                                pProperty->HostPort));
         AnscCopyString(pTcpServer->HostName, pProperty->HostAddr);
 #else
-        CcspTr069PaTraceDebug(("Tcp host addr=%d.%d.%d.%d:%d\n", 
+        CcspTr069PaTraceInfo(("Tcp host addr=%d.%d.%d.%d:%d\n", 
                                pProperty->HostAddress.Dot[0],
                                pProperty->HostAddress.Dot[1],
                                pProperty->HostAddress.Dot[2],
@@ -279,6 +279,7 @@ CcspCwmpTcpcrhoCreateTcpServers
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
     PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
     PANSC_DAEMON_SERVER_TCP_OBJECT  pTcpServer    = (PANSC_DAEMON_SERVER_TCP_OBJECT)pMyObject->hTcpServer;
+    char  buf[64]      = {0};
 
     if ( pProperty->HostPort == 0 && pTcpServer )
     {
@@ -288,6 +289,37 @@ CcspCwmpTcpcrhoCreateTcpServers
     }
     else if ( !pTcpServer && pProperty->HostPort != 0 )
     {
+        // If HostAddress value is zero, then bind the outbound interface's ip address
+        if( pProperty->HostAddress.Value == 0)
+        {
+           CcspTr069PaTraceInfo(("%s, HostAddress value is 0\n",__FUNCTION__));
+           token_t  se_token;
+           int      se_fd = s_sysevent_connect(&se_token);
+           if (0 > se_fd) 
+           {
+             CcspTr069PaTraceError(("%s, sysevent_connect failed!!!\n",__FUNCTION__));
+             //return ERR_SYSEVENT_CONN;
+           }
+           else
+           {
+             // Get ipv4 address from sysevent
+             if( 0 == sysevent_get(se_fd, se_token, "ipv4_wan_ipaddr", buf, sizeof(buf)) && '\0' != buf[0] )
+             {
+                 CcspTr069PaTraceInfo(("%s, ipv4_wan_ipaddr got from sysevent is: %s\n",__FUNCTION__,buf));
+                 pProperty->HostAddress.Value = _ansc_inet_addr(buf);
+                 CcspTr069PaTraceInfo(("%s,pProperty->HostAddress.Value: %lu\n",__FUNCTION__,pProperty->HostAddress.Value));
+             }
+             else
+             {
+               // If sysevent fails, let TR69 bind on 0.0.0.0
+               CcspTr069PaTraceError(("%s, sysevent_get failed to get value of ipv4_wan_ipaddr!!!\n",__FUNCTION__));
+             }
+           }
+        }
+    
+        
+        CcspTr069PaTraceInfo(("%s, Call AnscCreateDaemonServerTcp\n",__FUNCTION__));
+
         pTcpServer =
             (PANSC_DAEMON_SERVER_TCP_OBJECT)AnscCreateDaemonServerTcp
                 (
@@ -298,7 +330,7 @@ CcspCwmpTcpcrhoCreateTcpServers
 
         if ( !pTcpServer )
         {
-            CcspTr069PaTraceDebug(("Something wrong in AnscCreateDaemonServerTCP.\n"));
+            CcspTr069PaTraceError(("Something wrong in AnscCreateDaemonServerTCP.\n"));
             return  ANSC_STATUS_RESOURCES;
         }
         else
@@ -314,7 +346,7 @@ CcspCwmpTcpcrhoCreateTcpServers
             );
     }
 
-    CcspTr069PaTraceDebug(("TCP server created successfully.\n"));
+    CcspTr069PaTraceInfo(("TCP server created successfully.\n"));
 
     return  ANSC_STATUS_SUCCESS;
 }
