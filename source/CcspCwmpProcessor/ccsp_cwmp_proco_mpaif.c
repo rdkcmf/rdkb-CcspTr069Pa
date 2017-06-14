@@ -968,6 +968,43 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
             if((strstr(pParamValues->parameterValue,"Router")!=NULL && strstr(pParamValues->parameterValue,"Wifi")!=NULL && strstr(pParamValues->parameterValue,"VoIP")!=NULL && strstr(pParamValues->parameterValue,"MoCA")!=NULL)||strstr(pParamValues->parameterValue,"Device")!=NULL)
  {   
                         
+						if ( strstr( pParamValues->parameterValue, "Device" ) != NULL )
+						{
+							/* Before reboot device we need to set reboot reason */
+							parameterValStruct_t valStr 	 = { "Device.DeviceInfo.X_RDKCENTRAL-COM_LastRebootReason", "tr069-reboot" , ccsp_string };
+							char				 *faultParam = NULL;
+							
+							nResult = 
+								CcspBaseIf_setParameterValues
+									(
+										pCcspCwmpCpeController->hMsgBusHandle,
+										pFcNsList->FCName,
+										pFcNsList->DBusPath,
+										ulSessionID,
+										ulWriteID, 
+										&valStr,
+										1,
+										TRUE,
+										&faultParam
+									);
+							
+							if ( ( nResult != CCSP_SUCCESS )  && \
+								 ( faultParam )
+								)
+							{
+								CcspTr069PaTraceWarning
+									(
+										(
+											"RDKB_REBOOT : Failed to SetValue for param '%s' and ret val is %d\n", 
+											 valStr.parameterName,
+											 nResult
+										)
+									);
+							
+								 bus_info->freefunc(faultParam);
+							}
+						}
+
                     	CcspTr069PaTraceWarning
                             (
                                 (

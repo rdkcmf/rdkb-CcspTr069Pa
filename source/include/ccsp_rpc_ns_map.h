@@ -102,7 +102,10 @@
 //#define  CCSP_NS_REBOOT                             "com.cisco.spvtg.ccsp.rm.Reboot.Enable"
 #define  CCSP_NS_REBOOT                   "Device.X_CISCO_COM_DeviceControl.RebootDevice"
 
-
+/**********************************************************************
+    RPC 'RebootReason'
+**********************************************************************/
+#define  CCSP_NS_REBOOT_REASON             "Device.DeviceInfo.X_RDKCENTRAL-COM_LastRebootReason"
 
 /**********************************************************************
     RPC 'Download'

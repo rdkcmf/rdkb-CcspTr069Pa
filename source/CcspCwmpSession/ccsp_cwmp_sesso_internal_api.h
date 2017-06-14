@@ -510,6 +510,8 @@ CcspCwmpsoMcoReboot
         char*                       pCommandKey
     );
 
+ANSC_STATUS CcspCwmpSetRebootReason(ANSC_HANDLE                 hThisObject);
+
 ANSC_STATUS
 CcspCwmpsoMcoChangeDUState
     (

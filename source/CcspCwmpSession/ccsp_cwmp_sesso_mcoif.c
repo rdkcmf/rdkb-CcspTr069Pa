@@ -2831,6 +2831,8 @@ CcspCwmpsoMcoReboot
         SLAP_VARIABLE               slapVar;
         char                        value[12]        = {"Device\0"};
 
+		CcspCwmpSetRebootReason((ANSC_HANDLE)pCcspCwmpMpaIf);
+
 #ifndef DONT_HAVE_RM
         ParamValue.Name          = CCSP_NS_REBOOT;
         ParamValue.Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_String;
@@ -2955,6 +2957,57 @@ EXIT1:
     return  returnStatus;
 }
 
+ANSC_STATUS CcspCwmpSetRebootReason(ANSC_HANDLE                 hThisObject)
+{
+	PCCSP_CWMP_MPA_INTERFACE	pCcspCwmpMpaIf  = (PCCSP_CWMP_MPA_INTERFACE      )hThisObject;
+    PCCSP_CWMP_SOAP_FAULT       pCwmpSoapFault  = (PCCSP_CWMP_SOAP_FAULT      )NULL;
+    CCSP_CWMP_PARAM_VALUE       ParamValue      = {0};
+    ANSC_STATUS                 returnStatus    = ANSC_STATUS_SUCCESS;
+    ULONG                       ulArraySize     = 1;
+    int                         iStatus         = 0;
+    SLAP_VARIABLE               slapVar;
+    char                        value[16]        = {"tr069-reboot\0"};
+
+    ParamValue.Name          = CCSP_NS_REBOOT_REASON;
+    ParamValue.Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_String;
+    ParamValue.Value         = &slapVar;
+
+    SlapInitVariable(&slapVar);
+    slapVar.Syntax           = SLAP_VAR_SYNTAX_string;
+    slapVar.Variant.varString= value;
+
+    returnStatus =
+        pCcspCwmpMpaIf->SetParameterValues
+            (
+                pCcspCwmpMpaIf->hOwnerContext,
+                (ANSC_HANDLE)&ParamValue,
+                ulArraySize,
+                &iStatus,
+                (ANSC_HANDLE*)&pCwmpSoapFault,
+                FALSE
+            );
+
+    if ( returnStatus != ANSC_STATUS_SUCCESS )
+    {
+	    if ( pCwmpSoapFault )
+	    {
+	        int                     j;
+	        for ( j = 0; j < pCwmpSoapFault->SetParamValuesFaultCount; j ++ )
+	        {
+	            CcspTr069PaTraceError(("RebootReason - SPV failed on parameter %s\n", pCwmpSoapFault->SetParamValuesFaultArray[j].ParameterName));
+	            CcspCwmpCleanSetParamFault((&pCwmpSoapFault->SetParamValuesFaultArray[j]));
+	        }
+	        pCwmpSoapFault->SetParamValuesFaultCount = 0;
+	    }
+    }
+	
+    if ( pCwmpSoapFault )
+    {
+        CcspCwmpFreeSoapFault(pCwmpSoapFault);
+    }
+
+	return returnStatus;
+}
 
 /**********************************************************************
 
