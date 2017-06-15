@@ -344,7 +344,16 @@ START:
         }
         else if ( AnscEqualString2(pRequestURL, "http", 4, FALSE) )
         {
+#ifdef _SUPPORT_HTTP
+            CcspTr069PaTraceInfo(("HTTP request from ACS is supported\n"));
             bApplyTls = FALSE;
+#else
+        CcspTr069PaTraceInfo(("TR-069 blocked unsecured traffic from ACS\n"));
+             pHttpGetReq->CompleteStatus = ANSC_STATUS_NOT_SUPPORTED;
+             pHttpGetReq->bUnauthorized = TRUE;
+             pHttpGetReq->bIsRedirect = FALSE;
+             break;
+#endif
         }
         else
         {
