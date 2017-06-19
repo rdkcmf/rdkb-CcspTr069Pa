@@ -2359,6 +2359,7 @@ int CcspManagementServer_GetPAObjectID
     case SupportedDataModelID: return -1; /* This is useless here since SupportedDataModel cannot be changed. */
     default: return -1;
     }
+    return -1;
 }
 
 //Custom
@@ -2369,7 +2370,7 @@ extern int CcspManagementServer_CommitParameterValuesCustom(int parameterID);
  #include "ccsp_cwmp_cpeco_interface.h"
  #include "ccsp_tr069pa_wrapper_api.h"
 extern  PCCSP_CWMP_CPE_CONTROLLER_OBJECT                 g_pCcspCwmpCpeController;
-Send_TR069_Notification(int parameterID, char* pString)
+void Send_TR069_Notification(int parameterID, char* pString)
 {
 
 	char* p_write_id;
