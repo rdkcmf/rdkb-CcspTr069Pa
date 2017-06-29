@@ -2491,6 +2491,9 @@
             <Name>Device.Hosts.Host.{i}.IPv6Address.{i}.IPAddress</Name>
         </Param>
         <Param>
+            <Name>Device.Hosts.Host.{i}.X_CISCO_COM_RSSI</Name>
+        </Param>
+        <Param>
             <Name>Device.XHosts.X_CISCO_COM_ConnectedDeviceNumber</Name>
         </Param>
         <Param>
