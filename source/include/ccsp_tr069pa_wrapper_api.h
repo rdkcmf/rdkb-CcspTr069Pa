@@ -216,7 +216,7 @@ CcspTr069PaCloneString(char* src)
     CcspTraceCritical2(g_Tr069_PA_Name, msg)
 
 #define  CcspTr069PaTraceError(msg)                             \
-    CcspTraceError2(g_Tr069_PA_Name, msg)
+    CcspTraceError3(g_Tr069_PA_Name, msg)
 
 #define  CcspTr069PaTraceWarning(msg)                           \
     CcspTraceWarning2(g_Tr069_PA_Name, msg)
