@@ -4790,6 +4790,10 @@
 	<Param>
 		<Name>Device.DeviceInfo.X_RDKCENTRAL-COM.MultipleGW</Name>
 	</Param>
+        <!-- MoCA network isolation parameter -->
+        <Param>
+                <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.HomeNetworkIsolation</Name>
+        </Param>
           
    
         <!-- INVISIBLE Parameters under "Device." -->
