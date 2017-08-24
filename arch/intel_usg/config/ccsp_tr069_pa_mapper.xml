@@ -1045,27 +1045,6 @@
             <Name>Device.MoCA.Interface.{i}.X_COMCAST-COM_MeshTable.MeshPHYTxRate</Name>
         </Param>
         <Param>
-            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.DeviceName</Name>
-        </Param>
-        <Param>
-            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.SSID</Name>
-        </Param>
-        <Param>
-            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.BSSID</Name>
-        </Param>
-        <Param>
-            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.Band</Name>
-        </Param>
-        <Param>
-            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.Channel</Name>
-        </Param>
-        <Param>
-            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.SecurityMode</Name>
-        </Param>
-        <Param>
-            <Name>Device.MoCA.X_CISCO_COM_WiFi_Extender.ExtenderDevice.{i}.SSID.{i}.Encryption</Name>
-        </Param>
-        <Param>
             <Name>Device.WiFi.RadioNumberOfEntries</Name>
         </Param>
         <Param>
