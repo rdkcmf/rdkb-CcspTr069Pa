@@ -838,7 +838,6 @@ CcspManagementServer_UtilGetParameterValues
                 );
 
         /*RDKB-7329, CID-33436, free unused resources before exit */
-        CcspManagementServer_Free(pComponentName);
         if(pComponentPath)
         {
             CcspManagementServer_Free(pComponentPath);
@@ -846,11 +845,14 @@ CcspManagementServer_UtilGetParameterValues
 
         if( (res==CCSP_SUCCESS) && (pval_size > 0) )
         {
+            CcspManagementServer_Free(pComponentName);
             return  ANSC_STATUS_SUCCESS;
         }
         else
         {
+            /* pComponentName is refenced from within CcspTraceWarning Macro, free after. */
             CcspTraceWarning(("CcspManagementServer_UtilGetParameterValues -- getParameterValues failed!\n"));
+            CcspManagementServer_Free(pComponentName);
             return  ANSC_STATUS_FAILURE;
         }
     }
