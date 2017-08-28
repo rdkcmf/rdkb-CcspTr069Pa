@@ -925,8 +925,6 @@ CcspCwmpSoappoBuildSoapReq_Inform
                                 "xsd:string",
                                 AnscSizeOfString("xsd:string")
                             );
-
-                        CcspTr069PaTraceWarning(("Something is wrong, we got NULL variable value for '%s' or wrong value type.\n", pCwmpValue->Name));
                     }
                 }
             }
@@ -3624,8 +3622,6 @@ CcspCwmpSoappoBuildSoapRep_GetParameterValues
                         "xsd:string",
                         AnscSizeOfString("xsd:string")
                     );
-
-                CcspTr069PaTraceWarning(("Something is wrong, we got NULL variable value for '%s' or wrong value type.\n", pCwmpValue->Name));
             }
         }
     }
