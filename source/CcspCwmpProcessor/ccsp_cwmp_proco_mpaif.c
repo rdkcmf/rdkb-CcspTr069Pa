@@ -2138,7 +2138,8 @@ CcspCwmppoMpaGetParameterNames
     BOOL                            bNsInvisibleToCloudServer;
     int                             ParamInfoArraySize;
     PSINGLE_LINK_ENTRY              pSLinkEntry          = NULL;
-    BOOL                            bDuplicateNs         = FALSE;
+    BOOL                            bDuplicateNs         = FALSE,
+						GetParamSuccessStatus  = FALSE;
 
     *ppParamInfoArray = NULL;
     *pulArraySize     = 0;
@@ -2250,6 +2251,10 @@ CcspCwmppoMpaGetParameterNames
             CcspTr069PaTraceDebug(("GPN - FC <%s> returned error %d.\n", ppFcNameArray[i], nRet));
             continue;
         }
+        else
+	{
+		GetParamSuccessStatus = TRUE;
+	}
 
         for ( j = 0; j < ParamInfoArraySize; j ++ )
         {
@@ -2316,9 +2321,17 @@ CcspCwmppoMpaGetParameterNames
 
     if ( ulParameterCount == 0 )
     {
-        CcspTr069PaTraceDebug(("GPN will return Invalid Arg since PA returns no parameters under the specified path <%s>.\n", pParamPath));
-        returnStatus = ANSC_STATUS_BAD_NAME;
-        goto EXIT2;
+		if( TRUE == GetParamSuccessStatus )
+		{
+			CcspTr069PaTraceWarning(("GPN - Count 0, Returning NULL object\n"));
+			goto EXIT3;
+		}
+		else
+		{
+			CcspTr069PaTraceDebug(("GPN will return Invalid Arg since PA returns no parameters under the specified path <%s>.\n", pParamPath));
+			returnStatus = ANSC_STATUS_BAD_NAME;
+			goto EXIT2;
+		}
     }
 
 /*
@@ -2347,6 +2360,7 @@ CcspCwmppoMpaGetParameterNames
         pNsList->Args.paramInfo.parameterName = NULL;
     }
 
+EXIT3:
 
     *ppParamInfoArray = pCwmpParamInfoArray;
     *pulArraySize     = ulParameterCount;
