@@ -785,7 +785,7 @@ CcspManagementServer_UtilGetParameterValues
 
     char *                          pComponentName  = NULL;
     char *                          pComponentPath  = NULL;
-
+    ANSC_STATUS                     ret             = ANSC_STATUS_FAILURE;
     if ( CcspManagementServer_SubsystemPrefix)
     {
         _ansc_sprintf(CrName, "%s%s", CcspManagementServer_SubsystemPrefix, CCSP_DBUS_INTERFACE_CR);
@@ -836,34 +836,22 @@ CcspManagementServer_UtilGetParameterValues
                     pval_size,
                     pppval
                 );
+ if( (res==CCSP_SUCCESS) && (pval_size > 0) )
+            ret= ANSC_STATUS_SUCCESS;
+        else {
+            CcspTraceWarning(("CcspManagementServer_UtilGetParameterValues -- getParameterValues failed!\n"));
+        }
 
         /*RDKB-7329, CID-33436, free unused resources before exit */
-        if(pComponentPath)
-        {
-            CcspManagementServer_Free(pComponentPath);
-        }
-
-        if( (res==CCSP_SUCCESS) && (pval_size > 0) )
-        {
-            CcspManagementServer_Free(pComponentName);
-            return  ANSC_STATUS_SUCCESS;
-        }
-        else
-        {
-            /* pComponentName is refenced from within CcspTraceWarning Macro, free after. */
-            CcspTraceWarning(("CcspManagementServer_UtilGetParameterValues -- getParameterValues failed!\n"));
-            CcspManagementServer_Free(pComponentName);
-            return  ANSC_STATUS_FAILURE;
-        }
+        CcspManagementServer_Free(pComponentName);
+       
     }
 
     if(pComponentPath)
     {
         CcspManagementServer_Free(pComponentPath);
     }
-
-    CcspTraceWarning(("CcspManagementServer_UtilGetParameterValues -- getParameterValues failed!\n"));
-    return  ANSC_STATUS_FAILURE;
+    return  ret;
 }
 
 

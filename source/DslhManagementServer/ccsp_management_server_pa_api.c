@@ -181,9 +181,12 @@ void ReadTr69TlvData()
 		// But we need to get the latest flag value from boot-config file.
 		if ((object2->FreshBootUp == 0) && (object2->Tr69Enable == 1))
 		{
+                        CCSP_STRING acsURL = CcspManagementServer_CloneString(object2->URL);
 			AnscTraceWarning(("%s -#-  Inside FreshBootUp=0 AND Tr69Enable=1 \n", __FUNCTION__));
 			AnscTraceWarning(("%s -#-  ACS URL from PSM DB- %s\n", __FUNCTION__, objectInfo[ManagementServerID].parameters[ManagementServerURLID].value));
-			AnscTraceWarning(("%s -#-  ACS URL from cmconfig - %s\n", __FUNCTION__, CcspManagementServer_CloneString(object2->URL)));
+			AnscTraceWarning(("%s -#-  ACS URL from cmconfig - %s\n", __FUNCTION__, acsURL));
+                        CcspManagementServer_Free(acsURL);
+                        
 
 			/* If TR69Enabled is already enabled, then no need to read URL.
 		   	Update only EnableCWMP value to bbhm. */

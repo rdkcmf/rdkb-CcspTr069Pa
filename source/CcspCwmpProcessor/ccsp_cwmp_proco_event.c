@@ -2050,7 +2050,7 @@ CcspCwmppoProcessPvcSignal
                 CCSP_STRING         pNotificationLimit = NULL;
                 ULONG               uTimeNow = AnscGetTickInSeconds();
 
-                uNotificationLimit = 
+                pNotificationLimit = 
                     CcspManagementServer_GetUDPConnectionRequestAddressNotificationLimit
                         (
                             pCcspCwmpCpeController->PANameWithPrefix

@@ -865,11 +865,6 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         else
         {
 				PCCSP_PARAM_VALUE_INFO  pValueInfo;
-/*
-Mamidi:Moved these variable to with in the scope
-*/
-				/*char aMem[50];
-				char *pParamN = &aMem;*/
 				pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
 				pValueInfo      = &pNsList->Args.paramValueInfo;
 
@@ -886,24 +881,11 @@ Mamidi:Moved these variable to with in the scope
 					if(i<MAX_NO_WIFI_PARAM)
 					{
                                 		char aMem[50];
-		                                char *pParamN = &aMem;
+		                                char *pParamN = aMem;
 
 						AnscCopyString(pParamN,pValueInfo->parameterName);
 						CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
 						AnscCopyString(ParamName[i],pParamN);
-/*
-Mamidi: Here we are trying to free the static memory, which is causing a consistent crash when ACS trying to call set parameters for "Device.WiFi.NeighboringWiFiDiagnostic.DiagnosticsState"
-Also moved these variables here for scope clarity.So that  in static Analysis this one not detected as memory leak.
-char aMem[50];
-cchar *pParamN = &aMem;
-
-*/
-#if 0
-						/*RDKB-7325, CID-33443, free unused resources */
-						CcspTr069PaFreeMemory(pParamN);
-						pParamN = NULL;
-#endif
-
 						noOfParam = i;
 					}
 					
