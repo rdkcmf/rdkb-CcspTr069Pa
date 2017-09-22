@@ -306,7 +306,11 @@
         <Param>
             <Name>Device.DeviceInfo.NetworkProperties.TCPImplementation</Name>
         </Param>
-
+        <!-- Syndication Partner Information -->
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.PartnerId</Name>
+        </Param>
+        
         <!-- Comcast specific Device.DeviceInfo. parameters -->
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_xfinitywifiCapable</Name>

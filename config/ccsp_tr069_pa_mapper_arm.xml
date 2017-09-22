@@ -321,6 +321,10 @@
         <Param>
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.Logging.xOpsDMLogsUploadStatus</Name>
         </Param>
+        <!-- Syndication Partner Information -->
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.PartnerId</Name>
+        </Param>
         <!-- Comcast specific Device.DeviceInfo. Parameters -->
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_xfinitywifiCapableCPE</Name>
