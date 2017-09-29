@@ -1454,6 +1454,7 @@ CcspCwmppoMpaGetParameterValues
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
     BOOL                            bParamNameArrayEmpty = FALSE;
     char*                           pRootObjName         = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
+    BOOL GetParamSuccessStatus  = FALSE;
 
 	BOOL bDataModelReq = FALSE;
     *ppParamValueArray = NULL;
@@ -1699,6 +1700,7 @@ CcspCwmppoMpaGetParameterValues
             }
             else
             {
+		GetParamSuccessStatus = TRUE;
                 BOOL                bNsInvisibleToCloudServer = FALSE;
 
                 for ( k = 0; k < nParamCount; k ++ )
@@ -1871,12 +1873,22 @@ CcspCwmppoMpaGetParameterValues
 
     if ( ulParameterIndex == 0 )
     {
-        CcspTr069PaTraceDebug(("GPV will return error since PA returns no parameters.\n"));
 
-        returnStatus = ANSC_STATUS_BAD_NAME;
-        goto EXIT2;
+		if( TRUE == GetParamSuccessStatus )
+		{
+			CcspTr069PaTraceWarning(("GPV - Count 0, Returning NULL object\n"));
+			goto EXIT3;
+		}
+		else
+		{
+		        CcspTr069PaTraceDebug(("GPV will return error since PA returns no parameters.\n"));
+		        returnStatus = ANSC_STATUS_BAD_NAME;
+		        goto EXIT2;
+		}
+
     }
 
+EXIT3:
     *ppParamValueArray = pParameterValueArray;
     *pulArraySize      = ulParameterIndex;
     returnStatus       = ANSC_STATUS_SUCCESS;
