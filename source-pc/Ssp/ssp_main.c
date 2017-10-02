@@ -38,7 +38,7 @@
 //
 
 #ifdef __GNUC__
-#if (!defined _BUILD_ANDROID) && (!defined _COSA_VEN501_) && (!defined _NO_EXECINFO_H_)
+#if (!defined _BUILD_ANDROID) && (!defined _COSA_VEN501_) && (!defined _COSA_SIM_) && (!defined _NO_EXECINFO_H_)
 #include <execinfo.h>
 #endif
 #endif
@@ -160,7 +160,7 @@ int  display_info()
 static void _print_stack_backtrace(void)
 {
 #ifdef __GNUC__
-#if (!defined _BUILD_ANDROID) && (!defined _COSA_VEN501_) && (!defined _COSA_SIM_)
+#if (!defined _BUILD_ANDROID) && (!defined _COSA_VEN501_) && (!defined _COSA_SIM_) && (!defined _NO_EXECINFO_H_)
     void* tracePtrs[100];
     char** funcNames = NULL;
     int i, count = 0;
