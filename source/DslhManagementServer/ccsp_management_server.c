@@ -612,7 +612,7 @@ CcspManagementServer_FillInObjectInfo()
                         res,
                         pRecordName,
                         pValue ? pValue : "NULL"
-                        );
+                        )
                     );
                 /*RDKB-7329, CID-33414, null check before use */
                 if(pValue){
