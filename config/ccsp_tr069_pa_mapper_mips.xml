@@ -3334,6 +3334,11 @@
         <Param>
             <Name>Device.NeighborDiscovery.InterfaceSetting.{i}.RSEnable</Name>
         </Param>
+
+        <!-- MoCA network isolation parameter -->
+        <Param>
+                <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.HomeNetworkIsolation</Name>
+        </Param>
 		
         <!-- INVISIBLE parameters under "Device." -->
         <Param invisible="true">
