@@ -414,4 +414,28 @@ CcspManagementServer_RestoreDefaultValues
         void
     );
 
+int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB
+	( 
+		char *pString, 
+		int parameterID 
+	);
+
+int CcspManagementServer_GetMGMTServerPasswordValuesFromDB
+	( 
+		int parameterID, 
+		char *pOutputString 
+	);
+
+int CcspManagementServer_RetrievePassword
+	( 
+		char *pInputFile, 
+		char *pOutputString 
+	);
+
+int CcspManagementServer_IsEncryptedFileInDB
+	( 
+		int parameterID, 
+		int *pIsEncryptFileAvailable 
+	);
+
 #endif

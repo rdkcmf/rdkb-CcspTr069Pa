@@ -527,8 +527,67 @@ CcspManagementServer_FillInObjectInfo()
                 }
 
                 objectInfo[i].parameters[j].value = pValue;
-                pValue = NULL;
+				pValue = NULL;
+
+#ifdef _COSA_INTEL_XB3_ARM_
+				// Needs to be encrypt on NVMEM files during migration case
+				if ( ( ManagementServerID == i ) && \
+					  ( ( ManagementServerPasswordID == j ) || \
+						( ManagementServerConnectionRequestPasswordID == j ) || \
+						( ManagementServerSTUNPasswordID == j )
+					  ) 
+					)
+				{
+					int IsEncryptFileAvailable = 0;
+
+					// Check whether already encrypted file is available or not
+					if ( 0 == CcspManagementServer_IsEncryptedFileInDB( j, &IsEncryptFileAvailable 	) )
+					{
+						// if encrypted file is not available then only we have to encrypt
+						if( 0 == IsEncryptFileAvailable )
+						{
+							CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( objectInfo[i].parameters[j].value,
+																					  j );
+						}
+					}
+
+					//Delete old existing entries from PSM DB
+					//PSM_Del_Record( bus_handle, CcspManagementServer_SubsystemPrefix, pRecordName );
+				}
+#endif /* _COSA_INTEL_XB3_ARM_ */
             }
+#ifdef _COSA_INTEL_XB3_ARM_
+			//else
+			{
+				// Needs to be decrypt from NVMEM files
+				if ( ( ManagementServerID == i ) && \
+					  ( ( ManagementServerPasswordID == j ) || \
+						( ManagementServerConnectionRequestPasswordID == j ) || \
+						( ManagementServerSTUNPasswordID == j )
+					  ) 
+					)
+				{
+					char tmpPWDValue[ 512 ]  = { 0 };
+
+					// If  return success then process otherwise leave it as it is
+					if ( 0 == CcspManagementServer_GetMGMTServerPasswordValuesFromDB( j, tmpPWDValue ))
+					{
+						if( '\0' != tmpPWDValue[ 0 ] )
+						{
+							/* free default value */
+							if ( objectInfo[i].parameters[j].value )
+							{
+								CcspManagementServer_Free(objectInfo[i].parameters[j].value);
+							}
+						
+							objectInfo[i].parameters[j].value = CcspManagementServer_Allocate( strlen( tmpPWDValue ) + 1 );
+							memset( objectInfo[i].parameters[j].value, 0, strlen( tmpPWDValue ) + 1 );
+							strncpy ( objectInfo[i].parameters[j].value, tmpPWDValue, strlen( tmpPWDValue ) ) ;
+						}
+					}
+				}
+			}
+#endif /* _COSA_INTEL_XB3_ARM_ */
 
             strncpy(&pRecordName[len1+len2+len3+1], ".Notification", 13);
             pRecordName[len1+len2+len3+14] = '\0';
@@ -2421,6 +2480,221 @@ void Send_TR069_Notification(int parameterID, char* pString)
 
 }
 #endif
+
+/* CcspManagementServer_IsEncryptedFileInDB() */
+int CcspManagementServer_IsEncryptedFileInDB( int parameterID, int *pIsEncryptFileAvailable )
+{
+	int returnStatus  = 0;
+
+	//Validate passed arguments
+	if( NULL == pIsEncryptFileAvailable )
+	{
+		return TR69_INVALID_ARGUMENTS;
+	}
+
+	*pIsEncryptFileAvailable = 0;
+	
+	if( ManagementServerPasswordID == parameterID )
+	{
+		FILE	*fp 			  = NULL;
+		
+		//	Check whether input file is existing or not
+		if ( ( fp = fopen ( "/nvram/.keys/MgmtPwdID", "r" ) ) != NULL ) 
+		{
+			fclose( fp );
+			fp = NULL;
+			*pIsEncryptFileAvailable = 1;
+			CcspTr069PaTraceInfo((" TR069 %s %d : MgmtPwdID file available\n", __FUNCTION__, __LINE__));
+		}
+		else
+		{
+			CcspTr069PaTraceInfo((" TR069 %s %d : MgmtPwdID file not available\n", __FUNCTION__, __LINE__));
+		}
+	}
+	else if ( ManagementServerConnectionRequestPasswordID == parameterID )
+	{
+		FILE	*fp 			  = NULL;
+		
+		//	Check whether input file is existing or not
+		if ( ( fp = fopen ( "/nvram/.keys/MgmtCRPwdID", "r" ) ) != NULL ) 
+		{
+			fclose( fp );
+			fp = NULL;
+			*pIsEncryptFileAvailable = 1;
+			CcspTr069PaTraceInfo((" TR069 %s %d : MgmtCRPwdID file available\n", __FUNCTION__, __LINE__));
+		}
+		else
+		{
+			CcspTr069PaTraceInfo((" TR069 %s %d : MgmtCRPwdID file not available\n", __FUNCTION__, __LINE__));
+		}
+	}
+	else if ( ManagementServerSTUNPasswordID == parameterID )
+	{
+		FILE	*fp 			  = NULL;
+		
+		//	Check whether input file is existing or not
+		if ( ( fp = fopen ( "/nvram/.keys/MgmtCRSTUNPwdID", "r" ) ) != NULL ) 
+		{
+			fclose( fp );
+			fp = NULL;
+			*pIsEncryptFileAvailable = 1;
+			CcspTr069PaTraceInfo((" TR069 %s %d : MgmtCRSTUNPwdID file available\n", __FUNCTION__, __LINE__));
+		}
+		else
+		{
+			CcspTr069PaTraceInfo((" TR069 %s %d : MgmtCRSTUNPwdID file not available\n", __FUNCTION__, __LINE__));
+		}
+	}
+	else
+	{
+		return TR69_INVALID_ARGUMENTS;
+	}
+
+	return returnStatus;
+}
+
+
+/* CcspManagementServer_RetrievePassword() */
+int CcspManagementServer_RetrievePassword( char *pInputFile, char *pOutputString )
+{
+	#define TEMP_MGMT_SERV_PWD_PATH		"/tmp/tmpMgmtPWDFile"
+
+	FILE 	*fp 		  	  = NULL;
+	int 	 returnstatus 	  = 0,
+			 isInputFileExist = 0;
+
+	//  Check whether input file is existing or not
+    if ( ( fp = fopen ( pInputFile, "r" ) ) != NULL ) 
+	{
+		fclose( fp );
+		fp = NULL;
+		isInputFileExist = 1;
+    }
+	else
+	{
+		returnstatus = TR69_INTERNAL_ERROR;
+	}
+
+	//  if  input file is there then decrypt and return string
+	if( isInputFileExist )
+	{
+		char	 cmd[ 128 ]   = { 0 };
+		sprintf( cmd, "configparamgen jx %s %s", pInputFile, TEMP_MGMT_SERV_PWD_PATH );
+		system( cmd );	
+		
+		if ( ( fp = fopen ( TEMP_MGMT_SERV_PWD_PATH, "r" ) ) != NULL ) 
+		{
+			char	 password [ 512 ]	 = { 0 },
+					 retPassword [ 512 ] = { 0 };
+			int 	 length 			 = 0;
+		
+			memset( cmd, 0, sizeof( cmd ) );
+			sprintf( cmd, "rm -rf %s", TEMP_MGMT_SERV_PWD_PATH );
+		
+			if ( fgets ( password, sizeof( password ), fp ) != NULL ) 
+			{					
+				sscanf( password, "%s" ,retPassword );
+				length = strlen( retPassword );
+				strncpy( pOutputString, retPassword, length );	 
+				memset( retPassword, 0, sizeof( retPassword ) );				
+				memset( password, 0, sizeof( password ) );								
+			}
+			else
+			{
+				AnscTraceWarning(( "%s -- fgets() failed\n", __FUNCTION__ ));
+				fclose( fp );
+				system( cmd );	
+				memset( cmd, 0, sizeof( cmd ) );
+				return TR69_INTERNAL_ERROR;
+			}
+		
+			fclose( fp );
+			system( cmd );
+			memset( cmd, 0, sizeof( cmd ) );
+		}
+		else
+		{
+			AnscTraceWarning(( "%s -- fopen() failed\n", __FUNCTION__ ));
+			memset( cmd, 0, sizeof( cmd ) );
+			return TR69_INTERNAL_ERROR;
+		}
+	}
+
+	return returnstatus;
+}
+
+/* CcspManagementServer_GetMGMTServerPasswordValuesFromDB() */
+int CcspManagementServer_GetMGMTServerPasswordValuesFromDB( int parameterID, char *pOutputString )
+{
+	int returnStatus  = 0;
+
+	//Validate passed arguments
+	if( NULL == pOutputString )
+	{
+		return TR69_INVALID_ARGUMENTS;
+	}
+	
+	if( ManagementServerPasswordID == parameterID )
+	{
+		returnStatus = CcspManagementServer_RetrievePassword( "/nvram/.keys/MgmtPwdID", pOutputString );
+	}
+	else if ( ManagementServerConnectionRequestPasswordID == parameterID )
+	{
+		returnStatus = CcspManagementServer_RetrievePassword( "/nvram/.keys/MgmtCRPwdID", pOutputString );
+	}
+	else if ( ManagementServerSTUNPasswordID == parameterID )
+	{
+		returnStatus = CcspManagementServer_RetrievePassword( "/nvram/.keys/MgmtCRSTUNPwdID", pOutputString );
+	}
+
+	return returnStatus;
+}
+
+/* CcspManagementServer_StoreMGMTServerPasswordValuesintoDB() */
+int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int parameterID )
+{
+	int returnStatus  = 0;
+
+	//Validate passed arguments
+	if( NULL == pString )
+	{
+		return TR69_INVALID_ARGUMENTS;
+	}
+	
+	if( ManagementServerPasswordID == parameterID )
+	{
+		char cmd[ 512 ] = { 0 };
+		sprintf( cmd, 
+				 "echo %s > /tmp/tempMSPwdFile; mkdir -p /nvram/.keys; configparamgen mi /tmp/tempMSPwdFile /nvram/.keys/MgmtPwdID; rm -rf /tmp/tempMSPwdFile", 
+				 pString );
+		system( cmd );
+		memset( cmd, 0, sizeof( cmd ) );
+		CcspTr069PaTraceInfo((" TR069 %s %d : ManagementServerPasswordID Changed\n", __FUNCTION__, __LINE__));
+	}
+	else if ( ManagementServerConnectionRequestPasswordID == parameterID )
+	{
+		char cmd[ 512 ] = { 0 };
+		sprintf( cmd, 
+				 "echo %s > /tmp/tempMSCRPwdFile; mkdir -p /nvram/.keys; configparamgen mi /tmp/tempMSCRPwdFile /nvram/.keys/MgmtCRPwdID; rm -rf /tmp/tempMSCRPwdFile", 
+				 pString );
+		system( cmd );
+		memset( cmd, 0, sizeof( cmd ) );
+		CcspTr069PaTraceInfo((" TR069 %s %d : ManagementServerConnectionRequestPasswordID Changed\n", __FUNCTION__, __LINE__));
+	}
+	else if ( ManagementServerSTUNPasswordID == parameterID )
+	{
+		char cmd[ 512 ] = { 0 };
+		sprintf( cmd, 
+				 "echo %s > /tmp/tempMSSTUNPwdFile; mkdir -p /nvram/.keys; configparamgen mi /tmp/tempMSSTUNPwdFile /nvram/.keys/MgmtCRSTUNPwdID; rm -rf /tmp/tempMSSTUNPwdFile", 
+				 pString );
+		system( cmd );
+		memset( cmd, 0, sizeof( cmd ) );
+		CcspTr069PaTraceInfo((" TR069 %s %d : ManagementServerSTUNPasswordID Changed\n", __FUNCTION__, __LINE__));
+	}
+
+	return returnStatus;
+}
+
 int CcspManagementServer_CommitParameterValues(unsigned int writeID)
 {
     int i = 0, objectID, parameterID, paObjectID;
@@ -2487,27 +2761,43 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
         parameterSetting.msParameterValSettings[i].parameterValue = backup;
         parameterSetting.msParameterValSettings[i].backupStatus = BackupOldValue;
 
-        /* PSM write */
-        len2 = strlen(objectInfo[objectID].name);
-        strncpy(&pRecordName[len1+1], objectInfo[objectID].name, len2);
-        len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
-        strncpy(&pRecordName[len1+len2+1], objectInfo[objectID].parameters[parameterID].name, len3);
-        strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
-        pRecordName[len1+len2+len3+7] = '\0';
-        slapVar.Variant.varString = objectInfo[objectID].parameters[parameterID].value;
-
-        res = PSM_Set_Record_Value2(
-            bus_handle,
-            CcspManagementServer_SubsystemPrefix,
-            pRecordName,
-            ccsp_string,
-            slapVar.Variant.varString);
-        if(res != CCSP_SUCCESS){
-            CcspTraceWarning2("ms", ( "CcspManagementServer_CommitParameterValues PSM write failure %d!=%d: %s----%s.\n", res, CCSP_SUCCESS, pRecordName, slapVar.Variant.varString)); 
-            /* It seems that only chance to invoke roll back is PSM save error. */
-            CcspManagementServer_RollBackParameterValues();
-            goto EXIT1;
-        }
+#ifdef _COSA_INTEL_XB3_ARM_
+		// Needs to be encrypt on NVMEM files
+        if ( ( ManagementServerID == objectID ) && \
+			  ( ( ManagementServerPasswordID == parameterID ) || \
+			    ( ManagementServerConnectionRequestPasswordID == parameterID ) || \
+			    ( ManagementServerSTUNPasswordID == parameterID )
+			  ) 
+			)
+		{
+			CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( objectInfo[objectID].parameters[parameterID].value,
+																  	  parameterID );
+		}
+		//else
+#endif /* _COSA_INTEL_XB3_ARM_ */
+		{
+			/* PSM write */
+			len2 = strlen(objectInfo[objectID].name);
+			strncpy(&pRecordName[len1+1], objectInfo[objectID].name, len2);
+			len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
+			strncpy(&pRecordName[len1+len2+1], objectInfo[objectID].parameters[parameterID].name, len3);
+			strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
+			pRecordName[len1+len2+len3+7] = '\0';
+			slapVar.Variant.varString = objectInfo[objectID].parameters[parameterID].value;
+			
+			res = PSM_Set_Record_Value2(
+				bus_handle,
+				CcspManagementServer_SubsystemPrefix,
+				pRecordName,
+				ccsp_string,
+				slapVar.Variant.varString);
+			if(res != CCSP_SUCCESS){
+				CcspTraceWarning2("ms", ( "CcspManagementServer_CommitParameterValues PSM write failure %d!=%d: %s----%s.\n", res, CCSP_SUCCESS, pRecordName, slapVar.Variant.varString)); 
+				/* It seems that only chance to invoke roll back is PSM save error. */
+				CcspManagementServer_RollBackParameterValues();
+				goto EXIT1;
+			}
+		}
 
         if ( objectID == ManagementServerID && parameterID == ManagementServerURLID && g_ACSChangedURL == 1)
         {
@@ -2616,27 +2906,43 @@ int CcspManagementServer_RollBackParameterValues()
         objectInfo[objectID].parameters[parameterID].value = CcspManagementServer_CloneString(parameterSetting.msParameterValSettings[i].parameterValue);
         parameterSetting.msParameterValSettings[i].backupStatus = NoBackup;
 
-        /* PSM write */
-        len2 = strlen(objectInfo[objectID].name);
-        strncpy(&pRecordName[len1+1], objectInfo[objectID].name, len2);
-        len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
-        strncpy(&pRecordName[len1+len2+1], objectInfo[objectID].parameters[parameterID].name, len3);
-        strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
-        pRecordName[len1+len2+len3+7] = '\0';
-        slapVar.Variant.varString = objectInfo[objectID].parameters[parameterID].value;
-        res = PSM_Set_Record_Value2(
-            bus_handle,
-            CcspManagementServer_SubsystemPrefix,
-            pRecordName,
-            ccsp_string,
-            slapVar.Variant.varString);
-        if(res != CCSP_SUCCESS){
-            /* It seems that only chance to invoke roll back is PSM save error.
-             * Nothing can be done if another PSM save error happens again during roll back.
-             */
-            CcspTraceError2("ms", ( "CcspManagementServer_RollBackParameterValues PSM write failure %d!=%d: %s----%s.\n", res, CCSP_SUCCESS, pRecordName, slapVar.Variant.varString)); 
-        }
-    }
+#ifdef _COSA_INTEL_XB3_ARM_
+		// Needs to be encrypt on NVMEM files
+        if ( ( ManagementServerID == objectID ) && \
+			  ( ( ManagementServerPasswordID == parameterID ) || \
+			    ( ManagementServerConnectionRequestPasswordID == parameterID ) || \
+			    ( ManagementServerSTUNPasswordID == parameterID )
+			  ) 
+			)
+		{
+			CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( objectInfo[objectID].parameters[parameterID].value,
+																  	  parameterID );
+		}
+		//else
+#endif /* _COSA_INTEL_XB3_ARM_ */
+		{
+			/* PSM write */
+			len2 = strlen(objectInfo[objectID].name);
+			strncpy(&pRecordName[len1+1], objectInfo[objectID].name, len2);
+			len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
+			strncpy(&pRecordName[len1+len2+1], objectInfo[objectID].parameters[parameterID].name, len3);
+			strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
+			pRecordName[len1+len2+len3+7] = '\0';
+			slapVar.Variant.varString = objectInfo[objectID].parameters[parameterID].value;
+			res = PSM_Set_Record_Value2(
+				bus_handle,
+				CcspManagementServer_SubsystemPrefix,
+				pRecordName,
+				ccsp_string,
+				slapVar.Variant.varString);
+			if(res != CCSP_SUCCESS){
+				/* It seems that only chance to invoke roll back is PSM save error.
+				 * Nothing can be done if another PSM save error happens again during roll back.
+				 */
+				CcspTraceError2("ms", ( "CcspManagementServer_RollBackParameterValues PSM write failure %d!=%d: %s----%s.\n", res, CCSP_SUCCESS, pRecordName, slapVar.Variant.varString)); 
+			}
+		}
+   }
 
     return 0;
 }
