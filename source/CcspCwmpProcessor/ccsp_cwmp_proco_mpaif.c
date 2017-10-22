@@ -917,7 +917,8 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         PCCSP_TR069PA_NSLIST        pNsList;
         int                         nResult         = CCSP_SUCCESS;
         char*                       pInvalidParam   = NULL;
-
+        char                        sysbuf[8]          = {"\0"};
+        BOOL                        flag_pInvalidParam = FALSE;
         CcspTr069PaTraceDebug(("SPV involves %d Functional Component(s), sessionID = %u.\n", nNumFCs, (unsigned int)ulSessionID));
 
         for ( j = 0; j < nNumFCs; j ++ )
@@ -960,19 +961,18 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
             pInvalidParam = NULL;
 
 	    if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.RebootDevice"))
-	    {	
-                
-                    
+	    {
+
+
             if((strstr(pParamValues->parameterValue,"Router")!=NULL && strstr(pParamValues->parameterValue,"Wifi")!=NULL && strstr(pParamValues->parameterValue,"VoIP")!=NULL && strstr(pParamValues->parameterValue,"MoCA")!=NULL)||strstr(pParamValues->parameterValue,"Device")!=NULL)
- {   
-                        
+ {
+
 						if ( strstr( pParamValues->parameterValue, "Device" ) != NULL )
 						{
 							/* Before reboot device we need to set reboot reason */
 							parameterValStruct_t valStr 	 = { "Device.DeviceInfo.X_RDKCENTRAL-COM_LastRebootReason", "tr069-reboot" , ccsp_string };
 							char				 *faultParam = NULL;
-							
-							nResult = 
+							nResult =
 								CcspBaseIf_setParameterValues
 									(
 										pCcspCwmpCpeController->hMsgBusHandle,
@@ -1046,8 +1046,38 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
                             );
              }
 }
- 
-            nResult = 
+
+//Set the flag to false
+flag_pInvalidParam = FALSE;
+
+// Hide the LNF and XHS password 
+if ((strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.7.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.8.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.3.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.4.Security.KeyPassphrase")==0))
+{
+	syscfg_init();
+	syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
+	if( sysbuf != NULL )
+	{	
+        	// if TR069PSWDCTRLFLAG == true then the Password Control feature is enabled.
+		if (strcmp(sysbuf, "true") == 0)
+		{
+			//Set it as fault code not writable
+			nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
+
+			// Set a flag to invalid param as true
+			flag_pInvalidParam = TRUE;
+
+			// not success send appropriate parameter name
+			pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
+		}
+	}
+}
+
+if ( flag_pInvalidParam == FALSE )// other than LNF and XHS password and for TR069PSWDCTRLFLAG=true
+ {
+            nResult =
                 CcspBaseIf_setParameterValues
                     (
                         pCcspCwmpCpeController->hMsgBusHandle,
@@ -1060,7 +1090,7 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
                         (nNumFCs == 1),
                         &pInvalidParam
                     );
-
+}
 
             CcspTr069PaFreeMemory(pParamValues);
             pParamValues = NULL;
@@ -1068,14 +1098,17 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
             if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
             {
                 /* If not success send appropriate parameter name*/
-                pInvalidParam=CcspTr069PaCloneString("Device.X_COMCAST_COM_CM.ReinitCmMac");
+               pInvalidParam=CcspTr069PaCloneString("Device.X_COMCAST_COM_CM.ReinitCmMac");
             }
 
             if ( nResult != CCSP_SUCCESS )
             {
-                if ( pInvalidParam )
-                {
+                 if ( pInvalidParam )
+                 {
                     ULONG           spvFaultCode = nResult;
+
+                    //reset flag_pInvalidParam
+                    flag_pInvalidParam = FALSE;
 
                     /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
                     CcspCwmppoMpaMapInvalidParamInstNumDmIntToCwmp(pInvalidParam);
@@ -1665,9 +1698,10 @@ CcspCwmppoMpaGetParameterValues
         PCCSP_TR069PA_NSLIST        pNsList;
         int                         nResult         = CCSP_SUCCESS;
         char*                       pPaSubsystem    = pCcspCwmpCpeController->SubsysName;
+        char                        sysbuf[8]          = {"\0"};
 
-        CcspTr069PaTraceDebug(("GPV involves %d Functional Component(s), sessionID = %u.\n", nNumFCs, (unsigned int)ulSessionID));
-        
+	CcspTr069PaTraceDebug(("GPV involves %d Functional Component(s), sessionID = %u.\n", nNumFCs, (unsigned int)ulSessionID));
+
         /* for result NS list, we don't care sub-system, FC name, and DBus path */
         CcspTr069PaAddFcIntoFcNsList(&FcGpvResultListQueue, NULL, NULL, NULL, pFcGpvResNsList);
 
@@ -1704,8 +1738,6 @@ CcspCwmppoMpaGetParameterValues
                 pParamNames[k++] = pNsList->Args.paramValueInfo.parameterName;
                 pNsList->Args.paramValueInfo.parameterName = NULL;
             }
-
-
             /* we're ready to make GPV call! */
             CcspTr069PaTraceDebug(("Invoking GPV on FC <%s>, DBus path <%s>\n, pParamNames : <%s>, num = %d\n", pFcNsList->FCName, pFcNsList->DBusPath, pParamNames[0], k));
             nResult =
@@ -1719,8 +1751,7 @@ CcspCwmppoMpaGetParameterValues
                         &nParamCount,
                         &pParamValues
                     );
-
-            CcspTr069PaFreeMemory(pParamNames);
+                       CcspTr069PaFreeMemory(pParamNames);
 
 
             if ( nResult != CCSP_SUCCESS )
@@ -1730,8 +1761,7 @@ CcspCwmppoMpaGetParameterValues
                 returnStatus = ANSC_STATUS_INTERNAL_ERROR;
                 if( NULL != pParamValues )
                 	free_parameterValStruct_t(pCcspCwmpCpeController->hMsgBusHandle, nParamCount, pParamValues);
-				goto EXIT2; 
-                
+				goto EXIT2;
             }
             else
             {
@@ -1741,10 +1771,30 @@ CcspCwmppoMpaGetParameterValues
                 for ( k = 0; k < nParamCount; k ++ )
                 {
                     if ( !pParamValues[k] ) continue;      /* some FC returns NULL, robustness check */
-                    
-                    /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
+
+		    /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
                     CcspCwmppoMpaMapParamInstNumDmIntToCwmp(pParamValues[k]->parameterName);
                     CcspCwmppoMpaMapParamInstNumDmIntToCwmp(pParamValues[k]->parameterValue);
+
+		    //Checking Password control flag
+		    if((0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10004.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10104.Security.KeyPassphrase")) ||
+		       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10002.Security.KeyPassphrase")) ||
+		       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10102.Security.KeyPassphrase")) )
+		    {
+                          syscfg_init();
+                          syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
+                           if( sysbuf != NULL )
+                           {
+                              // if TR069PSWDCTRLFLAG == true then the Password Control feature is enabled.
+			      if (strcmp(sysbuf, "true") == 0)
+			      {
+				    strcpy(pParamValues[k]->parameterValue,"NA");
+			      }
+		           }
+                    }
+		    //Completed Password control check
+
                     if(0 == strcmp(pParamValues[k]->parameterName,"Device.DeviceInfo.SoftwareVersion"))
                     {
                         char tmp[200]={0};
@@ -1760,7 +1810,7 @@ CcspCwmppoMpaGetParameterValues
 			size = sizeof(paramval);
 			snprintf(paramname, sizeof(paramname), "Device.DeviceInfo.AdditionalSoftwareVersion");
 			retval = COSAGetParamValueByPathName(pCcspCwmpCpeController->hMsgBusHandle, &varStruct, &size);
-				
+
 			if ( (retval == ANSC_STATUS_SUCCESS) && (0 != size))
 			{
 				strcpy(tmp,paramval);
@@ -1799,9 +1849,8 @@ CcspCwmppoMpaGetParameterValues
 					 }
                      if(0 == strcmp(pParamValues[k]->parameterName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
                      {
-        				AnscCopyString(pParamValues[k]->parameterName , "Device.X_COMCAST_COM_CM.ReinitCmMac");
-	
-				     }
+        		AnscCopyString(pParamValues[k]->parameterName , "Device.X_COMCAST_COM_CM.ReinitCmMac");	
+		     }
 
                     /* filter out namespace that is not supported by this PA, or invisible
                      * to cloud server through this PA
@@ -1855,7 +1904,7 @@ CcspCwmppoMpaGetParameterValues
                     }
                 }
             }
-            
+
             free_parameterValStruct_t(pCcspCwmpCpeController->hMsgBusHandle, nParamCount, pParamValues);
 
             if ( returnStatus != ANSC_STATUS_SUCCESS )
@@ -1868,14 +1917,14 @@ CcspCwmppoMpaGetParameterValues
         {
             goto EXIT2;
         }
-        else 
+        else
         {
             ULONG                   ulTotalParamCount = AnscQueueQueryDepth(&pFcGpvResNsList->NsList);
             PSINGLE_LINK_ENTRY      pSLinkEntry;
             PCCSP_TR069PA_NSLIST    pNsList;
             PCCSP_CWMP_PARAM_VALUE  pCwmpPV;
 
-            pParameterValueArray = 
+            pParameterValueArray =
                 (PCCSP_CWMP_PARAM_VALUE)CcspTr069PaAllocateMemory
                     (
                         sizeof(CCSP_CWMP_PARAM_VALUE) * ulTotalParamCount
@@ -1886,10 +1935,10 @@ CcspCwmppoMpaGetParameterValues
                 returnStatus = ANSC_STATUS_RESOURCES;
                 goto EXIT2;
             }
-            
+
             pSLinkEntry = AnscQueueGetFirstEntry(&pFcGpvResNsList->NsList);
-            while ( pSLinkEntry )                                   
-            {                                                       
+            while ( pSLinkEntry )
+            {
                 pNsList = ACCESS_CCSP_TR069PA_NSLIST(pSLinkEntry);
                 pSLinkEntry = AnscQueueGetNextEntry(pSLinkEntry);
 
@@ -1916,7 +1965,7 @@ CcspCwmppoMpaGetParameterValues
                 }
 
                 pCwmpPV->Tr069DataType = CcspTr069PA_Ccsp2CwmpType(pNsList->Args.paramValueInfo.type);
-            }                                                           
+            }
         }
     }
 
