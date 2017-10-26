@@ -443,6 +443,7 @@ int CcspManagementServer_GetParameterNames(
         info[0] = (parameterInfoStruct_t *) CcspManagementServer_Allocate(sizeof(parameterInfoStruct_t));
         info[0]->parameterName = CcspManagementServer_Allocate(strlen(parameterName)+1);
         strcpy( info[0]->parameterName, parameterName);
+        info[0]->writable = (objectInfo[objectID].parameters[parameterID].access == CCSP_RO)? CCSP_FALSE : CCSP_TRUE;
         *val = info; 
     }
     /* It is a partial path for an object */
