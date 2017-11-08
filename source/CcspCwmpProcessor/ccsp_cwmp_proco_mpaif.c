@@ -1060,8 +1060,8 @@ if ((strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoin
 	syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
 	if( sysbuf != NULL )
 	{	
-        	// if TR069PSWDCTRLFLAG == true then the Password Control feature is enabled.
-		if (strcmp(sysbuf, "true") == 0)
+        	// if TR069PSWDCTRLFLAG ==  false, Set is not allowed
+		if (strcmp(sysbuf, "false") == 0)
 		{
 			//Set it as fault code not writable
 			nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
@@ -1786,8 +1786,8 @@ CcspCwmppoMpaGetParameterValues
                           syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
                            if( sysbuf != NULL )
                            {
-                              // if TR069PSWDCTRLFLAG == true then the Password Control feature is enabled.
-			      if (strcmp(sysbuf, "true") == 0)
+                              // if TR069PSWDCTRLFLAG == false, Get query returns "NA"
+			      if (strcmp(sysbuf, "false") == 0)
 			      {
 				    strcpy(pParamValues[k]->parameterValue,"NA");
 			      }
