@@ -1710,3 +1710,41 @@ CcspManagementServer_StunBindingChanged
 }
 #endif
 
+#define DEVICE_PROPERTIES    "/etc/device.properties" 
+
+/* CcspManagementServer_IsComcastImage() */
+int CcspManagementServer_IsComcastImage( void )
+{
+   FILE 	*deviceFilePtr 	  	= NULL;
+   char 	*pPartnerId 	 	= NULL;
+   char 	 fileContent[ 255 ] = { '\0' };
+   int 		 isComcastImg     	= TRUE;
+   
+   /*
+	*  Return Values :
+	*  #1	: 1 for comcast images
+	*  #2	: 0 for other images
+	*/
+
+   deviceFilePtr = fopen( DEVICE_PROPERTIES, "r" );
+
+   if ( deviceFilePtr ) 
+   {
+	   while ( fscanf(deviceFilePtr , "%s", fileContent ) != EOF ) 
+	   {
+		   if (( pPartnerId = strstr( fileContent, "PARTNER_ID" ) ) != NULL) 
+		   {
+			   isComcastImg = FALSE;
+			   break;
+		   }
+	   }
+	   
+	   fclose( deviceFilePtr );
+   } 
+   else 
+   {
+	   return FALSE;
+   }
+
+   return isComcastImg;
+}

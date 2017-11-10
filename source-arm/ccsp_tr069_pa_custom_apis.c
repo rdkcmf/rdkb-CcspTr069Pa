@@ -106,6 +106,9 @@ static char* DeviceDefaultPassword      = NULL;
 //static char* SharedKey = NULL;
 static char SharedKey[256] = {'\0'};
 #define SHAREDKEYPATH "/usr/ccsp/tr069pa/sharedkey"
+#define ENCRYPTED_SHAREDKEY_PATH "/dummy.txt"
+#define TEMP_SHARED_KEY_PATH "/tmp/tr069sharedkey"
+extern int g_IsComcastImage;
 
 
 
@@ -469,32 +472,96 @@ CcspTr069PaSsp_DeviceDefaultUsernameGenerate
 
 char * CcspTr069PaSsp_retrieveSharedKey( void )
 {
-	FILE* fp = NULL;
-        char key [ 256 ];
-        int len = 0;
+	FILE	*fp 			= NULL;
+	char	 key [ 256 ],
+		 	 retKey [ 256 ] = { 0 },
+		 	 cmd[ 128 ] 	= { 0 };	
+	int 	len 			= 0;
+	BOOL isEncryptedFileIsThere = FALSE;
 
-        if ( (fp = fopen ( SHAREDKEYPATH, "r" )) != NULL ) 
-   	{
- 		if ( fgets ( key, sizeof(key), fp ) != NULL ) 
-        	{           		
-           		strip_line(key);
-                        len = strlen(key);
-	   		strncpy(SharedKey,key,len);   
-        	}
-        	else
-        	{
-            		printf("fgets() failed CcspTr069PaSsp_retrieveSharedKey\n");
-            		fclose(fp);
-            		return NULL;
-        	}
-        fclose(fp);
-   	}
-  	else
-   	{
-       	     printf("fopen() failed in CcspTr069PaSsp_retrieveSharedKey\n");
-       	     return NULL;
-  	}
+	/* 
+	  * Check whether encyrpted shared key file is available or not
+	  * If there then decrypt and return plain key
+	  * If not then return normal plain key
+	  */
+	if ( ( fp = fopen ( ENCRYPTED_SHAREDKEY_PATH, "r" ) ) != NULL ) 
+	{
+		fclose( fp ); 
+		fp = NULL;
+		isEncryptedFileIsThere = TRUE;
+	}
 
+	// Do encryption -decryption for comcast image
+	if( ( TRUE == isEncryptedFileIsThere ) &&\
+		( TRUE == g_IsComcastImage ) 
+	   )  
+	{
+		AnscTraceWarning(("%s -- Encrypted Shared Key Available\n", __FUNCTION__));
+
+		//Decrypt shared key
+		sprintf( cmd, "configparamgen jx %s %s", ENCRYPTED_SHAREDKEY_PATH, TEMP_SHARED_KEY_PATH );
+		system( cmd );
+		
+		if ( ( fp = fopen ( TEMP_SHARED_KEY_PATH, "r" ) ) != NULL ) 
+		{
+			 memset( cmd, 0, sizeof( cmd ) );
+			 sprintf( cmd, "rm -rf %s", TEMP_SHARED_KEY_PATH );
+		
+			if ( fgets ( key, sizeof(key), fp ) != NULL ) 
+			{					
+				sscanf( key, "%s", retKey );
+				len = strlen( retKey );
+				strncpy( SharedKey, retKey, len );
+				memset( retKey, 0, sizeof( retKey ) );
+				memset( key, 0, sizeof( key ) );
+			}
+			else
+			{
+				printf("fgets() failed CcspTr069PaSsp_retrieveSharedKey\n");
+				fclose(fp);
+				system( cmd );
+				memset( cmd, 0, sizeof( cmd ) );
+				return NULL;
+			}
+			
+			fclose(fp);
+			system( cmd );	
+			memset( cmd, 0, sizeof( cmd ) );
+		}
+		else
+		{
+			 printf("fopen() failed in CcspTr069PaSsp_retrieveSharedKey\n");
+			 memset( cmd, 0, sizeof( cmd ) );
+			 return NULL;
+		}
+	}
+	else
+	{
+		AnscTraceWarning(("%s -- Plain Shared Key Available\n", __FUNCTION__));
+
+			if ( (fp = fopen ( SHAREDKEYPATH, "r" )) != NULL ) 
+		{
+			if ( fgets ( key, sizeof(key), fp ) != NULL ) 
+				{					
+					strip_line(key);
+							len = strlen(key);
+				strncpy(SharedKey,key,len);
+				memset( key, 0, sizeof( key ) );
+				}
+				else
+				{
+						printf("fgets() failed CcspTr069PaSsp_retrieveSharedKey\n");
+						fclose(fp);
+						return NULL;
+				}
+			fclose(fp);
+		}
+		else
+		{
+				 printf("fopen() failed in CcspTr069PaSsp_retrieveSharedKey\n");
+				 return NULL;
+		}
+	}
       
 	return SharedKey;
 }

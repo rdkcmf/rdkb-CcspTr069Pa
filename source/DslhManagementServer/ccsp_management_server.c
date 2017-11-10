@@ -117,6 +117,8 @@ char *pFirstUpstreamIpInterface = NULL;
 char *pFirstUpstreamIpAddress = NULL;
 
 int g_ACSChangedURL = 0;
+int g_IsComcastImage = TRUE;
+
 
 char * pDTXml = "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\
 <DT>\
@@ -317,6 +319,9 @@ CcspManagementServer_FillInObjectInfoCustom(msObjectInfo *objectInfo);
 CCSP_VOID
 CcspManagementServer_FillInObjectInfo()
 {
+	//Fill Comcast or other image names
+	g_IsComcastImage = CcspManagementServer_IsComcastImage( );
+
     //CcspTraceWarning("ms", ( "CcspManagementServer_FillObjectInfo 0\n"));
     CcspManagementServer_FillInSDMObjectInfo();
     /* First setup default object array. */
@@ -529,9 +534,9 @@ CcspManagementServer_FillInObjectInfo()
                 objectInfo[i].parameters[j].value = pValue;
 				pValue = NULL;
 
-#ifdef _COSA_INTEL_XB3_ARM_
 				// Needs to be encrypt on NVMEM files during migration case
-				if ( ( ManagementServerID == i ) && \
+				if ( ( TRUE == g_IsComcastImage ) && \
+					  ( ManagementServerID == i ) && \
 					  ( ( ManagementServerPasswordID == j ) || \
 						( ManagementServerConnectionRequestPasswordID == j ) || \
 						( ManagementServerSTUNPasswordID == j )
@@ -554,13 +559,12 @@ CcspManagementServer_FillInObjectInfo()
 					//Delete old existing entries from PSM DB
 					//PSM_Del_Record( bus_handle, CcspManagementServer_SubsystemPrefix, pRecordName );
 				}
-#endif /* _COSA_INTEL_XB3_ARM_ */
             }
-#ifdef _COSA_INTEL_XB3_ARM_
 			//else
 			{
 				// Needs to be decrypt from NVMEM files
-				if ( ( ManagementServerID == i ) && \
+				if ( ( TRUE == g_IsComcastImage ) && \
+					  ( ManagementServerID == i ) && \
 					  ( ( ManagementServerPasswordID == j ) || \
 						( ManagementServerConnectionRequestPasswordID == j ) || \
 						( ManagementServerSTUNPasswordID == j )
@@ -587,7 +591,6 @@ CcspManagementServer_FillInObjectInfo()
 					}
 				}
 			}
-#endif /* _COSA_INTEL_XB3_ARM_ */
 
             strncpy(&pRecordName[len1+len2+len3+1], ".Notification", 13);
             pRecordName[len1+len2+len3+14] = '\0';
@@ -2761,9 +2764,9 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
         parameterSetting.msParameterValSettings[i].parameterValue = backup;
         parameterSetting.msParameterValSettings[i].backupStatus = BackupOldValue;
 
-#ifdef _COSA_INTEL_XB3_ARM_
 		// Needs to be encrypt on NVMEM files
-        if ( ( ManagementServerID == objectID ) && \
+        if ( ( TRUE == g_IsComcastImage ) && \
+			  ( ManagementServerID == objectID ) && \
 			  ( ( ManagementServerPasswordID == parameterID ) || \
 			    ( ManagementServerConnectionRequestPasswordID == parameterID ) || \
 			    ( ManagementServerSTUNPasswordID == parameterID )
@@ -2774,7 +2777,6 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
 																  	  parameterID );
 		}
 		//else
-#endif /* _COSA_INTEL_XB3_ARM_ */
 		{
 			/* PSM write */
 			len2 = strlen(objectInfo[objectID].name);
@@ -2906,9 +2908,9 @@ int CcspManagementServer_RollBackParameterValues()
         objectInfo[objectID].parameters[parameterID].value = CcspManagementServer_CloneString(parameterSetting.msParameterValSettings[i].parameterValue);
         parameterSetting.msParameterValSettings[i].backupStatus = NoBackup;
 
-#ifdef _COSA_INTEL_XB3_ARM_
 		// Needs to be encrypt on NVMEM files
-        if ( ( ManagementServerID == objectID ) && \
+        if ( ( TRUE == g_IsComcastImage ) && \
+			  ( ManagementServerID == objectID ) && \
 			  ( ( ManagementServerPasswordID == parameterID ) || \
 			    ( ManagementServerConnectionRequestPasswordID == parameterID ) || \
 			    ( ManagementServerSTUNPasswordID == parameterID )
@@ -2919,7 +2921,6 @@ int CcspManagementServer_RollBackParameterValues()
 																  	  parameterID );
 		}
 		//else
-#endif /* _COSA_INTEL_XB3_ARM_ */
 		{
 			/* PSM write */
 			len2 = strlen(objectInfo[objectID].name);
