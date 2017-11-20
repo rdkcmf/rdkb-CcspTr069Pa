@@ -127,5 +127,17 @@ CcspTr069PaSsp_GetCustomForcedInformParams
         ANSC_HANDLE                 hThisObject
     );
 
+int
+CcspTr069PaSsp_IsTr069SyndicationEnable
+    (
+		VOID
+	);
+
+ANSC_STATUS
+CcspTr069PaSsp_GetTr069CertificateLocationForSyndication
+    (
+		char**						ppretTr069CertLocation
+	);
+
 #endif
 

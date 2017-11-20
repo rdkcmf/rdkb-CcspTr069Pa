@@ -106,6 +106,9 @@ extern char* openssl_client_dev_certificate_file;
 extern char* openssl_client_private_key_file;
 #endif
 
+#define PSM_CMD_SYNDICATION_TR69CertLocation		"psmcli get dmsb.device.deviceinfo.X_RDKCENTRAL-COM_Syndication.TR69CertLocation"
+#define PSM_CMD_SYNDICATION_Enable					"psmcli get dmsb.device.deviceinfo.X_RDKCENTRAL-COM_Syndication.enable"
+
 #define CCSP_TR069PA_CFG_Name_Outbound_If       "OutboundInterface"
 extern char* g_Tr069PaOutboundIfName;
 
@@ -266,7 +269,20 @@ CcspTr069PaSsp_LoadCfgFile
         pChildNode = (PANSC_XML_DOM_NODE_OBJECT)
             AnscXmlDomNodeGetChildByName(pRootNode, CCSP_TR069PA_CFG_Name_Certificates);
         if ( pChildNode != NULL) {
-            CcspTr069PaSsp_XML_GetMultipleItemWithSameName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
+			// Check syndication enable or not. If enable then load cerificate from PSM
+            if( 1 == CcspTr069PaSsp_IsTr069SyndicationEnable( ) )
+        	{
+	        	if ( ANSC_STATUS_SUCCESS != CcspTr069PaSsp_GetTr069CertificateLocationForSyndication( &openssl_client_ca_certificate_files ) )
+        		{
+					// Fallback case to load default cerification file
+					CcspTr069PaSsp_XML_GetMultipleItemWithSameName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
+        		}
+        	}
+			else
+			{
+				CcspTr069PaSsp_XML_GetMultipleItemWithSameName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
+			}
+			
             CcspTr069PaSsp_XML_GetOneItemByName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_dev, &openssl_client_dev_certificate_file);
             CcspTr069PaSsp_XML_GetOneItemByName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_pkey, &openssl_client_private_key_file);
         }
@@ -398,4 +414,114 @@ CcspTr069PaSsp_GetCustomForcedInformParams
 	}
 	
 	return	pFIPs;
+}
+
+int
+CcspTr069PaSsp_IsTr069SyndicationEnable
+    (
+		VOID
+	)
+{
+   FILE 	  *FilePtr		       = NULL;
+   char 	   fileContent[ 256 ]  = { 0 };
+   int 	       isSyndicationEnable = 0;
+
+   FilePtr = popen( PSM_CMD_SYNDICATION_Enable, "r" );
+
+   if ( FilePtr ) 
+   {
+	   char *pos;
+
+       fgets( fileContent, 256, FilePtr );
+	   pclose( FilePtr );
+	   FilePtr = NULL;
+	   
+	   // Remove line \n charecter from string	
+	   if ( ( pos = strchr( fileContent, '\n' ) ) != NULL )
+	    *pos = '\0';
+   } 
+   else
+   {
+	 CcspTr069PaTraceWarning(("%s %d - Failed to Get Syndication Enable Param\n", __FUNCTION__, __LINE__ ));
+	 return 0;
+   }
+
+   // Compare the file content for syndication enable or not
+   if( 0 == strcmp ( fileContent , "TRUE" ) )
+   {
+	  isSyndicationEnable  = 1;
+   }
+
+   CcspTr069PaTraceWarning(("%s %d - Syndication Enable : %s\n", 
+   													__FUNCTION__, 
+   													__LINE__,
+   													( fileContent[ 0 ] != '\0') ? fileContent : "NULL"  ));
+
+   return isSyndicationEnable;
+}
+
+ANSC_STATUS
+CcspTr069PaSsp_GetTr069CertificateLocationForSyndication
+    (
+		char**						ppretTr069CertLocation
+	)
+{
+   FILE 	  *FilePtr		       = NULL;
+   char 	   fileContent[ 256 ]  = { 0 };
+
+	FilePtr = popen( PSM_CMD_SYNDICATION_TR69CertLocation, "r" );
+
+	if ( FilePtr ) 
+	{
+		memset( fileContent, 0, sizeof( fileContent ) );
+		fgets( fileContent, 256, FilePtr );
+		pclose( FilePtr );
+		FilePtr = NULL;
+
+		// Tr069 Location should have valid length
+		if( AnscSizeOfString( fileContent ) > 0 )
+		{
+			char *pos;
+
+			// Remove line \n charecter from string  
+			if ( ( pos = strchr( fileContent, '\n' ) ) != NULL )
+			 *pos = '\0';
+
+			// Free if it is already allocated
+			if( NULL != *ppretTr069CertLocation )
+			{
+				free( *ppretTr069CertLocation );
+				*ppretTr069CertLocation = NULL;	
+			}
+
+			*ppretTr069CertLocation = ( char * ) malloc ( strlen( fileContent )  + 1 );
+			
+			if( NULL != *ppretTr069CertLocation )
+			{
+				AnscCopyString( *ppretTr069CertLocation, fileContent );
+				CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation %s\n", __FUNCTION__, __LINE__, *ppretTr069CertLocation ));
+			}
+			else
+			{
+				CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation Memory Allocation Fail\n", __FUNCTION__, __LINE__ ));
+				return	ANSC_STATUS_FAILURE;
+			}
+		}
+		else
+		{
+			CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation is Empty\n", __FUNCTION__, __LINE__ ));
+			return	ANSC_STATUS_FAILURE;
+		}
+	} 
+	else
+	{
+		CcspTr069PaTraceWarning(("%s %d - Failed to Get Syndication TR69CertLocation Param\n", __FUNCTION__, __LINE__ ));
+		return	ANSC_STATUS_FAILURE;
+	}
+
+	CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation : %s\n", 
+													 __FUNCTION__, 
+													 __LINE__,
+													 ( fileContent[ 0 ] != '\0') ? fileContent : "NULL"  ));
+   return  ANSC_STATUS_SUCCESS;
 }

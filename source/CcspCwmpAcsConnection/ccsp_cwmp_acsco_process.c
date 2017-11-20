@@ -88,6 +88,13 @@
 #define  CCSP_CWMP_TRACE_MAX_SOAP_MSG_LENGTH        1024
 #endif
 
+#ifdef _ANSC_USE_OPENSSL_
+#include <openssl/ssl.h>
+#include "linux/user_openssl.h"
+extern char* openssl_client_ca_certificate_files;
+#endif /* _ANSC_USE_OPENSSL_ */
+
+
 /*
  *  RDKB-12305  Adding method to check whether comcast device or not
  *  Procedure     : bIsComcastImage
@@ -443,6 +450,19 @@ START:
         {
             CcspTr069PaTraceError(("ACS Request is not authenticated, try again.\n"));
             nMaxAuthRetries --;
+			
+#ifdef _ANSC_USE_OPENSSL_
+			// Check syndication enable or not. If enable then load cerificate from PSM
+            if( ( bApplyTls ) && \
+				( 1 == CcspTr069PaSsp_IsTr069SyndicationEnable( ) ) 
+			   )
+        	{
+	        	if ( ANSC_STATUS_SUCCESS == CcspTr069PaSsp_GetTr069CertificateLocationForSyndication( &openssl_client_ca_certificate_files ) )
+        		{
+					openssl_load_ca_certificates( SSL_CLIENT_CALLS );
+        		}
+        	}
+#endif /* _ANSC_USE_OPENSSL_ */
         }
         else
         {
