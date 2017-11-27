@@ -255,10 +255,10 @@ CcspManagementServer_Init
     {
         _SupportedDataModelConfigFile = CcspManagementServer_CloneString(sdmXmlFilename); 
     }
-    else
+    /*else
     {
         _SupportedDataModelConfigFile = CcspManagementServer_CloneString(_CCSP_MANAGEMENT_SERVER_DEFAULT_SDM_FILE); 
-    }
+    }*/
 
     bus_handle = hMBusHandle;
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--
    Copyright [2014] [Cisco Systems, Inc.]
@@ -199,6 +199,7 @@
         </Param>
 
         <!-- vice.DeviceInfo.SupportedDataModel.{i}. -->
+        <!--
         <Param>
             <Name>Device.DeviceInfo.SupportedDataModel.{i}.URL</Name>
         </Param>
@@ -208,6 +209,7 @@
         <Param>
             <Name>Device.DeviceInfo.SupportedDataModel.{i}.Features</Name>
         </Param>
+        -->
 
         <!-- namespaces managed by PaM -->
         <Param>

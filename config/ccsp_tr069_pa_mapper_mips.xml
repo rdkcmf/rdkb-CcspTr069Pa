@@ -198,6 +198,7 @@
         </Param>
 
         <!-- vice.DeviceInfo.SupportedDataModel.{i}. -->
+        <!--
         <Param>
             <Name>Device.DeviceInfo.SupportedDataModel.{i}.URL</Name>
         </Param>
@@ -207,6 +208,7 @@
         <Param>
             <Name>Device.DeviceInfo.SupportedDataModel.{i}.Features</Name>
         </Param>
+	-->
 
         <!-- namespaces managed by PaM -->
         <Param>

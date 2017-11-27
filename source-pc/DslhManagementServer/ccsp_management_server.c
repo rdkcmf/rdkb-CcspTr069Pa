@@ -89,7 +89,7 @@
 #include "dslh_definitions_database.h"
 
 #define TEMP_SIZE 23
-
+extern char             *_SupportedDataModelConfigFile;
 char *CcspManagementServer_ComponentName = NULL;
 char *CcspManagementServer_SubsystemPrefix = NULL;
 msParameterValSettingArray parameterSetting = {0};
@@ -673,7 +673,10 @@ ANSC_STATUS CcspManagementServer_RegisterNameSpace()
         namespaceNumber += objectInfo[i].numberOfParameters;
     }
     /* For SupportedDataModel, the parameter number is fixed here. */
-    namespaceNumber += 3;
+    if( NULL != _SupportedDataModelConfigFile ) 
+    {
+    	namespaceNumber += 3;
+    }
 
     CcspManagementServer_Namespace = (name_spaceType_t *)CcspManagementServer_Allocate(namespaceNumber * sizeof(name_spaceType_t));
     for(i=0; i<SupportedDataModelID; i++)
@@ -685,13 +688,16 @@ ANSC_STATUS CcspManagementServer_RegisterNameSpace()
             index++;
         }
     }
-    for(j=0; j<3; j++)
+    if( NULL != _SupportedDataModelConfigFile ) 
     {
-        CcspManagementServer_Namespace[index+j].dataType = ccsp_string;
+    	for(j=0; j<3; j++)
+    	{
+        	CcspManagementServer_Namespace[index+j].dataType = ccsp_string;
+    	}
+    	CcspManagementServer_Namespace[index].name_space = CcspManagementServer_MergeString(_SupportedDataModelTableName, "URL");
+    	CcspManagementServer_Namespace[index+1].name_space = CcspManagementServer_MergeString(_SupportedDataModelTableName, "URN");
+    	CcspManagementServer_Namespace[index+2].name_space = CcspManagementServer_MergeString(_SupportedDataModelTableName, "Features");
     }
-    CcspManagementServer_Namespace[index].name_space = CcspManagementServer_MergeString(_SupportedDataModelTableName, "URL");
-    CcspManagementServer_Namespace[index+1].name_space = CcspManagementServer_MergeString(_SupportedDataModelTableName, "URN");
-    CcspManagementServer_Namespace[index+2].name_space = CcspManagementServer_MergeString(_SupportedDataModelTableName, "Features");
 
 #ifdef   _DEBUG
     CcspTraceDebug2("ms", ("registering following namespaces into CR with prefix=%s ...\n", CcspManagementServer_SubsystemPrefix));

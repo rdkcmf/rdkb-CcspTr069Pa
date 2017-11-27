@@ -245,7 +245,7 @@ CcspManagementServer_FillInSDMObjectInfo()
     PUCHAR                          pFileContent= NULL;
     ULONG                           length      = 0;
 
-    if( CheckFileExists( _SupportedDataModelConfigFile ) )
+    if( ( _SupportedDataModelConfigFile ) && ( CheckFileExists( _SupportedDataModelConfigFile ) ) )
     {
         CCSP_INT fileHandle   = open(_SupportedDataModelConfigFile,  O_RDONLY);
         CCSP_INT iContentSize = 0;
