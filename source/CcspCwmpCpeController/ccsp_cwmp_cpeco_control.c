@@ -803,8 +803,14 @@ if ( bInformAcs )
 }   /* if ( bInformAcs ) */
 
     returnStatus = ANSC_STATUS_SUCCESS;
-
-    pMyObject->bCWMPStarted = TRUE;
+    if(checkIfSystemReady())
+    {
+       pMyObject->bCWMPStarted = TRUE;
+    }
+    else
+    {
+	CcspTr069PaTraceInfo(("Checked CR - System is not ready, CWMP is not started\n"));
+    }
 
 EXIT:
     if ( pTriggerCommand )
