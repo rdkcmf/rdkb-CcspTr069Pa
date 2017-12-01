@@ -3312,6 +3312,9 @@
             <Name>Device.Users.User.{i}.X_CISCO_COM_Password</Name>
         </Param>
         <Param>
+            <Name>Device.Users.User.{i}.X_RDKCENTRAL-COM_PasswordReset</Name>
+        </Param>
+        <Param>
             <Name>Device.UPnP.Device.Enable</Name>
         </Param>
         <Param>
