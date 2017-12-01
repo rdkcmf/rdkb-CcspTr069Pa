@@ -470,12 +470,29 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 			 retKey [ 256 ] = { 0 },
 			 cmd[ 128 ] 	= { 0 };	
 	int 	len 			= 0;
+	BOOL isEncryptedFileIsThere = FALSE;
+
+	/* 
+	  * Check whether encyrpted shared key file is available or not
+	  * If there then decrypt and return plain key
+	  * If not then return normal plain key
+	  */
+	if ( ( fp = fopen ( ENCRYPTED_SHAREDKEY_PATH, "r" ) ) != NULL ) 
+	{
+		fclose( fp ); 
+		fp = NULL;
+		isEncryptedFileIsThere = TRUE;
+	}
 
 	// Do encryption -decryption for comcast image
-	if( TRUE == g_IsComcastImage )	
+	if( ( TRUE == isEncryptedFileIsThere ) &&\
+		( TRUE == g_IsComcastImage ) 
+	   )  
 	{
+		AnscTraceWarning(("%s -- Encrypted Shared Key Available\n", __FUNCTION__));
+
 		//Decrypt shared key
-		sprintf( cmd, "configparamgen jx %s %s", SHAREDKEYPATH, TEMP_SHARED_KEY_PATH );
+		sprintf( cmd, "configparamgen jx %s %s", ENCRYPTED_SHAREDKEY_PATH, TEMP_SHARED_KEY_PATH );
 		system( cmd );
 		
 		if ( ( fp = fopen ( TEMP_SHARED_KEY_PATH, "r" ) ) != NULL ) 
@@ -513,6 +530,8 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 	}
 	else
 	{
+		AnscTraceWarning(("%s -- Plain Shared Key Available\n", __FUNCTION__));
+
 			if ( (fp = fopen ( SHAREDKEYPATH, "r" )) != NULL ) 
 		{
 			if ( fgets ( key, sizeof(key), fp ) != NULL ) 
@@ -520,6 +539,7 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 					strip_line(key);
 							len = strlen(key);
 				strncpy(SharedKey,key,len);   
+				memset( key, 0, sizeof( key ) );
 				}
 				else
 				{
