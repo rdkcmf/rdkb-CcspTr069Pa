@@ -147,7 +147,7 @@
                 }                                                                   \
             }
 #define MAX_NO_WIFI_PARAM 10
-#define MAX_WIFI_PARAMNAME_LEN 50
+#define MAX_WIFI_PARAMNAME_LEN 128
 /**********************************************************************
                                   MACROS
 **********************************************************************/
@@ -654,8 +654,8 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
 	char							ParamName[MAX_NO_WIFI_PARAM][MAX_WIFI_PARAMNAME_LEN];
 	int								noOfParam;
-	char wifiFcName[50];
-	char wifiDbusPath[50];
+	char wifiFcName[64] = { 0 };
+	char wifiDbusPath[64] = { 0 };
 #ifndef  _CCSP_TR069_PA_INTERCEPT_ACS_CREDENTIAL_
     BOOL                            bAcsCredChanged      = FALSE;
 #endif
@@ -880,7 +880,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 					bRadioRestartEn = TRUE;
 					if(i<MAX_NO_WIFI_PARAM)
 					{
-                                		char aMem[50];
+                                		char aMem[128];
 		                                char *pParamN = aMem;
 
 						AnscCopyString(pParamN,pValueInfo->parameterName);
