@@ -973,6 +973,18 @@
             <Name>Device.MoCA.Interface.{i}.AssociatedDevice.{i}.Active</Name>
         </Param>
         <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTableNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTable.{i}.MeshTxNodeId</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTable.{i}.MeshRxNodeId</Name>
+        </Param>
+        <Param>
+            <Name>Device.MoCA.Interface.{i}.X_RDKCENTRAL-COM_MeshTable.{i}.MeshPHYTxRate</Name>
+        </Param>
+        <Param>
             <Name>Device.WiFi.RadioNumberOfEntries</Name>
         </Param>
         <Param>
