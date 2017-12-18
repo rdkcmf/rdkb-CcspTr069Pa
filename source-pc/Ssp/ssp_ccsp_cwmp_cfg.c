@@ -112,6 +112,10 @@ extern char* g_Tr069PaOutboundIfName;
 #define CCSP_TR069PA_CFG_Name_AcsDefAddr        "AcsDefaultAddress"
 extern char* g_Tr069PaAcsDefAddr;
 
+#define DEVICE_PROPERTIES    "/etc/device.properties"
+
+void CcspTr069PaSsp_GetPartnerID(char *partnerID);
+
 static ANSC_STATUS  
 CcspTr069PaSsp_XML_GetMultipleItemWithSameName
     (
@@ -208,7 +212,7 @@ CcspTr069PaSsp_LoadCfgFile
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     char*                           pXMLContent        = NULL;
     ULONG                           uBufferSize        = 0;
-
+    char partnerID[128];
     /* load configuration file */
     {
         ANSC_HANDLE  pFileHandle = NULL;
@@ -273,9 +277,15 @@ CcspTr069PaSsp_LoadCfgFile
 #endif
         
         CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, CCSP_TR069PA_CFG_Name_Outbound_If, &g_Tr069PaOutboundIfName);
-
-        CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, CCSP_TR069PA_CFG_Name_AcsDefAddr, &g_Tr069PaAcsDefAddr);
-        
+        CcspTr069PaSsp_GetPartnerID(partnerID);
+        if (strcmp(partnerID,"comcast")==0)
+        {
+            CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, CCSP_TR069PA_CFG_Name_AcsDefAddr, &g_Tr069PaAcsDefAddr);
+        }
+        else
+        {
+            CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, partnerID, &g_Tr069PaAcsDefAddr);
+        }
         returnStatus = ANSC_STATUS_SUCCESS;
     }
     
@@ -398,4 +408,37 @@ CcspTr069PaSsp_GetCustomForcedInformParams
 	}
 	
 	return	pFIPs;
+}
+
+void
+CcspTr069PaSsp_GetPartnerID(char *partnerID)
+{
+    FILE    *deviceFilePtr;
+    char    *pBldTypeStr        = NULL;
+    char     fileContent[ 255 ] = { '\0' };
+    int      offsetValue        = 0;
+    deviceFilePtr = fopen( DEVICE_PROPERTIES, "r" );
+    // Copy default string as "comcast"
+    sprintf( partnerID, "%s", "comcast" );
+    if ( deviceFilePtr )
+    {
+        while ( fscanf( deviceFilePtr , "%s", fileContent ) != EOF )
+        {
+            if ( ( pBldTypeStr = strstr( fileContent, "PARTNER_ID" ) ) != NULL )
+            {
+                offsetValue = strlen( "PARTNER_ID=" );
+                pBldTypeStr = pBldTypeStr + offsetValue ;
+                break;
+            }
+        }
+        fclose( deviceFilePtr );
+        if( pBldTypeStr )
+        {
+            sprintf( partnerID, "%s", pBldTypeStr );
+        }
+    }
+    else
+    {
+        AnscTraceWarning(("Unable to Open /etc/device.properties\n"));
+    }
 }

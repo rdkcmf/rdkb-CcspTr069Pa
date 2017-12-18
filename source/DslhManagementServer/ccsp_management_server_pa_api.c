@@ -151,6 +151,7 @@ void ReadTr69TlvData()
 			//on Fresh bootup / boot after factory reset, if the URL is empty, set default URL value
 			if(AnscEqualString(object2->URL, "", TRUE))
 			{
+				#if 0
 				FILE * urlfile= fopen(TR69_DEFAULT_URL_FILE, "r");
 				if (urlfile != NULL)
 				{
@@ -165,6 +166,16 @@ void ReadTr69TlvData()
 				{
 					printf("Cannot open default url file: \"%s\"\n", TR69_DEFAULT_URL_FILE);
 				}
+                #endif
+                if (g_Tr069PaAcsDefAddr!= NULL)
+                {
+                    AnscTraceWarning(("ACS URL = %s  \n",g_Tr069PaAcsDefAddr));
+                    objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(g_Tr069PaAcsDefAddr);
+                }
+                else
+                {
+                    AnscTraceWarning(("Unable to retrieve ACS URL  \n"));
+                }
 			}
 			else
 			{
@@ -432,8 +443,9 @@ CcspManagementServer_GetURL
     {
         return  CcspManagementServer_CloneString(pStr);
     }
-    else  
+    else
     {
+        #if 0
         if(g_Tr069PaAcsDefAddr && AnscSizeOfString(g_Tr069PaAcsDefAddr) > 0)
         {
             if(pStr)
@@ -444,7 +456,8 @@ CcspManagementServer_GetURL
             objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(g_Tr069PaAcsDefAddr);
             return CcspManagementServer_CloneString(g_Tr069PaAcsDefAddr);
         }
-        else 
+        else
+        #endif
         {
             return  CcspManagementServer_CloneString("");
         }
