@@ -445,7 +445,7 @@ CcspManagementServer_GetURL
     }
     else
     {
-        #if 0
+       // #if 0
         if(g_Tr069PaAcsDefAddr && AnscSizeOfString(g_Tr069PaAcsDefAddr) > 0)
         {
             if(pStr)
@@ -457,7 +457,7 @@ CcspManagementServer_GetURL
             return CcspManagementServer_CloneString(g_Tr069PaAcsDefAddr);
         }
         else
-        #endif
+      //  #endif
         {
             return  CcspManagementServer_CloneString("");
         }
