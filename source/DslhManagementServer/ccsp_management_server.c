@@ -904,7 +904,7 @@ CcspManagementServer_UtilGetParameterValues
                     pval_size,
                     pppval
                 );
- if( (res==CCSP_SUCCESS) && (pval_size > 0) )
+        if( (res==CCSP_SUCCESS) && (pval_size > 0) )
             ret= ANSC_STATUS_SUCCESS;
         else {
             CcspTraceWarning(("CcspManagementServer_UtilGetParameterValues -- getParameterValues failed!\n"));
@@ -912,7 +912,7 @@ CcspManagementServer_UtilGetParameterValues
 
         /*RDKB-7329, CID-33436, free unused resources before exit */
         CcspManagementServer_Free(pComponentName);
-       
+        
     }
 
     if(pComponentPath)
