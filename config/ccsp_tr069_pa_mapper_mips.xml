@@ -1239,6 +1239,9 @@
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.UAPSDEnable</Name>
         </Param>
+	<Param>
+            <Name>Device.WiFi.AccessPoint.{i}.X_RDKCENTRAL-COM_ManagementFramePowerControl</Name>
+        </Param>
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.AssociatedDeviceNumberOfEntries</Name>
         </Param>
