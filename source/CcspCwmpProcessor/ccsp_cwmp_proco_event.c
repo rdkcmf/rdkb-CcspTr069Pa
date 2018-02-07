@@ -235,6 +235,8 @@ CcspCwmppoSysReadySignalCB
 	CcspTr069PaTraceInfo(("%s, user_data - 0x%X\n",
 								__FUNCTION__, 
 								(user_data != NULL) ? user_data : 0 ));
+
+	system("print_uptime \"boot_to_tr069_uptime\"");
 	
 /* 
 * This callback process mechanism moved into CcspCwmppoProcessSysReadySignal() 
