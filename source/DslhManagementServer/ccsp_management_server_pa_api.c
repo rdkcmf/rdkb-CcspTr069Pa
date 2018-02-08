@@ -207,6 +207,7 @@ void ReadTr69TlvData()
 			}
 			else if(object2->EnableCWMP == 0)
 			{
+				#if 0
 				/* There are possibilities that SNMP can enable TR69. In that case, bbhm will have updated value.
 			   	We will make the TLV file in sync with the bbhm values.
 			   	In next boot-up EnableCWMP will again update value from boot-config file*/			
@@ -214,7 +215,11 @@ void ReadTr69TlvData()
            			AnscEqualString(objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value, "true", FALSE))
 				{
 					object2->EnableCWMP = 1;
-				}			
+				}
+				#else
+				objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("false");
+				#endif
+
 			}
 		}
 
