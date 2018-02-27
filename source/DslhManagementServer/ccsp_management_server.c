@@ -553,10 +553,10 @@ CcspManagementServer_FillInObjectInfo()
 					}
 
 					//Delete old existing entries from PSM DB
-					//PSM_Del_Record( bus_handle, CcspManagementServer_SubsystemPrefix, pRecordName );
+					PSM_Del_Record( bus_handle, CcspManagementServer_SubsystemPrefix, pRecordName );
 				}
             }
-			//else
+			else
 			{
 				// Needs to be decrypt from NVMEM files
 				if ( 	  ( ManagementServerID == i ) && \
@@ -2776,7 +2776,7 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
 			CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( objectInfo[objectID].parameters[parameterID].value,
 																  	  parameterID );
 		}
-		//else
+		else
 		{
 			/* PSM write */
 			len2 = strlen(objectInfo[objectID].name);
@@ -2919,7 +2919,7 @@ int CcspManagementServer_RollBackParameterValues()
 			CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( objectInfo[objectID].parameters[parameterID].value,
 																  	  parameterID );
 		}
-		//else
+		else
 		{
 			/* PSM write */
 			len2 = strlen(objectInfo[objectID].name);
