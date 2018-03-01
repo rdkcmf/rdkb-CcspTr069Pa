@@ -80,6 +80,7 @@
 **********************************************************************/
 
 #include "ccsp_cwmp_proco_global.h"
+#include <unistd.h>
 
 extern ANSC_HANDLE bus_handle;
 
@@ -228,6 +229,10 @@ CcspCwmppoSysReadySignalCB
     )
 {
 	// Touch a file to indicate that tr069 can proceed with further
+    if (access("/var/tmp/tr069paready", F_OK) != 0)
+    {
+        system("print_uptime \"boot_to_tr069_uptime\"");
+    }
 	system("touch /var/tmp/tr069paready");
 
 	CcspTr069PaTraceInfo(("Received system ready signal, created /var/tmp/tr069paready file\n"));
@@ -235,8 +240,6 @@ CcspCwmppoSysReadySignalCB
 	CcspTr069PaTraceInfo(("%s, user_data - 0x%X\n",
 								__FUNCTION__, 
 								(user_data != NULL) ? user_data : 0 ));
-
-	system("print_uptime \"boot_to_tr069_uptime\"");
 	
 /* 
 * This callback process mechanism moved into CcspCwmppoProcessSysReadySignal() 
