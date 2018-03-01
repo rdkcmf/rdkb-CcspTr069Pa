@@ -144,7 +144,6 @@ CcspManagementServer_StunBindingChanged
     );
 #endif
 
-int CcspManagementServer_IsComcastImage( void );
 
 /* CcspManagementServer_GetEnableCWMP is called to get
  * Device.ManagementServer.EnableCWMP.

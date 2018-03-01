@@ -108,7 +108,6 @@ static char SharedKey[256] = {'\0'};
 #define SHAREDKEYPATH "/usr/ccsp/tr069pa/sharedkey"
 #define ENCRYPTED_SHAREDKEY_PATH "/dummy.txt"
 #define TEMP_SHARED_KEY_PATH "/tmp/tr069sharedkey"
-extern int g_IsComcastImage;
 
 
 
@@ -492,9 +491,8 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 	}
 
 	// Do encryption -decryption for comcast image
-	if( ( TRUE == isEncryptedFileIsThere ) &&\
-		( TRUE == g_IsComcastImage ) 
-	   )  
+	if(TRUE == isEncryptedFileIsThere) 
+	    
 	{
 		AnscTraceWarning(("%s -- Encrypted Shared Key Available\n", __FUNCTION__));
 

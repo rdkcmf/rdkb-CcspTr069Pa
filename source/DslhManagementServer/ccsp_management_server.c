@@ -117,7 +117,6 @@ char *pFirstUpstreamIpInterface = NULL;
 char *pFirstUpstreamIpAddress = NULL;
 
 int g_ACSChangedURL = 0;
-int g_IsComcastImage = TRUE;
 
 
 char * pDTXml = "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\
@@ -319,8 +318,6 @@ CcspManagementServer_FillInObjectInfoCustom(msObjectInfo *objectInfo);
 CCSP_VOID
 CcspManagementServer_FillInObjectInfo()
 {
-	//Fill Comcast or other image names
-	g_IsComcastImage = CcspManagementServer_IsComcastImage( );
 
     //CcspTraceWarning("ms", ( "CcspManagementServer_FillObjectInfo 0\n"));
     CcspManagementServer_FillInSDMObjectInfo();
@@ -535,8 +532,7 @@ CcspManagementServer_FillInObjectInfo()
 				pValue = NULL;
 
 				// Needs to be encrypt on NVMEM files during migration case
-				if ( ( TRUE == g_IsComcastImage ) && \
-					  ( ManagementServerID == i ) && \
+				if ( 	  ( ManagementServerID == i ) && \
 					  ( ( ManagementServerPasswordID == j ) || \
 						( ManagementServerConnectionRequestPasswordID == j ) || \
 						( ManagementServerSTUNPasswordID == j )
@@ -563,8 +559,7 @@ CcspManagementServer_FillInObjectInfo()
 			//else
 			{
 				// Needs to be decrypt from NVMEM files
-				if ( ( TRUE == g_IsComcastImage ) && \
-					  ( ManagementServerID == i ) && \
+				if ( 	  ( ManagementServerID == i ) && \
 					  ( ( ManagementServerPasswordID == j ) || \
 						( ManagementServerConnectionRequestPasswordID == j ) || \
 						( ManagementServerSTUNPasswordID == j )
@@ -2771,8 +2766,7 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
         parameterSetting.msParameterValSettings[i].backupStatus = BackupOldValue;
 
 		// Needs to be encrypt on NVMEM files
-        if ( ( TRUE == g_IsComcastImage ) && \
-			  ( ManagementServerID == objectID ) && \
+        if ( ( ManagementServerID == objectID ) && \
 			  ( ( ManagementServerPasswordID == parameterID ) || \
 			    ( ManagementServerConnectionRequestPasswordID == parameterID ) || \
 			    ( ManagementServerSTUNPasswordID == parameterID )
@@ -2915,8 +2909,7 @@ int CcspManagementServer_RollBackParameterValues()
         parameterSetting.msParameterValSettings[i].backupStatus = NoBackup;
 
 		// Needs to be encrypt on NVMEM files
-        if ( ( TRUE == g_IsComcastImage ) && \
-			  ( ManagementServerID == objectID ) && \
+        if ( ( ManagementServerID == objectID ) && \
 			  ( ( ManagementServerPasswordID == parameterID ) || \
 			    ( ManagementServerConnectionRequestPasswordID == parameterID ) || \
 			    ( ManagementServerSTUNPasswordID == parameterID )
