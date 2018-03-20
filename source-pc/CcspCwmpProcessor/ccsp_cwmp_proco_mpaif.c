@@ -213,9 +213,21 @@ CcspCwmppoAddFunctionalComponents
 
         if ( !ppSsArray || !ppFnArray || !ppDpArray )
         {
-            if ( ppSsArray ) CcspTr069PaFreeMemory(ppSsArray);
-            if ( ppFnArray ) CcspTr069PaFreeMemory(ppFnArray);
-            if ( ppDpArray ) CcspTr069PaFreeMemory(ppDpArray);
+            if ( ppSsArray )
+	    {
+		CcspTr069PaFreeMemory(ppSsArray);
+		ppSsArray = NULL;
+	    }
+            if ( ppFnArray )
+            {
+ 		CcspTr069PaFreeMemory(ppFnArray);
+		ppFnArray = NULL;
+	    }
+            if ( ppDpArray )
+            {
+		CcspTr069PaFreeMemory(ppDpArray);
+		ppDpArray = NULL;
+            }
             goto EXIT;
         }
 
@@ -225,9 +237,21 @@ CcspCwmppoAddFunctionalComponents
             ppFnArray[j] = ppFcNameArray[j];
             ppDpArray[j] = ppDbusPathArray[j];
         }
-        CcspTr069PaFreeMemory(ppSubsysArray);
-        CcspTr069PaFreeMemory(ppFcNameArray);
-        CcspTr069PaFreeMemory(ppDbusPathArray);
+        if ( ppSubsysArray )
+	{
+	    CcspTr069PaFreeMemory(ppSubsysArray);
+	    ppSubsysArray = NULL;
+	}
+        if ( ppFcNameArray )
+	{
+	    CcspTr069PaFreeMemory(ppFcNameArray);
+	    ppFcNameArray = NULL;
+	}
+        if ( ppDbusPathArray )
+	{
+	    CcspTr069PaFreeMemory(ppDbusPathArray);
+	    ppDbusPathArray = NULL;
+	}
         ppSubsysArray = ppSsArray;
         ppFcNameArray = ppFnArray;
         ppDbusPathArray = ppDpArray;
@@ -886,8 +910,11 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 						CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
 						AnscCopyString(ParamName[i],pParamN);
 						/*RDKB-7325, CID-33443, free unused resources */
-						CcspTr069PaFreeMemory(pParamN);
-						pParamN = NULL;
+                        if(pParamN)
+                        {
+                            CcspTr069PaFreeMemory(pParamN);
+                            pParamN = NULL;
+                        }
 						noOfParam = i;
 					}
 					
@@ -1027,8 +1054,11 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
                     );
 
 
-            CcspTr069PaFreeMemory(pParamValues);
-            pParamValues = NULL;
+            if(pParamValues)
+            {
+                CcspTr069PaFreeMemory(pParamValues);
+                pParamValues = NULL;
+            }
 
             if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
             {
@@ -1102,8 +1132,11 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
 
                     pCwmpSoapFault->SetParamValuesFaultCount++;
 
-                    CcspTr069PaFreeMemory(pInvalidParam);
-                    pInvalidParam = NULL;
+                    if(pInvalidParam)
+                    {
+                        CcspTr069PaFreeMemory(pInvalidParam);
+                        pInvalidParam = NULL;
+                    }
                 }
 
                 CcspTr069PaTraceDebug(("SPV failure on FC %s, error = %d\n", pFcNsList->FCName, nResult));
@@ -1685,7 +1718,11 @@ CcspCwmppoMpaGetParameterValues
                         &pParamValues
                     );
 
-            CcspTr069PaFreeMemory(pParamNames);
+            if(pParamNames)
+            {
+                CcspTr069PaFreeMemory(pParamNames);
+                pParamNames = NULL;
+            }
 
 
             if ( nResult != CCSP_SUCCESS )
@@ -1853,8 +1890,11 @@ CcspCwmppoMpaGetParameterValues
                 {
                     pCwmpPV->Value->Syntax              = SLAP_VAR_SYNTAX_string;
                     pCwmpPV->Value->Variant.varString   = AnscCloneString(pNsList->Args.paramValueInfo.parameterValue); /* cannot use CcspTr069PaCloneString which causes crash */
-                    CcspTr069PaFreeMemory(pNsList->Args.paramValueInfo.parameterValue);
-                    pNsList->Args.paramValueInfo.parameterValue = NULL;
+                    if ( pNsList->Args.paramValueInfo.parameterValue )
+                    {
+                        CcspTr069PaFreeMemory(pNsList->Args.paramValueInfo.parameterValue);
+                        pNsList->Args.paramValueInfo.parameterValue = NULL;
+                    }
                 }
                 else
                 {
@@ -1909,6 +1949,7 @@ EXIT2:
         }
 
         CcspTr069PaFreeMemory(pParameterValueArray);
+	pParameterValueArray = NULL;
     }
 
     if ( pCwmpSoapFault )
@@ -2325,6 +2366,7 @@ EXIT2:
         }
 
         CcspTr069PaFreeMemory(pCwmpParamInfoArray);
+	pCwmpParamInfoArray = NULL;
     }
 
     if ( pCwmpSoapFault )
@@ -2669,7 +2711,11 @@ CcspCwmppoMpaSetParameterAttributes
                         k
                     );
 
-            CcspTr069PaFreeMemory(pParamAttributes);
+            if(pParamAttributes)
+            {
+                CcspTr069PaFreeMemory(pParamAttributes);
+                pParamAttributes = NULL;
+            }
 
             if ( nResult != CCSP_SUCCESS )
             {
@@ -3064,7 +3110,11 @@ CcspCwmppoMpaGetParameterAttributes
                         &ppCcspAttrArray
                     );
 
-            CcspTr069PaFreeMemory(pParamNames);
+            if(pParamNames)
+            {
+                CcspTr069PaFreeMemory(pParamNames);
+                pParamNames = NULL;
+            }
 
 
             if ( nResult != CCSP_SUCCESS )
@@ -3253,6 +3303,7 @@ EXIT2:
         }
 
         CcspTr069PaFreeMemory(pParamAttrArray);
+	pParamAttrArray = NULL;
     }
 
     if ( pCwmpSoapFault )
