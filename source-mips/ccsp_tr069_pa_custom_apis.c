@@ -490,7 +490,7 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 		AnscTraceWarning(("%s -- Encrypted Shared Key Available\n", __FUNCTION__));
 
 		//Decrypt shared key
-		sprintf( cmd, "configparamgen jx %s %s", ENCRYPTED_SHAREDKEY_PATH, TEMP_SHARED_KEY_PATH );
+		snprintf( cmd, sizeof(cmd), "GetConfigFile %s", TEMP_SHARED_KEY_PATH );
 		system( cmd );
 		
 		if ( ( fp = fopen ( TEMP_SHARED_KEY_PATH, "r" ) ) != NULL ) 

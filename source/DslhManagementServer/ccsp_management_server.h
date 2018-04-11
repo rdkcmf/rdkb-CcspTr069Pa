@@ -428,6 +428,7 @@ int CcspManagementServer_GetMGMTServerPasswordValuesFromDB
 
 int CcspManagementServer_RetrievePassword
 	( 
+        int parameterID,
 		char *pInputFile, 
 		char *pOutputString 
 	);

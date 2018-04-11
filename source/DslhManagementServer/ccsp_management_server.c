@@ -2559,13 +2559,29 @@ int CcspManagementServer_IsEncryptedFileInDB( int parameterID, int *pIsEncryptFi
 
 
 /* CcspManagementServer_RetrievePassword() */
-int CcspManagementServer_RetrievePassword( char *pInputFile, char *pOutputString )
+int CcspManagementServer_RetrievePassword( int parameterID, char *pInputFile, char *pOutputString )
 {
-	#define TEMP_MGMT_SERV_PWD_PATH		"/tmp/tmpMgmtPWDFile"
 
 	FILE 	*fp 		  	  = NULL;
 	int 	 returnstatus 	  = 0,
 			 isInputFileExist = 0;
+
+    //Since the TEMP_MGMT_SERV_PWD_PATH is same for all parameterID.
+    //We use this method to identify each one
+    char TEMP_MGMT_SERV_PWD_PATH[30]={ 0 };
+
+    if( ManagementServerPasswordID == parameterID )
+    {
+        strncpy(TEMP_MGMT_SERV_PWD_PATH,"/tmp/tmpMgmtPWDFile1",sizeof(TEMP_MGMT_SERV_PWD_PATH)-1);
+    }
+    else if ( ManagementServerConnectionRequestPasswordID == parameterID )
+    {
+        strncpy(TEMP_MGMT_SERV_PWD_PATH,"/tmp/tmpMgmtPWDFile2",sizeof(TEMP_MGMT_SERV_PWD_PATH)-1);
+    }
+    else if ( ManagementServerSTUNPasswordID == parameterID )
+    {
+        strncpy(TEMP_MGMT_SERV_PWD_PATH,"/tmp/tmpMgmtPWDFile3",sizeof(TEMP_MGMT_SERV_PWD_PATH)-1);
+    }
 
 	//  Check whether input file is existing or not
     if ( ( fp = fopen ( pInputFile, "r" ) ) != NULL ) 
@@ -2583,7 +2599,7 @@ int CcspManagementServer_RetrievePassword( char *pInputFile, char *pOutputString
 	if( isInputFileExist )
 	{
 		char	 cmd[ 128 ]   = { 0 };
-		sprintf( cmd, "configparamgen jx %s %s", pInputFile, TEMP_MGMT_SERV_PWD_PATH );
+		snprintf( cmd, sizeof(cmd), "GetConfigFile %s", TEMP_MGMT_SERV_PWD_PATH );
 		system( cmd );	
 		
 		if ( ( fp = fopen ( TEMP_MGMT_SERV_PWD_PATH, "r" ) ) != NULL ) 
@@ -2640,15 +2656,15 @@ int CcspManagementServer_GetMGMTServerPasswordValuesFromDB( int parameterID, cha
 	
 	if( ManagementServerPasswordID == parameterID )
 	{
-		returnStatus = CcspManagementServer_RetrievePassword( "/nvram/.keys/MgmtPwdID", pOutputString );
+		returnStatus = CcspManagementServer_RetrievePassword( parameterID,"/nvram/.keys/MgmtPwdID", pOutputString );
 	}
 	else if ( ManagementServerConnectionRequestPasswordID == parameterID )
 	{
-		returnStatus = CcspManagementServer_RetrievePassword( "/nvram/.keys/MgmtCRPwdID", pOutputString );
+		returnStatus = CcspManagementServer_RetrievePassword( parameterID, "/nvram/.keys/MgmtCRPwdID", pOutputString );
 	}
 	else if ( ManagementServerSTUNPasswordID == parameterID )
 	{
-		returnStatus = CcspManagementServer_RetrievePassword( "/nvram/.keys/MgmtCRSTUNPwdID", pOutputString );
+		returnStatus = CcspManagementServer_RetrievePassword( parameterID,"/nvram/.keys/MgmtCRSTUNPwdID", pOutputString );
 	}
 
 	return returnStatus;
@@ -2669,7 +2685,7 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 	{
 		char cmd[ 512 ] = { 0 };
 		sprintf( cmd, 
-				 "echo %s > /tmp/tempMSPwdFile; mkdir -p /nvram/.keys; configparamgen mi /tmp/tempMSPwdFile /nvram/.keys/MgmtPwdID; rm -rf /tmp/tempMSPwdFile", 
+				 "echo %s > /tmp/tempMSPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSPwdFile ; rm -rf /tmp/tempMSPwdFile", 
 				 pString );
 		system( cmd );
 		memset( cmd, 0, sizeof( cmd ) );
@@ -2679,7 +2695,7 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 	{
 		char cmd[ 512 ] = { 0 };
 		sprintf( cmd, 
-				 "echo %s > /tmp/tempMSCRPwdFile; mkdir -p /nvram/.keys; configparamgen mi /tmp/tempMSCRPwdFile /nvram/.keys/MgmtCRPwdID; rm -rf /tmp/tempMSCRPwdFile", 
+				 "echo %s > /tmp/tempMSCRPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSCRPwdFile; rm -rf /tmp/tempMSCRPwdFile", 
 				 pString );
 		system( cmd );
 		memset( cmd, 0, sizeof( cmd ) );
@@ -2689,7 +2705,7 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 	{
 		char cmd[ 512 ] = { 0 };
 		sprintf( cmd, 
-				 "echo %s > /tmp/tempMSSTUNPwdFile; mkdir -p /nvram/.keys; configparamgen mi /tmp/tempMSSTUNPwdFile /nvram/.keys/MgmtCRSTUNPwdID; rm -rf /tmp/tempMSSTUNPwdFile", 
+				 "echo %s > /tmp/tempMSSTUNPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSSTUNPwdFile; rm -rf /tmp/tempMSSTUNPwdFile", 
 				 pString );
 		system( cmd );
 		memset( cmd, 0, sizeof( cmd ) );
