@@ -383,7 +383,7 @@ CcspCwmpsoInform
 	static char SerialNumber[100];
 	static char DeviceSummary[100];
 	static char HardwareVersion[100];
-	static char SoftwareVersion[100];
+	static char SoftwareVersion[256];
 
     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->GetCwmpRpcTimeout )
     {
@@ -435,8 +435,12 @@ if(bFirstInform)
             &pCwmpDeviceId->Manufacturer
         );
         if(pCwmpDeviceId->Manufacturer != NULL)
-	strcpy(Manufacturer, pCwmpDeviceId->Manufacturer);
-
+        {
+          memset(Manufacturer,'\0',sizeof(Manufacturer));
+	  strncpy(Manufacturer, pCwmpDeviceId->Manufacturer,sizeof(Manufacturer)-1);
+          Manufacturer[sizeof(Manufacturer) - 1 ] = '\0';
+        }
+         
     _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.ManufacturerOUI");
     pCcspCwmpCpeController->GetParamStringValue
         (
@@ -445,7 +449,11 @@ if(bFirstInform)
             &pCwmpDeviceId->OUI
         );
         if(pCwmpDeviceId->OUI != NULL)
-	strcpy(ManufacturerOUI, pCwmpDeviceId->OUI);
+        {
+          memset(ManufacturerOUI,'\0',sizeof(ManufacturerOUI));
+	  strncpy(ManufacturerOUI, pCwmpDeviceId->OUI,sizeof(ManufacturerOUI)-1);
+          ManufacturerOUI[sizeof(ManufacturerOUI) - 1 ] = '\0';
+        }
 
     _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.ProductClass");
     pCcspCwmpCpeController->GetParamStringValue
@@ -455,7 +463,11 @@ if(bFirstInform)
             &pCwmpDeviceId->ProductClass
         );
         if(pCwmpDeviceId->ProductClass != NULL)
-	strcpy(ProductClass, pCwmpDeviceId->ProductClass);
+        {
+          memset(ProductClass, '\0' , sizeof(ProductClass));
+	  strncpy(ProductClass, pCwmpDeviceId->ProductClass,sizeof(ProductClass) - 1 );
+          ProductClass[sizeof(ProductClass) - 1 ] = '\0';
+        }
     _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.SerialNumber");
     pCcspCwmpCpeController->GetParamStringValue
         (
@@ -465,7 +477,11 @@ if(bFirstInform)
         );
 
         if(pCwmpDeviceId->SerialNumber != NULL) 
-		strcpy(SerialNumber, pCwmpDeviceId->SerialNumber);
+        {
+          memset(SerialNumber, '\0' , sizeof(SerialNumber));
+          strncpy(SerialNumber, pCwmpDeviceId->SerialNumber,sizeof(SerialNumber) - 1);
+          SerialNumber[sizeof(SerialNumber) - 1 ] = '\0';
+        }
 
     _ansc_sprintf(paramName, "%s%s", pRootObjName, "DeviceInfo.ProvisioningCode");
     pCcspCwmpCpeController->GetParamStringValue
@@ -475,7 +491,11 @@ if(bFirstInform)
             &pCwmpDeviceId->ProvisioningCode
         );
         if(pCwmpDeviceId->ProvisioningCode != NULL)
-        strcpy(ProvisioningCode, pCwmpDeviceId->ProvisioningCode);
+        {
+           memset(ProvisioningCode, '\0' , sizeof(ProvisioningCode));
+           strncpy(ProvisioningCode, pCwmpDeviceId->ProvisioningCode,sizeof(ProvisioningCode) - 1);
+           ProvisioningCode[sizeof(ProvisioningCode) - 1 ] = '\0';
+        }
 
 	if ( !pCwmpDeviceId->Manufacturer ||
              !pCwmpDeviceId->OUI          ||
@@ -493,7 +513,9 @@ else
 	pCwmpDeviceId->OUI 			= CcspManagementServer_CloneString(ManufacturerOUI);
 	pCwmpDeviceId->ProductClass = CcspManagementServer_CloneString(ProductClass);
 	pCwmpDeviceId->SerialNumber = CcspManagementServer_CloneString(SerialNumber);
-    pCwmpDeviceId->ProvisioningCode = CcspManagementServer_CloneString(ProvisioningCode);
+        pCwmpDeviceId->ProvisioningCode = CcspManagementServer_CloneString(ProvisioningCode);
+        CcspTr069PaTraceWarning((" Manufacturer: %s , OUI : %s, ProductClass: %s, SerialNumber: %s, ProvisionCode: %s\n",pCwmpDeviceId->Manufacturer,pCwmpDeviceId->OUI,
+                               pCwmpDeviceId->ProductClass,pCwmpDeviceId->SerialNumber,pCwmpDeviceId->ProvisioningCode));
 }
 
     /*
