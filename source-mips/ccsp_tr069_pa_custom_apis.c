@@ -107,7 +107,7 @@ static char* DeviceDefaultPassword      = NULL;
 static char SharedKey[256] = {'\0'};
 #define SHAREDKEYPATH "/usr/ccsp/tr069pa/sharedkey"
 //#define SHAREDKEYPATH "/nvram/sharedkey"
-#define SHAREDKEY "4155992b42d90eba3aba7765422a1d0a5ee8be922538c7d1371484bd27f07ff6"
+#define SHAREDKEY ""
 #define ENCRYPTED_SHAREDKEY_PATH "/dummy.txt"
 #define TEMP_SHARED_KEY_PATH "/tmp/tr069sharedkey"
 
