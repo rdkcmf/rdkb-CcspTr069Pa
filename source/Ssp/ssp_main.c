@@ -66,6 +66,7 @@
 
 PCCSP_CWMP_CPE_CONTROLLER_OBJECT    g_pCcspCwmpCpeController    = NULL;
 BOOL                                bEngaged                = FALSE;
+static BOOL                         g_running               = TRUE;
 
 static char                         g_Tr069PaName[256]      = {0};
 static char                         g_CrName[256]           = {0};
@@ -244,10 +245,18 @@ void sig_handler(int sig)
     CcspTr069PaTraceDebug(("<%s> Signal %d received\n", __FUNCTION__, sig));
     
     if ( sig == SIGINT ) {
+#ifdef INCLUDE_GPERFTOOLS
+        g_running = FALSE;
+    }
+    else if ( sig == SIGTERM )
+    {
+        g_running = FALSE;
+#else
     	signal(SIGINT, sig_handler); /* reset it to this function */
     	CcspTr069PaTraceInfo(("SIGINT received!\n"));
         _print_stack_backtrace();
 	    exit(0);
+#endif
     }
     else if ( sig == SIGUSR1 ) {
     	signal(SIGUSR1, sig_handler); /* reset it to this function */
@@ -419,7 +428,12 @@ int main(int argc, char* argv[])
 
 #ifdef INCLUDE_BREAKPAD
     breakpad_ExceptionHandler();
-#else
+#endif
+    
+#if defined(INCLUDE_GPERFTOOLS)
+    signal(SIGINT, sig_handler);
+    signal(SIGTERM, sig_handler);
+#elif !defined(INCLUDE_BREAKPAD)
     if (is_core_dump_opened())
     {
         signal(SIGUSR1, sig_handler);
@@ -478,11 +492,11 @@ int main(int argc, char* argv[])
 
     if ( bRunAsDaemon ) 
     {
-		while (1)
+		while (g_running)
 			sleep(30);
     }
     else {
-		while ( cmdChar != 'q' )
+		while ( cmdChar != 'q' && g_running)
 		{
 			cmdChar = getchar();
             if(EOF == cmdChar)
