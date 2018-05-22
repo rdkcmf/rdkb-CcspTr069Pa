@@ -539,32 +539,5 @@ CcspTr069PaSsp_GetTr069CertificateLocationForSyndication
 void
 CcspTr069PaSsp_GetPartnerID(char *partnerID)
 {
-    FILE    *deviceFilePtr;
-    char    *pBldTypeStr        = NULL;
-    char     fileContent[ 255 ] = { '\0' };
-    int      offsetValue        = 0;
-    deviceFilePtr = fopen( DEVICE_PROPERTIES, "r" );
-    // Copy default string as "comcast"
-    sprintf( partnerID, "%s", "comcast" );
-    if ( deviceFilePtr )
-    {
-        while ( fscanf( deviceFilePtr , "%s", fileContent ) != EOF )
-        {
-            if ( ( pBldTypeStr = strstr( fileContent, "PARTNER_ID" ) ) != NULL )
-            {
-                offsetValue = strlen( "PARTNER_ID=" );
-                pBldTypeStr = pBldTypeStr + offsetValue ;
-                break;
-            }
-        }
-        fclose( deviceFilePtr );
-        if( pBldTypeStr )
-        {
-            sprintf( partnerID, "%s", pBldTypeStr );
-        }
-    }
-    else
-    {
-        AnscTraceWarning(("Unable to Open /etc/device.properties\n"));
-    }
+	getPartnerId ( partnerID ) ;
 }
