@@ -346,6 +346,15 @@
         <Param>
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.PartnerId</Name>
         </Param>
+        <Param>
+                <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SyndicationFlowControl.Enable</Name>
+        </Param>
+        <Param>
+                <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SyndicationFlowControl.InitialForwardedMark</Name>
+        </Param>
+        <Param>
+                <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SyndicationFlowControl.InitialOutputMark</Name>
+        </Param>
         <!-- Comcast specific Device.DeviceInfo. Parameters -->
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_xfinitywifiCapableCPE</Name>
