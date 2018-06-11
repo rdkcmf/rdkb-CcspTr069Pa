@@ -40,7 +40,6 @@
 
     <!-- for OpenSsl -->
     <certificates>
-        <CA>/etc/cacert.pem</CA>
         <CA></CA>
         <DEV></DEV>
         <PrivateKey></PrivateKey>
@@ -50,9 +49,6 @@
     <OutboundInterface>erouter0</OutboundInterface>
 
     <!-- default ACS server address -->
-    <AcsDefaultAddress>https://acswg.g.comcast.net/cwmpWeb/DigestCPEMgt?target=/CPEMgt</AcsDefaultAddress>
-    <cox>https://rcapp-acs.east.cox.net</cox>
-    <rogers>https://ecoacs.acs.net.rogers.com</rogers>
-    <shaw>https://acs-secure.shawcable.net/dps/TR069</shaw>
+    <AcsDefaultAddress></AcsDefaultAddress>
 
 </ccsp_tr069pa_cfg>

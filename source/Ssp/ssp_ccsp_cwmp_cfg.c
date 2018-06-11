@@ -86,6 +86,7 @@
 #include "ansc_xml_dom_parser_interface.h"
 #include "ansc_xml_dom_parser_external_api.h"
 #include "ansc_xml_dom_parser_status.h"
+#include "cJSON.h"
 
 extern  CCSP_CWMP_CFG_INTERFACE                          ccspCwmpCfgIf;
 extern  UCHAR g_MACAddress[];
@@ -97,7 +98,7 @@ extern  ANSC_HANDLE bus_handle;
 
 #ifdef   _ANSC_USE_OPENSSL_
 #define CCSP_TR069PA_CFG_Name_Certificates      "certificates"
-#define CCSP_TR069PA_CERTIFICATE_CFG_Name_ca    "CA"
+#define CCSP_TR069PA_CERTIFICATE_CFG_Name_ca    "Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.TR69CertLocation"
 #define CCSP_TR069PA_CERTIFICATE_CFG_Name_dev   "DEV"
 #define CCSP_TR069PA_CERTIFICATE_CFG_Name_pkey  "PrivateKey"
 
@@ -112,7 +113,8 @@ extern char* openssl_client_private_key_file;
 #define CCSP_TR069PA_CFG_Name_Outbound_If       "OutboundInterface"
 extern char* g_Tr069PaOutboundIfName;
 
-#define CCSP_TR069PA_CFG_Name_AcsDefAddr        "AcsDefaultAddress"
+#define PARTNERS_INFO_FILE              		"/nvram/partners_defaults.json"
+#define CCSP_TR069PA_CFG_Name_AcsDefAddr		"Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.TR69ACSConnectURL"
 extern char* g_Tr069PaAcsDefAddr;
 
 #define DEVICE_PROPERTIES    "/etc/device.properties"
@@ -206,6 +208,94 @@ CcspTr069PaSsp_XML_GetOneItemByName
     //    fprintf(stderr, "%s: %s = %s\n", __FUNCTION__, (ItemName)?(ItemName):"NULL", (*retVal)?(*retVal):"NULL");
 }
 
+ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
+        char*                      partnerID,
+        char*                      itemName,
+        char**                     retVal
+     )
+{
+        char *data = NULL;
+        cJSON *json = NULL;
+        cJSON *partnerObj = NULL;
+        FILE *fileRead = NULL;
+        char cmd[512] = {0};
+        int len;
+	char* buffer = NULL;
+
+	if(*retVal) { AnscFreeMemory(*retVal); *retVal=NULL; }
+	
+        if (access(PARTNERS_INFO_FILE, F_OK) != 0)
+        {
+                snprintf(cmd, sizeof(cmd), "cp %s %s", "/etc/partners_defaults.json", PARTNERS_INFO_FILE);
+                CcspTr069PaTraceWarning(("%s\n",cmd));
+                system(cmd);
+        }
+
+	fileRead = fopen( PARTNERS_INFO_FILE, "r" );
+	if( fileRead == NULL )
+	{
+	 	CcspTr069PaTraceWarning(("%s-%d : Error in opening JSON file\n" , __FUNCTION__, __LINE__ ));
+		return ANSC_STATUS_FAILURE;
+	}
+
+
+	fseek( fileRead, 0, SEEK_END );
+	len = ftell( fileRead );
+	fseek( fileRead, 0, SEEK_SET );
+	data = ( char* )malloc( len + 1 );
+	if (data != NULL)
+	{
+		fread( data, 1, len, fileRead );
+	}
+	else
+	{
+	 	CcspTr069PaTraceWarning(("%s-%d : Memory allocation failed \n", __FUNCTION__, __LINE__));
+	 	fclose( fileRead );
+	 	return ANSC_STATUS_FAILURE;
+	}
+
+        fclose( fileRead );
+
+	if( data != NULL )
+	{
+		json = cJSON_Parse( data );
+		if( !json )
+		{
+			 CcspTr069PaTraceWarning((  "%s-%s : json file parser error : [%d]\n", cJSON_GetErrorPtr() ,__FUNCTION__,__LINE__));
+			 free(data);
+			 return ANSC_STATUS_FAILURE;
+		}
+		else
+		{
+                	partnerObj = cJSON_GetObjectItem( json, partnerID );
+		        if( partnerObj != NULL)
+		        {
+				if ( cJSON_GetObjectItem( partnerObj, itemName) != NULL )
+                                {
+					buffer = cJSON_GetObjectItem( partnerObj, itemName)->valuestring;
+					*retVal = CcspTr069PaCloneString(buffer);
+				}
+				else {
+                                        CcspTr069PaTraceWarning(("%s - Item Object is NULL\n", __FUNCTION__ ));
+				}
+			}
+			else
+			{
+				CcspTr069PaTraceWarning(("%s - PARTNER ID OBJECT is NULL\n", __FUNCTION__ ));
+			}
+
+			cJSON_Delete(json);
+		}
+
+		free(data);
+          	data = NULL;
+	}
+
+    	CcspTr069PaTraceWarning(("%s: %s = %s\n", __FUNCTION__, (itemName)?(itemName):"NULL", (*retVal)?(*retVal):"NULL"));
+
+	return ANSC_STATUS_SUCCESS;
+}
+
 ANSC_STATUS  
 CcspTr069PaSsp_LoadCfgFile
     (
@@ -269,6 +359,8 @@ CcspTr069PaSsp_LoadCfgFile
             goto EXIT;
         }
 
+	CcspTr069PaSsp_GetPartnerID(partnerID);
+
 #ifdef   _ANSC_USE_OPENSSL_
         pChildNode = (PANSC_XML_DOM_NODE_OBJECT)
             AnscXmlDomNodeGetChildByName(pRootNode, CCSP_TR069PA_CFG_Name_Certificates);
@@ -278,14 +370,14 @@ CcspTr069PaSsp_LoadCfgFile
         	{
 	        	if ( ANSC_STATUS_SUCCESS != CcspTr069PaSsp_GetTr069CertificateLocationForSyndication( &openssl_client_ca_certificate_files ) )
         		{
-					// Fallback case to load default cerification file
-					CcspTr069PaSsp_XML_GetMultipleItemWithSameName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
+				// Fallback case to load default cerification file
+				CcspTr069PaSsp_JSON_GetItemByName(partnerID, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
         		}
         	}
-			else
-			{
-				CcspTr069PaSsp_XML_GetMultipleItemWithSameName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
-			}
+		else
+		{
+			CcspTr069PaSsp_JSON_GetItemByName(partnerID, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
+		}
 			
             CcspTr069PaSsp_XML_GetOneItemByName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_dev, &openssl_client_dev_certificate_file);
             CcspTr069PaSsp_XML_GetOneItemByName(pChildNode, CCSP_TR069PA_CERTIFICATE_CFG_Name_pkey, &openssl_client_private_key_file);
@@ -293,16 +385,13 @@ CcspTr069PaSsp_LoadCfgFile
 #endif
         
         CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, CCSP_TR069PA_CFG_Name_Outbound_If, &g_Tr069PaOutboundIfName);
-        CcspTr069PaSsp_GetPartnerID(partnerID);
-        if (strcmp(partnerID,"comcast")==0)
-        {
-            CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, CCSP_TR069PA_CFG_Name_AcsDefAddr, &g_Tr069PaAcsDefAddr);
-        }
-        else
-        {
-            CcspTr069PaSsp_XML_GetOneItemByName(pRootNode, partnerID, &g_Tr069PaAcsDefAddr);
-        }
-        returnStatus = ANSC_STATUS_SUCCESS;
+
+	if(ANSC_STATUS_SUCCESS != CcspTr069PaSsp_JSON_GetItemByName(partnerID, CCSP_TR069PA_CFG_Name_AcsDefAddr, &g_Tr069PaAcsDefAddr)) {
+		returnStatus = ANSC_STATUS_FAILURE;
+	}
+	else {
+        	returnStatus = ANSC_STATUS_SUCCESS;
+	}
     }
     
 EXIT:
