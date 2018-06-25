@@ -442,10 +442,7 @@ START:
             nMaxAuthRetries --;
 			
 #ifdef _ANSC_USE_OPENSSL_
-			// Check syndication enable or not. If enable then load cerificate from PSM
-            if( ( bApplyTls ) && \
-				( 1 == CcspTr069PaSsp_IsTr069SyndicationEnable( ) ) 
-			   )
+            if( bApplyTls )
         	{
 	        	if ( ANSC_STATUS_SUCCESS == CcspTr069PaSsp_GetTr069CertificateLocationForSyndication( &openssl_client_ca_certificate_files ) )
         		{
