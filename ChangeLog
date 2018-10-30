@@ -1,0 +1,26 @@
+- mkdir ./config
+- move ./arch/pc/config/sdm.xml to
+       config/
+- move ./arch/intel_usg/config/sdm.xml to
+       config/
+- move ./arch/intel_usg/config/ccsp_tr069_pa_cfg.xml to
+       config/
+- move ./arch/intel_usg/config/ccsp_tr069_pa_mapper.xml to
+       config/
+- move ./arch/intel_usg/config/ccsp_tr069_pa_certificate_cfg.xml to
+       config/
+- move ./arch/pc/config/ccsp_tr069_pa_cfg.xml to
+       config/ccsp_tr069_pa_cfg_pc.xml 
+- move ./arch/pc/config/ccsp_tr069_pa_mapper.xml to
+       config/ccsp_tr069_pa_mapper_pc.xml 
+- move ./arch/pc/config/ccsp_tr069_pa_certificate_cfg.xml to
+       config/ccsp_tr069_pa_certificate_cfg_pc.xml 
+- mkdir source-pc
+- rmdir source-pc/
+- move arch/intel_usg/source to
+       source-arm
+- move arch/pc/source to
+       source-pc
+- remove arch directory
+- move Makefile Makefile.orig
+- add ChangeLog file

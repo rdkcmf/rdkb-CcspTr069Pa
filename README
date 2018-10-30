@@ -1,0 +1,73 @@
+##########################################################################
+# If not stated otherwise in this file or this component's Licenses.txt
+# file the following copyright and licenses apply:
+#
+# Copyright 2015 RDK Management
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##########################################################################
+1. Build
+
+a> Set up following environment variables before invoking cosa_build.
+    You can set up the environment variables using the following command:
+			For PC build,  #source cosa_setenv_pc.sh
+			For CNS build,  #source cosa_setenv_cns.sh
+			For TPG build,  #source cosa_setenv_tpg.sh
+			For E4200 build,  #source cosa_setenv_e4200.sh
+			
+	If those are not set, default values will be taken.
+        COSA_TOOLCHAINS_DIR_TPG     -- default value is /opt/cisco/CCSP/mips-linux-toolchain-1.2.0/bin
+        COSA_TOOLCHAINS_DIR_CNS     -- default value is /opt/cnstools/arm-2009q1/bin
+        OEBASE
+
+	For hybrid_android envrionment setup, need more actions:
+    1) make sure you had the cisco-android-sdk-7425-g8 or cisco-android-sdk-7425-ref7425 code ;
+    2) make sure you had the stbgcc-4.5.3-0.6  toolchain;
+    3) check the following variable in cosa_seten_hybrid_android.sh for your envrionment :
+		CISCO_ANDROID_SDK_PATH
+		COSA_HYBRID_ANDROID_CROSS_TOOLCHAIN_PATH
+		TR135_INSTALL_PATH
+		CROSS_COMPILE
+		CROSS_GCC_4_5_3
+		BUILD_WITH_STATIC_LIB   
+		OEBASE
+    4) check out tr135 source code and enter COSA2.0 directory;
+    5) source ./cosa_setenv_hybrid_android.sh to setup envrionment
+    7) build command: ./cosa_build hybrid_android clean   ;   ./cosa_build hybrid_android resetup [build option]
+    8) build options (optional): 
+    	dbg: 	-D_DEBUG -g		(e.g. ./cosa_build hybrid_android resetup dbg)
+    	prod:   -DNDEBUG -O2 	(e.g. ./cosa_build hybrid_android resetup prod)
+    	If not specify build options, the build flag is: -D_DEBUG -O2 (e.g. ./cosa_build hybrid_android resetup)
+
+b> Invoke the build
+
+	You can use right option to build.
+	
+    For PC build,  #./cosa_build pc   resetup clean
+    For CNS build, #./cosa_build cns  resetup clean
+    For TPG build, #./cosa_build tpg  resetup clean
+    For Hybrid build, #./cosa_build hybrid_android resetup clean
+    For e4200 build, #./cosa_build e4200 resetup clean
+
+2. Usage
+	the building output will be cosa/build/pc/bbhm/cosa, or cosa/build/cns/bbhm/cosa, or cosa/build/tpg/bbhm/cosa cosa/build/hybrid_android/bbhm/cc, or cosa/build/e4200/bbhm/cc according to the building params.
+	
+	Normally, can run the whole cosa system like this:
+	1) Copy whole cc directory to right directory. 
+	2) Enter cc, run #./cosa_start.sh &
+	3) Normally, the cosa will be up. You can run the following command to test:
+	  * Enter cc, run #export LD_LIBRARY_PATH=$PWD:.:$PWD/lib:/usr/lib:$LD_LIBRARY_PATH
+	  * Run #./ccsp_bus_client_tool simu getv Device.     //"Device." will be replaced by "InternetGatewayDevice." in final release. Currently, we use Device.
+	
+	
+
