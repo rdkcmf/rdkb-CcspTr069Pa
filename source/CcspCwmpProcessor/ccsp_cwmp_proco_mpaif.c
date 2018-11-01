@@ -1055,11 +1055,23 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
 }
 //Set the flag to false
 flag_pInvalidParam = FALSE;
-// Hide the LNF and XHS password
+// Hide the LNF,XHS,MESH Backhaul SSIDs password based on RFC flag
 if ((strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.7.Security.KeyPassphrase")==0) ||
     (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.8.Security.KeyPassphrase")==0) ||
     (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.3.Security.KeyPassphrase")==0) ||
-    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.4.Security.KeyPassphrase")==0))
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.4.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.11.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.12.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.13.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.14.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.3.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.4.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.7.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.8.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.11.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.12.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.13.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.14.Security.X_COMCAST-COM_KeyPassphrase")==0))
 {
     syscfg_init();
     syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
@@ -1079,7 +1091,27 @@ if ((strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoin
         }
     }
 }
-if ( flag_pInvalidParam == FALSE )// other than LNF and XHS password and for TR069PSWDCTRLFLAG=true
+//Disable set for xfinity-open and xfinity-secure WiFi passwords
+else if ((strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.5.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.6.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.9.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.10.Security.KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.5.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.6.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.9.Security.X_COMCAST-COM_KeyPassphrase")==0) ||
+    (strcmp (pNsList->Args.paramValueInfo.parameterName, "Device.WiFi.AccessPoint.10.Security.X_COMCAST-COM_KeyPassphrase")==0))
+{
+            //Set it as fault code not writable
+            nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
+
+            // Set a flag to invalid param as true
+            flag_pInvalidParam = TRUE;
+
+            // not success send appropriate parameter name
+            pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
+
+}
+if ( flag_pInvalidParam == FALSE )// Remaining SSID passwords and for TR069PSWDCTRLFLAG=true
 {
             nResult = 
                 CcspBaseIf_setParameterValues
@@ -1792,13 +1824,25 @@ CcspCwmppoMpaGetParameterValues
                     if((0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10004.Security.KeyPassphrase")) ||
                        (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10104.Security.KeyPassphrase")) ||
                        (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10002.Security.KeyPassphrase")) ||
-                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10102.Security.KeyPassphrase")) )
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10102.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10006.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10106.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10007.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10107.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10002.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10102.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10004.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10104.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10006.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10106.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10007.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10107.Security.X_COMCAST-COM_KeyPassphrase")))
                     {
                         syscfg_init();
                         syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
                         if( sysbuf != NULL )
                         {
-                            // if TR069PSWDCTRLFLAG == false then Get query returns "NA".
+                            // if TR069PSWDCTRLFLAG == false then Get query returns empty string.
                             if (strcmp(sysbuf, "false") == 0)
                             {
 								if(pParamValues[k]->parameterValue)
@@ -1806,9 +1850,26 @@ CcspCwmppoMpaGetParameterValues
 									CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
 									pParamValues[k]->parameterValue = NULL;
 								}
-								pParamValues[k]->parameterValue = AnscCloneString("NA"); 
+								pParamValues[k]->parameterValue = AnscCloneString(" "); 
                             }
                         }
+                    }
+                    //Return empty string for xfinity-open and xfinity-secure WiFi passwords
+                    else if((0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10003.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10103.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10005.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10105.Security.KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10003.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10103.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10005.Security.X_COMCAST-COM_KeyPassphrase")) ||
+                       (0 == strcmp(pParamValues[k]->parameterName,"Device.WiFi.AccessPoint.10105.Security.X_COMCAST-COM_KeyPassphrase")))
+                    {
+                        if(pParamValues[k]->parameterValue)
+                        {
+                            CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
+                            pParamValues[k]->parameterValue = NULL;
+                        }
+                        pParamValues[k]->parameterValue = AnscCloneString(" ");
                     }
                     //Completed Password control check
 
