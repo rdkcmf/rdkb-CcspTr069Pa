@@ -80,6 +80,12 @@
 #include "Tr69_Tlv.h"
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
 #define TR69_DEFAULT_URL_FILE "/etc/url"
+
+#if defined (INTEL_PUMA7)
+//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
+#define NO_OF_RETRY 90                 /* No of times the management server will wait before giving up*/
+#endif
+
 PFN_CCSPMS_VALUECHANGE  CcspManagementServer_ValueChangeCB;
 CCSP_HANDLE             CcspManagementServer_cbContext;
 CCSP_HANDLE             CcspManagementServer_cpeContext;
@@ -118,14 +124,67 @@ CcspManagementServer_InitCustom
         CCSP_STRING             sdmXmlFilename
     );
 
+#if defined (INTEL_PUMA7)
+//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
+//Used to obtain the output from the shell for the given cmd
+void _get_shell_output(char * cmd, char * out, int len)
+{
+    FILE * fp;
+    char   buf[256];
+    char * p;
+
+    fp = popen(cmd, "r");
+
+    if (fp)
+    {
+        fgets(buf, sizeof(buf), fp);
+
+        /*we need to remove the \n char in buf*/
+        if ((p = strchr(buf, '\n'))) *p = 0;
+
+        strncpy(out, buf, len-1);
+
+        pclose(fp);
+    }
+
+}
+#endif
+
 void ReadTr69TlvData()
 {
 	int                             res;
 	char                            recordName[256];
+#if defined (INTEL_PUMA7)
+	//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
+	char cmd[256] = {0};
+	char out[256] = {0};
+#else
 	FILE *fp;
+#endif
 	char buff[255];
 	Tr69TlvData *object2=malloc(sizeof(Tr69TlvData));
+#if !defined (INTEL_PUMA7)
 	FILE * file= fopen(TR69_TLVDATA_FILE, "rb");
+#else
+	//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
+	FILE *file = NULL;
+	int watchdog = NO_OF_RETRY;
+
+	do
+	{
+		sprintf(cmd, "sysevent get TLV202-status");
+		_get_shell_output(cmd, out, sizeof(out));
+		sleep(1);
+		watchdog--;
+	}while ((!strstr(out,"success")) && (watchdog != 0));
+
+	if ( watchdog == 0 )
+	{
+		fprintf(stderr, "\n%s(): Ccsp_GwProvApp haven't been able to initialize TLV Data.\n", __FUNCTION__);
+	}
+
+	file = fopen(TR69_TLVDATA_FILE, "rb");
+#endif
 	if ((file != NULL) && (object2))
 	{
 		fread(object2, sizeof(Tr69TlvData), 1, file);
