@@ -516,13 +516,13 @@ CcspTr069PaSsp_GetTr069CertificateLocationForSyndication
    FILE 	  *FilePtr		       = NULL;
    char 	   fileContent[ 256 ]  = { 0 };
 
-	FilePtr = v_secure_popen( PSM_CMD_SYNDICATION_TR69CertLocation );
+	FilePtr = popen( PSM_CMD_SYNDICATION_TR69CertLocation, "r" );
 
 	if ( FilePtr ) 
 	{
 		memset( fileContent, 0, sizeof( fileContent ) );
 		fgets( fileContent, 256, FilePtr );
-	        v_secure_pclose( FilePtr );
+		pclose( FilePtr );
 		FilePtr = NULL;
 
 		// Tr069 Location should have valid length
