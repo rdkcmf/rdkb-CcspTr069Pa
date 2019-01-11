@@ -131,6 +131,17 @@ void ReadTr69TlvData()
 		fread(object2, sizeof(Tr69TlvData), 1, file);
 		fclose(file);
 		file = NULL;
+
+		AnscTraceInfo(("%s %s File is available and processing by Tr069\n", __FUNCTION__, TR69_TLVDATA_FILE ));
+		AnscTraceInfo(("**********************************************************\n"));
+		AnscTraceInfo(("%s -#- FreshBootUp: %d\n", __FUNCTION__, object2->FreshBootUp));
+		AnscTraceInfo(("%s -#- , Tr69Enable: %d\n", __FUNCTION__, object2->Tr69Enable));
+		AnscTraceInfo(("%s -#- , AcsOverRide: %d\n", __FUNCTION__, object2->AcsOverRide));
+		AnscTraceInfo(("%s -#- , EnableCWMP: %d\n", __FUNCTION__, object2->EnableCWMP));
+		AnscTraceInfo(("%s -#- , URLchanged: %d\n", __FUNCTION__, object2->URLchanged));
+		AnscTraceInfo(("%s -#- , URL: %s\n", __FUNCTION__, ( object2->URL[ 0 ] != '\0' ) ? object2->URL : "NULL"));
+		AnscTraceInfo(("**********************************************************\n"));
+
 		// Check if it's a fresh bootup / boot after factory reset / TR69 was never enabled
 		// If TR69 was never enabled, then we will always take URL from boot config file.
           	AnscTraceWarning(("%s -#- FreshBootUp: %d, Tr69Enable: %d\n", __FUNCTION__, object2->FreshBootUp, object2->Tr69Enable));
@@ -242,7 +253,11 @@ void ReadTr69TlvData()
 		}
 	}
 	else
-		printf("TLV data file is missing!!!\n");
+	{
+		AnscTraceWarning(("%s TLV data file is missing!!!\n", __FUNCTION__));
+		AnscTraceInfo(("%s %s File is not available so unable to process by Tr069\n", __FUNCTION__, TR69_TLVDATA_FILE ));
+		system("touch /tmp/.TLVmissedtoparsebytr069");
+	}
 
 	/*RDKB-7333, CID-32939, free unused resources before exit */
 	if(object2)
