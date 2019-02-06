@@ -313,9 +313,74 @@ void ReadTr69TlvData()
 	}
 	else
 	{
+        char *pValue 								 = NULL;
+		int   IsNeed2ApplySyndicationPartnerCFGValue = 1;
+		
 		AnscTraceWarning(("%s TLV data file is missing!!!\n", __FUNCTION__));
 		AnscTraceInfo(("%s %s File is not available so unable to process by Tr069\n", __FUNCTION__, TR69_TLVDATA_FILE ));
 		system("touch /tmp/.TLVmissedtoparsebytr069");
+
+		//Check whether PSM entry is there or not
+		memset( recordName, 0, sizeof( recordName ) );
+		_ansc_sprintf(recordName, "%s.%sEnableCWMP.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);
+
+        res = PSM_Get_Record_Value2( bus_handle,
+						             CcspManagementServer_SubsystemPrefix,
+						             recordName,
+						             NULL,
+						             &pValue );
+		
+        if( res == CCSP_SUCCESS )
+		{
+            AnscTraceInfo(("%s PSM_Get_Record_Value2 success %d, name=<%s> value<%s>\n", __FUNCTION__, res, recordName, ( pValue )  ?  pValue : "NULL" ));
+
+            if( NULL != pValue ) 
+			((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(pValue);
+
+			//No Need to apply since PSM entry is available for EnableCWMP param
+			IsNeed2ApplySyndicationPartnerCFGValue = 0;
+        }
+
+		//Check whether we need to apply syndication config or not
+		if( IsNeed2ApplySyndicationPartnerCFGValue )
+		{
+			char buf[ 8 ] = { 0 };
+
+			//Init syscfg if not already init case
+			syscfg_init( );
+			
+			//Get the Syndication_EnableCWMP value and overwrite always during boot-up when cmconfig file not available case
+			if( ( 0 == syscfg_get( NULL, "Syndication_EnableCWMP", buf, sizeof( buf )) ) && \
+				( '\0' != buf[ 0 ] ) 
+			  )
+			{
+				int Tr69EnableValue = 0;
+				
+				//Configure EnableCWMP param based on partner's default json config
+				if( 0 == strcmp( buf, "true" ) )
+				{
+					objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("1");
+					Tr69EnableValue = 1;
+				}
+				else
+				{
+					objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("0");
+					Tr69EnableValue = 0;
+				}
+			
+				AnscTraceInfo(("%s Applying Syndication EnableCWMP:%s\n", __FUNCTION__, buf ));
+				
+				//Overwrite syndication Enable CWMP value
+				memset( recordName, 0, sizeof( recordName ) );
+				_ansc_sprintf(recordName, "%s.%sEnableCWMP.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);
+				res = PSM_Set_Record_Value2(bus_handle, CcspManagementServer_SubsystemPrefix, recordName, ccsp_string, ( 1 == Tr69EnableValue ) ?  "1" : "0" );
+				
+				if( res != CCSP_SUCCESS )
+				{
+					AnscTraceWarning(("%s -#- Failed to write EnableCWMP <%s> into PSM!\n", __FUNCTION__, buf ));
+				}
+			}
+		}
 	}
 
 	/*RDKB-7333, CID-32939, free unused resources before exit */
