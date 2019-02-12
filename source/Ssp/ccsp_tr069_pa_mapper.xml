@@ -330,6 +330,15 @@
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.PartnerId</Name>
         </Param>
         <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.CloudUI.brandname</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.CloudUI.productname</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.CloudUI.link</Name>
+        </Param>
+        <Param>
                 <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SyndicationFlowControl.Enable</Name>
         </Param>
         <Param>
