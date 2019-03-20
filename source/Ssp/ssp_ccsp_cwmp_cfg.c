@@ -234,9 +234,10 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
 	fseek( fileRead, 0, SEEK_END );
 	len = ftell( fileRead );
 	fseek( fileRead, 0, SEEK_SET );
-	data = ( char* )malloc( len + 1 );
+	data = ( char* )malloc( sizeof(char) * (len + 1) );
 	if (data != NULL)
 	{
+		memset( data, 0, ( sizeof(char) * (len + 1) ));
 		fread( data, 1, len, fileRead );
 	}
 	else
@@ -248,12 +249,17 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
 
         fclose( fileRead );
 
-	if( data != NULL )
+	if ( data == NULL )
+	{
+		CcspTr069PaTraceWarning(("%s-%d : fileRead failed \n", __FUNCTION__, __LINE__));
+		return ANSC_STATUS_FAILURE;
+	}
+	else if ( strlen(data) != 0)
 	{
 		json = cJSON_Parse( data );
 		if( !json )
 		{
-			 CcspTr069PaTraceWarning((  "%s-%s : json file parser error : [%d]\n", cJSON_GetErrorPtr() ,__FUNCTION__,__LINE__));
+			 CcspTr069PaTraceWarning((  "%s : json file parser error : [%d]\n", __FUNCTION__,__LINE__));
 			 free(data);
 			 return ANSC_STATUS_FAILURE;
 		}
@@ -281,6 +287,11 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
 
 		free(data);
           	data = NULL;
+	}
+	else
+	{
+		CcspTr069PaTraceWarning(("PARTNERS_INFO_FILE %s is empty\n", PARTNERS_INFO_FILE));
+		return ANSC_STATUS_FAILURE;
 	}
 
     	CcspTr069PaTraceWarning(("%s: %s = %s\n", __FUNCTION__, (itemName)?(itemName):"NULL", (*retVal)?(*retVal):"NULL"));
