@@ -806,6 +806,10 @@ if ( bInformAcs )
     }
 
 EXIT:
+    if (pAcsUrl)
+    {
+        CcspTr069PaFreeMemory(pAcsUrl);
+    }
     if ( pTriggerCommand )
     {
         CcspTr069PaFreeMemory(pTriggerCommand);

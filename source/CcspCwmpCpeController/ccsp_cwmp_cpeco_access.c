@@ -1075,6 +1075,10 @@ CcspCwmpCpecoMonitorOpState
                     FALSE
                 );
 
+        for (i = 0; i < NumInstances; ++ i)
+        {
+            CcspCwmpCleanSetParamAttrib((pParamAttrs + i));
+        }
         CcspTr069PaFreeMemory(pParamAttrs);
 
         *ppCwmpFault = pCwmpFault;
@@ -1401,6 +1405,11 @@ CcspCwmpCpecoSetSubsysName
         AnscCopyString(pMyObject->PANameWithPrefix, pMyObject->PAName);
     }
 
+    if (pMyObject->CRNameWithPrefix)
+    {
+        CcspTr069PaFreeMemory(pMyObject->CRNameWithPrefix);
+        pMyObject->CRNameWithPrefix = NULL;
+    }
     nLen = AnscSizeOfString(pMyObject->CRName) + (pMyObject->SubsysName ? AnscSizeOfString(pMyObject->SubsysName) : 0) + 2;
     pMyObject->CRNameWithPrefix = (char*)CcspTr069PaAllocateMemory(nLen);
 
