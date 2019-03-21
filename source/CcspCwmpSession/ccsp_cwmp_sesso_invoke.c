@@ -879,6 +879,7 @@ bFirstInform = 0;
 
         if ( j >= ulParamIndex )
         {
+            pValue = NULL;
             pCwmpParamValueArray[ulParamIndex].Name  = CcspTr069PaCloneString(pPName);
 
 	        pCcspCwmpCpeController->GetParamStringValue
@@ -892,7 +893,9 @@ bFirstInform = 0;
 		    {
 			    bValue = 
 				    !(AnscEqualString(pValue, "0", TRUE) || AnscEqualString(pValue, "false", FALSE)) ||
-                    AnscEqualString(pValue, "TRUE", FALSE);
+                            AnscEqualString(pValue, "TRUE", FALSE);
+                            CcspTr069PaFreeMemory(pValue);
+                            pValue = NULL;
 		    }
 
             pSlapValue->Syntax = SLAP_VAR_SYNTAX_string;

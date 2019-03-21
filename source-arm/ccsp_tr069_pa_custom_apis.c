@@ -344,6 +344,11 @@ for(i = 0;i < ArrLen;i++)
                         res = TR69_INTERNAL_ERROR;
 						
                     }
+        if (pValue)
+        {
+            CcspTr069PaFreeMemory(pValue);
+            pValue = NULL;
+        }
 }
 }
 

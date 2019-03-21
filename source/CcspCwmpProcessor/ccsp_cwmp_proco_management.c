@@ -712,6 +712,12 @@ CcspCwmppoInitParamAttrCache
             }
             ulNotification = (ULONG)(pValue ? _ansc_atoi(pValue) : 0);
 
+            if (pValue)
+            {
+                CcspTr069PaFreeMemory(pValue);
+                pValue = NULL;
+            }
+
             /* create a cache entry */
             pAtomDescriptor = 
                 (PANSC_ATOM_DESCRIPTOR)pParamAttrCache->AddAtomByName
