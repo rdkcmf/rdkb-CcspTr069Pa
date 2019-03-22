@@ -1144,6 +1144,14 @@ EXIT:
 
     if( pStringArray != NULL)
     {
+        for ( i = 0; i < uCount; i++ )
+        {
+            if (pStringArray->Array.arrayString[i] != NULL)
+            {
+                CcspTr069PaFreeMemory(pStringArray->Array.arrayString[i]);
+                pStringArray->Array.arrayString[i] = NULL;
+            }
+        }
         SlapFreeVarArray(pStringArray);
     }
 
