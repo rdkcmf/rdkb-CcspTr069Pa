@@ -622,18 +622,6 @@ CcspTr069PaIsGpnNsInQueue
                         }                                                                               \
                                                                                                         \
                         break;                                                                          \
-                                                                                                        \
-                                                                                                        \
-                case    CCSP_NORMALIZED_ACTION_TYPE_GPA:                                                \
-                                                                                                        \
-                        {                                                                               \
-                            CCSP_PARAM_ATTR_INFO*   pInfo;                                              \
-                            pInfo = &(pNsList)->Args.paramAttrInfo;                                     \
-                            if ( pInfo->parameterName )                                                 \
-                                CcspTr069PaFreeMemory(pInfo->parameterName);                            \
-                        }                                                                               \
-                                                                                                        \
-                        break;                                                                          \
             }                                                                                           \
             CcspTr069PaFreeMemory(pNsList);                                                             \
     } while (0)
