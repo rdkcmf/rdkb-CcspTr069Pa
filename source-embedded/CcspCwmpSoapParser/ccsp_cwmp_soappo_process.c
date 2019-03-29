@@ -344,7 +344,7 @@ CcspCwmpSoappoProcessRequest_SetParameterValues
     PCCSP_CWMP_PARAM_VALUE          pParamValue  = NULL;
     ULONG                           uMaxParam    = 128;
     ULONG                           uParamCount  = 0;
-    CHAR                            pValue[32]   = { 0 };
+    CHAR                            pValue[48]   = { 0 };
     ULONG                           length       = 32;
     ULONG                           i            = 0;
     ULONG                           ulSubError   = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType;
