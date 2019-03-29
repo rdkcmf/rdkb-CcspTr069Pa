@@ -807,7 +807,7 @@ else
 		}
                 else if(!strcmp("Device.DeviceInfo.ProvisioningCode",pCwmpParamValueArray[i].Name))
                 {
-                        pValue = CcspManagementServer_CloneString(ProvisioningCode);
+                        pCcspCwmpCpeController->GetParamStringValue((ANSC_HANDLE)pCcspCwmpCpeController,pCwmpParamValueArray[i].Name, &pValue);
                 }
 				
 
