@@ -368,9 +368,13 @@ CcspTr069PaSsp_LoadCfgFile
             // Fallback case to load default cerification file
             CcspTr069PaSsp_JSON_GetItemByName(partnerID, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
 
-            snprintf(cmd, sizeof(cmd), "psmcli set dmsb.device.deviceinfo.X_RDKCENTRAL-COM_Syndication.TR69CertLocation  %s", openssl_client_ca_certificate_files);
-            CcspTr069PaTraceWarning(("%s\n",cmd));
-            system(cmd);
+            // Load  Certfication file only if it is not NULL
+            if (openssl_client_ca_certificate_files)
+            {
+                snprintf(cmd, sizeof(cmd), "psmcli set dmsb.device.deviceinfo.X_RDKCENTRAL-COM_Syndication.TR69CertLocation  %s", openssl_client_ca_certificate_files);
+                CcspTr069PaTraceWarning(("%s\n",cmd));
+                system(cmd);
+            }
         }
 
 #endif
