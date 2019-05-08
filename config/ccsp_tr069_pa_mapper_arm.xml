@@ -4825,6 +4825,60 @@
 	<Param>
 		<Name>Device.DeviceInfo.X_RDKCENTRAL-COM.MultipleGW</Name>
 	</Param>
+
+	<!-- Exposing Selfheal Datamodel -->
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.X_RDKCENTRAL-COM_Enable</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.X_RDKCENTRAL-COM_MaxRebootCount</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.X_RDKCENTRAL-COM_MaxResetCount</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.X_RDKCENTRAL-COM_DiagnosticMode</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.X_RDKCENTRAL-COM_DiagMode_LogUploadFrequency</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.X_RDKCENTRAL-COM_DNS_PINGTEST_Enable</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.X_RDKCENTRAL-COM_DNS_URL</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ConnectivityTest.X_RDKCENTRAL-COM_PingInterval</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ConnectivityTest.X_RDKCENTRAL-COM_NumPingsPerServer</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ConnectivityTest.X_RDKCENTRAL-COM_MinNumPingServer</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ConnectivityTest.X_RDKCENTRAL-COM_PingRespWaitTime</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ConnectivityTest.X_RDKCENTRAL-COM_CorrectiveAction</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ConnectivityTest.PingServerList.IPv4PingServerTableNumberOfEntries</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ConnectivityTest.PingServerList.IPv6PingServerTableNumberOfEntries</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ResourceMonitor.X_RDKCENTRAL-COM_UsageComputeWindow</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ResourceMonitor.X_RDKCENTRAL-COM_AvgCPUThreshold</Name>
+	</Param>
+	<Param>
+	    <Name>Device.X_RDKCENTRAL-COM_SelfHeal.ResourceMonitor.X_RDKCENTRAL-COM_AvgMemoryThreshold</Name>
+	</Param>
+
         <!-- MoCA network isolation parameter -->
         <Param>
                 <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.HomeNetworkIsolation</Name>
