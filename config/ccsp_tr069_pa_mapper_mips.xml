@@ -1034,6 +1034,9 @@
             <Name>Device.WiFi.EndPointNumberOfEntries</Name>
         </Param>
         <Param>
+            <Name>Device.WiFi.X_RDKCENTRAL-COM_Syndication.WiFiRegion.Code</Name>
+        </Param>
+        <Param>
             <Name>Device.WiFi.Radio.{i}.Enable</Name>
         </Param>
         <Param>
