@@ -19,6 +19,6 @@
 if CCSP_ARCH_PC
 SUBDIRS = source-pc 
 else
-SUBDIRS = source
+SUBDIRS = source-embedded
 endif
 

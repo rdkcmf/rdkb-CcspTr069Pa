@@ -630,7 +630,35 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
 
         //        fprintf(stderr, "<RT> %s -- default password is '%s', hashLength = %d\n", 
         //                          __FUNCTION__, DeviceDefaultPassword, hashLength);
-        
+
+#if defined(_COSA_BCM_MIPS_)
+
+        /*
+         *  Write the password to a file
+         */
+        {
+            FILE*              pFile       = NULL;
+            mode_t             origMod     = umask(0);
+
+            pFile = fopen("/tmp/acsPasswd.txt", "w");
+
+            if ( pFile )
+            {
+                fprintf
+                (
+                        pFile,
+                        "Default password length = %d, first 4 bytes %02X%02X%02X%02X, value = %s\n",
+                        hashLength,
+                        hash.Value[0], hash.Value[1], hash.Value[2], hash.Value[3],
+                        DeviceDefaultPassword
+                );
+
+                fclose(pFile);
+            }
+            umask(origMod);
+        }
+
+#endif        
 
         //DefaultPasswordGenerated = 1;
     
