@@ -82,8 +82,8 @@ AC_C_INLINE
 AC_FUNC_MALLOC
 
 AC_CONFIG_FILES(
-	source/Ssp/Makefile
-	source/Makefile
+	source-embedded/Ssp/Makefile
+	source-embedded/Makefile
 	source-pc/Ssp/Makefile
 	source-pc/Makefile
 	Makefile
