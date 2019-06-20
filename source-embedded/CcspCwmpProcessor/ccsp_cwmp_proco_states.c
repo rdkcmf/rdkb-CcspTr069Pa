@@ -260,6 +260,12 @@ CcspCwmppoGetInitialContact
 
         CcspTr069PaTraceWarning(("InitialContact read from PSM is: <%s>\n", pProperty->bInitialContact ? "TRUE":"FALSE")); 
 
+        if (access(CCSP_MGMT_CRPWD_FILE,F_OK)!=0 && pValue!=NULL)
+	{
+		pProperty->bInitialContact = 1;
+        	CcspTr069PaTraceWarning(("bInitialContact switched to <%s> as MgmtCRPwdID was missing\n", pProperty->bInitialContact ? "TRUE":"FALSE")); 
+	}
+
     	if ( pValue )
 	    {
     	    CcspTr069PaFreeMemory(pValue);
