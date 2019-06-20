@@ -82,6 +82,8 @@ no set parameter needed ***********************/
 #define CCSP_MSVC_OBJECT_DSCCP 			0x00000004
 #define CCSP_MSVC_OBJECT_DiagComplete 	0x00000008			    /* received '8 DIAGNOSTICS COMPLETE' event  */
 
+#define CCSP_MGMT_CRPWD_FILE		"/nvram/.keys/MgmtCRPwdID"
+
 typedef
 CCSP_VOID
 (*PFN_CCSPMS_VALUECHANGE)
