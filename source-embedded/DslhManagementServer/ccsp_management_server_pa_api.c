@@ -572,9 +572,9 @@ CcspManagementServer_GetURL
     )
 {
     CCSP_STRING pStr = objectInfo[ManagementServerID].parameters[ManagementServerURLID].value;
-    AnscTraceWarning(("%s -#- ManagementServerURLID_PSM: %s\n", __FUNCTION__, pStr));
     if ( pStr && AnscSizeOfString(pStr) > 0 )
     {
+        AnscTraceWarning(("%s -#- ManagementServerURLID_PSM: %s\n", __FUNCTION__, pStr));
         return  CcspManagementServer_CloneString(pStr);
     }
     else
