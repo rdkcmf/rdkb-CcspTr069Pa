@@ -313,13 +313,31 @@ void waitUntilSystemReady(	void*	cbContext)
  */
 int checkIfSystemReady(void)
 {
-	char str[256];
-	int val, ret;
-	snprintf(str, sizeof(str), "eRT.%s", CCSP_DBUS_INTERFACE_CR);
-	// Query CR for system ready
-	ret = CcspBaseIf_isSystemReady(bus_handle, str, &val);
-	CcspTr069PaTraceInfo(("checkIfSystemReady(): ret %d, val %d\n", ret, val));
-	return val;
+    char str[256];
+    int val, ret;
+    snprintf(str, sizeof(str), "eRT.%s", CCSP_DBUS_INTERFACE_CR);
+    // Query CR for system ready
+    ret = CcspBaseIf_isSystemReady(bus_handle, str, &val);
+    CcspTr069PaTraceInfo(("checkIfSystemReady(): ret %d, val %d\n", ret, val));
+    
+    /*In case of RBus, CR will not be actively running and hence it will not send the SysReady
+    event  (and hence the CcspCwmppoSysReadySignalCB() will not be called). So, perform the 
+    activities  (that, otherwise, would be done by CcspCwmppoSysReadySignalCB callback) 
+    here in case of Rbus.  */
+  
+    if ((val == 1) && access("/nvram/rbus", F_OK) == 0)  
+    {
+       // Touch a file to indicate that tr069 can proceed with further
+	if (access("/var/tmp/tr069paready", F_OK) != 0)
+	{
+		system("print_uptime \"boot_to_tr069_uptime\"");
+	}
+	system("touch /var/tmp/tr069paready");
+
+	CcspTr069PaTraceInfo(("Received system ready signal, created /var/tmp/tr069paready file\n"));
+
+    }
+    return val;
 }
 
 void 
