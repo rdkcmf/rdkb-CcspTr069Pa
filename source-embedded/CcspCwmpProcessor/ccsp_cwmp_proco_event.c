@@ -148,7 +148,11 @@ CcspCwmppoSysReadySignalProcTask
                 ));
         }
 
-        CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        if( pCwmpSoapFault )
+        {
+            CcspCwmpFreeSoapFault(pCwmpSoapFault);
+            pCwmpSoapFault = NULL;
+        }
     }
 #endif
     /*returnStatus =
@@ -747,6 +751,7 @@ CcspCwmppoCheckCdsResults
                 if ( pCwmpFault )
                 {
                     CcspCwmpFreeSoapFault(pCwmpFault);
+                    pCwmpFault = NULL;
                 }
 
                 /* remove saved monitors in PSM */

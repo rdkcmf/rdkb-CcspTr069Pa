@@ -1395,6 +1395,7 @@ CcspCwmpSoappoUtilProcessInvalidArgumentRequest
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     return returnStatus;
@@ -1471,6 +1472,7 @@ CcspCwmpSoappoUtilProcessInvalidArgumentSPVRequest
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     return returnStatus;
@@ -1537,6 +1539,7 @@ CcspCwmpSoappoUtilProcessTooManyEnvelopes
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     return returnStatus;

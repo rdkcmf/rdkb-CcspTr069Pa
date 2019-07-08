@@ -328,7 +328,11 @@ CcspCwmpsoMcoProcessSoapResponse
 
         if ( !bIDMatched )
         {
-            CcspCwmpFreeSoapResponse(pSoapResponse);
+            if( pSoapResponse )
+            {   
+                CcspCwmpFreeSoapResponse(pSoapResponse);
+                pSoapResponse = NULL;
+            }
 
             AnscReleaseLock(&pMyObject->SavedReqQueueLock);
 
@@ -341,7 +345,11 @@ CcspCwmpsoMcoProcessSoapResponse
 
         if ( !pSLinkEntry )
         {
-            CcspCwmpFreeSoapResponse(pSoapResponse);
+            if( pSoapResponse )
+            {   
+                CcspCwmpFreeSoapResponse(pSoapResponse);
+                pSoapResponse = NULL;
+            }
 
             AnscReleaseLock(&pMyObject->SavedReqQueueLock);
 
@@ -367,7 +375,11 @@ CcspCwmpsoMcoProcessSoapResponse
     {
         faultCode = pSoapResponse->Fault->Fault.FaultCode;
 
-        CcspCwmpFreeSoapResponse(pSoapResponse);
+        if( pSoapResponse )
+        {
+            CcspCwmpFreeSoapResponse(pSoapResponse);
+            pSoapResponse = NULL;
+        }
 
         if( faultCode != 8005)
         {
@@ -502,6 +514,7 @@ EXIT2:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT1:
@@ -639,6 +652,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -646,6 +660,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -877,6 +892,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -1061,6 +1077,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -1068,6 +1085,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -1236,6 +1254,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -1253,6 +1272,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -1431,6 +1451,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -1448,6 +1469,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -1595,6 +1617,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -1602,6 +1625,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -1787,6 +1811,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -1980,6 +2005,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -1987,6 +2013,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -2175,6 +2202,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -2182,6 +2210,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -2711,6 +2740,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -2728,6 +2758,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -2915,6 +2946,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -2922,6 +2954,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -2997,6 +3030,7 @@ ANSC_STATUS CcspCwmpSetRebootReason(ANSC_HANDLE                 hThisObject)
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 	return returnStatus;
@@ -3351,6 +3385,7 @@ EXIT:
         if ( pCwmpFault )
         {
             CcspCwmpFreeSoapFault(pCwmpFault);
+            pCwmpFault = NULL;
         }
     }
 
@@ -3735,6 +3770,7 @@ CcspCwmpsoMcoChangeDUState
                             if ( pCwmpFault )
                             {
                                 CcspCwmpFreeSoapFault(pCwmpFault);
+                                pCwmpFault = NULL;
                             }
                         }
                         else
@@ -3810,6 +3846,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -3817,6 +3854,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -3836,6 +3874,7 @@ EXIT1:
         if ( pCwmpFault )
         {
             CcspCwmpFreeSoapFault(pCwmpFault);
+            pCwmpFault = NULL;
         }
 
         pMyObject->SessionState = CCSP_CWMPSO_SESSION_STATE_abort;
@@ -3991,6 +4030,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -4003,6 +4043,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -4146,9 +4187,11 @@ CcspCwmpsoMcoScheduleInform
             }
             else
             {
-                CcspCwmpFreeSoapFault(pCwmpSoapFault);
-
-                pCwmpSoapFault = NULL;
+                if( pCwmpSoapFault )
+                {
+                    CcspCwmpFreeSoapFault(pCwmpSoapFault);
+                    pCwmpSoapFault = NULL;
+                }
             }
         }
     }
@@ -4205,6 +4248,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -4212,6 +4256,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -4349,6 +4394,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -4356,6 +4402,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -4498,6 +4545,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -4505,6 +4553,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -4742,6 +4791,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -4759,6 +4809,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:
@@ -4827,6 +4878,8 @@ CcspCwmpsoMcoFactoryReset
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault     = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     ULONG                           ulNoRPCMethodMask  = 0;
     ULONG                           ulFRDelay          = 10;
+
+    CcspTraceWarning(("%s -- %d Entering CcspCwmpsoMcoFactoryReset \n", __FUNCTION__, __LINE__));
 
     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->NoRPCMethods )
     {
@@ -4943,6 +4996,7 @@ EXIT3:
     if ( pWmpsoAsyncRep )
     {
         CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        pWmpsoAsyncRep = NULL;
     }
 
 EXIT2:
@@ -4950,6 +5004,7 @@ EXIT2:
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
 EXIT1:

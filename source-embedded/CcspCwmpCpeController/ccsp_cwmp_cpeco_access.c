@@ -283,6 +283,7 @@ CcspCwmpCpecoGetParamValues
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     if ( pCwmpValArray )
@@ -414,6 +415,7 @@ CcspCwmpCpecoGetParamStringValues
     if ( pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     if ( pCwmpValArray )
@@ -687,6 +689,7 @@ CcspCwmpCpecoAddObjects
                 if ( pDoCwmpFault )
                 {
                     CcspCwmpFreeSoapFault(pDoCwmpFault);
+                    pDoCwmpFault = NULL;
                 }
 
                 AnscZeroMemory(pInsNumbers, sizeof(ULONG) * i);
