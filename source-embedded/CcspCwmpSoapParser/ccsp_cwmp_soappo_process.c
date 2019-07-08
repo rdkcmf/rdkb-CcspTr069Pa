@@ -4010,7 +4010,11 @@ CcspCwmpSoappoProcessResponse
 
 EXIT:
 
-    CcspCwmpFreeSoapResponse(pCcspCwmpSoapRep);
+    if( pCcspCwmpSoapRep )
+    {
+        CcspCwmpFreeSoapResponse(pCcspCwmpSoapRep);
+        pCcspCwmpSoapRep = NULL;
+    }
 
     return returnStatus;
 }
@@ -4459,7 +4463,11 @@ CcspCwmpSoappoProcessFault
 
 EXIT:
 
-    CcspCwmpFreeSoapResponse(pCcspCwmpSoapRep);
+    if( pCcspCwmpSoapRep )
+    {
+        CcspCwmpFreeSoapResponse(pCcspCwmpSoapRep);
+        pCcspCwmpSoapRep = NULL;
+    }
 
     return returnStatus;
 }

@@ -406,7 +406,12 @@ CcspCwmpsoReset
         pWmpsoAsyncRep = ACCESS_CCSP_CWMPSO_ASYNC_RESPONSE(pSLinkEntry);
         pSLinkEntry    = AnscQueuePopEntry(&pMyObject->AsyncRepQueue);
 
-        CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+        if( pWmpsoAsyncRep )
+        {
+            CcspCwmpsoFreeAsyncResponse(pWmpsoAsyncRep);
+            pWmpsoAsyncRep = NULL;
+        }
+
     }
 
     AnscReleaseLock(&pMyObject->AsyncRepQueueLock);

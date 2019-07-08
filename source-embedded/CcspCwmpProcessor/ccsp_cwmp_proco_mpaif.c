@@ -1439,6 +1439,7 @@ EXIT1:
     if ( returnStatus == ANSC_STATUS_SUCCESS && pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     if ( ppFcNameArray )
@@ -2153,6 +2154,7 @@ EXIT1:
     if ( pCwmpSoapFault && returnStatus == ANSC_STATUS_SUCCESS )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     if ( ulSessionID != 0 )
@@ -2545,6 +2547,7 @@ EXIT1:
     if ( pCwmpSoapFault && returnStatus == ANSC_STATUS_SUCCESS )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     if ( ppFcNameArray )
@@ -2930,6 +2933,7 @@ EXIT1:
     if ( returnStatus == ANSC_STATUS_SUCCESS && pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     if ( ppFcNameArray )
@@ -3492,6 +3496,7 @@ EXIT1:
     if ( returnStatus == ANSC_STATUS_SUCCESS && pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     if ( ppFcNameArray )
@@ -3766,6 +3771,7 @@ EXIT1:
     if ( returnStatus == ANSC_STATUS_SUCCESS && pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     if ( ppFcNameArray )
@@ -4019,6 +4025,8 @@ EXIT1:
     if ( returnStatus == ANSC_STATUS_SUCCESS && pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
+        *phSoapFault = (ANSC_HANDLE)NULL;
     }
 
     if ( ppFcNameArray )

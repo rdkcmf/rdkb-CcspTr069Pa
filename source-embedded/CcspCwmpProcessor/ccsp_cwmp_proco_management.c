@@ -808,6 +808,7 @@ CcspCwmppoPushVcSubOnLoad
     if ( returnStatus != ANSC_STATUS_SUCCESS && pCwmpSoapFault )
     {
         CcspCwmpFreeSoapFault(pCwmpSoapFault);
+        pCwmpSoapFault = NULL;
     }
 
     return returnStatus;
