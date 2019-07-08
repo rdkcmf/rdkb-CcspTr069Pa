@@ -139,7 +139,7 @@
                     pParam = pReturnStr;                                            \
                 }                                                                   \
             }
-#define MAX_NO_WIFI_PARAM 256
+#define MAX_NO_WIFI_PARAM 10
 #define MAX_WIFI_PARAMNAME_LEN 128
 /**********************************************************************
                                   MACROS
@@ -669,10 +669,10 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     BOOL                            bSucc                = TRUE;
     int                             nCcspError           = CCSP_SUCCESS;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
-    char**                          ParamName            = NULL;
-    int           		     noOfParam;
-    char                            wifiFcName[64] = { 0 };
-    char                            wifiDbusPath[64] = { 0 };
+	char							ParamName[MAX_NO_WIFI_PARAM][MAX_WIFI_PARAMNAME_LEN];
+	int								noOfParam;
+	char wifiFcName[64] = { 0 };
+	char wifiDbusPath[64] = { 0 };
 #ifndef  _CCSP_TR069_PA_INTERCEPT_ACS_CREDENTIAL_
     BOOL                            bAcsCredChanged      = FALSE;
 #endif
@@ -712,8 +712,6 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     }
 
     pCwmpSoapFault->SetParamValuesFaultCount = 0;
-
-    ParamName = malloc(sizeof(char*)*ulArraySize);
 
     /*
      * Sanity checks
@@ -873,8 +871,6 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         else
         {
 				PCCSP_PARAM_VALUE_INFO  pValueInfo;
-				char *pOrigParamN = CcspTr069PaAllocateMemory(AnscSizeOfString(pParameterValueArray[i].Name)+1);
-				char *pParamN = pOrigParamN;
 				pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
 				pValueInfo      = &pNsList->Args.paramValueInfo;
 
@@ -890,19 +886,14 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 					bRadioRestartEn = TRUE;
 					if(i<MAX_NO_WIFI_PARAM)
 					{
+                                		char aMem[128];
+		                                char *pParamN = aMem;
 						AnscCopyString(pParamN,pValueInfo->parameterName);
 						CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
-						ParamName[i] = CcspTr069PaCloneString(pParamN);
-						if(pOrigParamN != pParamN)
-						{
-							CcspTr069PaFreeMemory(pOrigParamN);
-						}
+						AnscCopyString(ParamName[i],pParamN);
 						noOfParam = i;
 					}
-				}
-				if(pOrigParamN != NULL)
-				{
-					CcspTr069PaFreeMemory(pOrigParamN);
+					
 				}
         }
     }
@@ -1295,11 +1286,6 @@ if ( flag_pInvalidParam == FALSE )// Remaining SSID passwords and for TR069PSWDC
 												{ "Device.WiFi.Radio.2.X_CISCO_COM_ApplySetting", "true", ccsp_boolean}};
 				for(x =0; x<= noOfParam; x++)
 				{
-                                if (ParamName[x] == NULL)
-					{
-						// skip empty string.
-						continue;
-					}
 				if(!strncmp(ParamName[x],"Device.WiFi.Radio.1.",20))
 					{
 						bRestartRadio1 = TRUE; 
@@ -1482,15 +1468,6 @@ EXIT1:
             );
     }
 
-    for (i =0; i < ulArraySize; i++)
-    {
-       if (ParamName[i] != NULL)
-       {
-          CcspTr069PaFreeMemory(ParamName[i]);
-       }
-    }
-    if (ParamName != NULL)
-       free(ParamName);
 
     return  returnStatus;
 }
