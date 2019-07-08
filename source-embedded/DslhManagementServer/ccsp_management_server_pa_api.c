@@ -260,7 +260,9 @@ void ReadTr69TlvData()
 			AnscTraceWarning(("%s -#-  ACS URL from PSM DB- %s\n", __FUNCTION__, objectInfo[ManagementServerID].parameters[ManagementServerURLID].value));
 			AnscTraceWarning(("%s -#-  ACS URL from cmconfig - %s\n", __FUNCTION__, acsURL));
                         CcspManagementServer_Free(acsURL);
-                        
+
+			if (access(CCSP_MGMT_CRPWD_FILE,F_OK)!=0)
+				AnscTraceWarning(("%s -#-  %s file is missing in normal boot scenario\n", __FUNCTION__, CCSP_MGMT_CRPWD_FILE));
 
 			/* If TR69Enabled is already enabled, then no need to read URL.
 		   	Update only EnableCWMP value to bbhm. */
