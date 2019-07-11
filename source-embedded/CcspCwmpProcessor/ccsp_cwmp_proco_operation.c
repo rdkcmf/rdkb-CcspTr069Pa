@@ -160,11 +160,10 @@ CcspCwmppoEngage
     }
 
        printf("TR69 PA: Waiting for Setup env...\n");
-    do
+    while( g_flagToStartCWMP==0)
     {
        sleep(5); 
-
-    }while( g_flagToStartCWMP==0);
+    }
 
        printf("TR69 PA: Setup env completed\n");
     /*
