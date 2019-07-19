@@ -3373,6 +3373,9 @@ CcspCwmppoMpaGetParameterAttributes
 
                 pCwmpPA = &pParamAttrArray[ulParamAttrArraySize++];
 
+                CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
+                CcspTr069PaTraceDebug(("GPA %s\n", pNsList->Args.paramAttrInfo.parameterName));
+
                 pCwmpPA->Name = pNsList->Args.paramAttrInfo.parameterName;
                 pNsList->Args.paramAttrInfo.parameterName = NULL;
 
