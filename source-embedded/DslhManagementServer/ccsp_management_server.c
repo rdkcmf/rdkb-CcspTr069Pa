@@ -1821,8 +1821,10 @@ static int CcspManagementServer_ValidateStrLen(
     int lenLimit  /* -1 means no limit. */
     )
 {
-    /* Do not support it yet. */
-    return 0;
+    if((lenLimit == -1)||(AnscSizeOfString(str) < lenLimit))
+        return 0;
+    else
+        return -1;
 }
 
 static int CcspManagementServer_ValidateURL(
