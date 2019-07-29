@@ -2562,6 +2562,8 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 		system( cmd );
 		memset( cmd, 0, sizeof( cmd ) );
 		AnscTraceWarning((" TR069 %s %d : ManagementServerConnectionRequestPasswordID Changed\n", __FUNCTION__, __LINE__));
+		if (access(CCSP_MGMT_CRPWD_FILE,F_OK)!=0)
+			AnscTraceWarning((" TR069 %s %d : %s file is not generated\n", __FUNCTION__, __LINE__,CCSP_MGMT_CRPWD_FILE));
 	}
 	else if ( ManagementServerSTUNPasswordID == parameterID )
 	{
