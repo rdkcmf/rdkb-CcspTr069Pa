@@ -2036,6 +2036,12 @@ CcspCwmppoProcessPvcSignal
         }
         else
         {
+            if ( val->writeID == CCSP_TR069PA_WRITE_ID )        /* The value change is caused by a TR-069 PA */
+            {
+                CcspTr069PaTraceWarning(("Value change triggered from ACS, so dropping Value change event \n"));
+                return;
+            }
+
             /* value change on regular parameter */
 
             /* check if the parameter is set to Active or Passive */
