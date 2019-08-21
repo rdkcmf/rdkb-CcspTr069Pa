@@ -105,7 +105,7 @@ extern char* openssl_client_private_key_file;
 #define CCSP_TR069PA_CFG_Name_Outbound_If       "OutboundInterface"
 extern char* g_Tr069PaOutboundIfName;
 
-#define PARTNERS_INFO_FILE              		"/nvram/partners_defaults.json"
+#define BOOTSTRAP_INFO_FILE                              "/nvram/bootstrap.json"
 #define CCSP_TR069PA_CFG_Name_AcsDefAddr		"Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.TR69ACSConnectURL"
 extern char* g_Tr069PaAcsDefAddr;
 
@@ -216,14 +216,7 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
 
 	if(*retVal) { AnscFreeMemory(*retVal); *retVal=NULL; }
 	
-        if (access(PARTNERS_INFO_FILE, F_OK) != 0)
-        {
-                snprintf(cmd, sizeof(cmd), "cp %s %s", "/etc/partners_defaults.json", PARTNERS_INFO_FILE);
-                CcspTr069PaTraceWarning(("%s\n",cmd));
-                system(cmd);
-        }
-
-	fileRead = fopen( PARTNERS_INFO_FILE, "r" );
+	fileRead = fopen( BOOTSTRAP_INFO_FILE, "r" );
 	if( fileRead == NULL )
 	{
 	 	CcspTr069PaTraceWarning(("%s-%d : Error in opening JSON file\n" , __FUNCTION__, __LINE__ ));
@@ -268,9 +261,10 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
                 	partnerObj = cJSON_GetObjectItem( json, partnerID );
 		        if( partnerObj != NULL)
 		        {
-				if ( cJSON_GetObjectItem( partnerObj, itemName) != NULL )
+                                cJSON *partnerObjVal = cJSON_GetObjectItem(cJSON_GetObjectItem( partnerObj, itemName), "ActiveValue");
+				if ( partnerObjVal != NULL )
                                 {
-					buffer = cJSON_GetObjectItem( partnerObj, itemName)->valuestring;
+					buffer = partnerObjVal->valuestring;
 					*retVal = CcspTr069PaCloneString(buffer);
 				}
 				else {
@@ -290,7 +284,7 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
 	}
 	else
 	{
-		CcspTr069PaTraceWarning(("PARTNERS_INFO_FILE %s is empty\n", PARTNERS_INFO_FILE));
+		CcspTr069PaTraceWarning(("BOOTSTRAP_INFO_FILE %s is empty\n", BOOTSTRAP_INFO_FILE));
 		return ANSC_STATUS_FAILURE;
 	}
 
