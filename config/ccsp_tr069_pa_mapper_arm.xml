@@ -4985,6 +4985,56 @@
             <Name>CCSP.COMMAND.PACKAGE.MANAGEMENT.{i}.Error</Name>
         </Param>
 
+	<!-- Device.DSLite. -->
+        <Param>
+            <Name>Device.DSLite.Enable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSettingNumberOfEntries</Name>
+        </Param>
+        <Param>
+           <Name>Device.DSLite.InterfaceSetting.{i}.Enable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.Status</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.Alias</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.EndpointAssignmentPrecedence</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.EndpointAddressTypePrecedence</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.EndpointAddressInUse</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.EndpointName</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.EndpointAddress</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.Origin</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.TunnelInterface</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.TunneledInterface</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.X_RDKCENTRAL-COM_MssClampingEnable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.X_RDKCENTRAL-COM_Tcpmss</Name>
+        </Param>
+        <Param>
+            <Name>Device.DSLite.InterfaceSetting.{i}.X_RDKCENTRAL-COM_IPv6FragEnable</Name>
+        </Param>
+
     </ParamList>
 	<RpcMapper>
 		<Download>
