@@ -1990,6 +1990,18 @@
 	<Param> 
 	    <Name>Device.IP.Diagnostics.TraceRoute.RouteHopsNumberOfEntries</Name>
 	</Param>
+	<Param>
+	    <Name>Device.IP.Diagnostics.TraceRoute.RouteHops.{i}.Host</Name>
+	</Param>
+	<Param>
+	    <Name>Device.IP.Diagnostics.TraceRoute.RouteHops.{i}.HostAddress</Name>
+	</Param>
+	<Param>
+	    <Name>Device.IP.Diagnostics.TraceRoute.RouteHops.{i}.ErrorCode</Name>
+	</Param>
+	<Param>
+	    <Name>Device.IP.Diagnostics.TraceRoute.RouteHops.{i}.RTTimes</Name>
+	</Param>
 	<Param> 
 	    <Name>Device.IP.Diagnostics.DownloadDiagnostics.DiagnosticsState</Name>
 	</Param>
