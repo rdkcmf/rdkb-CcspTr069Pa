@@ -2047,6 +2047,29 @@ CcspCwmppoProcessPvcSignal
             /* check if the parameter is set to Active or Passive */
             Notification = pMyObject->CheckParamAttrCache((ANSC_HANDLE)pMyObject, (char*)pVC->parameterName);
 
+            /* Store the full parameter data model path in PSM.We not store its value; only the parameter,and
+             * we store only one record per parameter. This optimises the number of transactions to the ACS,
+             * only notifying it of the last value change, and corresponding latest value.
+             * The PSM entry will be deleted after the "VALUE CHANGE" INFORM has been successfully delivered to the ACS.
+             */
+            status = pMyObject->SaveValueChanged((ANSC_HANDLE)pMyObject, (char*)pVC->parameterName);
+            if ( status == ANSC_STATUS_SUCCESS )
+            {
+                CcspTr069PaTraceInfo
+                    ((
+                        "Value Changed event saved into PSM, Parameter Name - %s\n",
+                        (char*)pVC->parameterName
+                    ));
+            }
+            else
+            {
+                CcspTr069PaTraceError
+                    ((
+                        "Failed to persist Value Change event into PSM, Parameter Name - %s\n",
+                        (char*)pVC->parameterName
+                    ));
+            }
+
             if ( Notification == CCSP_CWMP_NOTIFICATION_active &&
                  NULL != _ansc_strstr(pVC->parameterName, ".ManagementServer.UDPConnectionRequestAddress") )
             {

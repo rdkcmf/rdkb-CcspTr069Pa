@@ -97,6 +97,23 @@
 
 #include "ccsp_cwmp_proco_global.h"
 
+#define  CcspCwmppoMapParamInstNumDmIntToCwmp(pParam)                               \
+            {                                                                       \
+                CCSP_STRING     pReturnStr  = NULL;                                 \
+                                                                                    \
+                CcspTr069PaTraceDebug(("%s - Param DmInt to CWMP\n", __FUNCTION__));\
+                                                                                    \
+                pReturnStr =                                                        \
+                    CcspTr069PA_MapInstNumDmIntToCwmp(pParam);                      \
+                                                                                    \
+                if ( pReturnStr )                                                   \
+                {                                                                   \
+                    /* we are responsible for releasing the original string */      \
+                    CcspTr069PaFreeMemory(pParam);                                  \
+                    pParam = pReturnStr;                                            \
+                }                                                                   \
+            }
+
 int g_flagToStartCWMP = 0;
 
 /**********************************************************************
@@ -731,6 +748,9 @@ CcspCwmppoRedeliverEvents
 
         /* re-deliver AutonomousDUStateChangeComplete event if any */
     returnStatus = pMyObject->LoadAutonDUStateChangeComplete((ANSC_HANDLE)pMyObject);
+
+        /* re-deliver ValueChanged event if any */
+    returnStatus = pMyObject->LoadValueChanged((ANSC_HANDLE)pMyObject);
 
     return  returnStatus;
 }
@@ -5256,9 +5276,553 @@ CcspCwmppoDiscardUndeliveredEvents
             psmRecordName
         );
 
+    _ansc_snprintf
+        (
+            psmRecordName,
+            CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN,
+            "%s.%s.",
+            pCcspCwmpCpeController->PANameWithPrefix,
+            CCSP_CWMPPO_FOLDER_NAME_ValueChanged
+        );
+
+    PSM_Del_Record
+        (
+            pCcspCwmpCpeController->hMsgBusHandle,
+            pCcspCwmpCpeController->SubsysName,
+            psmRecordName
+        );
     
     return  returnStatus;
 }
 
+/***********************************************************************************
 
+    caller:     owner of this object
 
+    prototype:
+
+        ANSC_STATUS
+        CcspCwmppoLoadValueChanged
+            (
+                ANSC_HANDLE                 hThisObject,
+            );
+
+    description:
+
+        This function is called to load undelivered value changed events
+        4 VALUE CHANGE event should not be discarded in case agent of crash or unexpected reboot
+        CcspCwmppoLoadValueChangedTask reads the event entries (eRT.com.cisco.spvtg.ccsp.tr069pa.Undelivered_VC.x)
+        from psm and triggers new value change event based on each parameter attribute
+        PSM entries will contain only parameter name
+
+    argument:   ANSC_HANDLE                 hThisObject
+                This handle is actually the pointer of this object
+                itself.
+
+    return:     status of operation.
+
+**************************************************************************************/
+ANSC_STATUS
+CcspCwmppoLoadValueChangedTask
+    (
+        ANSC_HANDLE                 hThisObject
+    )
+{
+    ANSC_STATUS                     returnStatus                = ANSC_STATUS_SUCCESS;
+    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject                  = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
+    PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf         = (PCCSP_CWMP_MSO_INTERFACE        )pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
+    ULONG                           i                           = 0;
+    ULONG                           CwmpDataType                = 0;
+    ULONG                           Notification                = 0;
+    int                             dataType                    = 0;
+    char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
+    char                            psmValueCheck[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
+    int                             psmStatus;
+    int                             status;
+    unsigned int                    numInstances                = 0;
+    unsigned int*                   pInsNumbers                 = NULL;
+    char*                           pValue                      = NULL;
+    char*                           pParameterName              = NULL;
+    char*                           pParameterValue             = NULL;
+
+    CcspTr069PaTraceDebug((" Load Undelivered ValueChangeEvent Task\n"));
+    _ansc_snprintf
+        (
+            psmTcName,
+            CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN,
+            "%s.%s.",
+            pCcspCwmpCpeController->PANameWithPrefix,
+            CCSP_CWMPPO_FOLDER_NAME_ValueChanged
+        );
+
+    CcspTr069PaTraceInfo(("CcspCwmppoLoadValueChanged - ValueChanged <%s>\n", psmTcName));
+    psmStatus =
+        PsmGetNextLevelInstances
+            (
+                pCcspCwmpCpeController->hMsgBusHandle,
+                pCcspCwmpCpeController->SubsysName,
+                psmTcName,
+                &numInstances,
+                &pInsNumbers
+            );
+
+    CcspTr069PaTraceInfo(("CcspCwmppoLoadeValueChanged - number of instances <%d>\n", numInstances));
+    if ( psmStatus != CCSP_SUCCESS )
+    {
+        CcspTr069PaTraceError(("CcspCwmppoLoadeValueChanged - failed to get number of instances\n"));
+        status = ANSC_STATUS_INTERNAL_ERROR;
+        goto EXIT;
+    }
+
+    if ( numInstances == 0 )
+    {
+        CcspTr069PaTraceWarning(("ccspCwmppoLoadValueChanged - no pending ValueChanged events.\n"));
+        status = ANSC_STATUS_CANT_FIND;
+        goto EXIT;
+    }
+
+    for ( i = 0; i < numInstances; i ++ )
+    {
+        _ansc_snprintf
+            (
+                psmTcName,
+                CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN,
+                "%s.%s.%u.%s",
+                pCcspCwmpCpeController->PANameWithPrefix,
+                CCSP_CWMPPO_FOLDER_NAME_ValueChanged,
+                pInsNumbers[i],
+                CCSP_CWMPPO_PARAM_NAME_ValueChanged
+            );
+
+        psmStatus =
+            PSM_Get_Record_Value2
+                (
+                    pCcspCwmpCpeController->hMsgBusHandle,
+                    pCcspCwmpCpeController->SubsysName,
+                    psmTcName,
+                    NULL,
+                    &pValue
+                );
+
+        if ( psmStatus == CCSP_SUCCESS )
+        {
+            /* Storing the original Parameter name */
+            pParameterName = CcspTr069PaCloneString(pValue);
+            CcspCwmppoMapParamInstNumDmIntToCwmp(pValue);
+
+            pCcspCwmpCpeController->GetParamStringValue
+                (
+                    (ANSC_HANDLE)pCcspCwmpCpeController,
+                    pValue,
+                    &pParameterValue
+                );
+            Notification = pMyObject->CheckParamAttrCache((ANSC_HANDLE)pMyObject, pParameterName);
+            dataType = pCcspCwmpCpeController->GetParamDataType
+                (
+                    (ANSC_HANDLE)pCcspCwmpCpeController,
+                    pParameterName
+                );
+            if ( (pParameterValue != NULL) && (pParameterName != NULL) )
+            {
+                CcspTr069PaTraceInfo(("CcspCwmppoLoadValueChanged - ParameterName:%s, ParameterValue:%s, Notification:%d, datatype:%d\n", pParameterName, pParameterValue, Notification, dataType));
+                /* notify value change */
+                pCcspCwmpMsoIf->ValueChanged( pCcspCwmpMsoIf->hOwnerContext, pParameterName, pParameterValue, dataType, Notification == CCSP_CWMP_NOTIFICATION_active );
+            }
+            else
+            {
+                CcspTr069PaTraceWarning(("CcspCwmppoLoadValueChanged - Something went wrong with entry %s,deleting it....\n", psmTcName));
+                PSM_Del_Record
+                (
+                    pCcspCwmpCpeController->hMsgBusHandle,
+                    pCcspCwmpCpeController->SubsysName,
+                    psmTcName
+                );
+            }
+        }
+        if ( pValue != NULL )
+        {
+            CcspTr069PaFreeMemory(pValue);
+            pValue = NULL;
+        }
+
+        if ( pParameterValue != NULL )
+        {
+            CcspTr069PaFreeMemory(pParameterValue);
+            pParameterValue = NULL;
+        }
+
+        if ( pParameterName != NULL )
+        {
+            CcspTr069PaFreeMemory(pParameterName);
+            pParameterName = NULL;
+        }
+
+    }
+
+    status = ANSC_STATUS_SUCCESS;
+
+EXIT:
+
+    pMyObject->AsyncTaskCount--;
+
+    CcspTr069PaTraceDebug(("ccspCwmppoLoadValueChangedTask - exit.\n"));
+
+    if ( pInsNumbers )
+    {
+        CcspTr069PaFreeMemory(pInsNumbers);
+        pInsNumbers = NULL;
+    }
+
+    return status;
+}
+
+ANSC_STATUS
+CcspCwmppoLoadValueChanged
+    (
+        ANSC_HANDLE                 hThisObject
+    )
+{
+    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject                  = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
+
+    CcspTr069PaTraceDebug((" Load Undelivered Value Changed Event\n"));
+    pMyObject->AsyncTaskCount++;
+    CcspCwmppoLoadValueChangedTask((ANSC_HANDLE)pMyObject);
+
+    return  ANSC_STATUS_SUCCESS;
+}
+
+/***********************************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        ANSC_STATUS
+        CcspCwmppoSaveValueChanged
+            (
+                ANSC_HANDLE                 hThisObject,
+                char*                       pParameterName
+            );
+
+    description:
+
+        This function is called to save value change event
+        CcspCwmppoSaveValueChanged creates new entries with record names
+        (eRT.com.cisco.spvtg.ccsp.tr069pa.Undelivered_VC.x.ValueChanged) into psm
+        <Record name="eRT.com.cisco.spvtg.ccsp.tr069pa.Undelivered_VC.1.ValueChanged" type="astr">Device.WiFi.SSID.2.SSID</Record>
+        Even if value change is triggered multiple times for a parameter, single entry will be maintained
+
+    argument:   ANSC_HANDLE                 hThisObject
+                This handle is actually the pointer of this object
+                itself.
+
+                char*                       pParameterName
+                ParameterName which needs to be saved in to psm
+
+    return:     status of operation.
+
+**************************************************************************************/
+ANSC_STATUS
+CcspCwmppoSaveValueChanged
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pParameterName
+    )
+{
+    ANSC_STATUS                     returnStatus            = ANSC_STATUS_SUCCESS;
+    PCCSP_CWMP_PROCESSOR_OBJECT     pMyObject               = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
+    char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
+    char                            psmVcValue[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
+    char*                           pValue                  = NULL;
+    ULONG                           i                       = 0;
+    int                             psmTcNameLen            = 0;
+    unsigned int                    numInstances            = 0;
+    unsigned int*                   pInsNumbers             = NULL;
+    unsigned int                    InsNumber               = 0;
+    int                             psmStatus;
+
+    CcspTr069PaTraceDebug(("CcspCwmppoSaveValueChanged - Parameter name <%s>.\n", pParameterName));
+
+    if ( !pMyObject->bActive )
+    {
+        return  ANSC_STATUS_FAILURE;
+    }
+    _ansc_snprintf
+        (
+            psmTcName,
+            CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN,
+            "%s.%s.",
+            pCcspCwmpCpeController->PANameWithPrefix,
+            CCSP_CWMPPO_FOLDER_NAME_ValueChanged
+        );
+
+    psmStatus =
+        PsmGetNextLevelInstances
+            (
+                pCcspCwmpCpeController->hMsgBusHandle,
+                pCcspCwmpCpeController->SubsysName,
+                psmTcName,
+                &numInstances,
+                &pInsNumbers
+            );
+
+    if ( psmStatus != CCSP_SUCCESS )
+    {
+        CcspTr069PaTraceError(("CcspCwmppoSaveValueChanged - failed to get number of instances\n"));
+        returnStatus = ANSC_STATUS_INTERNAL_ERROR;
+        goto EXIT;
+    }
+
+    for ( i = 0; i < numInstances; i ++ )
+    {
+        _ansc_snprintf
+            (
+                psmTcName,
+                CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN,
+                "%s.%s.%u.%s",
+                pCcspCwmpCpeController->PANameWithPrefix,
+                CCSP_CWMPPO_FOLDER_NAME_ValueChanged,
+                pInsNumbers[i],
+                CCSP_CWMPPO_PARAM_NAME_ValueChanged
+            );
+
+        psmStatus =
+            PSM_Get_Record_Value2
+                (
+                    pCcspCwmpCpeController->hMsgBusHandle,
+                    pCcspCwmpCpeController->SubsysName,
+                    psmTcName,
+                    NULL,
+                    &pValue
+                );
+
+        if ( psmStatus == CCSP_SUCCESS && ( 0 == _ansc_strcmp(pValue, pParameterName ) ) )
+        {
+            CcspTr069PaTraceWarning(("CcspCwmppoSaveValueChanged - Parameter %s entry already is available in psm\n",pParameterName));
+            CcspTr069PaFreeMemory(pValue);
+            pValue = NULL;
+            returnStatus = ANSC_STATUS_SUCCESS;
+            goto EXIT;
+        }
+
+        if ( pValue != NULL )
+        {
+            CcspTr069PaFreeMemory(pValue);
+            pValue = NULL;
+        }
+
+    }
+
+    InsNumber =
+        CcspFindUnusedInsNumber
+            (
+                numInstances,
+                pInsNumbers,
+                CCSP_CWMPPO_PENDING_TC_MAX_COUNT
+            );
+
+    if ( pInsNumbers )
+    {
+        CcspTr069PaFreeMemory(pInsNumbers);
+        pInsNumbers = NULL;
+    }
+
+    if ( InsNumber == 0 )
+    {
+        returnStatus = ANSC_STATUS_RESOURCES;
+        goto EXIT;
+    }
+
+    _ansc_snprintf
+        (
+            psmTcName,
+            CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN,
+            "%s.%s.%u.%s",
+            pCcspCwmpCpeController->PANameWithPrefix,
+            CCSP_CWMPPO_FOLDER_NAME_ValueChanged,
+            InsNumber,
+            CCSP_CWMPPO_PARAM_NAME_ValueChanged
+        );
+
+    psmStatus =
+        PSM_Set_Record_Value2
+            (
+                pCcspCwmpCpeController->hMsgBusHandle,
+                pCcspCwmpCpeController->SubsysName,
+                psmTcName,
+                ccsp_string,
+                pParameterName
+            );
+
+    if ( psmStatus != CCSP_SUCCESS )
+    {
+        returnStatus = ANSC_STATUS_INTERNAL_ERROR;
+        goto EXIT;
+    }
+
+EXIT:
+
+    if ( returnStatus != ANSC_STATUS_SUCCESS )
+    {
+        CcspTr069PaTraceError
+            ((
+                "CcspCwmppoSaveValueChanged - failed to create Entry with ins number %u, returnStatus <%d>.\n",
+                InsNumber,
+                (int)returnStatus
+            ));
+    }
+    else
+    {
+        CcspTr069PaTraceInfo
+            ((
+                "CcspCwmppoSaveValueChanged - Entry with ins number %u has been created in PSM.\n",
+                InsNumber
+            ));
+    }
+
+    if ( pInsNumbers )
+    {
+        CcspTr069PaFreeMemory(pInsNumbers);
+        pInsNumbers = NULL;
+    }
+
+    return  returnStatus;
+}
+
+/***********************************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        ANSC_STATUS
+        CcspCwmppoDiscardValueChanged
+            (
+                ANSC_HANDLE                 hThisObject,
+                char*                       pParameterName
+            );
+
+    description:
+
+        This function is called to discard value changed event
+        CcspCwmppoDiscardValueChanged deletes corresponding parameter entry from the psm
+
+    argument:   ANSC_HANDLE                 hThisObject
+                This handle is actually the pointer of this object
+                itself.
+
+                char*                       pParameterName
+                ParameterName which needs to be removed from the psm entries
+
+    return:     status of operation.
+
+**************************************************************************************/
+ANSC_STATUS
+CcspCwmppoDiscardValueChanged
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pParameterName
+    )
+{
+    ANSC_STATUS                     status                  = ANSC_STATUS_SUCCESS;
+    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject               = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
+    char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
+    char                            psmValueCheck[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
+    ULONG                           i                       = 0;
+    int                             psmStatus;
+    unsigned int                    numInstances            = 0;
+    unsigned int*                   pInsNumbers             = NULL;
+    char*                           pValue                  = NULL;
+
+    CcspTr069PaTraceWarning(("CcspCwmppoDiscardValueChanged - Discarding Value Changed events...\n"));
+    _ansc_snprintf
+        (
+            psmTcName,
+            CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN,
+            "%s.%s.",
+            pCcspCwmpCpeController->PANameWithPrefix,
+            CCSP_CWMPPO_FOLDER_NAME_ValueChanged
+        );
+
+    psmStatus =
+        PsmGetNextLevelInstances
+            (
+                pCcspCwmpCpeController->hMsgBusHandle,
+                pCcspCwmpCpeController->SubsysName,
+                psmTcName,
+                &numInstances,
+                &pInsNumbers
+            );
+
+    if ( psmStatus != CCSP_SUCCESS )
+    {
+        CcspTr069PaTraceError(("CcspCwmppoDiscardValueChanged - failed to get number of instances\n"));
+        status = ANSC_STATUS_INTERNAL_ERROR;
+        goto EXIT;
+    }
+
+    if ( numInstances == 0 )
+    {
+        CcspTr069PaTraceWarning(("ccspCwmppoDiscardValueChanged - no pending ValueChanged events to discard.\n"));
+        status = ANSC_STATUS_CANT_FIND;
+        goto EXIT;
+    }
+
+    for ( i = 0; i < numInstances; i ++ )
+    {
+        _ansc_snprintf
+            (
+                psmTcName,
+                CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN,
+                "%s.%s.%u.%s",
+                 pCcspCwmpCpeController->PANameWithPrefix,
+                 CCSP_CWMPPO_FOLDER_NAME_ValueChanged,
+                 pInsNumbers[i],
+                 CCSP_CWMPPO_PARAM_NAME_ValueChanged
+            );
+
+        psmStatus =
+            PSM_Get_Record_Value2
+                (
+                    pCcspCwmpCpeController->hMsgBusHandle,
+                    pCcspCwmpCpeController->SubsysName,
+                    psmTcName,
+                    NULL,
+                    &pValue
+                );
+
+        if ( psmStatus == CCSP_SUCCESS && (0 == _ansc_strcmp(pValue, pParameterName )) )
+        {
+            PSM_Del_Record
+            (
+                pCcspCwmpCpeController->hMsgBusHandle,
+                pCcspCwmpCpeController->SubsysName,
+                psmTcName
+            );
+        }
+
+        if ( pValue != NULL )
+        {
+            CcspTr069PaFreeMemory(pValue);
+            pValue = NULL;
+        }
+
+    }
+
+    status = ANSC_STATUS_SUCCESS;
+
+EXIT:
+
+    CcspTr069PaTraceDebug(("ccspCwmppoDiscardValueChanged - exit.\n"));
+
+    if ( pInsNumbers )
+    {
+        CcspTr069PaFreeMemory(pInsNumbers);
+        pInsNumbers = NULL;
+    }
+
+    return status;
+}
