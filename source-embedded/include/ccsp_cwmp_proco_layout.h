@@ -119,5 +119,8 @@
 
 #define  CCSP_CWMPPO_WPMMO_PENDING_DSCC_MAX_COUNT          4096
 
+/* for ValueChange events */
+#define  CCSP_CWMPPO_FOLDER_NAME_ValueChanged        "Undelivered_VC"
+#define  CCSP_CWMPPO_PARAM_NAME_ValueChanged         "ValueChanged"
 
 #endif

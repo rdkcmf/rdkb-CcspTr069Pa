@@ -299,6 +299,26 @@ CcspCwmppoSaveTransferComplete
     );
 
 ANSC_STATUS
+CcspCwmppoSaveValueChanged
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pParameterName
+    );
+
+ANSC_STATUS
+CcspCwmppoDiscardValueChanged
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pParameterName
+    );
+
+ANSC_STATUS
+CcspCwmppoLoadValueChanged
+(
+        ANSC_HANDLE                 hThisObject
+);
+
+ANSC_STATUS
 CcspCwmppoLoadTransferComplete
     (
         ANSC_HANDLE                 hThisObject
