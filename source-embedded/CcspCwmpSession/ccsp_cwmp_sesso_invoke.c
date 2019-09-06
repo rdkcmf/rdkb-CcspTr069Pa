@@ -1165,6 +1165,41 @@ bFirstInform = 0;
 
                     CcspTr069PaTraceWarning(("\nWARNING:Failed to LockWriteAccess after 'informed'\n\n"));
                 }
+                else
+                {
+                    /* Check for any value changed parameters sent as part of current INFORM,discard those
+                       value change parameter entries from  the PSM
+                    */
+                    int x;
+                    for( x = 0; x<ulParamIndex; x++ )
+                    {
+                        char* pDMParamName = NULL;
+                        BOOL  bIncludeInvQuery = TRUE;
+                        /* Avoid checking for default inform parameters in the PSM */
+                        if( ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.ManagementServer.ConnectionRequestURL", TRUE) ) ||
+                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.ManagementServer.ParameterKey", TRUE) ) ||
+                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.DeviceInfo.HardwareVersion", TRUE) ) ||
+                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.DeviceInfo.SoftwareVersion", TRUE) ) ||
+                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.DeviceInfo.ProvisioningCode", TRUE) ) ||
+                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.ManagementServer.AliasBasedAddressing", TRUE) ) ||
+                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.DeviceSummary", TRUE) ) )
+                        {
+                            continue;
+                        }
+
+                        pDMParamName = CcspTr069PA_MapInstNumCwmpToDmInt(pCwmpParamValueArray[x].Name );
+                        if ( pDMParamName != NULL )
+                        {
+                            pCcspCwmpProcessor->DiscardValueChanged((ANSC_HANDLE)pCcspCwmpProcessor, pDMParamName);
+                            CcspTr069PaFreeMemory(pDMParamName);
+                            pDMParamName = NULL;
+                        }
+                        else
+                        {
+                            pCcspCwmpProcessor->DiscardValueChanged((ANSC_HANDLE)pCcspCwmpProcessor, pCwmpParamValueArray[x].Name);
+                        }
+                    }
+                }
 
                 pCcspCwmpCpeController->bBootInformSent = TRUE;
 

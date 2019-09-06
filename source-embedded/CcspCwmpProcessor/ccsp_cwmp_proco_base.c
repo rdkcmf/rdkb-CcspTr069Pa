@@ -592,6 +592,10 @@ CcspCwmppoInitialize
     pMyObject->GetAcsInfo                = CcspCwmppoGetAcsInfo;
     pMyObject->MsValueChanged            = CcspCwmppoMsValueChanged;
 
+    pMyObject->LoadValueChanged          = CcspCwmppoLoadValueChanged;
+    pMyObject->SaveValueChanged          = CcspCwmppoSaveValueChanged;
+    pMyObject->DiscardValueChanged       = CcspCwmppoDiscardValueChanged;
+
     pMyObject->RedeliverEvents           = CcspCwmppoRedeliverEvents;
     pMyObject->GetUndeliveredEvents      = CcspCwmppoGetUndeliveredEvents;
     pMyObject->GetUndeliveredTcEvents    = CcspCwmppoGetUndeliveredTcEvents;

@@ -326,6 +326,26 @@ typedef  ANSC_STATUS
     );
 
 typedef  ANSC_STATUS
+(*PFN_CWMPPROCO_SAVE_VC)
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pParameterName
+    );
+
+typedef  ANSC_STATUS
+(*PFN_CWMPPROCO_DSC_VC)
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pParameterName
+    );
+
+typedef  ANSC_STATUS
+(*PFN_CWMPPROCO_LOAD_VC)
+    (
+        ANSC_HANDLE                 hThisObject
+    );
+
+typedef  ANSC_STATUS
 (*PFN_CWMPPROCO_REMOVE_TC)
     (
         ANSC_HANDLE                 hThisObject,
@@ -524,6 +544,9 @@ typedef  ULONG
     PFN_CWMPPROCO_SAVE_ADSCC        SaveAutonDUStateChangeComplete;                         \
     PFN_CWMPPROCO_LOAD_ADSCC        LoadAutonDUStateChangeComplete;                         \
     PFN_CWMPPROCO_REDELIVER_EVT     RedeliverEvents;                                        \
+    PFN_CWMPPROCO_LOAD_VC           LoadValueChanged;                                       \
+    PFN_CWMPPROCO_SAVE_VC           SaveValueChanged;                                       \
+    PFN_CWMPPROCO_DSC_VC            DiscardValueChanged;                                    \
     PFN_CWMPPROCO_GET_UNDEL_EVT     GetUndeliveredEvents;                                   \
     PFN_CWMPPROCO_GET_UNDEL_EVT     GetUndeliveredTcEvents;                                 \
     PFN_CWMPPROCO_GET_UNDEL_EVT     GetUndeliveredAtcEvents;                                \
