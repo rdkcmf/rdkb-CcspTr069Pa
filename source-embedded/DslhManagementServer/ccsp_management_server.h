@@ -180,6 +180,7 @@ enum
     ManagementServerAliasBasedAddressingID,
     ManagementServerX_CISCO_COM_ConnectionRequestURLPortID,
     ManagementServerX_CISCO_COM_ConnectionRequestURLPathID,
+    ManagementServerX_RDKCENTRAL_COM_CustomDataModelEnabledID,
     ManagementServerNumOfParameters
 };
 #if 0

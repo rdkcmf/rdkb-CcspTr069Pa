@@ -138,6 +138,7 @@
 #include "ansc_xml_dom_parser_external_api.h"
 #include "ansc_xml_dom_parser_status.h"
 
+#include "ccsp_alias_mgr.h"
 
 #endif
 
