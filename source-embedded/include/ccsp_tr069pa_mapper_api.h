@@ -237,6 +237,15 @@ CcspTr069PA_IsNamespaceInvisible
         CCSP_STRING                 Namespace           /* namespace to be queried */
     );
 
+/* CcspTr069PA_IsNamespaceVisible is called to check if the given
+ * namespace is visible to cloud server.
+ */
+const CCSP_BOOL
+CcspTr069PA_IsNamespaceVisible
+    (
+        CCSP_HANDLE                 MapperHandle,
+        CCSP_STRING                 Namespace           /* namespace to be queried */
+    );
 
 /* CcspTr069PA_GetSubsystemCount is called to return the number
  * of sub-systems of namespaces TR-069 PA is manages.
@@ -323,4 +332,57 @@ CcspTr069PA_GetPiTreeRoot
 
 #endif
 
+PSLIST_HEADER
+CcspTr069PA_GetParamInternalNames
+    (
+        CCSP_HANDLE                MapperHandle,
+        CCSP_STRING                ParamName
+    );
+
+const char *
+CcspTr069PA_GetNextInternalName
+    (
+        PSLIST_HEADER              pListHeader
+    );
+
+const char *
+CcspTr069PA_GetParamFirstInternalName
+    (
+        CCSP_HANDLE                MapperHandle,
+        CCSP_STRING                ParamName
+    );
+
+VOID
+CcspTr069PA_FreeInternalNamesList
+    (
+        PSLIST_HEADER             pListHeader
+    );
+
+CCSP_STRING
+CcspTr069PA_GetParamExternalName
+    (
+        CCSP_HANDLE                MapperHandle,
+        CCSP_STRING                ParamName
+    );
+ANSC_STATUS
+CcspTr069PaMapFirstInternalAlias
+    (
+        CCSP_HANDLE                hTr069PaMapper,
+        CCSP_STRING*               pParamName,
+        BOOL*                      pbIncludeInvQuery,
+        BOOL                       bFreeMemory
+    );
+
+VOID
+CcspTr069PaMapToExternalAlias
+    (
+        CCSP_HANDLE                hTr069PaMapper,
+        CCSP_STRING*               pParamName
+    );
+
+CCSP_BOOL
+CcspTr069PA_CheckFileExists
+    (
+        const char*                path
+    );
 #endif
