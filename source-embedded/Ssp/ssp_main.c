@@ -71,6 +71,7 @@ static char                         g_Tr069PaName[256]      = {0};
 static char                         g_CrName[256]           = {0};
 char                                g_Subsystem[32]         = {0};
 static char                         g_PaMapperXmlFile[256]  = {0};
+static char                         g_PaCustMapperFile[256] = {0};
 
 char*                               g_Tr069_PA_Name         = g_Tr069PaName;
 extern char*                        pComponentName;
@@ -323,6 +324,52 @@ static int is_core_dump_opened(void)
 
 #endif
 
+BOOL is_customer_data_model()
+{
+    char* sysbuf[8] = {0};
+
+    syscfg_init();
+
+    syscfg_get( NULL, "custom_data_model_enabled", sysbuf, sizeof(sysbuf));
+
+    if (sysbuf[0] != 0)
+    {
+        if ( AnscEqualString(sysbuf, "1", FALSE) )
+        {
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+    else
+    {
+        CcspTr069PaTraceDebug(("syscfg_get returned an empty string for custom_data_model_enabled\n"));
+        return FALSE;
+    }
+}
+
+char* get_customer_data_model_file_name()
+{
+    char* sysbuf = AnscAllocateMemory(256);
+    AnscZeroMemory(sysbuf, 256);
+
+    syscfg_init();
+
+    syscfg_get( NULL, "custom_data_model_file_name", sysbuf, 256);
+
+    if ( sysbuf[0] != 0 )
+    {
+        return sysbuf;
+    }
+    else
+    {
+        CcspTr069PaTraceDebug(("syscfg_get returned an empty string for custom_data_model_file_name\n"));
+        AnscFreeMemory(sysbuf);
+        return NULL;
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -356,6 +403,10 @@ int main(int argc, char* argv[])
         {
             AnscCopyString(g_PaMapperXmlFile, argv[idx+1]);
         }
+        else if ( (strcmp(argv[idx], "-custom_mapper") == 0) )
+        {
+            AnscCopyString(g_PaCustMapperFile, argv[idx+1]);
+        }
         else if ( (strcmp(argv[idx], "-sdm") == 0) )
         {
             AnscCopyString(g_SdmXmlFile, argv[idx+1]);
@@ -385,6 +436,18 @@ int main(int argc, char* argv[])
     if ( g_PaMapperXmlFile[0] == 0 )
     {
         AnscCopyString(g_PaMapperXmlFile, CCSP_TR069PA_DEF_MAPPER_XML_FILE);
+    }
+
+    if ( g_PaCustMapperFile[0] == 0 && is_customer_data_model() )
+    {
+        char* customer_file_name = get_customer_data_model_file_name();
+
+        if ( customer_file_name )
+        {
+            CcspTr069PaTraceDebug(("Customer data-model file name is %s\n", customer_file_name));
+            AnscCopyString(g_PaCustMapperFile, customer_file_name);
+            AnscFreeMemory(customer_file_name);
+        }
     }
 #ifdef FEATURE_SUPPORT_RDKLOG
 	RDK_LOGGER_INIT();
@@ -741,6 +804,11 @@ int  engage_tr069pa()
         }
 
         status = g_pCcspCwmpCpeController->SetPAMapperFile((ANSC_HANDLE)g_pCcspCwmpCpeController, g_PaMapperXmlFile);
+
+        if ( g_PaCustMapperFile[0] != 0 )
+        {
+            status = g_pCcspCwmpCpeController->SetPACustomMapperFile((ANSC_HANDLE)g_pCcspCwmpCpeController, g_PaCustMapperFile);
+        }
 
         if ( g_SdmXmlFile[0] )
         {
