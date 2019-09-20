@@ -636,6 +636,12 @@ CcspManagementServer_GetSTUNEnableStr
         CCSP_STRING                 ComponentName
     );
 
+CCSP_STRING
+CcspManagementServer_GetCustomDataModelEnabledStr
+    (
+        CCSP_STRING                 ComponentName
+    );
+
 /* CcspManagementServer_SetSTUNEnable is called to set
  * Device.ManagementServer.STUNEnable.
  * Return value - 0 if success.

@@ -303,6 +303,11 @@ CcspCwmpCpecoRemove
         CcspTr069PaFreeMemory(pMyObject->PAMapperFile);
     }
 
+    if ( pMyObject->PACustomMapperFile )
+    {
+        CcspTr069PaFreeMemory(pMyObject->PACustomMapperFile);
+    }
+    
     if ( pMyObject->SdmXmlFile )
     {
         CcspTr069PaFreeMemory(pMyObject->SdmXmlFile);
@@ -619,6 +624,7 @@ CcspCwmpCpecoInitialize
     pMyObject->PAName                   = CcspTr069PaCloneString(CCSP_TR069PA_DEF_NAME);
     pMyObject->CRName                   = CcspTr069PaCloneString(CCSP_CR_DEF_NAME);
     pMyObject->PAMapperFile             = NULL;
+    pMyObject->PACustomMapperFile       = NULL; 
     pMyObject->SdmXmlFile               = NULL;
     pMyObject->OutboundIfName           = NULL;
 
@@ -674,6 +680,7 @@ CcspCwmpCpecoInitialize
     pMyObject->SetCRBusPath             = CcspCwmpCpecoSetCRBusPath;
     pMyObject->GetCRBusPath             = CcspCwmpCpecoGetCRBusPath;
     pMyObject->SetPAMapperFile          = CcspCwmpCpecoSetPAMapperFile;
+    pMyObject->SetPACustomMapperFile    = CcspCwmpCpecoSetPACustomMapperFile;
     pMyObject->SetSDMXmlFilename        = CcspCwmpCpecoSetSDMXmlFilename;
     pMyObject->GetSDMXmlFilename        = CcspCwmpCpecoGetSDMXmlFilename;
     pMyObject->SetOutboundIfName        = CcspCwmpCpecoSetOutboundIfName;
