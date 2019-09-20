@@ -1346,6 +1346,14 @@ CcspManagementServer_GetSTUNEnableStr
 {
     return CcspManagementServer_GetBooleanValue(objectInfo[ManagementServerID].parameters[ManagementServerSTUNEnableID].value, "0");
 }
+CCSP_STRING
+CcspManagementServer_GetCustomDataModelEnabledStr
+    (
+        CCSP_STRING                 ComponentName
+    )
+{
+    return CcspManagementServer_GetBooleanValue(objectInfo[ManagementServerID].parameters[ManagementServerX_RDKCENTRAL_COM_CustomDataModelEnabledID].value, "0");
+}
 /* CcspManagementServer_GetSTUNServerAddress is called to get
  * Device.ManagementServer.STUNServerAddress.
  * Return value - the parameter value.

@@ -1783,6 +1783,65 @@ CcspCwmpCpecoSetPAMapperFile
     prototype:
 
         ANSC_STATUS
+        CcspCwmpCpecoSetPACustomMapperFile
+            (
+                ANSC_HANDLE                 hThisObject,
+                char*                       pName
+            );
+
+    description:
+
+        This function is called to set PA custom mapper file location.
+
+    argument:   ANSC_HANDLE                 hThisObject
+                This handle is the pointer of this object itself.
+
+                char*                       pName
+                Specifies PA custom mapper file location.
+
+    return:     operation status.
+
+**********************************************************************/
+
+ANSC_STATUS
+CcspCwmpCpecoSetPACustomMapperFile
+    (
+        ANSC_HANDLE                 hThisObject,
+        char*                       pName
+    )
+{
+    ANSC_STATUS                          returnStatus   = ANSC_STATUS_SUCCESS;
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT) hThisObject;
+
+
+    if ( pMyObject->PACustomMapperFile )
+    {
+        CcspTr069PaFreeMemory(pMyObject->PACustomMapperFile);
+    }
+
+    if ( !pName )
+    {
+        pMyObject->PACustomMapperFile = NULL;
+    }
+    else
+    {
+        pMyObject->PACustomMapperFile = CcspTr069PaCloneString(pName);
+
+        returnStatus = ( pMyObject->PACustomMapperFile != NULL );
+    }
+
+
+    return  returnStatus;
+}
+
+
+/**********************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        ANSC_STATUS
         CcspCwmpCpecoSetSDMXmlFilename
             (
                 ANSC_HANDLE                 hThisObject,
