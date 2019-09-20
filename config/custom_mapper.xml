@@ -1,0 +1,315 @@
+<Tr069Mapper>
+<ParamList>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.InterfaceNumberOfEntries</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Enable</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Status</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Alias</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Name</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.LastChange</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.LowerLayers</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Mode</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.RemoteEndpoint</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.KeyMode</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Key</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.ChecksumEnabled</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.SequenceNumberEnabled</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.TOSMode</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.TOS</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BytesSent</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BytesReceived</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.PacketsSent</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.PacketsReceived</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.ErrorsSent</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.ErrorsReceived</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnicastPacketsSent</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnicastPacketsReceived</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.DiscardPacketsSent</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.DiscardPacketsReceived</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.MulticastPacketsSent</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.MulticastPacketsReceived</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BroadcastPacketsSent</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BroadcastPacketsReceived</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnknownProtoPacketsReceived</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Enable</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Status</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Alias</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Name</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.LastChange</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.LowerLayers</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Mode</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.RemoteEndpoint</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.KeyMode</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Key</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.ChecksumEnabled</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.SequenceNumberEnabled</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.TOSMode</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.TOS</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.BytesSent</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.BytesReceived</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.PacketsSent</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.PacketsReceived</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.ErrorsSent</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.ErrorsReceived</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.UnicastPacketsSent</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.UnicastPacketsReceived</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.DiscardPacketsSent</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.DiscardPacketsReceived</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.MulticastPacketsSent</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.MulticastPacketsReceived</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.BroadcastPacketsSent</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.BroadcastPacketsReceived</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.UnknownProtoPacketsReceived</Name>
+    </Param>
+</ParamList>
+<AliasList>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</External>
+      <Internal>Device.X_CISCO_COM_GRE.InterfaceNumberOfEntries</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Enable</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Status</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Status</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Alias</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Alias</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Name</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Name</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.LastChange</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.LastChange</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.LowerLayers</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.LowerLayers</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Mode</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Mode</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.RemoteEndpoint</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.RemoteEndpoint</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.KeyMode</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.KeyMode</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Key</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Key</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.ChecksumEnabled</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.ChecksumEnabled</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.SequenceNumberEnabled</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.SequenceNumberEnabled</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.TOSMode</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.TOSMode</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.TOS</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.TOS</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.BytesSent</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BytesSent</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.BytesReceived</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BytesReceived</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.PacketsSent</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.PacketsSent</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.PacketsReceived</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.PacketsReceived</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.ErrorsSent</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.ErrorsSent</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.ErrorsReceived</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.ErrorsReceived</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.UnicastPacketsSent</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnicastPacketsSent</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.UnicastPacketsReceived</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnicastPacketsReceived</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.DiscardPacketsSent</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.DiscardPacketsSent</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.DiscardPacketsReceived</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.DiscardPacketsReceived</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.MulticastPacketsSent</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.MulticastPacketsSent</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.MulticastPacketsReceived</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.MulticastPacketsReceived</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.BroadcastPacketsSent</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BroadcastPacketsSent</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.BroadcastPacketsReceived</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.BroadcastPacketsReceived</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.UnknownProtoPacketsReceived</External>
+      <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnknownProtoPacketsReceived</Internal>
+    </Alias>
+</AliasList>
+</Tr069Mapper>

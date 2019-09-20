@@ -107,6 +107,8 @@ static PCCSP_TR069_PARAM_INFO                       CcspTr069InvPiTree          
 static CCSP_STRING                                  CcspTr069Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};
 static CCSP_INT                                     CcspTr069SubsystemsCount    = 0;
 
+/* Alias Manager handle */
+static CCSP_HANDLE                                  CcspTr069AliasManager       = NULL;
 
 const enum dataType_e
 CcspTr069PA_Cwmp2CcspType
@@ -245,7 +247,7 @@ CcspTr069PA_GetSubsystemByIndex
 
 
 /* Check for the existence of a config file path */
-static CCSP_BOOL CcspTr069PA_CheckFileExists( const char *path )
+CCSP_BOOL CcspTr069PA_CheckFileExists( const char *path )
 {
     FILE *file;
 
@@ -710,6 +712,107 @@ CcspTr069PA_FreePiTree
 }
 
 
+
+/* CcspTr069PA_PiTreeRemoveNamespace is called to remove parameter
+ * from the specified tree, if exists
+ *
+ * return value:
+ *   true  - if the parameter has been found and removed
+ *   false - if the parameter has not been found or can't be removed
+ *
+ */
+static
+CCSP_BOOL
+CcspTr069PA_PiTreeRemoveNamespace
+    (
+        PCCSP_TR069_PARAM_INFO      pRoot,
+        CCSP_STRING                 Namespace           /* namespace to be removed */
+    )
+{
+    PCCSP_TR069_PARAM_INFO          pNode               = (PCCSP_TR069_PARAM_INFO)pRoot;
+    PCCSP_TR069_PARAM_INFO          pChildNode          = (PCCSP_TR069_PARAM_INFO)NULL;
+    PCCSP_TR069_PARAM_INFO          pPrevSibling        = (PCCSP_TR069_PARAM_INFO)NULL;
+    PANSC_TOKEN_CHAIN               pNsTokenChain       = (PANSC_TOKEN_CHAIN     )NULL;
+    PANSC_STRING_TOKEN              pStringToken        = (PANSC_STRING_TOKEN    )NULL;
+    CCSP_BOOL                       bRemoved            = CCSP_FALSE;
+
+
+    pNsTokenChain =
+        AnscTcAllocate
+            (
+                Namespace,
+                "."
+            );
+
+    if(!pNsTokenChain)
+    {
+        CcspTr069PaTraceWarning(("TR-069 PA mapper file Token creation failed ret null: %s\n", Namespace));
+        return bRemoved;
+    }
+
+    /* find the last matching node on the tree */
+    while ( pNode && (pStringToken = AnscTcUnlinkToken(pNsTokenChain)) )
+    {
+        pPrevSibling = NULL;
+        pChildNode = pNode->Child;
+
+        /* find if any child node's name matches the token */
+        while ( pChildNode )
+        {
+            if ( AnscEqualString(pStringToken->Name, pChildNode->Name, TRUE) )
+            {
+                pNode        = pChildNode;
+                break;
+            }
+            else
+            {
+                pPrevSibling = pChildNode;
+                pChildNode   = pChildNode->Sibling;
+            }
+        }
+
+        AnscFreeMemory(pStringToken);
+
+        /* go one level deeper */
+        pNode        = pChildNode;
+    }
+
+    if (pChildNode)
+    {
+        PCCSP_TR069_PARAM_INFO pParent = pChildNode->Parent;
+
+        /* Remove the node from the tree:
+         * If Parent's Child reference points to this child - change it to it's next Sibling;
+         * If Child is referenced by a Sibling - change it to it's next Sibling;
+         * Remove the tree which starts with the node being removed, this also free the node's memory.
+         * Note: "Linkage" is used to build a queue in place when traversing, no need to update it
+         */
+        if (pParent &&
+            pParent->Child == pChildNode)
+        {
+            pParent->Child = pChildNode->Sibling;
+        }
+
+        if (pPrevSibling)
+        {
+            pPrevSibling->Sibling = pChildNode->Sibling;
+        }
+
+        pChildNode->Sibling = NULL; /* we only need to remove children, the siblings should stay */
+        CcspTr069PA_FreePiTree(pChildNode);
+
+        bRemoved = CCSP_TRUE;
+    }
+
+    if ( pNsTokenChain )
+    {
+        AnscTcFree((ANSC_HANDLE)pNsTokenChain);
+    }
+
+    return  bRemoved;
+}
+
+
 static
 CCSP_BOOL
 CcspTr069PA_LoadParamInfo
@@ -806,7 +909,18 @@ CcspTr069PA_LoadParamInfo
             }
         }
 
-        bSucc = 
+        /* First remove namespace from the visible tree if found there */
+        if (CcspTr069PiTree && ns[0])
+        {
+            bSucc =
+                CcspTr069PA_PiTreeRemoveNamespace
+                    (
+                        CcspTr069PiTree,
+                        ns
+                    );
+        }
+ 
+        bSucc =
             CcspTr069PA_PiTreeAddNamespace
                 (
                     CcspTr069InvPiTree,
@@ -835,7 +949,19 @@ CcspTr069PA_LoadParamInfo
             }
         }
 
-        bSucc = 
+        /* First remove namespace from the invisible tree if found there */
+        if (ns[0])
+        {
+            bSucc =
+                CcspTr069PA_PiTreeRemoveNamespace
+                    (
+                        CcspTr069InvPiTree,
+                        ns
+                    );
+        }
+        // ARRIS ADD END - PD46545
+
+        bSucc =
             CcspTr069PA_PiTreeAddNamespace
                 (
                     CcspTr069PiTree,
@@ -926,7 +1052,21 @@ CcspTr069PA_LoadFromXMLFile(void*  pXMLHandle)
                 pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
             }
         }
-    } 
+        else if (AnscEqualString(pChildNode->Name, "AliasList", TRUE))
+        {
+            pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetHeadChild(pChildNode);
+            while (pListNode != NULL)
+            {
+                if (CcspTr069AliasManager == NULL)
+                {
+                    CcspTr069AliasManager = CcspAliasMgrInitialize();
+                }
+
+                CcspAliasMgrLoadAliasInfo(CcspTr069AliasManager, pListNode);
+                pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
+            }
+        }
+    }
     while ((pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pHandle->GetNextChild(pHandle, pChildNode)) != NULL);
 
     /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
@@ -1009,6 +1149,21 @@ CcspTr069PA_LoadMappingFile
     return NULL;
 }
 
+/* CcspTr069PA_LoadCustomMappingFile is called to load additional mapping file for TR-069 PA.
+ * Resource clean up happens in CcspTr069PA_UnloadMappingFile().
+ * Accepts CCSP_HANDLE returned from CcspTr069PA_LoadMappingFile() as an input.
+ */
+void
+CcspTr069PA_LoadCustomMappingFile
+    (
+        CCSP_HANDLE                 CcspHandle,
+        CCSP_STRING                 MappingFile
+    )
+{
+
+    CcspTr069PaTraceInfo(("Loading custom TR-069 PA mapper file\n"));
+    CcspTr069PA_LoadMappingFile(MappingFile);
+}
 
 /* CcspTr069PA_UnloadMappingFile is called to unload mapper file and
  * remove all allocated resources accordingly.
@@ -1072,6 +1227,12 @@ CcspTr069PA_UnloadMappingFile
     }
     AnscZeroMemory(CcspTr069Subsystems, sizeof(CCSP_STRING) * CCSP_SUBSYSTEM_MAX_COUNT);
     CcspTr069SubsystemsCount = 0;
+
+    if ( CcspTr069AliasManager )
+    {
+        CcspAliasMgrFree(CcspTr069AliasManager);
+    }
+
 
     return 0;
 }
@@ -1663,6 +1824,22 @@ CcspTr069PA_IsNamespaceSupported
     }
 }
 
+/* CcspTr069PA_IsNamespaceVisible is called to check if the given
+ * namespace is visible to cloud server.
+ */
+const CCSP_BOOL
+CcspTr069PA_IsNamespaceVisible
+    (
+        CCSP_HANDLE                 MapperHandle,
+        CCSP_STRING                 Namespace           /* namespace to be queried */
+    )
+{
+    PCCSP_TR069_PARAM_INFO          pParamInfo;
+
+    pParamInfo = CcspTr069PA_FindNamespace(CcspTr069PiTree, Namespace);
+
+    return ( pParamInfo != NULL );
+}
 
 /* CcspTr069PA_IsNamespaceInvisible is called to check if the given
  * namespace is invisible to cloud server.
@@ -1839,3 +2016,154 @@ CcspTr069PA_GetPiTreeRoot
 }
 
 #endif
+
+
+/* CcspTr069PA_GetParamInternalNames is called to get a list of internal alias names
+ * for TR-069 object or parameter full name (path) if alias(-es) exists.
+ * If the names list was returned it is the caller responsibility to free
+ * memory for both names.
+ * CcspTr069PA_GetNextInternalName() should be used to access individual entries
+ * in the returned list.
+ *
+ * return value:
+ *   PSLIST_HEADER - internal names list if aliases have been found
+ *   NULL          - if no aliases were found
+ */
+PSLIST_HEADER
+CcspTr069PA_GetParamInternalNames
+    (
+        CCSP_HANDLE                MapperHandle,
+        CCSP_STRING                ParamName
+    )
+{
+
+
+    if ( CcspTr069AliasManager == NULL )
+    {
+        return NULL;
+    }
+
+    if (!ParamName || ParamName[0] == 0)
+    {
+        CcspTr069PaTraceWarning(("TR-069 PA alias mapping empty parameter name requested\n"));
+        return NULL;
+    }
+
+    return CcspAliasMgrGetInternalNames(CcspTr069AliasManager, ParamName);
+}
+
+/* CcspTr069PA_GetNextInternalName is called to pop next name from the list returned from
+ * CcspTr069PA_GetParamInternalNames.
+ * This funtion can be called until it returns NULL to pop all entries,
+ * otherwise CcspTr069PA_FreeInternalNamesList shall be called to release remaining memory.
+ *
+ * return value:
+ *   const char* - next name
+ *   NULL        - if the list is empty
+ */
+const char *
+CcspTr069PA_GetNextInternalName
+    (
+        PSLIST_HEADER              pListHeader
+    )
+{
+
+
+    if ( CcspTr069AliasManager == NULL )
+    {
+        return NULL;
+    }
+
+    if (!pListHeader)
+    {
+        CcspTr069PaTraceWarning(("TR-069 PA alias mapping parameter name list is NULL\n"));
+        return NULL;
+    }
+
+    return CcspAliasMgrGetNextName(pListHeader);
+}
+
+/* CcspTr069PA_FreeInternalNamesList is called to release memory allocated for aliases list
+ * returned from CcspTr069PA_GetParamInternalNames.
+ */
+VOID
+CcspTr069PA_FreeInternalNamesList
+    (
+        PSLIST_HEADER             pListHeader
+    )
+{
+
+
+    if ( CcspTr069AliasManager == NULL )
+    {
+        return;
+    }
+
+    if (!pListHeader)
+    {
+        CcspTr069PaTraceWarning(("TR-069 PA alias mapping parameter name list is NULL\n"));
+        return;
+    }
+
+    return CcspAliasMgrFreeNamesList(pListHeader);
+}
+
+/* CcspTr069PA_GetParamFirstInternalName is called to only get a first alias name.
+ *
+ * return value:
+ *   const char* - first alias name
+ *   NULL        - if no alias is found
+ */
+const char *
+CcspTr069PA_GetParamFirstInternalName
+    (
+        CCSP_HANDLE                MapperHandle,
+        CCSP_STRING                ParamName
+    )
+{
+
+
+    if ( CcspTr069AliasManager == NULL )
+    {
+        return NULL;
+    }
+
+    if (!ParamName || ParamName[0] == 0)
+    {
+        CcspTr069PaTraceWarning(("TR-069 PA alias mapping empty parameter name requested\n"));
+        return NULL;
+    }
+    return CcspAliasMgrGetFirstInternalName(CcspTr069AliasManager, ParamName);
+}
+
+/* CcspTr069PA_GetParamExternalName is called to get external alias name
+ * for TR-069 object or parameter full name (path) if alias exists.
+ * If the name was returned it is the caller responsibility to free
+ * memory for both names.
+ *
+ * return value:
+ *   CCSP_STRING  - external name if alias has been found
+ *   NULL         - if no alias has been found
+ */
+CCSP_STRING
+CcspTr069PA_GetParamExternalName
+    (
+        CCSP_HANDLE              MapperHandle,
+        CCSP_STRING              ParamName
+    )
+{
+
+
+    if ( CcspTr069AliasManager == NULL )
+    {
+        return NULL;
+    }
+
+    if (!ParamName || ParamName[0] == 0)
+    {
+        CcspTr069PaTraceWarning(("TR-069 PA alias mapping empty parameter name requested\n"));
+        return NULL;
+    }
+
+    return CcspAliasMgrGetExternalName(CcspTr069AliasManager, ParamName);
+}
