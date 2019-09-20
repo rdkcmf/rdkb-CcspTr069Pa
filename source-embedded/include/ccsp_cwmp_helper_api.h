@@ -470,6 +470,86 @@ CcspTr069SearchStringArray
     return -1;
 }
 
+// String list/queue definitions
+typedef
+struct
+_CCSP_TR069PA_STRING_SLIST_ENTRY
+{
+    SINGLE_LINK_ENTRY               Linkage;
+    char*                           Value;
+}
+CCSP_TR069PA_STRING_SLIST_ENTRY, *PCCSP_TR069PA_STRING_SLIST_ENTRY;
+
+#define ACCESS_CCSP_TR069PA_STRING_SLIST_ENTRY(p) ACCESS_CONTAINER(p, CCSP_TR069PA_STRING_SLIST_ENTRY, Linkage)
+
+typedef
+struct
+_CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY
+{
+    SINGLE_LINK_ENTRY               Linkage;
+    PCCSP_CWMP_SET_PARAM_ATTRIB     ParamAttr;
+}
+CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY, *PCCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY;
+
+#define ACCESS_CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY(p) ACCESS_CONTAINER(p, CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY, Linkage)
+
+inline static
+void
+CcspTr069FreeStringQueue(PQUEUE_HEADER pQueueHeader, BOOL bFreeValue)
+{
+    PSINGLE_LINK_ENTRY              pLink;
+    PCCSP_TR069PA_STRING_SLIST_ENTRY pSListEntry;
+
+    while ( (pLink = AnscQueuePopEntry(pQueueHeader)))
+    {
+        pSListEntry = ACCESS_CCSP_TR069PA_STRING_SLIST_ENTRY(pLink);
+
+        if ( bFreeValue )
+        {
+            CcspTr069PaFreeMemory(pSListEntry->Value);
+        }
+
+        CcspTr069PaFreeMemory(pSListEntry);
+    }
+}
+
+inline static
+void
+CcspTr069FreeParamAttrQueue(PQUEUE_HEADER pQueueHeader)
+{
+    PSINGLE_LINK_ENTRY              pLink;
+    PCCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY pSListEntry;
+
+    while ( (pLink = AnscQueuePopEntry(pQueueHeader)))
+    {
+        pSListEntry = ACCESS_CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY(pLink);
+
+        CcspTr069PaFreeMemory(pSListEntry);
+    }
+}
+
+inline static
+void
+CcspTr069FreeStringSList(PSLIST_HEADER pSListHeader, BOOL bFreeValue)
+{
+    PSINGLE_LINK_ENTRY              pLink;
+    PCCSP_TR069PA_STRING_SLIST_ENTRY pSListEntry;
+
+    while ( (pLink = AnscSListPopEntry(pSListHeader)) )
+    {
+        pSListEntry = ACCESS_CCSP_TR069PA_STRING_SLIST_ENTRY(pLink);
+
+        if ( pSListEntry )
+        {
+            if ( bFreeValue )
+            {
+                CcspTr069PaFreeMemory(pSListEntry->Value);
+            }
+
+            CcspTr069PaFreeMemory(pSListEntry);
+        }
+    }
+}
 
 /*
  * The following data structures are defined to cover normalized

@@ -77,7 +77,7 @@
 **********************************************************************/
 
 #include "ccsp_cwmp_cpeco_global.h"
-
+#include "ccsp_tr069pa_mapper_api.h"
 
 /**********************************************************************
 
@@ -341,6 +341,15 @@ CcspCwmpCpecoSetupEnv
             (
                 pMyObject->PAMapperFile
             );
+
+    if (pMyObject->PACustomMapperFile != NULL)
+    {
+        CcspTr069PA_LoadCustomMappingFile
+            (
+                pMyObject->hTr069PaMapper,
+                pMyObject->PACustomMapperFile
+            );
+    }
 
     if ( TRUE )
     {
