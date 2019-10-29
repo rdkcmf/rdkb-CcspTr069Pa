@@ -349,6 +349,9 @@
         <Param>
                 <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SyndicationFlowControl.InitialOutputMark</Name>
         </Param>
+        <Param>
+                <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.CaptivePortalForNoCableRF.Enable</Name>
+        </Param>        
         <!-- Comcast specific Device.DeviceInfo. parameters -->
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_xfinitywifiCapable</Name>
