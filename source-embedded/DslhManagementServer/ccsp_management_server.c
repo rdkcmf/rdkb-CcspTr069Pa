@@ -2518,12 +2518,12 @@ int CcspManagementServer_RetrievePassword( int parameterID, char *pInputFile, ch
 
         if ( ( fp = fopen ( TEMP_MGMT_SERV_PWD_PATH, "r" ) ) != NULL ) 
         {
-            char	 password [ 512 ]	 = { 0 },
-                         retPassword [ 512 ] = { 0 };
-            int 	 length 			 = 0;
+            char password [ 512 ]	 = { 0 },
+                 retPassword [ 512 ] = { 0 };
+            int length  = 0;
 
             if ( fgets ( password, sizeof( password ), fp ) != NULL ) 
-            {					
+            {
                 sscanf( password, "%s" ,retPassword );
                 length = strlen( retPassword );
                 rc = strncpy_s( pOutputString, MAX_SIZE_TMPPWD_VALUE, retPassword, length );
@@ -2538,12 +2538,13 @@ int CcspManagementServer_RetrievePassword( int parameterID, char *pInputFile, ch
             {
                 AnscTraceWarning(( "%s -- fgets() failed\n", __FUNCTION__ ));
                 fclose( fp );
-                v_secure_system( "rm -rf %s", TEMP_MGMT_SERV_PWD_PATH );
+                unlink (TEMP_MGMT_SERV_PWD_PATH);
                 return TR69_INTERNAL_ERROR;
             }
-
+        
             fclose( fp );
-            v_secure_system( "rm -rf %s", TEMP_MGMT_SERV_PWD_PATH );
+            unlink (TEMP_MGMT_SERV_PWD_PATH);
+
         }
         else
         {
@@ -2551,6 +2552,7 @@ int CcspManagementServer_RetrievePassword( int parameterID, char *pInputFile, ch
             return TR69_INTERNAL_ERROR;
         }
     }
+
     return returnstatus;
 }
 

@@ -82,6 +82,7 @@
 #include "cJSON.h"
 
 
+
 extern  CCSP_CWMP_CFG_INTERFACE                          ccspCwmpCfgIf;
 extern  UCHAR g_MACAddress[];
 extern  ANSC_HANDLE bus_handle;
@@ -217,9 +218,8 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
         cJSON *json = NULL;
         cJSON *partnerObj = NULL;
         FILE *fileRead = NULL;
-        int len;
+        unsigned int len;
 	char* buffer = NULL;
-        errno_t rc   = -1;
 
 	if(*retVal) { AnscFreeMemory(*retVal); *retVal=NULL; }
 	
@@ -235,11 +235,14 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
 	len = ftell( fileRead );
 	fseek( fileRead, 0, SEEK_SET );
 	data = ( char* )malloc( sizeof(char) * (len + 1) );
-	if (data != NULL)
+	if ( data )
 	{
-                rc = memset_s( data, ( sizeof(char) * (len + 1) ), 0, ( sizeof(char) * (len + 1) ));
-                ERR_CHK(rc);
-		fread( data, 1, len, fileRead );
+		data[len] = '\0';  // add terminating NUL character
+		if ( fread(data, 1, len, fileRead) != len )
+		{
+			fclose(fileRead);
+			return ANSC_STATUS_FAILURE;
+		}
 	}
 	else
 	{
@@ -535,57 +538,50 @@ CcspTr069PaSsp_GetTr069CertificateLocationForSyndication
 {
    FILE 	  *FilePtr		       = NULL;
    char 	   fileContent[ 256 ]  = { 0 };
-   errno_t         rc                  = -1;
 
 	FilePtr = popen( PSM_CMD_SYNDICATION_TR69CertLocation, "r" );
 
 	if ( FilePtr ) 
 	{
-                rc =memset_s( fileContent, sizeof( fileContent ), 0, sizeof( fileContent ) );
-                ERR_CHK(rc);
-		fgets( fileContent, 256, FilePtr );
-		pclose( FilePtr );
-		FilePtr = NULL;
-
-		// Tr069 Location should have valid length
-		if(fileContent[0])
+		if( fgets( fileContent, 256, FilePtr ) != NULL )
 		{
-			char *pos;
+			pclose( FilePtr );
+			FilePtr = NULL;
 
-			// Remove line \n charecter from string  
-			if ( ( pos = strchr( fileContent, '\n' ) ) != NULL )
-			 *pos = '\0';
-
-			// Free if it is already allocated
-			if( NULL != *ppretTr069CertLocation )
+			// Tr069 Location should have valid length
+			if(fileContent[0])
 			{
-				free( *ppretTr069CertLocation );
-				*ppretTr069CertLocation = NULL;	
-			}
+				char *pos;
 
-			*ppretTr069CertLocation = ( char * ) malloc ( strlen( fileContent )  + 1 );
-			
-			if( NULL != *ppretTr069CertLocation )
-			{
-                                rc = strcpy_s(*ppretTr069CertLocation,strlen( fileContent )  + 1,fileContent);
-                                if( rc!=EOK)
-                                {    
-                                  ERR_CHK(rc);
-                                  return ANSC_STATUS_FAILURE;
-                                }
-                                
-				CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation %s\n", __FUNCTION__, __LINE__, *ppretTr069CertLocation ));
+				// Remove line \n charecter from string
+				if ( ( pos = strchr( fileContent, '\n' ) ) != NULL )
+				 *pos = '\0';
+
+				// Free if it is already allocated
+				if( NULL != *ppretTr069CertLocation )
+				{
+					free( *ppretTr069CertLocation );
+					*ppretTr069CertLocation = NULL;
+				}
+
+				*ppretTr069CertLocation = ( char * ) malloc ( strlen( fileContent )  + 1 );
+
+				if( NULL != *ppretTr069CertLocation )
+				{
+					AnscCopyString( *ppretTr069CertLocation, fileContent );
+					CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation %s\n", __FUNCTION__, __LINE__, *ppretTr069CertLocation ));
+				}
+				else
+				{
+					CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation Memory Allocation Fail\n", __FUNCTION__, __LINE__ ));
+					return	ANSC_STATUS_FAILURE;
+				}
 			}
 			else
 			{
-				CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation Memory Allocation Fail\n", __FUNCTION__, __LINE__ ));
+				CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation is Empty\n", __FUNCTION__, __LINE__ ));
 				return	ANSC_STATUS_FAILURE;
 			}
-		}
-		else
-		{
-			CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation is Empty\n", __FUNCTION__, __LINE__ ));
-			return	ANSC_STATUS_FAILURE;
 		}
 	} 
 	else

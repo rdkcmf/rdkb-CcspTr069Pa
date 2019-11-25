@@ -1036,10 +1036,18 @@ bFirstInform = 0;
 		 {
 			char *temp = NULL;
 			temp = (char *)malloc(sizeof(char)*(strlen(pCwmpParamValueArray[x].Name) + 1)); // Need to Account for '\0'
-			strcpy(temp,pCwmpParamValueArray[x].Name);
-			CcspCwmppoMpaMapParamInstNumDmIntToCwmp(temp);
-			pCwmpParamValueArray[x].Name = CcspTr069PaCloneString(temp);
-			free(temp);
+			if(temp != NULL)
+			{
+				strcpy(temp,pCwmpParamValueArray[x].Name);
+				CcspCwmppoMpaMapParamInstNumDmIntToCwmp(temp);
+				if ( pCwmpParamValueArray[x].Name )
+				{
+				    CcspTr069PaFreeMemory(pCwmpParamValueArray[x].Name);
+				    pCwmpParamValueArray[x].Name = NULL;
+				}
+				pCwmpParamValueArray[x].Name = CcspTr069PaCloneString(temp);
+				free(temp);
+			}
 		 }
 
 		

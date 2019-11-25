@@ -575,9 +575,6 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 		
 		if ( ( fp = fopen ( TEMP_SHARED_KEY_PATH, "r" ) ) != NULL ) 
 		{
-                         rc = memset_s( cmd, sizeof( cmd ), 0, sizeof( cmd ) );
-                         ERR_CHK(rc);
-			 sprintf( cmd, "rm -rf %s", TEMP_SHARED_KEY_PATH );
 		
 			if ( fgets ( key, sizeof(key), fp ) != NULL ) 
 			{					
@@ -594,22 +591,16 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 			{
 				printf("fgets() failed CcspTr069PaSsp_retrieveSharedKey\n");
 				fclose(fp);
-				system( cmd );
-                                rc = memset_s( cmd, sizeof( cmd ), 0, sizeof( cmd ) );
-                                ERR_CHK(rc);
+				unlink (TEMP_SHARED_KEY_PATH);
 				return NULL;
 			}
 			
 			fclose(fp);
-			system( cmd );
-                        rc = memset_s( cmd, sizeof( cmd ), 0, sizeof( cmd ) );
-                        ERR_CHK(rc);
+			unlink (TEMP_SHARED_KEY_PATH);
 		}
 		else
 		{
 			 printf("fopen() failed in CcspTr069PaSsp_retrieveSharedKey\n");
-                         rc = memset_s( cmd, sizeof( cmd ), 0, sizeof( cmd ) );
-                         ERR_CHK(rc);
 			 return NULL;
 		}
 	}
