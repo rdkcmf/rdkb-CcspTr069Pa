@@ -4853,8 +4853,15 @@
         <Param>
                 <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.HomeNetworkIsolation</Name>
         </Param>
-          
-   
+	<Param>
+		<Name>Device.X_RDKCENTRAL-COM_EthernetWAN.SelectedOperationalMode</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_RDKCENTRAL-COM_EthernetWAN.CurrentOperationalMode</Name>
+	</Param>
+	<Param>
+		<Name>Device.X_RDKCENTRAL-COM_EthernetWAN.LastKnownOperationalMode</Name>
+	</Param>
         <!-- INVISIBLE Parameters under "Device." -->
         <Param invisible="true">
             <Name>Com.Cisco.Spvtg.Ccsp.Command.FactoryReset</Name>
