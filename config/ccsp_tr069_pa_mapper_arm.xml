@@ -214,6 +214,23 @@
             <Name>Device.ManagementServer.DUStateChangeComplPolicy.FaultCodeFilter</Name>
         </Param>
 
+        <!-- Device.ManagementServer.ManageableDevice.{i}. -->
+        <Param>
+            <Name>Device.ManagementServer.ManageableDeviceNumberOfEntries</Name>
+        </Param>
+        <Param>
+            <Name>Device.ManagementServer.ManageableDevice.{i}.ManufacturerOUI</Name>
+        </Param>
+        <Param>
+            <Name>Device.ManagementServer.ManageableDevice.{i}.SerialNumber</Name>
+        </Param>
+        <Param>
+            <Name>Device.ManagementServer.ManageableDevice.{i}.ProductClass</Name>
+        </Param>
+        <Param>
+            <Name>Device.ManagementServer.ManageableDevice.{i}.Host</Name>
+        </Param>
+
 		<Param>
             <Name>Device.RootDataModelVersion</Name>
         </Param>

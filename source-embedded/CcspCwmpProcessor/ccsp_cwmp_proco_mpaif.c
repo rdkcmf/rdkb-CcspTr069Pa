@@ -1565,6 +1565,7 @@ CcspCwmppoMpaGetParameterValues
     char*                           pRootObjName         = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
     BOOL GetParamSuccessStatus  = FALSE;
 
+
 	BOOL bDataModelReq = FALSE;
     *ppParamValueArray = NULL;
     *pulArraySize      = 0;
@@ -3036,6 +3037,9 @@ CcspCwmppoMpaGetParameterAttributes
     CCSP_INT                        nCcspError           = CCSP_SUCCESS;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
     BOOL                            bParamNameArrayEmpty = FALSE;
+#if defined(DEVICE_GATEWAY_ASSOCIATION_FEATURE)
+    char*                           pOrigName           = NULL;
+#endif
 
     *phSoapFault = (ANSC_HANDLE)NULL;
 
@@ -3356,6 +3360,10 @@ CcspCwmppoMpaGetParameterAttributes
 
                 pCwmpPA = &pParamAttrArray[ulParamAttrArraySize++];
 
+#if defined(DEVICE_GATEWAY_ASSOCIATION_FEATURE)
+               pOrigName = CcspTr069PaCloneString(pNsList->Args.paramAttrInfo.parameterName);              
+
+#endif
                 CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
                 CcspTr069PaTraceDebug(("GPA %s\n", pNsList->Args.paramAttrInfo.parameterName));
 
@@ -3391,6 +3399,15 @@ CcspCwmppoMpaGetParameterAttributes
                             );
                     }
                 }
+
+#if defined(DEVICE_GATEWAY_ASSOCIATION_FEATURE)
+             if ( pCwmpPA->Name )
+                {
+                    CcspTr069PaFreeMemory(pCwmpPA->Name);
+                }
+                pCwmpPA->Name = pOrigName;
+
+#endif
 
                 pCwmpPA->AccessList = NULL;
                 if ( pNsList->Args.paramAttrInfo.accessControlBitmask == CCSP_NS_ACCESS_SUBSCRIBER )
