@@ -1369,6 +1369,9 @@
         <Param>
             <Name>Device.WiFi.SSID.{i}.SSID</Name>
         </Param>
+	<Param>
+            <Name>Device.WiFi.SSID.{i}.X_COMCAST-COM_DefaultSSID</Name>
+        </Param>
         <Param>
             <Name>Device.WiFi.SSID.{i}.Stats.BytesSent</Name>
         </Param>
@@ -1548,6 +1551,9 @@
         </Param>
 	<Param>
             <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_WEPKey</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_DefaultKeyPassphrase</Name>
         </Param>
 	<Param>
             <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.RadiusServerRetries</Name>
