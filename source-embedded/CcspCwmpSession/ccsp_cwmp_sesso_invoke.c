@@ -1175,17 +1175,6 @@ bFirstInform = 0;
                     {
                         char* pDMParamName = NULL;
                         BOOL  bIncludeInvQuery = TRUE;
-                        /* Avoid checking for default inform parameters in the PSM */
-                        if( ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.ManagementServer.ConnectionRequestURL", TRUE) ) ||
-                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.ManagementServer.ParameterKey", TRUE) ) ||
-                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.DeviceInfo.HardwareVersion", TRUE) ) ||
-                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.DeviceInfo.SoftwareVersion", TRUE) ) ||
-                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.DeviceInfo.ProvisioningCode", TRUE) ) ||
-                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.ManagementServer.AliasBasedAddressing", TRUE) ) ||
-                            ( AnscEqualString(pCwmpParamValueArray[x].Name, "Device.DeviceSummary", TRUE) ) )
-                        {
-                            continue;
-                        }
 
                         pDMParamName = CcspTr069PA_MapInstNumCwmpToDmInt(pCwmpParamValueArray[x].Name );
                         if ( pDMParamName != NULL )
