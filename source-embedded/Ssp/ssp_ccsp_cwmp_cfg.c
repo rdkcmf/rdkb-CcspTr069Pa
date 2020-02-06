@@ -81,6 +81,7 @@
 #include "ansc_xml_dom_parser_status.h"
 #include "cJSON.h"
 
+
 extern  CCSP_CWMP_CFG_INTERFACE                          ccspCwmpCfgIf;
 extern  UCHAR g_MACAddress[];
 extern  ANSC_HANDLE bus_handle;
@@ -213,6 +214,7 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
         char cmd[512] = {0};
         int len;
 	char* buffer = NULL;
+        errno_t rc   = -1;
 
 	if(*retVal) { AnscFreeMemory(*retVal); *retVal=NULL; }
 	
@@ -230,7 +232,8 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
 	data = ( char* )malloc( sizeof(char) * (len + 1) );
 	if (data != NULL)
 	{
-		memset( data, 0, ( sizeof(char) * (len + 1) ));
+                rc = memset_s( data, ( sizeof(char) * (len + 1) ), 0, ( sizeof(char) * (len + 1) ));
+                ERR_CHK(rc);
 		fread( data, 1, len, fileRead );
 	}
 	else
@@ -524,18 +527,20 @@ CcspTr069PaSsp_GetTr069CertificateLocationForSyndication
 {
    FILE 	  *FilePtr		       = NULL;
    char 	   fileContent[ 256 ]  = { 0 };
+   errno_t         rc                  = -1;
 
 	FilePtr = popen( PSM_CMD_SYNDICATION_TR69CertLocation, "r" );
 
 	if ( FilePtr ) 
 	{
-		memset( fileContent, 0, sizeof( fileContent ) );
+                rc =memset_s( fileContent, sizeof( fileContent ), 0, sizeof( fileContent ) );
+                ERR_CHK(rc);
 		fgets( fileContent, 256, FilePtr );
 		pclose( FilePtr );
 		FilePtr = NULL;
 
 		// Tr069 Location should have valid length
-		if( AnscSizeOfString( fileContent ) > 0 )
+		if(fileContent[0])
 		{
 			char *pos;
 

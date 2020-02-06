@@ -77,6 +77,8 @@
 
 #include "ccsp_cwmp_tcpcrho_global.h"
 #include "sysevent/sysevent.h"
+
+
 /*
  *  RDKB-12305  Adding method to check whether comcast device or not
  *  Procedure     : bIsComcastImage
@@ -91,11 +93,15 @@ static int bIsComcastImage( void)
 {
     char PartnerId[255] = {'\0'};
     int isComcastImg = 1;
+    errno_t rc  = -1;
+    int     ind = -1;
     
     getPartnerId ( PartnerId ) ;
-    
-    if ( 0 != strcmp ( PartnerId, "comcast") ) {
-    	isComcastImg = 0;
+    rc = strcmp_s("comcast", strlen("comcast"), PartnerId, &ind);
+    ERR_CHK(rc);
+    if((rc == EOK) && (ind != 0))
+    {
+        isComcastImg = 0;
     }
 
    return isComcastImg;
