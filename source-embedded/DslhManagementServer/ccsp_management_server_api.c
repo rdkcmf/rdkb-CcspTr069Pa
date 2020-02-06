@@ -66,6 +66,7 @@
 
 **********************************************************************/
 #include "ccsp_management_server.h"
+#include "ccsp_tr069pa_wrapper_api.h"
 #include "ccsp_management_server_api.h"
 #include "ccsp_trace.h"
 
@@ -130,6 +131,7 @@ int  CcspManagementServer_GetParameterValues(
     /* first count return size. */
     int i = 0;
     *val_size = 0;
+    errno_t rc = -1;
     for(; i<size; i++)
     {
         char *name = NULL;
@@ -145,7 +147,8 @@ int  CcspManagementServer_GetParameterValues(
     parameterValStruct_t **val = NULL;
     val = (parameterValStruct_t **)CcspManagementServer_Allocate((*val_size)*sizeof(parameterValStruct_t *));
     if(val) {
-        memset(val, 0, (*val_size)*sizeof(parameterValStruct_t *));
+        rc = memset_s(val, (*val_size)*sizeof(parameterValStruct_t *), 0, (*val_size)*sizeof(parameterValStruct_t *));
+        ERR_CHK(rc);
         for(i=0; i < *val_size; i++) {
             val[i] = NULL;
             val[i] = (parameterValStruct_t *)CcspManagementServer_Allocate(sizeof(parameterValStruct_t));
@@ -252,6 +255,7 @@ int  CcspManagementServer_GetParameterAttributes(
     /* first count return size. */
     int i = 0;
     *val_size = 0;
+    errno_t rc = -1;
     for(; i<size; i++)
     {
         char *name;
@@ -268,7 +272,8 @@ int  CcspManagementServer_GetParameterAttributes(
     {
         return CCSP_FAILURE;
     }
-    memset(attr, 0, *val_size*sizeof(parameterAttributeStruct_t *));
+    rc = memset_s(attr, *val_size*sizeof(parameterAttributeStruct_t *), 0, *val_size*sizeof(parameterAttributeStruct_t *));
+    ERR_CHK(rc);
     for(i=0; i < *val_size; i++) attr[i] = CcspManagementServer_Allocate(sizeof(parameterAttributeStruct_t));
 
     int attrID = 0;
@@ -408,6 +413,7 @@ int CcspManagementServer_GetParameterNames(
 )
 {
     char *name;
+    errno_t rc = -1;
     //CcspTraceWarning("sample_component", ( "CcspManagementServer_GetParameterNames 1: %s\n", parameterName));
     int objectID = CcspManagementServer_GetObjectID(parameterName, &name);
     if(objectID < 0)
@@ -431,11 +437,12 @@ int CcspManagementServer_GetParameterNames(
         parameterInfoStruct_t **info;
         *size = 1;
         info = CcspManagementServer_Allocate(*size*sizeof(parameterInfoStruct_t *));
-        memset(info, 0, *size*sizeof(parameterInfoStruct_t *));
-
+        rc = memset_s(info, *size*sizeof(parameterInfoStruct_t *),  0, *size*sizeof(parameterInfoStruct_t *));
+        ERR_CHK(rc);
         info[0] = (parameterInfoStruct_t *) CcspManagementServer_Allocate(sizeof(parameterInfoStruct_t));
         info[0]->parameterName = CcspManagementServer_Allocate(strlen(parameterName)+1);
-        strcpy( info[0]->parameterName, parameterName);
+        rc = strcpy_s(info[0]->parameterName, strlen(parameterName)+1, parameterName);
+        ERR_CHK(rc);
         info[0]->writable = (objectInfo[objectID].parameters[parameterID].access == CCSP_RO)? CCSP_FALSE : CCSP_TRUE;
         *val = info; 
     }
@@ -446,7 +453,8 @@ int CcspManagementServer_GetParameterNames(
         parameterInfoStruct_t **info;
         *size = CcspManagementServer_GetNameInfoRecordCount(objectID, nextLevel);
         info = CcspManagementServer_Allocate(*size*sizeof(parameterInfoStruct_t *));
-        memset(info, 0, *size*sizeof(parameterInfoStruct_t *));
+        rc = memset_s(info, *size*sizeof(parameterInfoStruct_t *), 0, *size*sizeof(parameterInfoStruct_t *));
+        ERR_CHK(rc);
         int i = 0;
         for(;i < * size; i++) info[i] = (parameterInfoStruct_t *) CcspManagementServer_Allocate(sizeof(parameterInfoStruct_t));
         CcspManagementServer_GetObjectNames(

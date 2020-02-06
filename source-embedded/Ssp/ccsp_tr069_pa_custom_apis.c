@@ -92,6 +92,7 @@
 #include "ccsp_cwmp_ifo_cfg.h"
 
 #include "ccsp_tr069pa_wrapper_api.h"
+
 extern msObjectInfo *objectInfo;
 extern char *CcspManagementServer_SubsystemPrefix;
 extern void *bus_handle;
@@ -109,7 +110,40 @@ static char SharedKey[256] = {'\0'};
 #define ENCRYPTED_SHAREDKEY_PATH "/dummy.txt"
 #define TEMP_SHARED_KEY_PATH "/tmp/tr069sharedkey"
 
+#define NUM_DMSB_TYPES (sizeof(dmsb_type_table)/sizeof(dmsb_type_table[0]))
 
+typedef struct dmsb_pair {
+  char     *name;
+  int       type;
+} DMSB_PAIR;
+
+DMSB_PAIR dmsb_type_table[] = {
+  { "dmsb.ManagementServer.PeriodicInformEnable", ManagementServerPeriodicInformEnableID },
+  { "dmsb.ManagementServer.PeriodicInformInterval", ManagementServerPeriodicInformIntervalID},
+  { "dmsb.ManagementServer.DefaultActiveNotificationThrottle", ManagementServerDefaultActiveNotificationThrottleID },
+  { "dmsb.ManagementServer.CWMPRetryMinimumWaitInterval", ManagementServerCWMPRetryMinimumWaitIntervalID },
+  { "dmsb.ManagementServer.CWMPRetryIntervalMultiplier", ManagementServerCWMPRetryIntervalMultiplierID }
+};
+
+int dmsb_type_from_name(char *name, int *type_ptr)
+{
+  errno_t rc = -1;
+  int ind = -1;
+  int i = 0;
+  if((name == NULL) || (type_ptr == NULL))
+     return 0;
+  for (i = 0 ; i < NUM_DMSB_TYPES ; ++i)
+  {
+      rc = strcmp_s(name, strlen(name), dmsb_type_table[i].name, &ind);
+      ERR_CHK(rc);
+      if ((rc == EOK) && (!ind))
+      {
+          *type_ptr = dmsb_type_table[i].type;
+          return 1;
+      }
+  }
+  return 0;
+}
 
 CCSP_VOID
 CcspCwmpsoStartRetryTimerCustom
@@ -295,6 +329,11 @@ msParameter ParamName[] = {
 };
 int i = 0;
 int ArrLen = sizeof(ParamName)/sizeof(char*);
+int ind      = -1;
+errno_t rc;
+int type = 0;
+int irc = 0;
+
 for(i = 0;i < ArrLen;i++)
 {
 		 char *pValue = NULL;
@@ -307,36 +346,18 @@ for(i = 0;i < ArrLen;i++)
                                 &pValue);
          if ( res == CCSP_SUCCESS)
                     {
-						if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.PeriodicInformEnable"))
-						{
-						   objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformEnableID].value
-							= CcspManagementServer_CloneString(pValue);
-						}
-						else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.PeriodicInformInterval"))
-						{
-						   objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformIntervalID].value
-							= CcspManagementServer_CloneString(pValue);			
-						}
-						/*else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.PeriodicInformTime"))
-						{
-						   objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value
-							= CcspManagementServer_CloneString(pValue);					
-						}*/
-						else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.DefaultActiveNotificationThrottle"))
-						{
-						   objectInfo[ManagementServerID].parameters[ManagementServerDefaultActiveNotificationThrottleID].value
-							= CcspManagementServer_CloneString(pValue);						
-						}
-						else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.CWMPRetryMinimumWaitInterval"))
-						{
-						   objectInfo[ManagementServerID].parameters[ManagementServerCWMPRetryMinimumWaitIntervalID].value
-							= CcspManagementServer_CloneString(pValue);						
-						}
-						else if(0 == strcmp(ParamName[i].name,"dmsb.ManagementServer.CWMPRetryIntervalMultiplier"))
-						{
-						   objectInfo[ManagementServerID].parameters[ManagementServerCWMPRetryIntervalMultiplierID].value
-							= CcspManagementServer_CloneString(pValue);						
-						}
+                                     if (!dmsb_type_from_name(ParamName[i].name, &type))
+                                     {
+                                         printf("unrecognized type name: %s", ParamName[i].name);
+                                         return 0;
+                                     }
+                                     else
+                                     {
+                                        printf("type name found - %s", ParamName[i].name);
+                                        objectInfo[ManagementServerID].parameters[type].value
+							    = CcspManagementServer_CloneString(pValue);
+                                     } 
+                                     
                     }
                     else 
                     {
@@ -482,6 +503,7 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 		 	 cmd[ 128 ] 	= { 0 };	
 	int 	len 			= 0;
 	BOOL isEncryptedFileIsThere = FALSE;
+        errno_t          rc             = -1;
 
 	/* 
 	  * Check whether encyrpted shared key file is available or not
@@ -507,34 +529,41 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 		
 		if ( ( fp = fopen ( TEMP_SHARED_KEY_PATH, "r" ) ) != NULL ) 
 		{
-			 memset( cmd, 0, sizeof( cmd ) );
+                         rc = memset_s( cmd, sizeof( cmd ), 0, sizeof( cmd ) );
+                         ERR_CHK(rc);
 			 sprintf( cmd, "rm -rf %s", TEMP_SHARED_KEY_PATH );
 		
 			if ( fgets ( key, sizeof(key), fp ) != NULL ) 
 			{					
 				sscanf( key, "%s", retKey );
 				len = strlen( retKey );
-				strncpy( SharedKey, retKey, len );
-				memset( retKey, 0, sizeof( retKey ) );
-				memset( key, 0, sizeof( key ) );
+                                rc = strncpy_s(SharedKey, sizeof(SharedKey), retKey, len );
+                                ERR_CHK(rc);
+				rc = memset_s( retKey, sizeof( retKey ),0, sizeof( retKey ) );
+                                ERR_CHK(rc);
+                                rc = memset_s( key, sizeof( key ), 0, sizeof( key ) );
+                                ERR_CHK(rc);
 			}
-			else
+                        else
 			{
 				printf("fgets() failed CcspTr069PaSsp_retrieveSharedKey\n");
 				fclose(fp);
 				system( cmd );
-				memset( cmd, 0, sizeof( cmd ) );
+                                rc = memset_s( cmd, sizeof( cmd ), 0, sizeof( cmd ) );
+                                ERR_CHK(rc);
 				return NULL;
 			}
 			
 			fclose(fp);
-			system( cmd );	
-			memset( cmd, 0, sizeof( cmd ) );
+			system( cmd );
+                        rc = memset_s( cmd, sizeof( cmd ), 0, sizeof( cmd ) );
+                        ERR_CHK(rc);
 		}
 		else
 		{
 			 printf("fopen() failed in CcspTr069PaSsp_retrieveSharedKey\n");
-			 memset( cmd, 0, sizeof( cmd ) );
+                         rc = memset_s( cmd, sizeof( cmd ), 0, sizeof( cmd ) );
+                         ERR_CHK(rc);
 			 return NULL;
 		}
 	}
@@ -548,8 +577,10 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 				{					
 					strip_line(key);
 							len = strlen(key);
-				strncpy(SharedKey,key,len);
-				memset( key, 0, sizeof( key ) );
+                                rc = strncpy_s(SharedKey, sizeof(SharedKey), key, len );
+                                ERR_CHK(rc);
+                                rc = memset_s( key,sizeof( key ), 0, sizeof( key ) );
+                                ERR_CHK(rc);
 				}
 				else
 				{

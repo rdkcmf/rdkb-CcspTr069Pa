@@ -71,6 +71,7 @@
 #include "ccsp_custom.h"
 #include "ccsp_types.h"
 #include "ccsp_trace.h"
+#include "ccsp_tr069pa_wrapper_api.h"
 #include "ccsp_management_server.h"
 #include "ccsp_management_server_api.h"
 #include "ccsp_management_server_pa_api.h"
@@ -85,6 +86,7 @@
 #include <telemetry_busmessage_sender.h>
 
 #define TEMP_SIZE 23
+#define MAX_SIZE_TMPPWD_VALUE 512
 
 char *CcspManagementServer_ComponentName = NULL;
 char *CcspManagementServer_SubsystemPrefix = NULL;
@@ -300,7 +302,7 @@ CcspManagementServer_FillInObjectInfoCustom(msObjectInfo *objectInfo);
 CCSP_VOID
 CcspManagementServer_FillInObjectInfo()
 {
-
+    errno_t rc = -1;
     //CcspTraceWarning("ms", ( "CcspManagementServer_FillObjectInfo 0\n"));
     CcspManagementServer_FillInSDMObjectInfo();
     /* First setup default object array. */
@@ -466,7 +468,8 @@ CcspManagementServer_FillInObjectInfo()
     size_t len1 = strlen(CcspManagementServer_ComponentName);
     size_t len2, len3;
     char* pValue = NULL;
-    strncpy(pRecordName, CcspManagementServer_ComponentName, len1);
+    rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
+    ERR_CHK(rc);
     pRecordName[len1] = '.';
 // #if 0 //Not used anymore_
 #ifndef _COSA_VEN501_
@@ -475,12 +478,18 @@ CcspManagementServer_FillInObjectInfo()
         for(i = ManagementServerID; i<= DeviceInfoID; i++){ /* Assume no persistent state for com. objects. */
 #endif
         len2 = strlen(objectInfo[i].name);
-        strncpy(&pRecordName[len1+1], objectInfo[i].name, len2);
+        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[i].name, len2);
+        ERR_CHK(rc);
         for(j=0; j<objectInfo[i].numberOfParameters; j++){
             len3 = strlen(objectInfo[i].parameters[j].name);
-            strncpy(&pRecordName[len1+len2+1], objectInfo[i].parameters[j].name, len3);
-            strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
-            pRecordName[len1+len2+len3+7] = '\0';
+            rc = strncpy_s(&pRecordName[len1+len2+1], sizeof(pRecordName)-len1-len2, objectInfo[i].parameters[j].name, len3);
+            ERR_CHK(rc);
+            rc = strncpy_s(&pRecordName[len1+len2+len3+1], sizeof(pRecordName)-len1-len2-len3, ".Value", strlen(".Value"));
+            ERR_CHK(rc);
+             /* If SAFEC_DUMMY_API is enabled, then the redirected API strncpy should be null terminated */
+            #ifdef SAFEC_DUMMY_API
+                pRecordName[len1+len2+len3+7] = '\0';
+            #endif
 
             res = PSM_Get_Record_Value2(
                 bus_handle,
@@ -541,7 +550,7 @@ CcspManagementServer_FillInObjectInfo()
 					  ) 
 					)
 				{
-					char tmpPWDValue[ 512 ]  = { 0 };
+					char tmpPWDValue[MAX_SIZE_TMPPWD_VALUE]  = { 0 };
 
 					// If  return success then process otherwise leave it as it is
 					if ( 0 == CcspManagementServer_GetMGMTServerPasswordValuesFromDB( j, tmpPWDValue ))
@@ -555,15 +564,19 @@ CcspManagementServer_FillInObjectInfo()
 							}
 						
 							objectInfo[i].parameters[j].value = CcspManagementServer_Allocate( strlen( tmpPWDValue ) + 1 );
-							memset( objectInfo[i].parameters[j].value, 0, strlen( tmpPWDValue ) + 1 );
-							strncpy ( objectInfo[i].parameters[j].value, tmpPWDValue, strlen( tmpPWDValue ) ) ;
+                                                        rc = strncpy_s(objectInfo[i].parameters[j].value, strlen(tmpPWDValue) + 1, tmpPWDValue, strlen( tmpPWDValue ) ) ;
+                                                        ERR_CHK(rc);
 						}
 					}
 				}
 			}
 
-            strncpy(&pRecordName[len1+len2+len3+1], ".Notification", 13);
-            pRecordName[len1+len2+len3+14] = '\0';
+            rc = strncpy_s(&pRecordName[len1+len2+len3+1], sizeof(pRecordName)-len1-len2-len3, ".Notification", 13);
+            ERR_CHK(rc);
+             /* If SAFEC_DUMMY_API is enabled, then the redirected API strncpy should be null terminated */
+            #ifdef SAFEC_DUMMY_API
+                pRecordName[len1+len2+len3+14] = '\0';
+            #endif
 
             res = PSM_Get_Record_Value2(
                 bus_handle,
@@ -639,6 +652,7 @@ CCSP_VOID CcspManagementServer_InitDBus()
     int size;
     int times = 0;
     int success = 0;
+    errno_t rc = -1;
 
     if ( !bus_handle )
     {
@@ -667,7 +681,8 @@ CCSP_VOID CcspManagementServer_InitDBus()
 
     CCSP_Base_Func_CB  fccb ;
     CCSP_Base_Func_CB *cb = &fccb;
-    memset(cb,0,sizeof(CCSP_Base_Func_CB));	
+    rc = memset_s(cb,sizeof(CCSP_Base_Func_CB), 0,sizeof(CCSP_Base_Func_CB));
+    ERR_CHK(rc);
     cb->setParameterValues  = CcspManagementServer_SetParameterValues;
     cb->setCommit  = CcspManagementServer_SetCommit;
     cb->getParameterValues  = CcspManagementServer_GetParameterValues;
@@ -983,8 +998,11 @@ CcspManagementServer_RegisterWanInterface()
     // Get parameter name to obtain the smallest table entry 
     val_size = 0;
     char pFirstUpstreamIpInterfaceIpv4AddrTbl[200] = {0};
-    strcpy(pFirstUpstreamIpInterfaceIpv4AddrTbl, pFirstUpstreamIpInterface);
-    strcat(pFirstUpstreamIpInterfaceIpv4AddrTbl, "IPv4Address.");
+    errno_t rc = -1;
+    rc = strcpy_s(pFirstUpstreamIpInterfaceIpv4AddrTbl, sizeof(pFirstUpstreamIpInterfaceIpv4AddrTbl), pFirstUpstreamIpInterface);
+    ERR_CHK(rc);
+    rc = strcat_s(pFirstUpstreamIpInterfaceIpv4AddrTbl, sizeof(pFirstUpstreamIpInterfaceIpv4AddrTbl),  "IPv4Address.");
+    ERR_CHK(rc);
     parameterInfoStruct_t **parameterInfo = NULL;
     res = CcspBaseIf_getParameterNames(
         bus_handle,
@@ -1021,8 +1039,10 @@ CcspManagementServer_RegisterWanInterface()
         return ANSC_STATUS_FAILURE;
     }
     char pRecordName[1000] = {0};
-    strcpy(pRecordName, CcspManagementServer_ComponentName);
-    strcat(pRecordName, ".FirstUpstreamIpAddress.Value");
+    rc = strcpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName);
+    ERR_CHK(rc);
+    rc = strcat_s(pRecordName, sizeof(pRecordName), ".FirstUpstreamIpAddress.Value");
+    ERR_CHK(rc);
     res = PSM_Set_Record_Value2(
         bus_handle,
         CcspManagementServer_SubsystemPrefix,
@@ -1098,6 +1118,7 @@ ANSC_STATUS CcspManagementServer_GenerateConnectionRequestURL(
 {
     char ipAddr[200] = {0};
     char result[200] = "http://";
+    errno_t rc = -1;
     if(!fromValueChangeSignal){
 #ifndef NO_PAM_COMP
         if(pPAMComponentName && pPAMComponentPath && pFirstUpstreamIpAddress) 
@@ -1118,7 +1139,8 @@ ANSC_STATUS CcspManagementServer_GenerateConnectionRequestURL(
                 &parameterval);
             if(parameterNames[0]) CcspManagementServer_Free(parameterNames[0]);
             if(val_size <= 0) return ANSC_STATUS_FAILURE;
-            strcpy(ipAddr, parameterval[0]->parameterValue);
+            rc = strcpy_s(ipAddr, sizeof(ipAddr), parameterval[0]->parameterValue);
+            ERR_CHK(rc);
             free_parameterValStruct_t (bus_handle, val_size, parameterval);
         }
 #else
@@ -1134,39 +1156,56 @@ ANSC_STATUS CcspManagementServer_GenerateConnectionRequestURL(
             char addr_a[32] = {0};
             
             if (!_ansc_get_ipv4_addr("eth0", &addr_n, addr_a, sizeof(addr_a)))
-                strncpy(ipAddr, addr_a, sizeof(ipAddr)-1);
+            {
+                rc = strncpy_s(ipAddr, sizeof(ipAddr), addr_a, strlen(addr_a));
+                ERR_CHK(rc);
+            }
         }
 #endif
         
 #endif
     }
-    else strcpy(ipAddr, newValue);
+    else
+    {
+         rc = strcpy_s(ipAddr, sizeof(ipAddr), newValue);
+         ERR_CHK(rc);
+    }
     /* If no IP Address, keep the previous value. */
     if(strlen(ipAddr) <= 0  || AnscEqualString(ipAddr, "0.0.0.0", TRUE)) {
         return ANSC_STATUS_SUCCESS;
     }
-    strcat(result, ipAddr);
+    rc = strcat_s(result, sizeof(result), ipAddr);
+    ERR_CHK(rc);
+
     if ( TRUE )
     {
         char* pPort = objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPortID].value;
         if(pPort && strlen(pPort) > 0) {
-            strcat(result, ":");
+            rc =  strcat_s(result, sizeof(result), ":");
+            ERR_CHK(rc);
             if ( strlen(pPort) > 0 )
-                strcat(result, objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPortID].value);
+            {
+                rc = strcat_s(result, sizeof(result), objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPortID].value);
+                ERR_CHK(rc);
+            }
             else
             {
                 char buf[10];
             
                 sprintf(buf, "%d", CWMP_PORT);
-                strcat(result, buf);
+                rc = strcat_s(result, sizeof(result), buf);
+                ERR_CHK(rc);
             }
         }
     }
-    
-    strcat(result, "/");
+    rc = strcat_s(result, sizeof(result),  "/");
+    ERR_CHK(rc);
 
     if(objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPathID].value)
-        strcat(result, objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPathID].value);
+    {
+        rc = strcat_s(result, sizeof(result), objectInfo[ManagementServerID].parameters[ManagementServerX_CISCO_COM_ConnectionRequestURLPathID].value);
+        ERR_CHK(rc);
+     }
     if(!AnscEqualString(objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestURLID].value, result, TRUE)){
         // Send Value change signal.
         char *oldValue = objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestURLID].value;
@@ -1175,14 +1214,17 @@ ANSC_STATUS CcspManagementServer_GenerateConnectionRequestURL(
         char pRecordName[1000] = {0};
         size_t len1, len2, len3;
         len1 = strlen(CcspManagementServer_ComponentName);
-        strncpy(pRecordName, CcspManagementServer_ComponentName, len1);
+        rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
+        ERR_CHK(rc);
         pRecordName[len1] = '.';
         len2 = strlen(objectInfo[ManagementServerID].name);
-        strncpy(&pRecordName[len1+1], objectInfo[ManagementServerID].name, len2);
+        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[ManagementServerID].name, len2);
+        ERR_CHK(rc);
         len3 = strlen(objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestURLID].name);
-        strncpy(&pRecordName[len1+len2+1], objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestURLID].name, len3);
-        strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
-        pRecordName[len1+len2+len3+7] = '\0';
+        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestURLID].name, len3);
+        ERR_CHK(rc);
+        rc = strncat_s(pRecordName, sizeof(pRecordName), ".Value", 6);
+        ERR_CHK(rc);
         int res = PSM_Set_Record_Value2(
             bus_handle,
             CcspManagementServer_SubsystemPrefix,
@@ -1674,15 +1716,19 @@ int CcspManagementServer_SetSingleParameterAttributes(
         /* PSM write */
         char pRecordName[1000] = {0};
         size_t len1, len2, len3;
+        errno_t rc = -1;
         len1 = strlen(CcspManagementServer_ComponentName);
-        strncpy(pRecordName, CcspManagementServer_ComponentName, len1);
+        rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
+        ERR_CHK(rc);
         pRecordName[len1] = '.';
         len2 = strlen(objectInfo[objectID].name);
-        strncpy(&pRecordName[len1+1], objectInfo[objectID].name, len2);
+        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[objectID].name, len2);
+        ERR_CHK(rc);
         len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
-        strncpy(&pRecordName[len1+len2+1], objectInfo[objectID].parameters[parameterID].name, len3);
-        strncpy(&pRecordName[len1+len2+len3+1], ".Notification", 13);
-        pRecordName[len1+len2+len3+14] = '\0';
+        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[objectID].parameters[parameterID].name, len3);
+        ERR_CHK(rc);
+        rc = strncat_s(pRecordName, sizeof(pRecordName), ".Notification", 13);
+        ERR_CHK(rc);
         char pValue[50] = {0};
         //        _ansc_itoa(objectInfo[objectID].parameters[parameterID].notification, pValue, 10);
         _ansc_sprintf(pValue, "%d", objectInfo[objectID].parameters[parameterID].notification);
@@ -2436,18 +2482,22 @@ int CcspManagementServer_RetrievePassword( int parameterID, char *pInputFile, ch
     //Since the TEMP_MGMT_SERV_PWD_PATH is same for all parameterID.
     //We use this method to identify each one
     char TEMP_MGMT_SERV_PWD_PATH[30]={ 0 };
+    errno_t rc = -1;
 
     if( ManagementServerPasswordID == parameterID )
     {
-        strncpy(TEMP_MGMT_SERV_PWD_PATH,"/tmp/tmpMgmtPWDFile1",sizeof(TEMP_MGMT_SERV_PWD_PATH)-1);
+        rc = strncpy_s(TEMP_MGMT_SERV_PWD_PATH, sizeof(TEMP_MGMT_SERV_PWD_PATH), "/tmp/tmpMgmtPWDFile1", strlen("/tmp/tmpMgmtPWDFile1"));
+        ERR_CHK(rc);
     }
     else if ( ManagementServerConnectionRequestPasswordID == parameterID )
     {
-        strncpy(TEMP_MGMT_SERV_PWD_PATH,"/tmp/tmpMgmtPWDFile2",sizeof(TEMP_MGMT_SERV_PWD_PATH)-1);
+        rc = strncpy_s(TEMP_MGMT_SERV_PWD_PATH, sizeof(TEMP_MGMT_SERV_PWD_PATH), "/tmp/tmpMgmtPWDFile2", strlen("/tmp/tmpMgmtPWDFile2"));
+        ERR_CHK(rc);
     }
     else if ( ManagementServerSTUNPasswordID == parameterID )
     {
-        strncpy(TEMP_MGMT_SERV_PWD_PATH,"/tmp/tmpMgmtPWDFile3",sizeof(TEMP_MGMT_SERV_PWD_PATH)-1);
+        rc = strncpy_s(TEMP_MGMT_SERV_PWD_PATH, sizeof(TEMP_MGMT_SERV_PWD_PATH),  "/tmp/tmpMgmtPWDFile3", strlen("/tmp/tmpMgmtPWDFile3"));
+        ERR_CHK(rc);
     }
 
 	//  Check whether input file is existing or not
@@ -2474,35 +2524,42 @@ int CcspManagementServer_RetrievePassword( int parameterID, char *pInputFile, ch
 			char	 password [ 512 ]	 = { 0 },
 					 retPassword [ 512 ] = { 0 };
 			int 	 length 			 = 0;
-		
-			memset( cmd, 0, sizeof( cmd ) );
-			sprintf( cmd, "rm -rf %s", TEMP_MGMT_SERV_PWD_PATH );
+                        rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
+			ERR_CHK(rc);
+                        sprintf( cmd, "rm -rf %s", TEMP_MGMT_SERV_PWD_PATH );
 		
 			if ( fgets ( password, sizeof( password ), fp ) != NULL ) 
 			{					
 				sscanf( password, "%s" ,retPassword );
 				length = strlen( retPassword );
-				strncpy( pOutputString, retPassword, length );	 
-				memset( retPassword, 0, sizeof( retPassword ) );				
-				memset( password, 0, sizeof( password ) );								
+                                rc = strncpy_s( pOutputString, MAX_SIZE_TMPPWD_VALUE, retPassword, length );
+                                ERR_CHK(rc);
+
+                                rc = memset_s(retPassword, sizeof(retPassword), 0, sizeof(retPassword));
+                                ERR_CHK(rc);
+                                rc = memset_s(password, sizeof(password), 0, sizeof(password));
+                                ERR_CHK(rc);
 			}
 			else
 			{
 				AnscTraceWarning(( "%s -- fgets() failed\n", __FUNCTION__ ));
 				fclose( fp );
-				system( cmd );	
-				memset( cmd, 0, sizeof( cmd ) );
+				system( cmd );
+                                rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
+                                ERR_CHK(rc);
 				return TR69_INTERNAL_ERROR;
 			}
 		
 			fclose( fp );
 			system( cmd );
-			memset( cmd, 0, sizeof( cmd ) );
+                        rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
+                        ERR_CHK(rc);
 		}
 		else
 		{
 			AnscTraceWarning(( "%s -- fopen() failed\n", __FUNCTION__ ));
-			memset( cmd, 0, sizeof( cmd ) );
+                        rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
+                        ERR_CHK(rc);
 			return TR69_INTERNAL_ERROR;
 		}
 	}
@@ -2541,6 +2598,7 @@ int CcspManagementServer_GetMGMTServerPasswordValuesFromDB( int parameterID, cha
 int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int parameterID )
 {
 	int returnStatus  = 0;
+        errno_t rc = -1;
 
 	//Validate passed arguments
 	if( NULL == pString )
@@ -2555,8 +2613,9 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 				 "echo %s > /tmp/tempMSPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSPwdFile ; rm -rf /tmp/tempMSPwdFile", 
 				 pString );
 		system( cmd );
-		memset( cmd, 0, sizeof( cmd ) );
-		AnscTraceWarning((" TR069 %s %d : ManagementServerPasswordID Changed\n", __FUNCTION__, __LINE__));
+                rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
+		ERR_CHK(rc);
+                AnscTraceWarning((" TR069 %s %d : ManagementServerPasswordID Changed\n", __FUNCTION__, __LINE__));
 	}
 	else if ( ManagementServerConnectionRequestPasswordID == parameterID )
 	{
@@ -2565,8 +2624,9 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 				 "echo %s > /tmp/tempMSCRPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSCRPwdFile; rm -rf /tmp/tempMSCRPwdFile", 
 				 pString );
 		system( cmd );
-		memset( cmd, 0, sizeof( cmd ) );
-		AnscTraceWarning((" TR069 %s %d : ManagementServerConnectionRequestPasswordID Changed\n", __FUNCTION__, __LINE__));
+                rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
+		ERR_CHK(rc);
+                AnscTraceWarning((" TR069 %s %d : ManagementServerConnectionRequestPasswordID Changed\n", __FUNCTION__, __LINE__));
 		if (access(CCSP_MGMT_CRPWD_FILE,F_OK)!=0)
 			{
 			AnscTraceWarning((" TR069 %s %d : %s file is not generated\n", __FUNCTION__, __LINE__,CCSP_MGMT_CRPWD_FILE));
@@ -2580,8 +2640,9 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 				 "echo %s > /tmp/tempMSSTUNPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSSTUNPwdFile; rm -rf /tmp/tempMSSTUNPwdFile", 
 				 pString );
 		system( cmd );
-		memset( cmd, 0, sizeof( cmd ) );
-		AnscTraceWarning((" TR069 %s %d : ManagementServerSTUNPasswordID Changed\n", __FUNCTION__, __LINE__));
+                rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
+		ERR_CHK(rc);
+                AnscTraceWarning((" TR069 %s %d : ManagementServerSTUNPasswordID Changed\n", __FUNCTION__, __LINE__));
 	}
 
 	return returnStatus;
@@ -2601,9 +2662,11 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
     char pRecordName[1000] = {0};
     size_t len1, len2, len3;
     int diagComplete = 0;
+    errno_t rc = -1;
 
     len1 = strlen(CcspManagementServer_ComponentName);
-    strncpy(pRecordName, CcspManagementServer_ComponentName, len1);
+    rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
+    ERR_CHK(rc);
     pRecordName[len1] = '.';
     slapVar.Syntax = SLAP_VAR_SYNTAX_string;
     
@@ -2668,11 +2731,13 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
 		{
 			/* PSM write */
 			len2 = strlen(objectInfo[objectID].name);
-			strncpy(&pRecordName[len1+1], objectInfo[objectID].name, len2);
-			len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
-			strncpy(&pRecordName[len1+len2+1], objectInfo[objectID].parameters[parameterID].name, len3);
-			strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
-			pRecordName[len1+len2+len3+7] = '\0';
+                        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[objectID].name, len2);
+			ERR_CHK(rc);
+                        len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
+                        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[objectID].parameters[parameterID].name, len3);
+                        ERR_CHK(rc);
+                        rc = strncat_s(pRecordName, sizeof(pRecordName), ".Value", 6);
+			ERR_CHK(rc);
 			slapVar.Variant.varString = objectInfo[objectID].parameters[parameterID].value;
 			
 			res = PSM_Set_Record_Value2(
@@ -2771,8 +2836,10 @@ int CcspManagementServer_RollBackParameterValues()
     int res;
     char pRecordName[1000] = {0};
     size_t len1, len2, len3;
+    errno_t rc = -1;
     len1 = strlen(CcspManagementServer_ComponentName);
-    strncpy(pRecordName, CcspManagementServer_ComponentName, len1);
+    rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
+    ERR_CHK(rc);
     pRecordName[len1] = '.';
     slapVar.Syntax = SLAP_VAR_SYNTAX_string;
 
@@ -2811,11 +2878,13 @@ int CcspManagementServer_RollBackParameterValues()
 		{
 			/* PSM write */
 			len2 = strlen(objectInfo[objectID].name);
-			strncpy(&pRecordName[len1+1], objectInfo[objectID].name, len2);
-			len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
-			strncpy(&pRecordName[len1+len2+1], objectInfo[objectID].parameters[parameterID].name, len3);
-			strncpy(&pRecordName[len1+len2+len3+1], ".Value", 6);
-			pRecordName[len1+len2+len3+7] = '\0';
+                        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[objectID].name, len2);
+			ERR_CHK(rc);
+                        len3 = strlen(objectInfo[objectID].parameters[parameterID].name);
+                        rc = strncat_s(pRecordName, sizeof(pRecordName), objectInfo[objectID].parameters[parameterID].name, len3);
+                        ERR_CHK(rc);
+                        rc = strncat_s(pRecordName, sizeof(pRecordName), ".Value", 6);
+			ERR_CHK(rc);
 			slapVar.Variant.varString = objectInfo[objectID].parameters[parameterID].value;
 			res = PSM_Set_Record_Value2(
 				bus_handle,
@@ -2893,12 +2962,14 @@ char * CcspManagementServer_CloneString
     const char * src
     )
 {
+    errno_t rc = -1;
     if(src == NULL) return NULL;
     size_t len = strlen(src) + 1;
     char * dest = CcspManagementServer_Allocate(len);
     if ( dest )
     {
-        strcpy(dest, src);
+        rc = strcpy_s(dest, len, src);
+        ERR_CHK(rc);
     }
     return dest;
 }
@@ -2910,6 +2981,7 @@ char * CcspManagementServer_MergeString
     )
 {
     size_t len1 = 0, len2 = 0;
+    errno_t rc = -1;
     if(src1 != NULL) len1 = strlen(src1);
     if(src2 != NULL) len2 = strlen(src2);
     size_t len = len1 + len2 + 1;
@@ -2919,9 +2991,15 @@ char * CcspManagementServer_MergeString
     {
         *dest = 0;
         if ( src1 )
-            strcpy(dest, src1);
+        {
+            rc = strcpy_s(dest, len, src1);
+            ERR_CHK(rc);
+        }
         if ( src2 )
-            strcat(dest, src2);
+        {
+            rc = strcat_s(dest, len, src2);
+            ERR_CHK(rc);
+        }
     }
     return dest;
 }

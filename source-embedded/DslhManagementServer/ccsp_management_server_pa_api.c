@@ -71,6 +71,7 @@
 //#include "ccsp_base_api.h"
 #include "string.h"
 #include "stdio.h"
+#include "ccsp_tr069pa_wrapper_api.h"
 #include "ccsp_management_server.h"
 #include "ccsp_management_server_pa_api.h"
 #include "ccsp_supported_data_model.h"
@@ -78,6 +79,7 @@
 #include "ccsp_cwmp_cpeco_interface.h"
 #include "ccsp_cwmp_ifo_sta.h"
 #include "Tr69_Tlv.h"
+
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
 #define TR69_DEFAULT_URL_FILE "/etc/url"
 
@@ -134,8 +136,9 @@ CcspManagementServer_InitCustom
 void _get_shell_output(char * cmd, char * out, int len)
 {
     FILE * fp;
-    char   buf[256];
+    char   buf[MAX_BUF_SIZE];
     char * p;
+    errno_t rc  = -1;
 
     fp = popen(cmd, "r");
 
@@ -145,9 +148,8 @@ void _get_shell_output(char * cmd, char * out, int len)
 
         /*we need to remove the \n char in buf*/
         if ((p = strchr(buf, '\n'))) *p = 0;
-
-        strncpy(out, buf, len-1);
-
+        rc = strcpy_s(out, len, buf);
+        ERR_CHK(rc);
         pclose(fp);
     }
 
@@ -157,11 +159,14 @@ void _get_shell_output(char * cmd, char * out, int len)
 void ReadTr69TlvData()
 {
 	int                             res;
-	char                            recordName[256];
+	char                            recordName[MAX_BUF_SIZE];
+	errno_t                         rc               = -1;
+    	int                             ind              = -1;
+
 #if defined (INTEL_PUMA7)
 	//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
-	char cmd[256] = {0};
-	char out[256] = {0};
+	char cmd[MAX_BUF_SIZE] = {0};
+	char out[MAX_BUF_SIZE] = {0};
 #else
 	FILE *fp;
 #endif
@@ -177,7 +182,7 @@ void ReadTr69TlvData()
 	do
 	{
 		sprintf(cmd, "sysevent get TLV202-status");
-		_get_shell_output(cmd, out, sizeof(out));
+		_get_shell_output(cmd, out, MAX_BUF_SIZE);
 		sleep(1);
 		watchdog--;
 	}while ((!strstr(out,"success")) && (watchdog != 0));
@@ -330,7 +335,8 @@ void ReadTr69TlvData()
 		system("touch /tmp/.TLVmissedtoparsebytr069");
 
 		//Check whether PSM entry is there or not
-		memset( recordName, 0, sizeof( recordName ) );
+                rc = memset_s( recordName, sizeof( recordName ), 0, sizeof( recordName ) );
+                ERR_CHK(rc);
 		_ansc_sprintf(recordName, "%s.%sEnableCWMP.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);
 
         res = PSM_Get_Record_Value2( bus_handle,
@@ -366,7 +372,9 @@ void ReadTr69TlvData()
 				int Tr69EnableValue = 0;
 				
 				//Configure EnableCWMP param based on partner's default json config
-				if( 0 == strcmp( buf, "true" ) )
+                                rc = strcmp_s("true", strlen("true"), buf, &ind );
+                                ERR_CHK(rc);
+                                if((rc == EOK) && (ind == 0))
 				{
 					objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("1");
 					Tr69EnableValue = 1;
@@ -380,7 +388,8 @@ void ReadTr69TlvData()
 				AnscTraceInfo(("%s Applying Syndication EnableCWMP:%s\n", __FUNCTION__, buf ));
 				
 				//Overwrite syndication Enable CWMP value
-				memset( recordName, 0, sizeof( recordName ) );
+                                rc = memset_s( recordName, sizeof( recordName ), 0, sizeof( recordName ) );
+                                ERR_CHK(rc);
 				_ansc_sprintf(recordName, "%s.%sEnableCWMP.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);
 				res = PSM_Set_Record_Value2(bus_handle, CcspManagementServer_SubsystemPrefix, recordName, ccsp_string, ( 1 == Tr69EnableValue ) ?  "1" : "0" );
 				
@@ -419,12 +428,18 @@ CcspManagementServer_Init
     )
 {
     size_t nameLen = strlen(ComponentName) + 1;
+    errno_t rc = -1;
 
     if ( s_MS_Init_Done ) return;
 
     CcspManagementServer_ComponentName = AnscAllocateMemory(nameLen);
-    memset(CcspManagementServer_ComponentName, 0, nameLen);
-    strncpy(CcspManagementServer_ComponentName, ComponentName, nameLen);
+    if(CcspManagementServer_ComponentName == NULL)
+    {
+        AnscTraceInfo(("Failed in Allocating Memory: %s %d %s", __FUNCTION__, __LINE__, __FILE__ ));
+        exit(1);
+    }
+    rc = strncpy_s(CcspManagementServer_ComponentName, strlen(ComponentName) + 1, ComponentName, nameLen);
+    ERR_CHK(rc);
 
     if ( !SubsystemPrefix )
     {
@@ -815,7 +830,7 @@ CcspManagementServer_SetParameterKey
 {
     /* If it is called by PA, set it directly to PSM. */
     int								res;
-    char							recordName[256];
+    char							recordName[MAX_BUF_SIZE];
 
     if ( objectInfo[ManagementServerID].parameters[ManagementServerParameterKeyID].value ) {
         CcspManagementServer_Free((void*)objectInfo[ManagementServerID].parameters[ManagementServerParameterKeyID].value);
@@ -888,7 +903,11 @@ CcspManagementServer_GetConnectionRequestURL
         
         if(ptr_port) sprintf(buf, "http://%s:%s/", ipaddr, ptr_port);
         else         sprintf(buf, "http://%s:%d/", ipaddr, CWMP_PORT);
-        if(ptr_path) strcat(buf, ptr_path);
+        if(ptr_path)
+        {
+	    rc = strcat_s(buf, sizeof(buf), ptr_path);
+            ERR_CHK(rc);
+        }    
         if(ptr_url) CcspManagementServer_Free(ptr_url);
 
         objectInfo[ManagementServerID].parameters[ManagementServerConnectionRequestURLID].value = CcspManagementServer_CloneString(buf);
@@ -930,8 +949,12 @@ CcspManagementServer_GetFirstUpstreamIpAddress
         /* Have to read from psm */
         char pRecordName[1000] = {0};
         char *pValue = NULL;
-        strcpy(pRecordName, CcspManagementServer_ComponentName);
-        strcat(pRecordName, ".FirstUpstreamIpAddress.Value");
+        errno_t rc  = -1;
+        
+        rc = strcpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName);
+        ERR_CHK(rc);
+        rc = strcat_s(pRecordName, sizeof(pRecordName), ".FirstUpstreamIpAddress.Value");
+        ERR_CHK(rc);
         int res = PSM_Get_Record_Value2(
             bus_handle,
             CcspManagementServer_SubsystemPrefix,
@@ -1767,8 +1790,9 @@ CcspManagementServer_StunBindingChanged
     char*                           pOldUrl = objectInfo[ManagementServerID].parameters[ManagementServerUDPConnectionRequestAddressID].value;
     parameterSigStruct_t            valChanged[2];
     int                             valChangedSize = 0;
-        
-    memset(valChanged, 0, sizeof(parameterSigStruct_t)*2);
+    errno_t                         rc             = -1;
+    rc = memset_s(valChanged, sizeof(parameterSigStruct_t)*2, 0, sizeof(parameterSigStruct_t)*2);
+    ERR_CHK(rc);
 
     /* NATDetected */
     if ( objectInfo[ManagementServerID].parameters[ManagementServerNATDetectedID].value ) 

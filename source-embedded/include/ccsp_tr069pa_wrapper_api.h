@@ -72,6 +72,11 @@
 
 #include "ccsp_trace.h"
 
+#ifndef SAFEC_DUMMY_API
+#include "safe_str_lib.h"
+#include "safe_mem_lib.h"
+#endif
+
 /*
  * g_Tr069_PA_Name needs to be set when TR-069 PA starts up as the first thing,
  * we expect it to be set as program argument. Since we define the name as global
@@ -223,6 +228,34 @@ CcspTr069PaCloneString(char* src)
 #define  CcspTr069PaTraceInfo(msg)                              \
     CcspTraceInfo2(g_Tr069_PA_Name, msg)
 
+
+/*
+ * SAFECLIB Erro Handling Logging APIs
+ */
+#define RDK_SAFECLIB_ERR()  printf("safeclib error at %s %s:%d %s", __FILE__, __FUNCTION__, __LINE__)
+ 
+#define ERR_CHK(rc)                                             \
+    if(rc !=EOK) {                                              \
+        RDK_SAFECLIB_ERR();                                     \
+    }
+
+#ifdef SAFEC_DUMMY_API
+typedef int errno_t;
+#define EOK 0
+
+#define strcpy_s(dst,max,src) EOK; \
+ strcpy(dst,src);
+#define strncpy_s(dst,max,src,len)  EOK; \
+ strncpy(dst,src,len);
+#define strcat_s(dst,max,src) EOK; \
+ strcat(dst,src);
+#define strncat_s(dst,max,src,len) EOK; \
+ strncat(dst,src,len);
+#define memset_s(dst,max_1,c,max) EOK; \
+ memset(dst,c,max);
+
+errno_t strcmp_s(const char *,int,const char *,int *);
+#endif
 
 #endif
 

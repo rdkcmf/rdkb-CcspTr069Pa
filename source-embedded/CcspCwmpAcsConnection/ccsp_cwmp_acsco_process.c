@@ -76,7 +76,6 @@
 
 #include "ccsp_cwmp_acsco_global.h"
 
-
 #ifdef   _DEBUG
 #define  CCSP_CWMP_TRACE_MAX_SOAP_MSG_LENGTH        1024
 #endif
@@ -87,6 +86,14 @@
 extern char* openssl_client_ca_certificate_files;
 #endif /* _ANSC_USE_OPENSSL_ */
 
+#ifdef SAFEC_DUMMY_API
+//adding strcmp_s defination
+errno_t strcmp_s(const char * d,int max ,const char * src,int *r)
+{
+  *r= strcmp(d,src);
+  return EOK;
+}
+#endif
 
 /*
  *  RDKB-12305  Adding method to check whether comcast device or not
@@ -102,10 +109,14 @@ static int bIsComcastImage( void)
 {
 	char PartnerId[255] = {'\0'};
 	int isComcastImg = 1;
+        errno_t rc       = -1;
+        int     ind      = -1;
 	
 	getPartnerId ( PartnerId ) ;
-	
-	if ( 0 != strcmp ( PartnerId, "comcast") ) {
+        rc = strcmp_s("comcast", strlen("comcast"), PartnerId, &ind);
+        ERR_CHK(rc);
+        if((rc == EOK) && (ind != 0))
+        {
 		isComcastImg = 0;
 	}
 
