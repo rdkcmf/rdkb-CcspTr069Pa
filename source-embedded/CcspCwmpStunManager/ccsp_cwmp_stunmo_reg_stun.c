@@ -74,7 +74,7 @@
 
 
 #include "ccsp_cwmp_stunmo_global.h"
-
+#define PVALUE  256
 
 /**********************************************************************
 
@@ -112,6 +112,7 @@ CcspCwmpStunmoRegGetStunInfo
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_STUN_INFO                pCcspCwmpStunInfo      = (PCCSP_CWMP_STUN_INFO            )&pMyObject->CcspCwmpStunInfo;
     CCSP_STRING                         pValue;
+    errno_t rc       = -1;
 
     /* retrieve STUN settings from MS FC */
     pCcspCwmpStunInfo->UDPConnectionRequestAddressNotificationLimit = 0;
@@ -128,10 +129,15 @@ CcspCwmpStunmoRegGetStunInfo
                 pCcspCwmpCpeController->PANameWithPrefix
             );
 
-    AnscZeroMemory(pCcspCwmpStunInfo->STUNServerAddress, 257);
+    AnscZeroMemory(pCcspCwmpStunInfo->STUNServerAddress,sizeof(pCcspCwmpStunInfo->STUNServerAddress));
     if ( pValue )
     {
-        _ansc_strncpy(pCcspCwmpStunInfo->STUNServerAddress, pValue, 256);
+        rc = strncpy_s(pCcspCwmpStunInfo->STUNServerAddress,sizeof(pCcspCwmpStunInfo->STUNServerAddress),pValue,PVALUE);
+        if(rc!=EOK)
+        {
+           ERR_CHK(rc);
+           return   ANSC_STATUS_FAILURE;
+        }
         CcspTr069PaFreeMemory(pValue);
     }
 
@@ -147,10 +153,16 @@ CcspCwmpStunmoRegGetStunInfo
                 pCcspCwmpCpeController->PANameWithPrefix
             );
 
-    AnscZeroMemory(pCcspCwmpStunInfo->STUNUsername, 257);
+    AnscZeroMemory(pCcspCwmpStunInfo->STUNUsername, sizeof(pCcspCwmpStunInfo->STUNUsername));
     if ( pValue )
     {
-        _ansc_strncpy(pCcspCwmpStunInfo->STUNUsername, pValue, 256);
+    rc = strncpy_s(pCcspCwmpStunInfo->STUNUsername,sizeof(pCcspCwmpStunInfo->STUNUsername),pValue,PVALUE);
+    if(rc!=EOK)
+       {
+           ERR_CHK(rc);
+           return  ANSC_STATUS_FAILURE;
+       }
+
         CcspTr069PaFreeMemory(pValue);
     }
 
@@ -160,10 +172,15 @@ CcspCwmpStunmoRegGetStunInfo
                 pCcspCwmpCpeController->PANameWithPrefix
             );
 
-    AnscZeroMemory(pCcspCwmpStunInfo->STUNPassword, 257);
+    AnscZeroMemory(pCcspCwmpStunInfo->STUNPassword, sizeof(pCcspCwmpStunInfo->STUNPassword));
     if ( pValue )
     {
-        _ansc_strncpy(pCcspCwmpStunInfo->STUNPassword, pValue, 256);
+        rc = strncpy_s(pCcspCwmpStunInfo->STUNPassword,sizeof(pCcspCwmpStunInfo->STUNPassword),pValue, PVALUE);
+         if(rc!=EOK)
+        {
+           ERR_CHK(rc);
+           return ANSC_STATUS_FAILURE;
+        }
         CcspTr069PaFreeMemory(pValue);
     }
 

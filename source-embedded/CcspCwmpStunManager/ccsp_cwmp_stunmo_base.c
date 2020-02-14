@@ -250,6 +250,7 @@ CcspCwmpStunmoEnrollObjects
     PCCSP_CWMP_STUN_MANAGER_OBJECT  pMyObject         = (PCCSP_CWMP_STUN_MANAGER_OBJECT )hThisObject;
     PSTUN_BSM_INTERFACE             pStunBsmIf        = (PSTUN_BSM_INTERFACE       )pMyObject->hStunBsmIf;
     PSTUN_SIMPLE_CLIENT_OBJECT      pStunSimpleClient = (PSTUN_SIMPLE_CLIENT_OBJECT)pMyObject->hStunSimpleClient;
+    errno_t rc = -1;
 
     if ( !pStunBsmIf )
     {
@@ -263,9 +264,12 @@ CcspCwmpStunmoEnrollObjects
         {
             pMyObject->hStunBsmIf = (ANSC_HANDLE)pStunBsmIf;
         }
-
-        AnscCopyString(pStunBsmIf->Name, STUN_BSM_INTERFACE_NAME);
-
+        rc = strcpy_s(pStunBsmIf->Name,sizeof(pStunBsmIf->Name), STUN_BSM_INTERFACE_NAME);
+        if(rc != EOK)
+        {
+            ERR_CHK(rc);
+            return ANSC_STATUS_FAILURE;
+        }
         pStunBsmIf->InterfaceId   = STUN_BSM_INTERFACE_ID;
         pStunBsmIf->hOwnerContext = (ANSC_HANDLE)pMyObject;
         pStunBsmIf->Size          = sizeof(STUN_BSM_INTERFACE);

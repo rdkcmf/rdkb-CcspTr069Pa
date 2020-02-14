@@ -80,6 +80,7 @@
 #include "ccsp_cwmp_tcpcrho_global.h"
 
 
+
 /**********************************************************************
 
     caller:     owner of this object
@@ -384,9 +385,20 @@ CcspCwmpTcpcrhoResetProperty
     pAuthProperty->Algorithm     = WEB_AUTH_ALGORITHM_MD5;
     pAuthProperty->bNoQop        = FALSE;
     pAuthProperty->NonceTimeout  = WEB_AUTH_NONCE_TIMEOUT_INTERVAL;
+    errno_t rc =    -1;
     
-    AnscCopyString((char*)pAuthProperty->Realm, "Cisco_CCSP_CWMP_TCPCR");
-    AnscCopyString((char*)pAuthProperty->Domain, "/");
+rc = strcpy_s((char*)pAuthProperty->Realm,sizeof(pAuthProperty->Realm),"Cisco_CCSP_CWMP_TCPCR");
+if(rc!= EOK)
+{
+   ERR_CHK(rc);
+   return ANSC_STATUS_FAILURE;
+}
+rc = strcpy_s((char*)pAuthProperty->Domain,sizeof(pAuthProperty->Domain), "/");
+if(rc!= EOK)
+{
+  ERR_CHK(rc);
+  return ANSC_STATUS_FAILURE;
+}
 
     return  ANSC_STATUS_SUCCESS;
 }

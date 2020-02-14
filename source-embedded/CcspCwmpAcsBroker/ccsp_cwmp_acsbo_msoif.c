@@ -218,6 +218,8 @@ CcspCwmpAcsboMsoInform
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT     )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT       )NULL;
     PCCSP_CWMP_EVENT            pCcspCwmpEvent     = (PCCSP_CWMP_EVENT           )NULL;
+    errno_t rc = -1;
+    int ind = -1;
 
     /*
      * The target WmpSession must be inactive...
@@ -247,7 +249,9 @@ CcspCwmpAcsboMsoInform
         /* Per TR-069 specification, if "0 BOOTSTRAP" event is included, all undelivered 
          * events must be discarded 
          */
-        if ( AnscEqualString(pEventCode, CCSP_CWMP_INFORM_EVENT_NAME_Bootstrap, FALSE) )
+        rc =strcasecmp_s(CCSP_CWMP_INFORM_EVENT_NAME_Bootstrap,strlen(CCSP_CWMP_INFORM_EVENT_NAME_Bootstrap),pEventCode,&ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
         {
             pCcspCwmpSession->DelAllEvents
                 (

@@ -124,6 +124,8 @@ DMSB_PAIR dmsb_type_table[] = {
   { "dmsb.ManagementServer.CWMPRetryMinimumWaitInterval", ManagementServerCWMPRetryMinimumWaitIntervalID },
   { "dmsb.ManagementServer.CWMPRetryIntervalMultiplier", ManagementServerCWMPRetryIntervalMultiplierID }
 };
+#define MAX_PDFTPASSWORD_LENGTH 72
+
 
 int dmsb_type_from_name(char *name, int *type_ptr)
 {
@@ -409,7 +411,7 @@ static ANSC_STATUS CcspTr069PaSsp_GetDeviceInfo
     int                             val_size               = 0;
     parameterValStruct_t**          ppval                  = NULL;
     char *                          parameterNames[3]      = {NULL, NULL, NULL};
-
+    errno_t rc       = -1;
     parameterNames[0] = CcspManagementServer_CloneString("Device.DeviceInfo.ManufacturerOUI");
     parameterNames[1] = CcspManagementServer_CloneString("Device.DeviceInfo.ProductClass");
     parameterNames[2] = CcspManagementServer_CloneString("Device.DeviceInfo.SerialNumber");
@@ -427,7 +429,13 @@ static ANSC_STATUS CcspTr069PaSsp_GetDeviceInfo
     {
         if ( AnscSizeOfString(ppval[0]->parameterValue) > 0 )
         {
-            _ansc_strcpy(DeviceManufacturerOUI, ppval[0]->parameterValue);
+           rc = strcpy_s(DeviceManufacturerOUI,sizeof(DeviceManufacturerOUI),ppval[0]->parameterValue);
+           if( rc!=EOK)
+           {    
+                  ERR_CHK(rc);
+                  returnStatus = ANSC_STATUS_FAILURE;
+                  goto EXIT;
+           }
         }
         else
         {
@@ -438,7 +446,13 @@ static ANSC_STATUS CcspTr069PaSsp_GetDeviceInfo
 
         if ( AnscSizeOfString(ppval[1]->parameterValue) > 0 )
         {
-            _ansc_strcpy(DeviceProductClass, ppval[1]->parameterValue);
+           rc = strcpy_s(DeviceProductClass,sizeof(DeviceProductClass),ppval[1]->parameterValue);
+             if( rc!=EOK)
+             {
+                 ERR_CHK(rc);
+                 returnStatus = ANSC_STATUS_FAILURE;
+                 goto EXIT;
+             }
         }
         else
         {
@@ -449,7 +463,13 @@ static ANSC_STATUS CcspTr069PaSsp_GetDeviceInfo
 
         if ( AnscSizeOfString(ppval[2]->parameterValue) > 0 )
         {
-            _ansc_strcpy(DeviceSerialNumber, ppval[2]->parameterValue);
+            rc = strcpy_s(DeviceSerialNumber,sizeof(DeviceSerialNumber),ppval[2]->parameterValue);
+             if( rc!=EOK)
+             {
+                 ERR_CHK(rc);
+                 returnStatus = ANSC_STATUS_FAILURE;
+                 goto EXIT;
+             }
         }
         else
         {
@@ -704,6 +724,7 @@ CcspManagementServer_GenerateDefaultUsername
         PULONG                      pulLength
     )
 {
+    errno_t rc       = -1;
 
     if( !DefaultUsernameGenerated ) 
     {
@@ -722,8 +743,13 @@ CcspManagementServer_GenerateDefaultUsername
         else
         {
             *pulLength = len;
-            _ansc_strcpy(pDftUsername, DefaultUsername);
-            return ANSC_STATUS_SUCCESS;
+             rc = strcpy_s(pDftUsername,MAX_PDFTPASSWORD_LENGTH,DefaultUsername);
+             if (rc != EOK)
+            {
+               ERR_CHK(rc);
+               return ANSC_STATUS_FAILURE;
+            }
+              return ANSC_STATUS_SUCCESS;
         }
     }
 }
@@ -735,6 +761,7 @@ CcspManagementServer_GenerateDefaultPassword
         PULONG                      pulLength
     )
 {
+    errno_t rc       = -1;
     if ( !DefaultPasswordGenerated ) 
     {
         if ( CcspTr069PaSsp_DeviceDefaultPasswordGenerate() != ANSC_STATUS_SUCCESS)
@@ -753,8 +780,14 @@ CcspManagementServer_GenerateDefaultPassword
         else
         {
             *pulLength  = len;
-            _ansc_strcpy(pDftPassword, DeviceDefaultPassword);
-            return  ANSC_STATUS_SUCCESS;
+             rc = strcpy_s(pDftPassword,MAX_PDFTPASSWORD_LENGTH,DeviceDefaultPassword);
+             if (rc != EOK)
+            {
+               ERR_CHK(rc);
+               return ANSC_STATUS_FAILURE;
+            }
+              return ANSC_STATUS_SUCCESS;
+             
         }
     }
 }

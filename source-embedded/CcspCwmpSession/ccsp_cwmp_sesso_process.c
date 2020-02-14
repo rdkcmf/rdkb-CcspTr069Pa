@@ -275,6 +275,7 @@ CcspCwmpsoAsyncProcessTask
     PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf     = (PCCSP_CWMP_STAT_INTERFACE        )pCcspCwmpCpeController->hCcspCwmpCfgIf;
  
     CcspTr069PaTraceDebug(("CcspCwmpsoAsyncProcessTask -- This is the beginning.\n"));
+    errno_t rc       = -1;
 
     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->GetCwmpRpcTimeout )
     {
@@ -428,8 +429,18 @@ CcspCwmpsoAsyncProcessTask
                 }
                 else
                 {
-                    _ansc_strcat(pSoapMessage, pWmpsoAsyncRep->SoapEnvelope);
-                    _ansc_strcat(pSoapMessage, "\r\n"                      );
+                     rc = strcat_s(pSoapMessage,ulMessageSize,pWmpsoAsyncReq->SoapEnvelope);
+                     if(rc!=EOK)
+                    {
+                       ERR_CHK(rc);
+                       goto EXIT;
+                    }
+                    rc = strcat_s(pSoapMessage,ulMessageSize,"\r\n");
+                     if(rc!=EOK)
+                    {
+                       ERR_CHK(rc);
+                       goto EXIT;
+                    }
 
                     ulAvailableSize -= AnscSizeOfString(pWmpsoAsyncRep->SoapEnvelope);
                     ulAvailableSize -= 2;
@@ -486,8 +497,18 @@ CcspCwmpsoAsyncProcessTask
                 }
                 else
                 {
-                    _ansc_strcat(pSoapMessage, pWmpsoAsyncReq->SoapEnvelope);
-                    _ansc_strcat(pSoapMessage, "\r\n"                      );
+                     rc = strcat_s(pSoapMessage,ulMessageSize,pWmpsoAsyncReq->SoapEnvelope);
+                     if(rc!=EOK)
+                    {
+                       ERR_CHK(rc);
+                       goto EXIT;
+                    }
+                    rc = strcat_s(pSoapMessage,ulMessageSize,"\r\n");
+                     if(rc!=EOK)
+                    {
+                       ERR_CHK(rc);
+                       goto EXIT;
+                    }
 
                     if ( ulReqEnvelopeCount == 0 )
                     {
@@ -643,5 +664,13 @@ CcspCwmpsoAsyncProcessTask
     pMyObject->bLastEmptyRequestSent = FALSE;
 
     return  ANSC_STATUS_SUCCESS;
+
+EXIT:
+
+    if ( pSoapMessage )
+    {
+        CcspTr069PaFreeMemory(pSoapMessage);
+    }
+    return  ANSC_STATUS_FAILURE;
 }
 

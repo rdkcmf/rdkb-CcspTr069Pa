@@ -286,6 +286,7 @@ CcspCwmpAcscoEnrollObjects
     PHTTP_ACM_INTERFACE             pHttpAcmIf      = (PHTTP_ACM_INTERFACE    )pMyObject->hHttpAcmIf;
     PHTTP_SIMPLE_CLIENT_OBJECT      pHttpClient     = (PHTTP_SIMPLE_CLIENT_OBJECT)NULL;
     PHTTP_HFP_INTERFACE             pHttpHfpIf      = (PHTTP_HFP_INTERFACE)NULL;
+   errno_t rc = -1;
 
     if ( !pHttpBspIf )
     {
@@ -300,7 +301,12 @@ CcspCwmpAcscoEnrollObjects
             pMyObject->hHttpBspIf = (ANSC_HANDLE)pHttpBspIf;
         }
 
-        AnscCopyString(pHttpBspIf->Name, HTTP_BSP_INTERFACE_NAME);
+        rc =  strcpy_s(pHttpBspIf->Name, sizeof(pHttpBspIf->Name), HTTP_BSP_INTERFACE_NAME);
+        if(rc != EOK)
+        {
+            ERR_CHK(rc);
+            return  ANSC_STATUS_FAILURE;
+        }
 
         pHttpBspIf->InterfaceId   = HTTP_BSP_INTERFACE_ID;
         pHttpBspIf->hOwnerContext = (ANSC_HANDLE)pMyObject;

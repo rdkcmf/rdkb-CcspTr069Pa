@@ -73,7 +73,7 @@
 
 
 #include "ssp_global.h"
-
+#define MAX_CONN_SIZE 256
 
 extern  WEB_ACM_INTERFACE                           webAcmIf;
 extern  PCCSP_CWMP_CPE_CONTROLLER_OBJECT                 g_pCcspCwmpCpeController;
@@ -107,6 +107,8 @@ ssp_BbhmWebAcmIfGetCredential
     ANSC_STATUS                     returnStatus     = ANSC_STATUS_SUCCESS;
     char*                           pConnReqUsername = NULL;  
     char*                           pConnReqPassword = NULL;
+    errno_t rc       = -1;
+    int     ind      = -1;
 
     pConnReqUsername = 
         CcspManagementServer_GetConnectionRequestUsername
@@ -119,8 +121,8 @@ ssp_BbhmWebAcmIfGetCredential
             (
                 g_pCcspCwmpCpeController->PANameWithPrefix
             );
-
-    if ( AnscEqualString((char*)pUserName, pConnReqUsername, TRUE) )
+    rc = strcmp_s(pConnReqUsername,MAX_CONN_SIZE,(char*)pUserName,&ind);
+    if((!ind) && (rc == EOK))
     {
         *ppPassword = (PUCHAR)AnscCloneString(pConnReqPassword);
     }

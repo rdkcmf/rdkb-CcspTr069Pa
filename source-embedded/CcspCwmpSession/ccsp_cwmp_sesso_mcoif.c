@@ -205,6 +205,8 @@ CcspCwmpsoMcoGetNextMethod
     PCCSP_CWMPSO_ASYNC_REQUEST       pWmpsoAsyncReq     = (PCCSP_CWMPSO_ASYNC_REQUEST  )NULL;
     PSINGLE_LINK_ENTRY              pSLinkEntry        = (PSINGLE_LINK_ENTRY         )NULL;
     ULONG                           ulMethodType       = CCSP_CWMP_METHOD_Unknown;
+    errno_t rc  = -1;
+    int ind = -1;
 
     AnscAcquireLock(&pMyObject->SavedReqQueueLock);
 
@@ -216,13 +218,9 @@ CcspCwmpsoMcoGetNextMethod
         {
             pWmpsoAsyncReq = ACCESS_CCSP_CWMPSO_ASYNC_REQUEST(pSLinkEntry);
             pSLinkEntry    = AnscQueueGetNextEntry(pSLinkEntry);
-
-            if ( AnscEqualString
-                    (
-                        pWmpsoAsyncReq->RequestID,
-                        pRequestID,
-                        TRUE
-                    ) )
+            rc = strcmp_s(pRequestID, strlen(pRequestID), pWmpsoAsyncReq->RequestID, &ind);
+            ERR_CHK(rc);
+            if((!ind) && (rc == EOK))
             {
                 ulMethodType = pWmpsoAsyncReq->Method;
 
@@ -291,6 +289,8 @@ CcspCwmpsoMcoProcessSoapResponse
     PCCSP_CWMP_SOAP_RESPONSE        pSoapResponse      = (PCCSP_CWMP_SOAP_RESPONSE   )hSoapResponse;
     BOOL                            bIDMatched         = FALSE;
     ULONG                           faultCode          = 0;
+    errno_t rc  = -1;
+    int ind = -1;
 
     AnscAcquireLock(&pMyObject->SavedReqQueueLock);
 
@@ -302,13 +302,9 @@ CcspCwmpsoMcoProcessSoapResponse
         {
             pWmpsoAsyncReq = ACCESS_CCSP_CWMPSO_ASYNC_REQUEST(pSLinkEntry);
             pSLinkEntry    = AnscQueueGetNextEntry(pSLinkEntry);
-
-            if ( AnscEqualString
-                    (
-                        pWmpsoAsyncReq->RequestID,
-                        pSoapResponse->Header.ID,
-                        TRUE
-                    ) )
+            rc = strcmp_s(pSoapResponse->Header.ID, strlen(pSoapResponse->Header.ID), pWmpsoAsyncReq->RequestID, &ind);
+            ERR_CHK(rc);
+             if((!ind) && (rc == EOK))
             {
                 bIDMatched = TRUE;
                 AnscQueuePopEntryByLink(&pMyObject->SavedReqQueue, &pWmpsoAsyncReq->Linkage);
@@ -2499,14 +2495,17 @@ CcspCwmpsoMcoDownload
     PANSC_UNIVERSAL_TIME            pCompleteTime      = (PANSC_UNIVERSAL_TIME       )NULL;
     int                             iStatus            = 0;
     ULONG                           ulNoRPCMethodMask  = 0;
-
+    errno_t rc  = -1;
+    int ind = -1;
     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->NoRPCMethods )
     {
         ulNoRPCMethodMask = pCcspCwmpCfgIf->NoRPCMethods(pCcspCwmpCfgIf->hOwnerContext);
     }
 
     /* now we only support type "1 Firmware Upgrade Image" */
-    if ( (ulNoRPCMethodMask & CCSP_CWMP_CFG_RPC_METHOD_NO_Download) || !AnscEqualString(pMcoDownloadReq->FileType, "1 Firmware Upgrade Image", TRUE) )
+    rc = strcmp_s("1 Firmware Upgrade Image", strlen("1 Firmware Upgrade Image"), pMcoDownloadReq->FileType, &ind);
+    ERR_CHK(rc);
+    if ((ulNoRPCMethodMask & CCSP_CWMP_CFG_RPC_METHOD_NO_Download) || (!(!ind) && (rc == EOK)))
     {
         pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
 
@@ -2798,7 +2797,6 @@ CcspCwmpsoMcoReboot
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault     = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     ULONG                           ulRebootDelay      = 10;
     char*                           pRootObjName       = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
-    BOOL                            bRootDevice        = AnscEqualString(pRootObjName, DM_ROOTNAME, FALSE);
     char                            psmKeyPrefixed[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN + 16];
 
     /*

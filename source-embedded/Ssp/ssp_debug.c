@@ -329,6 +329,7 @@ void ssp_testGPN()
     char                            ns[256];
     char                            nextLevel;
     BOOL                            bNextLevel         = TRUE;
+    errno_t rc       = -1;
 
     printf("Input namespace: ");
     fflush(stdin);
@@ -339,7 +340,8 @@ void ssp_testGPN()
     if ( ns[0] == 0 )
     {
         printf("Namespace 'Device.' is used ...\n");
-        AnscCopyString(ns, "Device.");
+        rc = strcpy_s(ns,sizeof(ns),"Device.");
+        ERR_CHK(rc); 
     }
 
     printf("Next level (y/n): ");
@@ -391,42 +393,43 @@ void ssp_testGPN()
 static
 void ssp_getTr069DataTypeString(int type, char *pBuf)
 {
+    errno_t rc = -1;
     switch ( type )
     {
         case    CCSP_CWMP_TR069_DATA_TYPE_String:
-
-                AnscCopyString(pBuf, "String");
+                rc = strcpy_s(pBuf,MAX_DATA_TYPR_LEN, "String");
+                ERR_CHK(rc);
                 break;
 
         case    CCSP_CWMP_TR069_DATA_TYPE_Int:
-
-                AnscCopyString(pBuf, "Int");
+                rc = strcpy_s(pBuf,MAX_DATA_TYPR_LEN, "Int");
+                ERR_CHK(rc);
                 break;
 
         case    CCSP_CWMP_TR069_DATA_TYPE_UnsignedInt:
-
-                AnscCopyString(pBuf, "UnsignedInt");
+                rc = strcpy_s(pBuf,MAX_DATA_TYPR_LEN, "UnsignedInt");
+                ERR_CHK(rc);
                 break;
 
         case    CCSP_CWMP_TR069_DATA_TYPE_Boolean:
-
-                AnscCopyString(pBuf, "Boolean");
+                rc = strcpy_s(pBuf,MAX_DATA_TYPR_LEN,"Boolean");
+                ERR_CHK(rc);
                 break;
 
         case    CCSP_CWMP_TR069_DATA_TYPE_DateTime:
-
-                AnscCopyString(pBuf, "DateTime");
+                rc = strcpy_s(pBuf,MAX_DATA_TYPR_LEN,"DateTime");
+                ERR_CHK(rc);
                 break;
 
         case    CCSP_CWMP_TR069_DATA_TYPE_Base64:
-
-                AnscCopyString(pBuf, "Base64");
+                rc = strcpy_s(pBuf,MAX_DATA_TYPR_LEN,"Base64");
+                ERR_CHK(rc);
                 break;
 
         default:
 
-                AnscCopyString(pBuf, "Unknown");
-
+                rc = strcpy_s(pBuf,MAX_DATA_TYPR_LEN,"Unknown");
+                ERR_CHK(rc);
                 break;
     }
 }
@@ -446,6 +449,7 @@ void ssp_testGPV()
     PSLAP_STRING_ARRAY              pParamNameArray    = NULL;
     PSLAP_VARIABLE                  pSlapVar;
     char                            dataType[32];
+    errno_t rc = -1;
 
     printf("Input namespace: ");
     fflush(stdin);
@@ -456,7 +460,8 @@ void ssp_testGPV()
     if ( ns[0] == 0 )
     {
         printf("Namespace 'Device.' is used ...\n");
-        AnscCopyString(ns, "Device.");
+        rc =strcpy_s(ns,sizeof(ns),"Device.");
+        ERR_CHK(rc);
     }
 
     pParamNameArray = (PSLAP_STRING_ARRAY)SlapVhoAllocStringArray2((ANSC_HANDLE)NULL, 1);
@@ -623,6 +628,7 @@ void ssp_testGPA()
     char                            ns[256];
     ULONG                           ulMaxCount         = 4096;
     PSLAP_STRING_ARRAY              pParamNameArray    = NULL;
+    errno_t rc       = -1;
 
     printf("Input namespace: ");
     fflush(stdin);
@@ -633,7 +639,8 @@ void ssp_testGPA()
     if ( ns[0] == 0 )
     {
         printf("Namespace 'Device.' is used ...\n");
-        AnscCopyString(ns, "Device.");
+        rc = strcpy_s(ns,sizeof(ns),"Device.");
+        ERR_CHK(rc);
     }
 
     pParamNameArray = (PSLAP_STRING_ARRAY)SlapVhoAllocStringArray2((ANSC_HANDLE)NULL, 1);

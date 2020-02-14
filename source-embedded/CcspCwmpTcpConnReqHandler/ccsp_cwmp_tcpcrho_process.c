@@ -73,7 +73,6 @@
 
 #include "ccsp_cwmp_tcpcrho_global.h"
 
-
 /**********************************************************************
 
     caller:     owner of this object
@@ -353,9 +352,15 @@ CcspCwmpTcpcrhoProcessRequest
                 status = ANSC_STATUS_FAILURE;
             }
         }
-
-#ifdef _ANSC_IPV6_COMPATIBLE_
-        AnscCopyString(pSessAuthInfo->RemoteAddress, pWebSocket->PeerAddr);
+        errno_t rc = -1;
+#ifdef _ANSC_IPV6_COMPATIBLE
+ rc = strcpy_s(pSessAuthInfo->RemoteAddress,sizeof(pSessAuthInfo->RemoteAddress), pWebSocket->PeerAddr);
+ if(rc!=EOK)
+ {
+    ERR_CHK(rc);
+    return  ANSC_STATUS_FAILURE;
+    
+ }
 #else
         pSessAuthInfo->RemoteAddr = pWebSocket->PeerAddress.Value;
 #endif

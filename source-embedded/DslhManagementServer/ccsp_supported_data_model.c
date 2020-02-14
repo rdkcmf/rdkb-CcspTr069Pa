@@ -71,6 +71,7 @@
 #include "ccsp_management_server.h"
 #include "ccsp_management_server_pa_api.h"
 #include "ansc_string.h"
+#include "ccsp_tr069pa_wrapper_api.h"
 
 
 char* _SupportedDataModelConfigFile = NULL;
@@ -110,6 +111,8 @@ LoadSDMObject
     int                             i;
     int                             id = SupportedDataModelID + sdmId;
     unsigned long                   ulSize;
+    errno_t     rc  = -1;
+    int ind  = -1;
 
     for(i=0; i<len; i++)
         sdmObjectName[i] = sdmIdStr[i];
@@ -141,19 +144,35 @@ LoadSDMObject
     {
         memset(paramterValue, 0, CCSP_SUPPORTED_DATA_MODEL_PARAMETER_VALUE_LENGTH + 1);
         ulSize = CCSP_SUPPORTED_DATA_MODEL_PARAMETER_VALUE_LENGTH + 1;
-        if(AnscEqualString(pChildNode->Name, "URL", TRUE))
+        rc = strcmp_s("URL", strlen("URL"),pChildNode->Name, &ind);
+        ERR_CHK(rc);
+         if((rc == EOK) && (ind == 0))
         {
             pChildNode->GetDataString(pChildNode, "URL", paramterValue, &ulSize);
             objectInfo[id].parameters[SupportedDataModelURLID].value = CcspManagementServer_CloneString(paramterValue);
-        }else if(AnscEqualString(pChildNode->Name, "URN", TRUE))
+        }
+        else
         {
+           rc = strcmp_s("URN", strlen("URN"),pChildNode->Name, &ind);
+           ERR_CHK(rc);
+           if ((rc == EOK) && (ind == 0))
+           {
             pChildNode->GetDataString(pChildNode, "URN", paramterValue, &ulSize);
             objectInfo[id].parameters[SupportedDataModelURNID].value = CcspManagementServer_CloneString(paramterValue);
-        }else if(AnscEqualString(pChildNode->Name, "Features", TRUE))
-        {
+            }
+          else
+          {
+           rc = strcmp_s("Features", strlen("Features"),pChildNode->Name, &ind);
+           ERR_CHK(rc);
+
+            if ((rc == EOK) && (ind == 0))
+           {
             pChildNode->GetDataString(pChildNode, "Features", paramterValue, &ulSize);
             objectInfo[id].parameters[SupportedDataModelFeaturesID].value = CcspManagementServer_CloneString(paramterValue);
-        }
+           }
+          }
+
+       }
     }while(pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetNextChild(pArgNode, pChildNode));
 }
 

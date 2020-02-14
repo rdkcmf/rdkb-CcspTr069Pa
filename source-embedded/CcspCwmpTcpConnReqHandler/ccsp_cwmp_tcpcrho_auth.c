@@ -78,6 +78,7 @@
 
 #include "ccsp_cwmp_tcpcrho_global.h"
 
+
 static const char                   s_httpAuthMsgBody[] =
 "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">"
 "<html><head>"
@@ -672,25 +673,33 @@ CcspCwmpTcpcrhoCalcDigestHA1
     char*                           pBuf         = NULL;
     ULONG                           ulSize       = 0;
     ANSC_CRYPTO_HASH                MD5Hash;
+    errno_t rc = -1 ;
+    int ind = -1;
 
     ulSize  =
         AnscSizeOfString((char*)pUserName) + 1 +
         AnscSizeOfString((char*)pRealm)    + 1 +
         (pPassword?AnscSizeOfString((char*)pPassword):0);
 
-    if ( pAlgorithm && AnscEqualString((char*)pAlgorithm, HTTP_AUTH_NAME_md5_sess, FALSE) )
-    {
-        if ( ulSize < ANSC_MD5_OUTPUT_SIZE * 2 )
+     if (pAlgorithm)
+     {
+        rc = strcasecmp_s(HTTP_AUTH_NAME_md5_sess,strlen(HTTP_AUTH_NAME_md5_sess),(char*)pAlgorithm,&ind);
+        ERR_CHK(rc);
+        if ((!ind) && (rc == EOK))
         {
-            ulSize  = ANSC_MD5_OUTPUT_SIZE * 2;
-        }
+            if ( ulSize < ANSC_MD5_OUTPUT_SIZE * 2 )
+            {
+               ulSize  = ANSC_MD5_OUTPUT_SIZE * 2;
+            }
 
-        ulSize    += 1 + AnscSizeOfString((char*)pNonce) + 1;
-        if ( pCNonce )
-        {
-            ulSize  += AnscSizeOfString((char*)pCNonce);
+            ulSize    += 1 + AnscSizeOfString((char*)pNonce) + 1;
+            if ( pCNonce )
+            {
+                ulSize  += AnscSizeOfString((char*)pCNonce);
+            }
+      
         }
-    }
+      }
 
     pBuf  = (char *)CcspTr069PaAllocateMemory(ulSize + 16);
     if ( !pBuf )
@@ -735,15 +744,19 @@ CcspCwmpTcpcrhoCalcDigestHA1
 
         AnscCryptoMd5Digest((PVOID)pBuf, AnscSizeOfString(pBuf), &MD5Hash);
         CcspCwmpTcpcrhoBinToHex(MD5Hash.Value, ANSC_MD5_OUTPUT_SIZE, pHA1);
-
-        if ( pAlgorithm && AnscEqualString((char*)pAlgorithm, HTTP_AUTH_NAME_md5_sess, FALSE) )
+        if (pAlgorithm)
         {
-            _ansc_sprintf(pBuf, "%s:%s:%s", pHA1, pNonce, pCNonce);
+            rc = strcasecmp_s(HTTP_AUTH_NAME_md5_sess,strlen(HTTP_AUTH_NAME_md5_sess),(char*)pAlgorithm,&ind);
+            ERR_CHK(rc);
+            if ((!ind) && (rc == EOK))
+            {
+               _ansc_sprintf(pBuf, "%s:%s:%s", pHA1, pNonce, pCNonce);
 
-            AnscCryptoMd5Digest((PVOID)pBuf, AnscSizeOfString(pBuf), &MD5Hash);
-            CcspCwmpTcpcrhoBinToHex(MD5Hash.Value, ANSC_MD5_OUTPUT_SIZE, pHA1);
-        }
-
+               AnscCryptoMd5Digest((PVOID)pBuf, AnscSizeOfString(pBuf), &MD5Hash);
+               CcspCwmpTcpcrhoBinToHex(MD5Hash.Value, ANSC_MD5_OUTPUT_SIZE, pHA1);
+            }
+        
+       }
         CcspTr069PaFreeMemory(pBuf);
     }
 
@@ -816,15 +829,22 @@ CcspCwmpTcpcrhoCalcDigestHA2
     PUCHAR                          pUriPath     = NULL;
     USHORT                          HostPort     = 0;
     ANSC_CRYPTO_HASH                MD5Hash      = {0}; /*RDKB-7327, CID-32923, initialize before use */
+    errno_t rc       = -1;
+    int     ind      = -1;
 
     pUriPath = pDigestUri;
 
     ulSize  = AnscSizeOfString((char*)pMethodName) + 1 + AnscSizeOfString((char*)pUriPath);
-
-    if ( pQop && AnscEqualString((char*)pQop, HTTP_AUTH_NAME_auth_int, FALSE) )
+    if(pQop)
     {
+        rc = strcasecmp_s(HTTP_AUTH_NAME_auth_int,strlen(HTTP_AUTH_NAME_auth_int),(char*)pQop,&ind);
+        ERR_CHK(rc);
+      if ((!ind) && (rc == EOK))
+    {
+       
         bAuthInt    = TRUE;
         ulSize     += 1 + pEntityDigest?AnscSizeOfString((char*)pEntityDigest):0;
+    }
     }
 
     pBuf    = (char *)CcspTr069PaAllocateMemory(ulSize + 16);
@@ -1704,6 +1724,8 @@ CcspCwmpTcpcrhoGenBasicResponse
     BOOL                            bBasicAuth   = TRUE;
     PUCHAR                          pChalReq     = NULL;
     PHTTP_CHALLENGE_BASIC           pBasicAuth   = NULL;
+    errno_t  rc = -1;
+
 
     pChalReq    = CcspCwmpTcpcrhoGenBasicChallenge((ANSC_HANDLE)pMyObject, pRealm);
     if ( !pChalReq )
@@ -1724,8 +1746,12 @@ CcspCwmpTcpcrhoGenBasicResponse
 
         pAuthChal->AuthType = HTTP_AUTH_TYPE_BASIC;
         pBasicAuth  = &pAuthChal->Challenge.Basic;
-        AnscCopyString((char*)pBasicAuth->Realm, (char*)pChalReq);
-
+        rc = strcpy_s((char*)pBasicAuth->Realm, sizeof(pBasicAuth->Realm), (char*)pChalReq);
+        if(rc!=EOK)
+        {
+           ERR_CHK(rc);
+           return  ANSC_STATUS_FAILURE;
+        }
         status = CcspCwmpTcpcrhoGenResponse((ANSC_HANDLE)pMyObject, buffer, pulSize, (ANSC_HANDLE)pHfoWwwAuth);
 
         CcspTr069PaFreeMemory(pHfoWwwAuth);
@@ -1819,6 +1845,7 @@ CcspCwmpTcpcrhoGenDigestResponse
     PHTTP_AUTH_CHALLENGE            pAuthChal    = NULL;
     PUCHAR                          pChalReq     = NULL;
     PHTTP_CHALLENGE_DIGEST          pDigestAuth  = NULL;
+    errno_t                         rc           = -1;
 
     pChalReq    =
         CcspCwmpTcpcrhoGenDigestChallenge
@@ -1850,7 +1877,12 @@ CcspCwmpTcpcrhoGenDigestResponse
 
         pAuthChal->AuthType = HTTP_AUTH_TYPE_DIGEST;
         pDigestAuth = &pAuthChal->Challenge.Digest;
-        AnscCopyString((char*)pDigestAuth->Realm, (char*)pChalReq);
+         rc = strcpy_s((char*)pDigestAuth->Realm, sizeof(pDigestAuth->Realm), (char*)pChalReq);
+         if(rc != EOK)
+         { 
+             ERR_CHK(rc);
+              return ANSC_STATUS_FAILURE;
+         }
 
         status = CcspCwmpTcpcrhoGenResponse((ANSC_HANDLE)pMyObject, buffer, pulSize, (ANSC_HANDLE)pHfoWwwAuth);
 
@@ -2249,6 +2281,10 @@ CcspCwmpTcpcrhoVerify
     PUCHAR                          pHostName    = NULL;
     PUCHAR                          pUriPath     = NULL;
     USHORT                          HostPort     = 0;
+    errno_t rc = -1;
+    int     ind = -1;
+
+    
 
     if ( !pAuthInfo )
     {
@@ -2281,7 +2317,9 @@ CcspCwmpTcpcrhoVerify
         }
         else if ( pPassword && pAuthInfo->pPassword )
         {
-            if ( AnscEqualString((char*)pPassword, (char*)pAuthInfo->pPassword, TRUE) )
+            rc = strcmp_s((char*)pAuthInfo->pPassword, strlen(pAuthInfo->pPassword), (char*)pPassword, &ind);
+            ERR_CHK(rc);
+            if((!ind) && (rc == EOK))
             {
                 status = ANSC_STATUS_SUCCESS;
             }
@@ -2317,14 +2355,16 @@ CcspCwmpTcpcrhoVerify
             status = ANSC_STATUS_BAD_AUTH_DATA;
             goto EXIT;
         }
-
-        if ( !AnscEqualString((char*)pAuthInfo->pRealm, (char*)pServerAuthRealm, TRUE) )
+        rc = strcmp_s((char*)pAuthInfo->pRealm, strlen(pAuthInfo->pRealm), (char*)pServerAuthRealm,&ind); 
+        ERR_CHK(rc);
+        if((ind) || (rc != EOK))
         {
             status = ANSC_STATUS_BAD_AUTH_DATA;
             goto EXIT;
         }
-
-        if ( !AnscEqualString((char*)pDigestInfo->pNonce, (char*)pServerNonce, TRUE) )
+        rc = strcmp_s((char*)pDigestInfo->pNonce, strlen(pDigestInfo->pNonce), (char*)pServerNonce,&ind);
+        ERR_CHK(rc);
+        if((ind) || (rc != EOK))
         {
             status = ANSC_STATUS_BAD_AUTH_DATA;
             goto EXIT;
@@ -2372,7 +2412,12 @@ CcspCwmpTcpcrhoVerify
         }
         else
         {
-            if ( AnscEqualString(pDigRep, (char*)pDigestInfo->pResponse, TRUE) )
+
+
+
+          rc = strcmp_s((char*)pDigestInfo->pResponse, strlen(pDigestInfo->pResponse), pDigRep,&ind);
+          ERR_CHK(rc);
+          if ((!ind) && (rc == EOK))
             {
                 status = ANSC_STATUS_SUCCESS;
             }
@@ -2607,5 +2652,6 @@ CcspCwmpTcpcrhoGenResResponse
 
     return status;
 }
+
 
 

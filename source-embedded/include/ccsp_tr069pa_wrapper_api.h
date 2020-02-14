@@ -239,6 +239,7 @@ CcspTr069PaCloneString(char* src)
         RDK_SAFECLIB_ERR();                                     \
     }
 
+/*This is required to support CiscoXB3 platform which cannot include safeclib due to the image size constraints */
 #ifdef SAFEC_DUMMY_API
 typedef int errno_t;
 #define EOK 0
@@ -255,6 +256,7 @@ typedef int errno_t;
  memset(dst,c,max);
 
 errno_t strcmp_s(const char *,int,const char *,int *);
+errno_t strcasecmp_s(const char * ,int , const char * ,int *);
 #endif
 
 #endif
