@@ -87,12 +87,22 @@ extern char* openssl_client_ca_certificate_files;
 #endif /* _ANSC_USE_OPENSSL_ */
 
 #ifdef SAFEC_DUMMY_API
-//adding strcmp_s defination
+/*This is required to support CiscoXB3 platform which cannot include safeclib due to the image size constraints */
+
+//adding strcmp_s definition
 errno_t strcmp_s(const char * d,int max ,const char * src,int *r)
 {
   *r= strcmp(d,src);
   return EOK;
 }
+
+//adding strcasecmp_s definition
+errno_t strcasecmp_s(const char * d,int max ,const char * src,int *r)
+{
+  *r= strcasecmp(d,src);
+  return EOK;
+}
+
 #endif
 
 /*
@@ -155,6 +165,7 @@ CcspCwmpAcscoConnect
     PHTTP_SIMPLE_CLIENT_OBJECT      pHttpClient     = (PHTTP_SIMPLE_CLIENT_OBJECT)pMyObject->hHttpSimpleClient;
     ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT       pWmpSession     = (PCCSP_CWMP_SESSION_OBJECT   )pMyObject->hCcspCwmpSession;
+    errno_t rc = -1;
 
     if ( pWmpSession )
     {
@@ -177,7 +188,12 @@ CcspCwmpAcscoConnect
             if ( pCcspCwmpCpeController->OutboundIfName && pCcspCwmpCpeController->OutboundIfName[0] 
                     &&  AnscSizeOfString(pCcspCwmpCpeController->OutboundIfName) < HTTP_MAX_DEVICE_NAME_SIZE)
             {
-                AnscCopyString(pHttpClient->Property.BindToDevice.DeviceName, pCcspCwmpCpeController->OutboundIfName);
+               rc = strcpy_s(pHttpClient->Property.BindToDevice.DeviceName, sizeof(pHttpClient->Property.BindToDevice.DeviceName) ,pCcspCwmpCpeController->OutboundIfName);
+               if(rc != EOK)
+               {
+                  ERR_CHK(rc);
+                  return  ANSC_STATUS_FAILURE;
+               }
             }
             else
             {

@@ -239,6 +239,7 @@ CcspCwmpAcsboEnrollObjects
 {
     PCCSP_CWMP_ACS_BROKER_OBJECT    pMyObject       = (PCCSP_CWMP_ACS_BROKER_OBJECT)hThisObject;
     PCCSP_CWMP_MSO_INTERFACE        pCcspCwmpMsoIf  = (PCCSP_CWMP_MSO_INTERFACE    )pMyObject->hCcspCwmpMsoIf;
+    errno_t rc = -1;
 
     if ( !pCcspCwmpMsoIf )
     {
@@ -253,7 +254,12 @@ CcspCwmpAcsboEnrollObjects
             pMyObject->hCcspCwmpMsoIf = (ANSC_HANDLE)pCcspCwmpMsoIf;
         }
 
-        AnscCopyString(pCcspCwmpMsoIf->Name, CCSP_CWMP_MSO_INTERFACE_NAME);
+       rc = strcpy_s(pCcspCwmpMsoIf->Name, sizeof(pCcspCwmpMsoIf->Name), CCSP_CWMP_MSO_INTERFACE_NAME);
+       if(rc != EOK)
+       {
+          ERR_CHK(rc);
+          return  ANSC_STATUS_FAILURE;
+       }
 
         pCcspCwmpMsoIf->InterfaceId      = CCSP_CWMP_MSO_INTERFACE_ID;
         pCcspCwmpMsoIf->hOwnerContext    = (ANSC_HANDLE)pMyObject;

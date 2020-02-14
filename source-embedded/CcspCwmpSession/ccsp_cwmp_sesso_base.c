@@ -304,6 +304,7 @@ CcspCwmpsoEnrollObjects
 													   = (PANSC_TDO_CLIENT_OBJECT      )pMyObject->hDelayedActiveNotifTimerIf;
     PCCSP_CWMP_MCO_INTERFACE        pCcspCwmpMcoIf     = (PCCSP_CWMP_MCO_INTERFACE     )pMyObject->hCcspCwmpMcoIf;
 
+    errno_t rc = -1;
     if ( !pSessionTimerObj )
     {
         pSessionTimerObj =
@@ -472,8 +473,12 @@ CcspCwmpsoEnrollObjects
             pMyObject->hCcspCwmpMcoIf = (ANSC_HANDLE)pCcspCwmpMcoIf;
         }
 
-        AnscCopyString(pCcspCwmpMcoIf->Name, CCSP_CWMP_MCO_INTERFACE_NAME);
-
+        rc = strcpy_s(pCcspCwmpMcoIf->Name, sizeof(pCcspCwmpMcoIf->Name), CCSP_CWMP_MCO_INTERFACE_NAME);
+        if(rc != EOK)
+        {
+                ERR_CHK(rc);
+                return ANSC_STATUS_FAILURE;
+        }
         pCcspCwmpMcoIf->InterfaceId            = CCSP_CWMP_MCO_INTERFACE_ID;
         pCcspCwmpMcoIf->hOwnerContext          = (ANSC_HANDLE)pMyObject;
         pCcspCwmpMcoIf->Size                   = sizeof(CCSP_CWMP_MCO_INTERFACE);

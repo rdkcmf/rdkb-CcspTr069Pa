@@ -128,6 +128,7 @@ CcspCwmpAcscoHttpBspPolish
     PHTTP_BMO_REQ_OBJECT             pBmoReqObj      = (PHTTP_BMO_REQ_OBJECT)hBmoReq;
     char                             pBuffer[64]     = { 0 };
     ULONG                            i, len          = 0;
+    errno_t                          rc              = -1;
 
     /* add Authorization header - last good one */
     if ( pMyObject->AuthHeaderValue )
@@ -152,19 +153,34 @@ CcspCwmpAcscoHttpBspPolish
     }
     else
     {
-    	char *cookies = (char *)CcspTr069PaAllocateMemory(len + pMyObject->NumCookies*2);
+        size_t  size_cookies    = len + pMyObject->NumCookies*2;
+    	char    *cookies        = (char *)CcspTr069PaAllocateMemory(size_cookies);
 
     	if (cookies) {
-        	AnscZeroMemory(cookies, len + pMyObject->NumCookies*2);
+        	AnscZeroMemory(cookies, size_cookies);
 
             for ( i = 0; i < pMyObject->NumCookies; i ++ )
             {
             	if ( pMyObject->Cookies[i] == NULL )
             		break;
 
-            	_ansc_strcat(cookies, pMyObject->Cookies[i]);
+                 rc = strcat_s(cookies, size_cookies, pMyObject->Cookies[i]);
+                if(rc!=EOK)
+               {
+                 ERR_CHK(rc);
+                 CcspTr069PaFreeMemory(cookies);
+                 return ANSC_STATUS_FAILURE;
+               }
             	if ( i < pMyObject->NumCookies - 1 )
-            		_ansc_strcat(cookies, "; ");
+                {
+                    rc = strcat_s(cookies, size_cookies, "; ");
+                    if(rc!=EOK)
+                    {
+                        ERR_CHK(rc);
+                        CcspTr069PaFreeMemory(cookies);
+                        return ANSC_STATUS_FAILURE;
+                    }
+                }
             }
 
             pBmoReqObj->SetHeaderValueByName
@@ -177,7 +193,6 @@ CcspCwmpAcscoHttpBspPolish
 			CcspTr069PaTraceDebug(("Add Cookie into message: %s\n", cookies));
 			CcspTr069PaFreeMemory(cookies);
     	}
-
     }
 
     /* When there is more than one envelope in a single HTTP Request,

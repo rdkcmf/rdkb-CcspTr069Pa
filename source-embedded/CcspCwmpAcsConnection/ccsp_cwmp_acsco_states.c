@@ -264,7 +264,9 @@ CcspCwmpAcscoSetAcsUrl
     )
 {
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pMyObject       = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)hThisObject;
-
+    errno_t  rc = -1;
+    size_t AcsUrlSize = AnscSizeOfString(pName) + 8;
+ 
     if(pMyObject->AcsUrl != NULL)
     {
         CcspTr069PaFreeMemory(pMyObject->AcsUrl);
@@ -285,15 +287,20 @@ CcspCwmpAcscoSetAcsUrl
 
     if( _ansc_strstr(pName, ACS_DSLF_CWMPS) == pName)
     {
-        pMyObject->AcsUrl = (PCHAR)CcspTr069PaAllocateMemory(AnscSizeOfString(pName) + 8);
+        pMyObject->AcsUrl = (PCHAR)CcspTr069PaAllocateMemory(AcsUrlSize);
 
         if( pMyObject->AcsUrl == NULL)
         {
             return ANSC_STATUS_RESOURCES;
         }
-
-        AnscCopyString(pMyObject->AcsUrl, "https");
-
+        rc = strcpy_s(pMyObject->AcsUrl, AcsUrlSize, "https");
+        if(rc != EOK)
+        {
+            ERR_CHK(rc);
+            CcspTr069PaFreeMemory(pMyObject->AcsUrl);
+            return  ANSC_STATUS_FAILURE;
+        }
+        
         AnscCopyMemory
             (
                 (PCHAR)(pMyObject->AcsUrl + AnscSizeOfString("https")),
@@ -303,15 +310,21 @@ CcspCwmpAcscoSetAcsUrl
     }
     else if( _ansc_strstr(pName, ACS_DSLF_CWMP) == pName)
     {
-        pMyObject->AcsUrl = (PCHAR)CcspTr069PaAllocateMemory(AnscSizeOfString(pName) + 8);
+        pMyObject->AcsUrl = (PCHAR)CcspTr069PaAllocateMemory(AcsUrlSize);
 
         if( pMyObject->AcsUrl == NULL)
         {
             return ANSC_STATUS_RESOURCES;
         }
-
-        AnscCopyString(pMyObject->AcsUrl, "http");
-
+        
+        rc = strcpy_s(pMyObject->AcsUrl, AcsUrlSize, "http");
+        if(rc != EOK)
+        {
+            ERR_CHK(rc);
+            CcspTr069PaFreeMemory(pMyObject->AcsUrl);
+            return  ANSC_STATUS_FAILURE;
+        }
+ 
         AnscCopyMemory
             (
                 (PCHAR)(pMyObject->AcsUrl + AnscSizeOfString("http")),
@@ -397,10 +410,13 @@ CcspCwmpAcscoSetUsername
 {
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pMyObject       = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)hThisObject;
     PHTTP_SIMPLE_CLIENT_OBJECT      pHttpClient     = (PHTTP_SIMPLE_CLIENT_OBJECT )pMyObject->hHttpSimpleClient;
+    errno_t rc = -1;
+    int ind = -1;
 
     if ( pName && pMyObject->Username )
     {
-        if ( AnscEqualString(pName, pMyObject->Username, TRUE ) )
+        rc = strcmp_s(pName, strlen(pName), pMyObject->Username, &ind);
+        if((!ind) && (rc == EOK))
         {
             return ANSC_STATUS_SUCCESS;
         }
@@ -502,10 +518,12 @@ CcspCwmpAcscoSetPassword
 {
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pMyObject       = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)hThisObject;
     PHTTP_SIMPLE_CLIENT_OBJECT      pHttpClient     = (PHTTP_SIMPLE_CLIENT_OBJECT )pMyObject->hHttpSimpleClient;
-
+    int ind = -1;
+    errno_t rc = -1;
     if ( pPassword && pMyObject->Password )
     {
-        if ( AnscEqualString(pPassword, pMyObject->Password, TRUE ) )
+        rc = strcmp_s(pPassword, strlen(pPassword), pMyObject->Password, &ind);
+        if ((!ind) && (rc == EOK))
         {
             return ANSC_STATUS_SUCCESS;
         }

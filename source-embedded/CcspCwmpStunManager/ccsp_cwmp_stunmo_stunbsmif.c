@@ -76,7 +76,6 @@
 
 #include "ccsp_cwmp_stunmo_global.h"
 
-
 typedef  struct
 _CCSP_CWMP_UDP_CONN_REQ_PARAMS
 {
@@ -331,6 +330,8 @@ CcspCwmpStunmoStunBsmRecvMsg1
     ULONG                           ulTextLen;
     ULONG                           ulTimestamp;
     ULONG                           ulMessageID;
+    errno_t                         rc = -1;
+    int                             ind = -1;
 
     CcspTr069PaTraceDebug(("CcspCwmpStunmoStunBsmRecvMsg1 - processing an imcoming UDP connection request ... \n"));
 
@@ -455,16 +456,19 @@ CcspCwmpStunmoStunBsmRecvMsg1
     }
 
     /* verify username */
+ ULONG CrParams_size  = AnscSizeOfString(CrParams.pUsername);
+
     pConnReqUsername = 
         CcspManagementServer_GetConnectionRequestUsername
             (
                 pCcspCwmpCpeController->PANameWithPrefix
             );
-
+    rc = strcmp_s(CrParams.pUsername,CrParams_size,pConnReqUsername,&ind);
+    ERR_CHK(rc);
     if ( (!pConnReqUsername && CrParams.pUsername)                              ||
-         ((pConnReqUsername && *pConnReqUsername != 0) && !CrParams.pUsername ) ||
-         (pConnReqUsername && CrParams.pUsername &&
-          !AnscEqualString(pConnReqUsername, CrParams.pUsername, TRUE)) )
+       ((pConnReqUsername && *pConnReqUsername != 0) && !CrParams.pUsername ) ||
+       (pConnReqUsername && CrParams.pUsername && ((ind) && (rc == EOK))))
+    
     {
         if ( pConnReqUsername )
         {
@@ -493,7 +497,12 @@ CcspCwmpStunmoStunBsmRecvMsg1
 
     if ( key.Length != 0 )
     {
-        AnscCopyString(key.Value[0], pConnReqPassword);
+       rc = strcpy_s(key.Value[0],sizeof(key.Value[0]),pConnReqPassword);
+       if(rc!=EOK)
+       {
+          ERR_CHK(rc);
+          return  ANSC_STATUS_FAILURE;
+       }
     }
 
     if ( pConnReqPassword )
@@ -515,14 +524,39 @@ CcspCwmpStunmoStunBsmRecvMsg1
         return  ANSC_STATUS_RESOURCES;
     }
 
-    AnscCopyString(pText,                               CrParams.pTimestamp);
-    AnscCopyString(pText+AnscSizeOfString(pText),       CrParams.pMessageID);
+    rc = strcpy_s(pText,ulTextLen + 2,CrParams.pTimestamp);
+    if(rc!=EOK)
+    {
+      ERR_CHK(rc);
+      CcspTr069PaFreeMemory(pText);
+      return  ANSC_STATUS_FAILURE;
+    }
+    rc = strcat_s(pText,ulTextLen + 2,CrParams.pMessageID);
+        if(rc!=EOK)
+    {
+      ERR_CHK(rc);
+      CcspTr069PaFreeMemory(pText);
+      return  ANSC_STATUS_FAILURE;
+    }
+
     if ( CrParams.pUsername )
     {
-        AnscCopyString(pText+AnscSizeOfString(pText),   CrParams.pUsername );
-    }
-    AnscCopyString(pText+AnscSizeOfString(pText),       CrParams.pCnonce   );
+        rc = strcat_s(pText,ulTextLen + 2,CrParams.pUsername);
+       if(rc!=EOK)
+      {
+         ERR_CHK(rc);
+         CcspTr069PaFreeMemory(pText);
+         return  ANSC_STATUS_FAILURE;
+      }
 
+    }
+    rc = strcat_s(pText,ulTextLen + 2, CrParams.pCnonce   );
+    if(rc!=EOK)
+    {
+         ERR_CHK(rc);
+          CcspTr069PaFreeMemory(pText);
+         return  ANSC_STATUS_FAILURE;
+    }
     hash.Length = ANSC_SHA1_OUTPUT_SIZE;
     AnscCryptoHmacSha1Digest
         (

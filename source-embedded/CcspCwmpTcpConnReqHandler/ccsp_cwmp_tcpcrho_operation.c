@@ -170,6 +170,7 @@ CcspCwmpTcpcrhoEngage
 
     ulEngineCount = 1;
     ulSocketCount = 4;
+    errno_t             rc = -1;
 
     pTcpServer    = (PANSC_DAEMON_SERVER_TCP_OBJECT)pMyObject->hTcpServer;
 
@@ -179,7 +180,12 @@ CcspCwmpTcpcrhoEngage
         CcspTr069PaTraceDebug(("Tcp host addr=%s:%d\n", 
                                pProperty->HostAddr,
                                pProperty->HostPort));
-        AnscCopyString(pTcpServer->HostName, pProperty->HostAddr);
+       rc = strcpy_s(pTcpServer->HostName, sizeof(pTcpServer->HostName), pProperty->HostAddr);
+       if(rc != EOK)
+       {
+          ERR_CHK(rc);
+          return ANSC_STATUS_FAILURE;
+       }
 #else
         CcspTr069PaTraceInfo(("Tcp host addr=%d.%d.%d.%d:%d\n", 
                                pProperty->HostAddress.Dot[0],

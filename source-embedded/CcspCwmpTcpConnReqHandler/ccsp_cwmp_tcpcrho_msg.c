@@ -666,11 +666,15 @@ CcspCwmpTcpcrhoMatchSession
     ULONG                           ulVOffset;
     ULONG                           ulVLen;
     ULONG                           ulSID = 0;
-
+    errno_t                          rc = -1;
+    int                              ind = -1;
 #ifdef _ANSC_IPV6_COMPATIBLE_
-    if ( pMyObject->AuthSessionInfo.RemoteAddress != NULL &&
-         !AnscEqualString(pWebSocket->PeerAddr, pMyObject->AuthSessionInfo.RemoteAddress, FALSE) )
+rc = strcasecmp_s(pMyObject->AuthSessionInfo.RemoteAddress,sizeof(pMyObject->AuthSessionInfo.RemoteAddress),pWebSocket->PeerAddr,&ind);
+ERR_CHK(rc);
+ if ( pMyObject->AuthSessionInfo.RemoteAddress != NULL &&
+        (!(!ind) && (rc == EOK)))
 #else
+
     if ( pMyObject->AuthSessionInfo.RemoteAddr != 0 &&
          pWebSocket->PeerAddress.Value != pMyObject->AuthSessionInfo.RemoteAddr )
 #endif

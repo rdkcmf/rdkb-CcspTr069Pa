@@ -368,15 +368,17 @@ CcspCwmpsoInform
 
     BOOL                            bValChange           = FALSE;
     BOOL                            bBootStrap           = FALSE;
-	static int bFirstInform = 1;
-	static char Manufacturer[100];
-	static char ManufacturerOUI[100];
-	static char ProductClass[100];
+    static int bFirstInform = 1;
+    static char Manufacturer[100];
+    static char ManufacturerOUI[100];
+    static char ProductClass[100];
     static char ProvisioningCode[100];
-	static char SerialNumber[100];
-	static char DeviceSummary[100];
-	static char HardwareVersion[100];
-	static char SoftwareVersion[256];
+    static char SerialNumber[100];
+    static char DeviceSummary[100];
+    static char HardwareVersion[100];
+    static char SoftwareVersion[256];
+    errno_t     rc =  -1;
+    int         ind = -1;
 
     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->GetCwmpRpcTimeout )
     {
@@ -558,8 +560,9 @@ else
      *
      */
     ulPresetParamCount = 0;
-
-    if ( AnscEqualString(pRootObjName, "Device.", FALSE) )
+    rc = strcasecmp_s("Device.",strlen("Device."),pRootObjName,&ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         ULONG                       ulDevDMVerMajor  = 1, ulDevDMVerMinor = 0;
         BOOL                        bDevice20OrLater = FALSE;
@@ -634,7 +637,9 @@ else
     // for "O BOOTSTRAP", all parameters are treated as in their original values, thus all "4 VALUE CHANGE" should be suppressed.
     for( i = 0; i < pMyObject->EventCount; i ++)
     { 
-        if ( AnscEqualString(((PCCSP_CWMP_EVENT)pMyObject->EventArray[i])->EventCode, CCSP_CWMP_INFORM_EVENT_NAME_Bootstrap, TRUE) )
+        rc = strcmp_s(CCSP_CWMP_INFORM_EVENT_NAME_Bootstrap,strlen(CCSP_CWMP_INFORM_EVENT_NAME_Bootstrap),((PCCSP_CWMP_EVENT)pMyObject->EventArray[i])->EventCode,&ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
         {
             bBootStrap = TRUE;
             break;
@@ -669,12 +674,9 @@ else
             
                 for ( j = 0; j < ulPresetParamCount; j++ )
                 {
-                    if ( AnscEqualString
-                        (
-                            pMyObject->ModifiedParamArray[i],
-                            pCwmpParamValueArray[j].Name,
-                            TRUE
-                        ) )
+                    rc = strcmp_s(pMyObject->ModifiedParamArray[i],sizeof(pMyObject->ModifiedParamArray[i]),pCwmpParamValueArray[j].Name,&ind);
+                    ERR_CHK(rc);
+                    if((!ind) && (rc == EOK))
                     {
                         if ( CCSP_CWMP_NOTIFICATION_off != 
                             pCcspCwmpProcessor->CheckParamAttrCache
@@ -834,11 +836,12 @@ else
                 else { // parameter value is empty
                     CcspTr069PaFreeMemory(pValue); /*RDKB-7326, CID-33499, free resource before exit*/
                     pValue = NULL;
-                    if (_ansc_strcmp(pCwmpParamValueArray[i].Name, "Device.ManagementServer.ConnectionRequestURL") == 0)
-                    {
+                   rc = strcmp_s("Device.ManagementServer.ConnectionRequestURL",strlen("Device.ManagementServer.ConnectionRequestURL"),pCwmpParamValueArray[i].Name,&ind);
+                   if((rc == EOK) && (!ind))
+                   {
                         returnStatus = ANSC_STATUS_FAILURE;
                         goto EXIT1;
-                    }
+                   }
                 }
                 /*RDKB-7326, CID-33499, free resource before exit*/
                 if(pValue)
@@ -866,12 +869,9 @@ bFirstInform = 0;
         /* check if this parameter has been included */
         for ( j = 0; j < ulParamIndex; j++ )
         {
-           if ( AnscEqualString
-               (
-                   pPName,
-                   pCwmpParamValueArray[j].Name,
-                   TRUE
-               ) )
+            rc = strcmp_s(pPName, strlen(pPName), pCwmpParamValueArray[j].Name, &ind);
+            ERR_CHK(rc);
+            if((!ind) && (rc == EOK))
             {
                 break;
             }
@@ -891,9 +891,16 @@ bFirstInform = 0;
 
 		    if ( pValue )
 		    {
-			    bValue = 
-				    !(AnscEqualString(pValue, "0", TRUE) || AnscEqualString(pValue, "false", FALSE)) ||
-                            AnscEqualString(pValue, "TRUE", FALSE);
+                           errno_t  rc1 = -1,rc2 = -1;
+                           int  notZero = -1, notfalse = -1, notTRUE = -1;
+                           rc = strcmp_s("0",strlen("0"),pValue,&notZero);
+                           rc1 = strcasecmp_s("false",strlen("false"),pValue,&notfalse);
+                           rc2 = strcasecmp_s("TRUE",strlen("TRUE"),pValue,&notTRUE);
+ 
+                            if ((rc == EOK)  && (rc1 == EOK) && (rc2 == EOK))
+                            {
+                                 bValue = (!((!notZero) || (!notfalse)) || (!notTRUE));
+                            } 
                             CcspTr069PaFreeMemory(pValue);
                             pValue = NULL;
 		    }
@@ -928,12 +935,8 @@ bFirstInform = 0;
             /* check if this parameter has been included */
             for ( j = 0; j < ulParamIndex; j++ )
             {
-                if ( AnscEqualString
-                     (
-                      pDefWanConnection,
-                      pCwmpParamValueArray[j].Name,
-                      TRUE
-                      ) )
+                rc = strcmp_s(pCwmpParamValueArray[j].Name,strlen(pCwmpParamValueArray[j].Name), pDefWanConnection, &ind);
+                if((!ind) && (rc == EOK))
                 {
                     break;
                 }

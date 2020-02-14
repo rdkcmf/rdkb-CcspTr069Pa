@@ -125,7 +125,9 @@ CcspTr069PaSsp_XML_GetMultipleItemWithSameName
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode         = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     char                            buffer[512]        = {0};
-    ULONG                           uLength            = 511; 
+    ULONG                           uLength            = 511;
+    errno_t rc       = -1;
+    int     ind      = -1;  
     
     if (pRootNode && ItemName && retVal)
     {
@@ -136,7 +138,9 @@ CcspTr069PaSsp_XML_GetMultipleItemWithSameName
         
         while( pChildNode != NULL)
         {
-            if (AnscEqualString(pChildNode->Name, ItemName, TRUE))
+            rc = strcmp_s(ItemName,strlen(ItemName),pChildNode->Name,&ind);
+            ERR_CHK(rc);
+            if((ind == 0) && (rc == EOK))
             {
                 uLength = 511;  // uLength: passes in max buffer length; gets out actual length
                 
@@ -559,7 +563,13 @@ CcspTr069PaSsp_GetTr069CertificateLocationForSyndication
 			
 			if( NULL != *ppretTr069CertLocation )
 			{
-				AnscCopyString( *ppretTr069CertLocation, fileContent );
+                                rc = strcpy_s(*ppretTr069CertLocation,strlen( fileContent )  + 1,fileContent);
+                                if( rc!=EOK)
+                                {    
+                                  ERR_CHK(rc);
+                                  return ANSC_STATUS_FAILURE;
+                                }
+                                
 				CcspTr069PaTraceWarning(("%s %d - Syndication TR69CertLocation %s\n", __FUNCTION__, __LINE__, *ppretTr069CertLocation ));
 			}
 			else

@@ -129,6 +129,9 @@ CcspCwmpsoAddCwmpEvent
     PCCSP_CWMP_EVENT                pCcspCwmpEventExist= (PCCSP_CWMP_EVENT           )NULL;
     BOOL                            bExist             = FALSE;
     ULONG                           i                  = 0;
+    errno_t   rc  =   -1,rc1 =-1;
+    int ind = -1, ind1 = -1;
+
 
     if ( pMyObject->EventCount >= CCSP_CWMPSO_MAX_EVENT_NUMBER )
     {
@@ -146,8 +149,9 @@ CcspCwmpsoAddCwmpEvent
             for( i = 0; i < pMyObject->EventCount; i ++)
             {
                 pCcspCwmpEventExist = (PCCSP_CWMP_EVENT)pMyObject->EventArray[i];
-
-                if( AnscEqualString(pCcspCwmpEvent->EventCode, pCcspCwmpEventExist->EventCode, TRUE))
+                    rc = strcmp_s(pCcspCwmpEvent->EventCode, strlen(pCcspCwmpEvent->EventCode), pCcspCwmpEventExist->EventCode,&ind);
+                    ERR_CHK(rc);
+                 if((!ind) && (rc == EOK))
                 {
                     bExist = TRUE;
 
@@ -160,29 +164,41 @@ CcspCwmpsoAddCwmpEvent
         else 
         if ( pCcspCwmpEvent->EventCode[0] >= 'M' )
         {
+            BOOL check = FALSE;
             for( i = 0; i < pMyObject->EventCount; i ++)
             {
                 pCcspCwmpEventExist = (PCCSP_CWMP_EVENT)pMyObject->EventArray[i];
-
-                if ( AnscEqualString(pCcspCwmpEvent->EventCode, pCcspCwmpEventExist->EventCode, TRUE) &&
-                     ( (!pCcspCwmpEvent->CommandKey && !pCcspCwmpEventExist->CommandKey) || 
-                        (pCcspCwmpEvent->CommandKey && pCcspCwmpEventExist->CommandKey &&
-                         AnscEqualString(pCcspCwmpEvent->CommandKey, pCcspCwmpEventExist->CommandKey, TRUE)) ) )
+                check = FALSE;
+                rc = strcmp_s(pCcspCwmpEvent->EventCode, strlen(pCcspCwmpEvent->EventCode), pCcspCwmpEventExist->EventCode, &ind);
+                ERR_CHK(rc);                
+                if((rc == EOK) && (!ind))
+                {
+                    if((!pCcspCwmpEvent->CommandKey && !pCcspCwmpEventExist->CommandKey))
+                    {
+                        check = TRUE;
+                    }
+                }
+                if(check == FALSE)
+                {
+                    if(pCcspCwmpEvent->CommandKey && pCcspCwmpEventExist->CommandKey)
+                    {
+                        rc = strcmp_s(pCcspCwmpEvent->CommandKey, strlen(pCcspCwmpEvent->CommandKey), pCcspCwmpEventExist->CommandKey, &ind);
+                        ERR_CHK(rc);
+                        if(rc == EOK && (!ind))
+                        {
+                            check = TRUE;
+                        }
+                    }
+                }
+                if(check == TRUE)
                 {
                     bExist = TRUE;
 
-                    CcspTr069PaTraceWarning
-                        ((
-                            "The event '%s' with CommandKey '%s' is already there, discarded.\n", 
-                            pCcspCwmpEvent->EventCode,
-                            pCcspCwmpEvent->CommandKey
-                        ));
-
+                    CcspTr069PaTraceWarning(("The event '%s' with CommandKey '%s' is already there, discarded.\n", pCcspCwmpEvent->EventCode, pCcspCwmpEvent->CommandKey));
                     break;
                 }
             }
         }
-
         if( !bExist )
         {
   		    pMyObject->EventArray[pMyObject->EventCount++] = (ANSC_HANDLE)pCcspCwmpEvent;
@@ -203,12 +219,15 @@ CcspCwmpsoAddCwmpEvent
 		BOOL							bInformDelayed  = FALSE;
         PCCSP_CWMP_EVENT                pFirstEvent     = (PCCSP_CWMP_EVENT)pMyObject->EventArray[0];
 	
-		/* Active Notification Throttling */	
-		if ( pMyObject->EventCount == 1 /* "4 VALUE CHANGE" event is the only one to trigger Inform */ && 
-			 AnscEqualString(pFirstEvent->EventCode, CCSP_CWMP_INFORM_EVENT_NAME_ValueChange, TRUE) &&
-			 pProperty->DefActiveNotifThrottle != 0 && 
-			 pProperty->LastActiveNotifTime != 0 )
-		{
+		/* Active Notification Throttling */
+                if ( pMyObject->EventCount == 1 /* "4 VALUE CHANGE" event is the only one to trigger Inform */ && 
+                   pProperty->DefActiveNotifThrottle != 0 && 
+                   pProperty->LastActiveNotifTime != 0 )
+                {
+                  rc = strcmp_s(CCSP_CWMP_INFORM_EVENT_NAME_ValueChange,strlen(CCSP_CWMP_INFORM_EVENT_NAME_ValueChange),pFirstEvent->EventCode,&ind);
+                  ERR_CHK(rc);
+                  if((rc == EOK) && (!ind))
+                  {
 			/* calculate the delay inform timer interval */
 			ULONG						ulTimeNow = AnscGetTickInSeconds();
 			ULONG						ulDelta   = 0;
@@ -229,17 +248,17 @@ CcspCwmpsoAddCwmpEvent
 
 				ulInterval = pProperty->DefActiveNotifThrottle - ulDelta;
  
-    			CcspTr069PaTraceDebug(("Active notification will be delayed by %u seconds\n", ulInterval));
+    			        CcspTr069PaTraceDebug(("Active notification will be delayed by %u seconds\n", ulInterval));
 
-                if ( !pMyObject->bDelayedActiveNotifTimerScheduled )
-                {
-		            pDelayedActiveNotifTimerObj->SetInterval((ANSC_HANDLE)pDelayedActiveNotifTimerObj, ulInterval * 1000);
-	    	        pDelayedActiveNotifTimerObj->Start((ANSC_HANDLE)pDelayedActiveNotifTimerObj);
-    				pMyObject->bDelayedActiveNotifTimerScheduled = TRUE;
-                }
+                                if ( !pMyObject->bDelayedActiveNotifTimerScheduled )
+                                {
+		                    pDelayedActiveNotifTimerObj->SetInterval((ANSC_HANDLE)pDelayedActiveNotifTimerObj, ulInterval * 1000);
+	    	                    pDelayedActiveNotifTimerObj->Start((ANSC_HANDLE)pDelayedActiveNotifTimerObj);
+    			            pMyObject->bDelayedActiveNotifTimerScheduled = TRUE;
+                                }
  			}
-		}
-
+		  }
+                }
 
 		if ( !bInformDelayed )
 		{
@@ -305,6 +324,8 @@ CcspCwmpsoDiscardCwmpEvent
     PCCSP_CWMP_EVENT                pCcspCwmpEvent     = (PCCSP_CWMP_EVENT           )NULL;
     ULONG                           i                  = 0;
     ULONG                           j                  = 0;
+    errno_t rc = -1,rc1 = -1;
+    int ind =-1,ind1 = -1;
 
     /*
      * According to WT151, only the event "6 CONNECTIONREQUEST" must NOT retry delivery and it's a
@@ -316,12 +337,17 @@ CcspCwmpsoDiscardCwmpEvent
     { 
         pCcspCwmpEvent = (PCCSP_CWMP_EVENT)pMyObject->EventArray[i];
 
-        if ( ( EventCode == CCSP_CWMPSO_EVENTCODE_ConnectionRequest && 
-             AnscEqualString(pCcspCwmpEvent->EventCode, CCSP_CWMP_INFORM_EVENT_NAME_ConnectionRequest, TRUE) ) ||
-             ( EventCode == CCSP_CWMPSO_EVENTCODE_ValueChange && 
-             AnscEqualString(pCcspCwmpEvent->EventCode, CCSP_CWMP_INFORM_EVENT_NAME_ValueChange, TRUE) ) )
+  rc = strcmp_s(CCSP_CWMP_INFORM_EVENT_NAME_ConnectionRequest,strlen(CCSP_CWMP_INFORM_EVENT_NAME_ConnectionRequest),pCcspCwmpEvent->EventCode,&ind);
+  ERR_CHK(rc);
+  rc1 = strcmp_s(CCSP_CWMP_INFORM_EVENT_NAME_ValueChange,strlen(CCSP_CWMP_INFORM_EVENT_NAME_ValueChange),pCcspCwmpEvent->EventCode,&ind1);
+  ERR_CHK(rc1);
+        if ( ( EventCode == CCSP_CWMPSO_EVENTCODE_ConnectionRequest &&
+             ((!ind) && (rc == EOK)) ) ||
+             ( EventCode == CCSP_CWMPSO_EVENTCODE_ValueChange &&
+             ((!ind1) && (rc1 == EOK)) ) )
 
         {
+
             if ( EventCode == CCSP_CWMPSO_EVENTCODE_ConnectionRequest )
             {
                 CcspTr069PaTraceWarning(("Before the session retry, the event '%s' was discarded.\n", CCSP_CWMP_INFORM_EVENT_NAME_ConnectionRequest));
@@ -464,6 +490,8 @@ CcspCwmpsoAddModifiedParameter
     PCCSP_CWMP_PROCESSOR_OBJECT     pCcspCwmpProcessor  	= (PCCSP_CWMP_PROCESSOR_OBJECT)pMyObject->hCcspCwmpProcessor;
     ULONG                           i                  		= 0;
     ULONG                           bExist             		= FALSE;
+    errno_t rc       = -1;
+    int     ind      = -1;
 
     CcspTr069PaTraceDebug(("AddModifiedParameter - '%s'\n", pParamName));
 
@@ -478,12 +506,9 @@ CcspCwmpsoAddModifiedParameter
     {
         if ( pMyObject->ModifiedParamArray[i] )
         {
-            if ( AnscEqualString
-                    (
-                        pParamName,
-                        pMyObject->ModifiedParamArray[i],
-                        TRUE
-                    ) )
+            rc = strcmp_s(pMyObject->ModifiedParamArray[i],sizeof(pMyObject->ModifiedParamArray[i]),pParamName,&ind);
+            ERR_CHK(rc);
+            if((!ind) && (rc == EOK))
             {
                 bExist = TRUE;
 
@@ -618,28 +643,41 @@ CcspCwmpIsUndiscardedEvent
         char*                       eventName
     )
 {
+    errno_t rc   = -1;
+    int     ind  = -1;
     /*
      *  According to WT151, the events "2 PERIODIC", "3 SCHEDULED", "7 TRANSFERCOMPLETE"
      *  and the ones start with "M" won't be discarded
      */
-    if( AnscEqualString(eventName, CCSP_CWMP_INFORM_EVENT_NAME_Peroidic, TRUE))
+    rc = strcmp_s(CCSP_CWMP_INFORM_EVENT_NAME_Peroidic,strlen(CCSP_CWMP_INFORM_EVENT_NAME_Peroidic), eventName,&ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         return TRUE;
     }
-    else if( AnscEqualString(eventName, CCSP_CWMP_INFORM_EVENT_NAME_Scheduled, TRUE))
+    else
     {
-        return TRUE;
-    }
-    else if( AnscEqualString(eventName, CCSP_CWMP_INFORM_EVENT_NAME_TransferComplete, TRUE))
-    {
-        return TRUE;
-    }
-    else if( eventName[0] == 'M')
-    {
-        return TRUE;
-    }
-
-    return FALSE;
+       rc =  strcmp_s(CCSP_CWMP_INFORM_EVENT_NAME_Scheduled,strlen(CCSP_CWMP_INFORM_EVENT_NAME_Scheduled), eventName,&ind);
+       ERR_CHK(rc);
+       if((!ind) && (rc == EOK))
+       {
+	   return TRUE;
+       }
+       else
+       {
+           rc = strcmp_s(CCSP_CWMP_INFORM_EVENT_NAME_TransferComplete,strlen(CCSP_CWMP_INFORM_EVENT_NAME_TransferComplete), eventName,&ind);
+           ERR_CHK(rc);
+	   if((!ind) && (rc == EOK))
+	   {
+	       return TRUE;
+	   }
+    	   else if(eventName[0] == 'M')
+	   {
+	       return TRUE;
+           }
+        }
+     }
+    return FALSE; 
 }
 
 ANSC_STATUS
@@ -658,7 +696,6 @@ CcspCwmpsoSaveCwmpEvent
     ULONG                           i                  = 0;
     ULONG                           uLength            = 0;
     char*                           pRootObjName       = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
-    BOOL                            bRootDevice        = AnscEqualString(pRootObjName, DM_ROOTNAME, FALSE);
 
     /*
      * All the undiscarded events will be saved in a string seperated by a ',' and put as 
