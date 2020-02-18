@@ -81,6 +81,9 @@
 #include "stdio.h"
 #include "dslh_definitions_database.h"
 
+// TELEMETRY 2.0 //RDKB-25996
+#include <telemetry_busmessage_sender.h>
+
 #define TEMP_SIZE 23
 
 char *CcspManagementServer_ComponentName = NULL;
@@ -2565,7 +2568,10 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 		memset( cmd, 0, sizeof( cmd ) );
 		AnscTraceWarning((" TR069 %s %d : ManagementServerConnectionRequestPasswordID Changed\n", __FUNCTION__, __LINE__));
 		if (access(CCSP_MGMT_CRPWD_FILE,F_OK)!=0)
+			{
 			AnscTraceWarning((" TR069 %s %d : %s file is not generated\n", __FUNCTION__, __LINE__,CCSP_MGMT_CRPWD_FILE));
+			t2_event_d("SYS_ERROR_NotGenMgmtCRPwdID", 1);
+			}
 	}
 	else if ( ManagementServerSTUNPasswordID == parameterID )
 	{
