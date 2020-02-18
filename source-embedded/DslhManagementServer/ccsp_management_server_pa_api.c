@@ -81,6 +81,10 @@
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
 #define TR69_DEFAULT_URL_FILE "/etc/url"
 
+#define MAX_BUF_SIZE 256
+// TELEMETRY 2.0 //RDKB-25996
+#include <telemetry_busmessage_sender.h>
+
 #if defined (INTEL_PUMA7)
 //Intel Proposed RDKB Generic Bug Fix from XB6 SDK
 #define NO_OF_RETRY 90                 /* No of times the management server will wait before giving up*/
@@ -262,7 +266,10 @@ void ReadTr69TlvData()
                         CcspManagementServer_Free(acsURL);
 
 			if (access(CCSP_MGMT_CRPWD_FILE,F_OK)!=0)
+				{
 				AnscTraceWarning(("%s -#-  %s file is missing in normal boot scenario\n", __FUNCTION__, CCSP_MGMT_CRPWD_FILE));
+                        	t2_event_d("SYS_ERROR_MissingMgmtCRPwdID", 1);
+				}
 
 			/* If TR69Enabled is already enabled, then no need to read URL.
 		   	Update only EnableCWMP value to bbhm. */
@@ -575,6 +582,7 @@ CcspManagementServer_GetURL
     if ( pStr && AnscSizeOfString(pStr) > 0 )
     {
         AnscTraceWarning(("%s -#- ManagementServerURLID_PSM: %s\n", __FUNCTION__, pStr));
+	t2_event_s("acs_split", pStr);				
         return  CcspManagementServer_CloneString(pStr);
     }
     else
