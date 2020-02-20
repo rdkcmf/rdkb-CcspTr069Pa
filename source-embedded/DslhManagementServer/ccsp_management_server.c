@@ -81,6 +81,7 @@
 #include "ansc_string.h"
 #include "stdio.h"
 #include "dslh_definitions_database.h"
+#include "secure_wrapper.h"
 
 // TELEMETRY 2.0 //RDKB-25996
 #include <telemetry_busmessage_sender.h>
@@ -2649,25 +2650,15 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 	
 	if( ManagementServerPasswordID == parameterID )
 	{
-		char cmd[ 512 ] = { 0 };
-		sprintf( cmd, 
-				 "echo %s > /tmp/tempMSPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSPwdFile ; rm -rf /tmp/tempMSPwdFile", 
+		v_secure_system("echo %s > /tmp/tempMSPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSPwdFile ; rm -rf /tmp/tempMSPwdFile", 
 				 pString );
-		system( cmd );
-                rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
-		ERR_CHK(rc);
-                AnscTraceWarning((" TR069 %s %d : ManagementServerPasswordID Changed\n", __FUNCTION__, __LINE__));
+		AnscTraceWarning((" TR069 %s %d : ManagementServerPasswordID Changed\n", __FUNCTION__, __LINE__));
 	}
 	else if ( ManagementServerConnectionRequestPasswordID == parameterID )
 	{
-		char cmd[ 512 ] = { 0 };
-		sprintf( cmd, 
-				 "echo %s > /tmp/tempMSCRPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSCRPwdFile; rm -rf /tmp/tempMSCRPwdFile", 
+		v_secure_system( "echo %s > /tmp/tempMSCRPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSCRPwdFile; rm -rf /tmp/tempMSCRPwdFile", 
 				 pString );
-		system( cmd );
-                rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
-		ERR_CHK(rc);
-                AnscTraceWarning((" TR069 %s %d : ManagementServerConnectionRequestPasswordID Changed\n", __FUNCTION__, __LINE__));
+		AnscTraceWarning((" TR069 %s %d : ManagementServerConnectionRequestPasswordID Changed\n", __FUNCTION__, __LINE__));
 		if (access(CCSP_MGMT_CRPWD_FILE,F_OK)!=0)
 			{
 			AnscTraceWarning((" TR069 %s %d : %s file is not generated\n", __FUNCTION__, __LINE__,CCSP_MGMT_CRPWD_FILE));
@@ -2676,14 +2667,9 @@ int CcspManagementServer_StoreMGMTServerPasswordValuesintoDB( char *pString, int
 	}
 	else if ( ManagementServerSTUNPasswordID == parameterID )
 	{
-		char cmd[ 512 ] = { 0 };
-		sprintf( cmd, 
-				 "echo %s > /tmp/tempMSSTUNPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSSTUNPwdFile; rm -rf /tmp/tempMSSTUNPwdFile", 
+		v_secure_system("echo %s > /tmp/tempMSSTUNPwdFile; mkdir -p /nvram/.keys; SaveConfigFile /tmp/tempMSSTUNPwdFile; rm -rf /tmp/tempMSSTUNPwdFile", 
 				 pString );
-		system( cmd );
-                rc = memset_s(cmd, sizeof(cmd), 0, sizeof(cmd));
-		ERR_CHK(rc);
-                AnscTraceWarning((" TR069 %s %d : ManagementServerSTUNPasswordID Changed\n", __FUNCTION__, __LINE__));
+		AnscTraceWarning((" TR069 %s %d : ManagementServerSTUNPasswordID Changed\n", __FUNCTION__, __LINE__));
 	}
 
 	return returnStatus;

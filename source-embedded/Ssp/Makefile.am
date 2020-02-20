@@ -97,4 +97,4 @@ CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.
     ../Ccsp_CustomMapper/ccsp_alias_mgr_base.c \
     ../Ccsp_CustomMapper/ccsp_alias_mgr_helper.c
 
-CcspTr069PaSsp_LDFLAGS = -lccsp_common -lsyscfg -lsysevent -lutapi -lutctx -lcrypto
+CcspTr069PaSsp_LDFLAGS = -lccsp_common -lsyscfg -lsysevent -lutapi -lutctx -lcrypto -lsecure_wrapper
