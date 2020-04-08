@@ -1705,13 +1705,22 @@ CcspCwmppoProcessPvcSignal
     {
         pVC = val + i;
 
-        CcspTr069PaTraceInfo
+
+        /* Security Requiremnt: Log messages must not disclose any confidential data
+           like cryptographic keys and password. So don't save Passphrase on log message.
+         */
+        if ( NULL == strstr(pVC->parameterName, "Passphrase" ) ) {
+ 	    CcspTr069PaTraceInfo
             ((
                 "  processing VC on namespace=<%s>, new val=<%s>, old val=<%s>.\n", 
                 pVC->parameterName, 
                 pVC->newValue ? pVC->newValue : "",
                 pVC->oldValue ? pVC->oldValue : ""
             ));
+	}
+        else {
+           CcspTr069PaTraceInfo((" processing VC on namespace=<%s> but not printing new and old values as it will disclose the confidential information.\n", pVC->parameterName ));
+        }
 
         if ( _ansc_strstr(pVC->parameterName, CCSP_NS_CHANGEDUSTATE) == pVC->parameterName )
         {
