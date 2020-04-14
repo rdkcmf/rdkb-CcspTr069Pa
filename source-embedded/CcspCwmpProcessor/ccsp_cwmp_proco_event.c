@@ -330,7 +330,7 @@ int checkIfSystemReady(void)
     activities  (that, otherwise, would be done by CcspCwmppoSysReadySignalCB callback) 
     here in case of Rbus.  */
   
-    if ((val == 1) && access("/nvram/rbus", F_OK) == 0)  
+    if ((val == 1) && access("/nvram/rbus_support", F_OK) == 0)  
     {
        // Touch a file to indicate that tr069 can proceed with further
 	if (access("/var/tmp/tr069paready", F_OK) != 0)
