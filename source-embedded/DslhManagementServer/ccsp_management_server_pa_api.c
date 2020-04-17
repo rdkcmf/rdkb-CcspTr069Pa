@@ -1128,16 +1128,25 @@ CcspManagementServer_GetACSOverride
     errno_t rc  = -1;
     int ind = -1;
    
-    rc = strcasecmp_s("0",strlen("0"),objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value,&ind);
-    if ( rc != EOK || ind )
+    if(objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value != NULL)
     {
-        rc = strcasecmp_s("false",strlen("false"),objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value,&ind);
+        rc = strcasecmp_s("0",strlen("0"),objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value,&ind);
+        ERR_CHK(rc);
+        if ( rc != EOK || ind )
+        {
+            rc = strcasecmp_s("false",strlen("false"),objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value,&ind);
+            ERR_CHK(rc);
+        }
+        if ( rc == EOK && !ind )
+        {
+            return FALSE;
+        }
     }
-    if ( rc == EOK && !ind )
+    else
     {
-       return FALSE;
+       CcspTr069PaTraceWarning(("WARNING : ManagementServerID - %d, ACSOverride == NULL %s:%d\n", ManagementServerID, __FUNCTION__, __LINE__));
     }
-    else return TRUE;
+    return TRUE;
 }
 
 CCSP_STRING
