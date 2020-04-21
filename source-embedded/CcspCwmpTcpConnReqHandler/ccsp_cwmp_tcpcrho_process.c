@@ -226,7 +226,8 @@ CcspCwmpTcpcrhoProcessRequest
                 else
                 {
                     /* cancel session backoff retry */
-                    pCcspCwmpCpeController->InformNow((ANSC_HANDLE)pCcspCwmpCpeController);
+//                  pCcspCwmpCpeController->InformNow((ANSC_HANDLE)pCcspCwmpCpeController); 
+                    /* RDKB-28090 - InformNow() prior to Inform() causing race condition and timeout error */
 
                     status = 
                         pCcspCwmpMsoIf->Inform
@@ -236,6 +237,8 @@ CcspCwmpTcpcrhoProcessRequest
                                 NULL,
                                 pCcspCwmpCpeController->bBootInformSent
                             );
+
+                    pCcspCwmpCpeController->InformNow((ANSC_HANDLE)pCcspCwmpCpeController);
                 }
             }
         }
