@@ -1844,7 +1844,7 @@ CcspCwmppoMpaGetParameterValues
 
                     const char *WiFiAccessPoint3[WIFI_KEYPASSPHRASE_SET1] = {"Device.WiFi.AccessPoint.10004.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10104.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10002.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10102.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10006.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10106.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10007.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10107.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10002.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.10102.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.10004.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.10104.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.10006.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.10106.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.10007.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.10107.Security.X_COMCAST-COM_KeyPassphrase"};
 
-                     for(n = 0; n < WIFI_KEYPASSPHRASE_SET1; n++)
+                     for(i = 0; i < WIFI_KEYPASSPHRASE_SET1; i++)
                      {
                          rc = strcmp_s(WiFiAccessPoint3[i], strlen(WiFiAccessPoint3[i]), pParamValues[k]->parameterName, &ind);
                          ERR_CHK(rc);
