@@ -282,6 +282,11 @@ void waitUntilSystemReady(	void*	cbContext)
 			{
 				CcspTr069PaTraceInfo(("Checked CR - System is ready, proceed with tr069 start up\n"));
 				system("touch /var/tmp/tr069paready");
+				/* The checkIfSystemReady() returns true, then the file pointer will be NULL.
+				 * So, breaking from here will never start the CcspCwmppoProcessSysReadySignal();
+				 * We must call from here as it is going to create a thread and return;
+				 */
+				CcspCwmppoProcessSysReadySignal( cbContext );
 				break;
 				//Break out, System ready signal already delivered
 			}
