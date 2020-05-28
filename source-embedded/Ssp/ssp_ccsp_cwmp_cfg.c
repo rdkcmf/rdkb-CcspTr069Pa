@@ -79,7 +79,7 @@
 #include "ansc_xml_dom_parser_interface.h"
 #include "ansc_xml_dom_parser_external_api.h"
 #include "ansc_xml_dom_parser_status.h"
-#include "cJSON.h"
+#include "cjson/cJSON.h"
 
 extern  CCSP_CWMP_CFG_INTERFACE                          ccspCwmpCfgIf;
 extern  UCHAR g_MACAddress[];
