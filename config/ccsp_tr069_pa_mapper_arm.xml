@@ -185,6 +185,9 @@
         <Param>
             <Name>Device.ManagementServer.AliasBasedAddressing</Name>
         </Param>
+        <Param>
+            <Name>Device.ManagementServer.X_RDKCENTRAL-COM_CustomDataModelEnabled</Name>
+        </Param>
 
         <!-- Device.ManagementServer.DUStateChangeComplPolicy. -->
         <Param>
