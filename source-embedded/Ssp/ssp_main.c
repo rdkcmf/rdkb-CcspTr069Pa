@@ -485,6 +485,7 @@ int main(int argc, char* argv[])
 #ifdef INCLUDE_BREAKPAD
     breakpad_ExceptionHandler();
 #else
+        
     if (is_core_dump_opened())
     {
         signal(SIGUSR1, sig_handler);
@@ -512,6 +513,9 @@ int main(int argc, char* argv[])
     }
 
 #endif
+  
+    t2_init("ccsp-tr069-pa"); 
+  
     display_info();
     
     if ( bShowDebugLog == TRUE )
