@@ -6797,7 +6797,71 @@
     <Param>
         <Name>Device.Services.VoiceService.{i}.X_BROADCOM_COM_Announcement.ServerAddress</Name>
     </Param>
-        <!-- INVISIBLE Parameters under "Device." -->
+        <!-- OFDM DS Parameters under "Device.X_RDKCENTRAL-COM_CableModem" -->
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChanNumberOfEntries</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.UsOfdmaChanNumberOfEntries</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.StatusOfdmaNumberOfEntries</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.ChannelID</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.ChanIndicator</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.SubcarrierZeroFreq</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.FirstActiveSubcarrierNum</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.LastActiveSubcarrierNum</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.NumActiveSubcarriers</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.SubcarrierSpacing</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.CyclicPrefix</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.RollOffPeriod</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.PlcFreq</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.NumPilots</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.TimeInterleaverDepth</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.PlcTotalCodewords</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.PlcUnreliableCodewords</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.NcpTotalFields</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.NcpFieldCrcFailures</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.SNRLevel</Name>
+        </Param>
+        <Param>
+                <Name>Device.X_RDKCENTRAL-COM_CableModem.DsOfdmChan.{i}.PowerLevel</Name>
+        </Param>
+         <!-- INVISIBLE Parameters under "Device." -->
         <Param invisible="true">
             <Name>Com.Cisco.Spvtg.Ccsp.Command.FactoryReset</Name>
         </Param>
