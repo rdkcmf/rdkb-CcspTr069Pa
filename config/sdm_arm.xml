@@ -38,13 +38,8 @@
 <!-- This file resides in boards/intel_usg_arm/ -->
 <SupportedDataModel>
 	<m1>
-		<URL>aa</URL>
-		<URN>bb</URN>
-		<Features>bb</Features>
+		<URL>https://www.broadband-forum.org/cwmp/tr-181-2-11-0.xml</URL>
+		<URN>urn:broadband-forum-org:tr-181-2-11-0</URN>
+		<Features></Features>
 	</m1>
-	<m2>
-		<URL>xx</URL>
-		<URN>yy</URN> 
-		<Features>bb</Features> 
-	</m2>
 </SupportedDataModel>
