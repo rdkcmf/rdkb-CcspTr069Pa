@@ -211,6 +211,15 @@ void ReadTr69TlvData()
 		AnscTraceInfo(("%s -#- , URL: %s\n", __FUNCTION__, ( object2->URL[ 0 ] != '\0' ) ? object2->URL : "NULL"));
 		AnscTraceInfo(("**********************************************************\n"));
 
+        // Always fetch the ACSOverride flag from the boot config file.
+        // Revert to default value "0" if AcsOverRide flag is not present.
+        if (object2->AcsOverRide==1){
+            objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value=CcspManagementServer_CloneString("true");
+        }
+        else {
+            objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value=CcspManagementServer_CloneString("false");
+        }
+
 		// Check if it's a fresh bootup / boot after factory reset / TR69 was never enabled
 		// If TR69 was never enabled, then we will always take URL from boot config file.
           	AnscTraceWarning(("%s -#- FreshBootUp: %d, Tr69Enable: %d\n", __FUNCTION__, object2->FreshBootUp, object2->Tr69Enable));
@@ -277,28 +286,74 @@ void ReadTr69TlvData()
                         	t2_event_d("SYS_ERROR_MissingMgmtCRPwdID", 1);
 				}
 
-			/* If TR69Enabled is already enabled, then no need to read URL.
-		   	Update only EnableCWMP value to bbhm. */
-			if(object2->EnableCWMP == 1)
-			{
-				objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("true");
-			}
-			else if(object2->EnableCWMP == 0)
-			{
-				/* There are possibilities that SNMP can enable TR69. In that case, bbhm will have updated value.
-			   	We will make the TLV file in sync with the bbhm values.
-			   	In next boot-up EnableCWMP will again update value from boot-config file*/		                      
-                                rc = strcasecmp_s("1",strlen("1"),objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value,&ind);
-                                if ( rc != EOK || ind )
-                                {
-                                    rc = strcasecmp_s("true",strlen("true"),objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value, &ind);
-                                }
-                                if ( rc == EOK && !ind ) 
-                                {
-                                   object2->EnableCWMP = 1; 
-                                }
-			}
-		}
+            // Check AcsOverRide flag status
+            rc = strcasecmp_s("1",strlen("1"),objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value,&ind);
+            ERR_CHK(rc);
+            if ( rc != EOK || ind )
+            {
+                rc = strcasecmp_s("true",strlen("true"),objectInfo[ManagementServerID].parameters[ManagementServerACSOverrideID].value, &ind);
+                ERR_CHK(rc);
+            }
+            if ( rc == EOK && !ind )
+            {
+                /* If AcsOverRide enabled, EnableCWMP and URL is updated from boot config
+                 * Any configuration missing in boot config would continue to use existing value
+                 */
+                if(object2->EnableCWMP){
+                    if(object2->EnableCWMP == 1)
+                        objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("true");
+                    else
+                        objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("false");
+                }
+                if(object2->URL && objectInfo[ManagementServerID].parameters[ManagementServerURLID].value){
+                    rc = strcasecmp_s(object2->URL,strlen(object2->URL),objectInfo[ManagementServerID].parameters[ManagementServerURLID].value,&ind);
+                    ERR_CHK(rc);
+                    if ( rc != EOK || ind ){
+                        AnscTraceInfo(("%s -#- ACS URL in TLV file different from ACS URL in PSM DB. \n", __FUNCTION__));
+                        objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(object2->URL);
+                        _ansc_sprintf(recordName, "%s.%sURL.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);
+                        res = PSM_Set_Record_Value2(bus_handle, CcspManagementServer_SubsystemPrefix, recordName, ccsp_string, object2->URL);
+                        if(res != CCSP_SUCCESS){
+                            AnscTraceWarning(("%s -#- Failed to write object2->URL <%s> into PSM!\n", __FUNCTION__, object2->URL));
+                        }
+                        /* Since we are switching to new ACS server, existing key would not work.
+                         * Removing CCSP_MGMT_CRPWD_FILE and marking object2->Tr69Enable=0 to mimic fresh boot scenario
+                         */
+                        object2->Tr69Enable=0;
+                        remove(CCSP_MGMT_CRPWD_FILE);
+                        remove(CCSP_MGMT_PWD_FILE);
+                    }
+                }
+            }
+            else
+            {
+                /* If AcsOverRide is true, EnableCWMP and URL values would be updated from bootfile
+                 * No need to check again.
+                 */
+
+                /* If TR69Enabled is already enabled, then no need to read URL.
+                   Update only EnableCWMP value to bbhm. */
+                if(object2->EnableCWMP == 1)
+                {
+                    objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value = CcspManagementServer_CloneString("true");
+                }
+                else if(object2->EnableCWMP == 0)
+                {
+                    /* There are possibilities that SNMP can enable TR69. In that case, bbhm will have updated value.
+                       We will make the TLV file in sync with the bbhm values.
+                       In next boot-up EnableCWMP will again update value from boot-config file*/
+                    rc = strcasecmp_s("1",strlen("1"),objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value,&ind);
+                    if ( rc != EOK || ind )
+                    {
+                        rc = strcasecmp_s("true",strlen("true"),objectInfo[ManagementServerID].parameters[ManagementServerEnableCWMPID].value, &ind);
+                    }
+                    if ( rc == EOK && !ind )
+                    {
+                        object2->EnableCWMP = 1;
+                    }
+                }
+            }
+        }
 
 		//Below check is needed to make sure PSM has correct ACS URL. This is required for clients that continue to use ACS url from cmconfig.
 		if(objectInfo[ManagementServerID].parameters[ManagementServerURLID].value == NULL)
