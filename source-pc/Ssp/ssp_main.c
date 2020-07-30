@@ -84,8 +84,8 @@ char* openssl_client_private_key_file = NULL;
 char* g_Tr069PaOutboundIfName = NULL;
 char* g_Tr069PaAcsDefAddr = NULL;
 
-#define  CCSP_TR069PA_CFG_FILE                      "/fss/gw/usr/ccsp/tr069pa/ccsp_tr069_pa_cfg.xml"
-#define  CCSP_TR069PA_DEF_MAPPER_XML_FILE           "/fss/gw/usr/ccsp/tr069pa/ccsp_tr069_pa_mapper.xml"
+#define  CCSP_TR069PA_CFG_FILE                      "/usr/ccsp/tr069pa/ccsp_tr069_pa_cfg.xml"
+#define  CCSP_TR069PA_DEF_MAPPER_XML_FILE           "/usr/ccsp/tr069pa/ccsp_tr069_pa_mapper.xml"
 
 CCSP_CWMP_CFG_INTERFACE             ccspCwmpCfgIf           = {0};
 WEB_ACM_INTERFACE                   webAcmIf                = {0};

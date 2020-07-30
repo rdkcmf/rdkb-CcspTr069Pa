@@ -1735,7 +1735,7 @@ CcspCwmppoMpaGetParameterValues
                         char tmp[200];
                         strcpy(tmp,pParamValues[k]->parameterValue);
 							
-                        readImage = popen("cat /fss/gw/version.txt | grep imagename | cut -d ':' -f2", "r");
+                        readImage = popen("cat /version.txt | grep imagename | cut -d ':' -f2", "r");
                         if(readImage == NULL)
                         {
                               CcspTr069PaTraceError(("RDKB Software image name is NULL\n"));
