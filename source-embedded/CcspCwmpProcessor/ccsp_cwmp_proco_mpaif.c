@@ -1369,23 +1369,22 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                 {
                     syscfg_init();
                     syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
-                    if( sysbuf != NULL )
+
+                    // if TR069PSWDCTRLFLAG == false then Set not allowed.
+                    rc = strcmp_s("false",strlen("false"),sysbuf,&ind);
+                    ERR_CHK(rc);
+                    if((rc == EOK) && (!ind))
                     {
-                        // if TR069PSWDCTRLFLAG == false then Set not allowed.
-                        rc = strcmp_s("false",strlen("false"),sysbuf,&ind);
-                        ERR_CHK(rc);
-                        if((rc == EOK) && (!ind))
-                        {
-                            //Set it as fault code not writable
-                            nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
+                    	//Set it as fault code not writable
+                    	nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
 
-                            // Set a flag to invalid param as true
-                            flag_pInvalidParam = TRUE;
+                    	// Set a flag to invalid param as true
+                    	flag_pInvalidParam = TRUE;
 
-                            // not success send appropriate parameter name
-                            pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
-                        }
+                    	// not success send appropriate parameter name
+                    	pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
                     }
+
                     match_found = 1;
                     break;
                 }
@@ -2181,21 +2180,20 @@ CcspCwmppoMpaGetParameterValues
                          {
                              syscfg_init();
                              syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
-                             if(sysbuf != NULL )
+
+                             // if TR069PSWDCTRLFLAG == false then Get query returns empty string.
+                             rc = strcmp_s("false",strlen("false"),sysbuf,&ind);
+                             ERR_CHK(rc);
+                             if((rc == EOK) && (!ind))
                              {
-                                 // if TR069PSWDCTRLFLAG == false then Get query returns empty string.
-                                 rc = strcmp_s("false",strlen("false"),sysbuf,&ind);
-                                 ERR_CHK(rc);
-                                 if((rc == EOK) && (!ind))
+                                 if(pParamValues[k]->parameterValue)
                                  {
-                                     if(pParamValues[k]->parameterValue)
-                                     {
-                                          CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
-                                          pParamValues[k]->parameterValue = NULL;
-                                     }
-                                     pParamValues[k]->parameterValue = AnscCloneString(" ");
+                                     CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
+                                     pParamValues[k]->parameterValue = NULL;
                                  }
+                                 pParamValues[k]->parameterValue = AnscCloneString(" ");
                              }
+
                              validArg = 1;
                              break;
                           }
