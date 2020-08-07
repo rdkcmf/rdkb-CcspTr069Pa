@@ -353,8 +353,8 @@ CcspTr069PaSsp_LoadCfgFile
     /*
      *  Parse the XML content
      */
+    PANSC_XML_DOM_NODE_OBJECT       pRootNode          = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     {
-        PANSC_XML_DOM_NODE_OBJECT       pRootNode          = (PANSC_XML_DOM_NODE_OBJECT)NULL;
         PANSC_XML_DOM_NODE_OBJECT       pChildNode         = (PANSC_XML_DOM_NODE_OBJECT)NULL;
         char*                           pXMLIterator       = pXMLContent;
         
@@ -406,6 +406,9 @@ CcspTr069PaSsp_LoadCfgFile
     }
     
 EXIT:
+    if (pRootNode) {
+        AnscXmlDomNodeRemove(pRootNode);
+    }
     AnscFreeMemory(pXMLContent);
     return  returnStatus;
 }
