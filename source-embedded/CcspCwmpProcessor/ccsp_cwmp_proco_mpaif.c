@@ -412,268 +412,6 @@ CcspCwmppoDiscoverFunctionalComponent
     } while (0)
 
 
-/*
- * Map name to a first internal alias.
- * SPV, AddObject and DeleteObject only support mapping to a single internal name;
- * this funtional simplifies the handling in those cases.
- */
-ANSC_STATUS
-CcspTr069PaMapFirstInternalAlias(
-    CCSP_HANDLE hTr069PaMapper,
-    CCSP_STRING *pParamName,
-    BOOL *pbIncludeInvQuery,
-    BOOL bFreeMemory)
-{
-    ANSC_STATUS                returnStatus = ANSC_STATUS_SUCCESS;
-
-    /* No need to map if the name is not visible */
-    if (!*pbIncludeInvQuery && !CcspTr069PA_IsNamespaceVisible(hTr069PaMapper, *pParamName))
-    {
-        returnStatus = ANSC_STATUS_BAD_NAME;
-    }
-    else
-    {
-        const CCSP_STRING name = CcspTr069PA_GetParamFirstInternalName(hTr069PaMapper, *pParamName);
-        if ( name )
-        {
-
-            if (bFreeMemory)
-            {
-                /* Free previously allocated string if requested */
-                CcspTr069PaFreeMemory(*pParamName);
-            }
-
-            *pParamName = name;
-
-            /* The internal name will be invisible, need to include it in following queries */
-            *pbIncludeInvQuery = TRUE;
-        }
-    }
-
-    return returnStatus;
-}
-
-/*
- * Map array of names to internal names and return in pOutParamList.
- * pOutStringAllocList will contain a list of aliased names for the purposes
- * of cleaning allocated memory.
- */
-static inline
-ANSC_STATUS
-CcspTr069PaMapArrayToInternalAliases
-    (
-        CCSP_HANDLE                 hTr069PaMapper,
-        PSLAP_STRING_ARRAY          pParamNameArray,
-        BOOL                        *pbIncludeInvQuery,
-        PQUEUE_HEADER               pOutParamList,
-        PSLIST_HEADER               pOutStringAllocList
-    )
-{
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
-    char*                           pParamName           = NULL;
-    char*                           InternalName                 = NULL;
-    PSLIST_HEADER                   pInternalNames       = NULL;
-    PCCSP_TR069PA_STRING_SLIST_ENTRY pSListEntry;
-    BOOL                            bAliasFound         = FALSE;
-    int                             i;
-
-
-    for ( i = 0; i < pParamNameArray->VarCount; i++ )
-    {
-        pParamName = pParamNameArray->Array.arrayString[i];
-
-        // No need to map items which are not visible
-        if (!*pbIncludeInvQuery && !CcspTr069PA_IsNamespaceVisible(hTr069PaMapper, pParamName))
-        {
-            returnStatus = ANSC_STATUS_BAD_NAME;
-
-            break;
-        }
-
-        pInternalNames =
-            CcspTr069PA_GetParamInternalNames
-            (
-                hTr069PaMapper,
-                pParamName
-            );
-
-        if (pInternalNames)
-        {
-            while ( (InternalName = CcspTr069PA_GetNextInternalName(pInternalNames)) )
-            {
-                pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
-
-                if ( !pSListEntry )
-                {
-                    CcspTr069PaTraceError(("Failed to allocate memory\n"));
-
-                    AnscFreeMemory(InternalName);
-
-                    returnStatus = ANSC_STATUS_RESOURCES;
-
-                    break;
-                }
-
-                pSListEntry->Value = InternalName; // deliberately no copying here
-                AnscQueuePushEntry(pOutParamList, &pSListEntry->Linkage);
-
-                // Add the same entry in the memory allocation list
-                pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
-
-                if ( !pSListEntry )
-                {
-                    CcspTr069PaTraceError(("Failed to allocate memory\n"));
-
-                    AnscFreeMemory(InternalName);
-
-                    returnStatus = ANSC_STATUS_RESOURCES;
-
-                    break;
-                }
-
-                pSListEntry->Value = InternalName;
-                AnscSListPushEntry(pOutStringAllocList, &pSListEntry->Linkage);
-
-                bAliasFound = TRUE;
-            }
-
-            CcspTr069PA_FreeInternalNamesList(pInternalNames);
-        }
-        else
-        {
-            pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
-
-            if ( !pSListEntry )
-            {
-                CcspTr069PaTraceError(("Failed to allocate memory\n"));
-
-                returnStatus = ANSC_STATUS_RESOURCES;
-
-                break;
-            }
-
-            pSListEntry->Value = pParamName; // deliberately no copying here
-            AnscQueuePushEntry(pOutParamList, &pSListEntry->Linkage);
-        }
-    }
-
-    *pbIncludeInvQuery = *pbIncludeInvQuery || bAliasFound;
-    return returnStatus;
-}
-
-VOID
-CcspTr069PaMapToExternalAlias
-    (
-        CCSP_HANDLE                    hTr069PaMapper,
-        CCSP_STRING*                   pParamName
-    )
-{
-
-    CCSP_STRING ExternalName = CcspTr069PA_GetParamExternalName
-                                   (
-                                       hTr069PaMapper,
-                                       *pParamName
-                                   );
-    if (ExternalName)
-    {
-        /* We need to free previously allocated string */
-        CcspTr069PaFreeMemory(*pParamName);
-        *pParamName = ExternalName;
-    }
-}
-
-static inline
-BOOL
-CcspTr069PaMatchRequestQuerySingle
-    (
-        CCSP_STRING                   ParamName,
-        CCSP_STRING                   QueryName
-    )
-{
-    unsigned int          QueryLength      = AnscSizeOfString(QueryName);
-    unsigned int          ParamLength      = AnscSizeOfString(ParamName);
-
-
-    if (QueryLength <= ParamLength && AnscEqualMemory(QueryName, ParamName, QueryLength))
-    {
-        return TRUE;
-    }
-    return FALSE;
-}
-
-static inline
-BOOL
-CcspTr069PaMatchRequestQuery
-    (
-        CCSP_STRING                   ParamName,
-        PSLAP_STRING_ARRAY            pParamNameArray
-    )
-{
-    CCSP_STRING           QueryName        = NULL;
-    int i;
-
-
-    /* Check the external name matches any of the query names */
-    for ( i = 0; i < pParamNameArray->VarCount; i++ )
-    {
-        QueryName = pParamNameArray->Array.arrayString[i];
-
-        if (CcspTr069PaMatchRequestQuerySingle(ParamName, QueryName))
-        {
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-/**********************************************************************
-
-    caller:     owner of this object
-
-    prototype:
-
-        BOOL
-        CcspCwmppoMpaCheckInstance
-            (
-                char*                     pParamName
-            );
-
-    description:        This function is called to determine whether the pParamName is invalid or not.
-        If pParamName is changed by function CcspCwmppoMpaMapInvalidParamInstNumDmIntToCwmp,
-        it means this name is a Data Model internal instance.(You can find mapping in file "ccsp_tr069_pa_mapper.xml")
-        If it is internal instance passed by SPV, we will return TRUE ,else we will return FALSE.
-        E.g.
-          Device.WiFi.Radio.1.
-          Device.WiFi.Radio.2.
-          Device.WiFi.SSID.1.
-          Device.WiFi.SSID.2.
-
-    argument:   char*                     pParamName
-
-    return:     TRUE or FALSE.
-
-**********************************************************************/
-BOOL
-CcspCwmppoMpaCheckInstance
-
-    (
-        char*                     pParamName
-    )
-{
-    BOOL                            bCheckInvalidInstance   = FALSE;
-
-
-    char *pOrigCheckParamN = CcspTr069PaCloneString(pParamName);
-    char *pCheckParamN = pOrigCheckParamN;
-    CcspCwmppoMpaMapInvalidParamInstNumDmIntToCwmp(pCheckParamN);
-    if(pOrigCheckParamN != pCheckParamN)
-    {
-        bCheckInvalidInstance = TRUE;
-    }
-    CcspTr069PaFreeMemory(pCheckParamN);
-    return  bCheckInvalidInstance;
-}
-
 /**********************************************************************
 
     caller:     owner of this object
@@ -931,15 +669,13 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     BOOL                            bSucc                = TRUE;
     int                             nCcspError           = CCSP_SUCCESS;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
-    char*                           ParamName[MAX_NO_WIFI_PARAM] = {0};
-// char			    ParamName[MAX_NO_WIFI_PARAM][MAX_WIFI_PARAMNAME_LEN];
+	char							ParamName[MAX_NO_WIFI_PARAM][MAX_WIFI_PARAMNAME_LEN];
 	int								noOfParam;
 	char wifiFcName[64] = { 0 };
 	char wifiDbusPath[64] = { 0 };
 #ifndef  _CCSP_TR069_PA_INTERCEPT_ACS_CREDENTIAL_
     BOOL                            bAcsCredChanged      = FALSE;
 #endif
-    BOOL                            bIncludeInvQuery     = !bExcludeInvNs;
 
     *piStatus    = 0;
     *phSoapFault = (ANSC_HANDLE)NULL;
@@ -982,9 +718,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
      */
     for ( i = 0; i < ulArraySize; i++ )
     {
-        BOOL bIncludeInvParam = !bExcludeInvNs;
-        if ( !pParameterValueArray[i].Name || CcspCwmpIsPartialName(pParameterValueArray[i].Name)
-            || CcspCwmppoMpaCheckInstance(pParameterValueArray[i].Name))
+        if ( !pParameterValueArray[i].Name || CcspCwmpIsPartialName(pParameterValueArray[i].Name) )
         {
             bFaultEncountered = TRUE;
 
@@ -1008,30 +742,10 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
             continue;
         }
-        else if (ANSC_STATUS_SUCCESS != CcspTr069PaMapFirstInternalAlias
-                 (
-                     pCcspCwmpCpeController->hTr069PaMapper,
-                     &pParameterValueArray[i].Name,
-                     &bIncludeInvParam,
-                     TRUE
-                 ))
-        {
-            bFaultEncountered = TRUE;
-
-            CCSP_CWMP_SET_SOAP_FAULT(pCwmpSoapFault, CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName);
-
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = CcspTr069PaCloneString(pParameterValueArray[i].Name);
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName;
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
-            pCwmpSoapFault->SetParamValuesFaultCount++;
-
-            continue;
-        }
         else if ( pParameterValueArray[i].Tr069DataType == CCSP_CWMP_TR069_DATA_TYPE_Unspecified )
         {
             pParameterValueArray[i].Tr069DataType = pCcspCwmpCpeController->GetParamDataType((ANSC_HANDLE)pCcspCwmpCpeController, pParameterValueArray[i].Name);
         }
-        bIncludeInvQuery |= bIncludeInvParam;
     }
 
     if ( bFaultEncountered )
@@ -1069,18 +783,6 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 			AnscCopyString(pParameterValueArray[i].Name,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac");
 		}
 
-		if(!strcmp(pParameterValueArray[i].Name,"Device.TR069Notify.X_RDKCENTRAL-COM_TR069_Notification"))
-		{
-			continue;
-		}
-
-		
-		if(!strcmp(pParameterValueArray[i].Name,"Device.TR069Notify.X_RDKCENTRAL-COM_Connected-Client"))
-		{
-			continue;
-		}
-
-
         /* identify which sub-system(s) the parameter resides */
         NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
         CcspTr069PA_GetNamespaceSubsystems
@@ -1089,7 +791,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                 pParameterValueArray[i].Name,
                 Subsystems,
                 &NumSubsystems,
-                bIncludeInvQuery
+                !bExcludeInvNs
             );
         
         if ( NumSubsystems <= 0 )
@@ -1169,10 +871,6 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         else
         {
 				PCCSP_PARAM_VALUE_INFO  pValueInfo;
-				//pParamN may be reallocated by CcspCwmppoMpaMapParamInstNumCwmpToDmInt()
-				// Need to keep the original address to free the memory after used.
-				char *pOrigParamN = CcspTr069PaAllocateMemory(AnscSizeOfString(pParameterValueArray[i].Name)+1);
-				char *pParamN = pOrigParamN;
 				pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
 				pValueInfo      = &pNsList->Args.paramValueInfo;
 
@@ -1196,10 +894,6 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 						noOfParam = i;
 					}
 					
-				}
-				if(pOrigParamN != NULL)
-				{
-					CcspTr069PaFreeMemory(pOrigParamN);
 				}
         }
     }
@@ -1592,12 +1286,7 @@ if ( flag_pInvalidParam == FALSE )// Remaining SSID passwords and for TR069PSWDC
 												{ "Device.WiFi.Radio.2.X_CISCO_COM_ApplySetting", "true", ccsp_boolean}};
 				for(x =0; x<= noOfParam; x++)
 				{
-                    if (ParamName[x] == NULL)
-                    {
-                        // skip empty string.
-                        continue;
-                    }
-                    if(!strncmp(ParamName[x],"Device.WiFi.Radio.1.",20))
+				if(!strncmp(ParamName[x],"Device.WiFi.Radio.1.",20))
 					{
 						bRestartRadio1 = TRUE; 
 					}
@@ -1779,13 +1468,6 @@ EXIT1:
                 ulSessionID
             );
     }
-        for (i =0; i < ulArraySize; i++)
-        {
-            if (ParamName[i] != NULL)
-            {
-                CcspTr069PaFreeMemory(ParamName[i]);
-            }
-        }
 
 
     return  returnStatus;
@@ -1883,13 +1565,6 @@ CcspCwmppoMpaGetParameterValues
     BOOL GetParamSuccessStatus  = FALSE;
 
 	BOOL bDataModelReq = FALSE;
-
-    BOOL                            bIncludeInvQuery     = !bExcludeInvNs;
-    QUEUE_HEADER                    ParamList;
-    PCCSP_TR069PA_STRING_SLIST_ENTRY pSListEntry;
-    PSINGLE_LINK_ENTRY              pLink;
-    SLIST_HEADER                    StringAllocList;
-
     *ppParamValueArray = NULL;
     *pulArraySize      = 0;
     *phSoapFault       = (ANSC_HANDLE)NULL;
@@ -1924,35 +1599,16 @@ CcspCwmppoMpaGetParameterValues
         SlapAllocStringArray2(1, pParamNameArray);
     }
 
-    AnscInitializeQueue(&ParamList);
-    AnscInitializeSList(&StringAllocList);
-
-    /* build a full params list including aliasing */
-    returnStatus = CcspTr069PaMapArrayToInternalAliases
-        (
-            pCcspCwmpCpeController->hTr069PaMapper,
-            pParamNameArray,
-            &bIncludeInvQuery,
-            &ParamList,
-            &StringAllocList
-        );
-
-    if ( returnStatus != ANSC_STATUS_SUCCESS )
-    {
-        CcspTr069PaTraceError(("Failed to map to internal aliases, error code %d\n", returnStatus));
-        goto EXIT2;
-    }
     /*
      * query namespace cache for each parameter and come up with a parameter list for each
      * FC. Make GPV to each FC with parameters the FC owns, and each FC returns a list of 
      * parameter struct on success. Partial path will be simply indicated to each FC which is
      * responsible for returning all parameters that match the partial path name.
      */
-    pLink = AnscQueueGetFirstEntry(&ParamList);
-    while (pLink != NULL)
+
+    for ( i = 0; i < pParamNameArray->VarCount; i++ )
     {
-        pSListEntry = ACCESS_CCSP_TR069PA_STRING_SLIST_ENTRY(pLink);
-        pParamName = pSListEntry ? pSListEntry->Value : NULL;
+        pParamName = pParamNameArray->Array.arrayString[i];
 
         if ( !pParamName || *pParamName == 0 )
         {
@@ -1977,7 +1633,7 @@ CcspCwmppoMpaGetParameterValues
                 pParamName,
                 Subsystems,
                 &NumSubsystems,
-                bIncludeInvQuery
+                !bExcludeInvNs
             );
         if(!strcmp(pParamName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
 	{
@@ -2055,7 +1711,6 @@ CcspCwmppoMpaGetParameterValues
             ppSubsysArray = NULL;
         }
 
-        pLink = AnscQueueGetNextEntry(pLink);
     }
 
     ulSessionID =
@@ -2277,23 +1932,9 @@ CcspCwmppoMpaGetParameterValues
 					 }
                      if(0 == strcmp(pParamValues[k]->parameterName,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac"))
                      {
-        		AnscCopyString(pParamValues[k]->parameterName , "Device.X_COMCAST_COM_CM.ReinitCmMac");	
-		     }
-
-                    CcspTr069PaMapToExternalAlias
-                        (
-                            pCcspCwmpCpeController->hTr069PaMapper,
-                            &pParamValues[k]->parameterName
-                        );
-
-                    // if the parameter name doesn't match the requested name
-                    // it's a side effect from aliasing, should not be returned
-                    if (!bParamNameArrayEmpty && !CcspTr069PaMatchRequestQuery(pParamValues[k]->parameterName, pParamNameArray) )
-                    {
-                        bNsInvisibleToCloudServer = TRUE;
-                    }
-                    else
-                    {
+        				AnscCopyString(pParamValues[k]->parameterName , "Device.X_COMCAST_COM_CM.ReinitCmMac");
+	
+				     }
 
                     /* filter out namespace that is not supported by this PA, or invisible
                      * to cloud server through this PA
@@ -2305,7 +1946,7 @@ CcspCwmppoMpaGetParameterValues
                             pParamValues[k]->parameterName, 
                             bNsInvisibleToCloudServer
                         );
-                    }
+
                     if ( bNsInvisibleToCloudServer )
                     {
                         if ( pParamValues[k]->parameterName )
@@ -2529,8 +2170,6 @@ EXIT1:
     {
         SlapFreeVarArray(pParamNameArray);
     }
-    CcspTr069FreeStringQueue(&ParamList, FALSE);
-    CcspTr069FreeStringSList(&StringAllocList, TRUE);
 
     return  returnStatus;
 }
@@ -2631,16 +2270,8 @@ CcspCwmppoMpaGetParameterNames
     BOOL                            bNsInvisibleToCloudServer;
     int                             ParamInfoArraySize;
     PSINGLE_LINK_ENTRY              pSLinkEntry          = NULL;
-    char*                           pMappedParamPath     = NULL;
     BOOL                            bDuplicateNs         = FALSE,
 						GetParamSuccessStatus  = FALSE;
-    BOOL                            bAliasFound          = FALSE;
-    char*                           pOriginalParam       = NULL;
-    QUEUE_HEADER                    ParamList;
-    PSLIST_HEADER                   pInternalNames;
-    PCCSP_TR069PA_STRING_SLIST_ENTRY pSListEntry;
-    PSINGLE_LINK_ENTRY              pLink;
-    CCSP_STRING                     InternalName;
 
     *ppParamInfoArray = NULL;
     *pulArraySize     = 0;
@@ -2700,69 +2331,6 @@ CcspCwmppoMpaGetParameterNames
      * response.
      */
 
-    /* Map Cwmp instance to DM instance for requested parameter path */
-    pMappedParamPath = CcspTr069PA_MapInstNumCwmpToDmInt(pParamPath);
-    if (pMappedParamPath)
-    {
-        pParamPath = pMappedParamPath;
-    }
-
-    pOriginalParam = pParamPath;
-    AnscInitializeQueue(&ParamList);
-    if ( (pInternalNames = CcspTr069PA_GetParamInternalNames(pCcspCwmpCpeController->hTr069PaMapper, pParamPath)))
-    {
-        while ( (InternalName = CcspTr069PA_GetNextInternalName(pInternalNames)) )
-        {
-            pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
-
-            if ( !pSListEntry )
-            {
-                CcspTr069PaTraceError(("Failed to allocate memory\n"));
-
-                CcspTr069PA_FreeInternalNamesList(pInternalNames);
-
-                returnStatus = ANSC_STATUS_RESOURCES;
-                goto EXIT2;
-            }
-
-            // Deliberately no copying here;
-            // if we have found the mapping memory will be deallocated from the pSListEntry->Value before exit
-            pSListEntry->Value = InternalName;
-            AnscQueuePushEntry(&ParamList, &pSListEntry->Linkage);
-
-            bAliasFound = TRUE;
-        }
-
-        CcspTr069PA_FreeInternalNamesList(pInternalNames);
-    }
-    else
-    {
-        pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
-
-        if ( !pSListEntry )
-        {
-            CcspTr069PaTraceError(("Failed to allocate memory\n"));
-
-            returnStatus = ANSC_STATUS_RESOURCES;
-            goto EXIT2;
-        }
-
-        // Deliberately no copying here
-        pSListEntry->Value = pParamPath;
-        AnscQueuePushEntry(&ParamList, &pSListEntry->Linkage);
-    }
-
-    // In each iteration:
-    // 1. Get the next internal name from the list
-    // 2. Discover functional components supporting the name
-    // 3. Iterate over all functional components and query values
-    // 4. Push the results into pFcNsList with CcspTr069PaPushGpnNsInQueue
-    // 5. Free memory
-    pLink = AnscQueueGetFirstEntry(&ParamList);
-    while (pLink != NULL)
-    {
-        pSListEntry = ACCESS_CCSP_TR069PA_STRING_SLIST_ENTRY(pLink);
-        pParamPath = pSListEntry->Value;
 
     /* identify which sub-system(s) the parameter or partial name could reside */
     NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
@@ -2773,7 +2341,7 @@ CcspCwmppoMpaGetParameterNames
             pParamPath,
             Subsystems,
             &NumSubsystems,
-            !bExcludeInvNs || bAliasFound
+            !bExcludeInvNs
         );
     
     /* query namespace manager for the namespace on identified sub-system */
@@ -2827,21 +2395,6 @@ CcspCwmppoMpaGetParameterNames
              */
             if ( !ParamInfoArray[j] ) continue;      /* some FC returns NULL, robustness check */
 
-            CcspTr069PaMapToExternalAlias
-                (
-                    pCcspCwmpCpeController->hTr069PaMapper,
-                    &ParamInfoArray[j]->parameterName
-                );
-
-            // if the parameter name doesn't match the requested name
-            // it's a side effect from aliasing, should not be returned
-            if ( !CcspTr069PaMatchRequestQuerySingle(ParamInfoArray[j]->parameterName, pOriginalParam) )
-            {
-                bNsInvisibleToCloudServer = TRUE;
-            }
-            else
-            {
-
             CcspTr069PaVisibleToCloudServer
                 (
                     bExcludeInvNs,
@@ -2849,7 +2402,7 @@ CcspCwmppoMpaGetParameterNames
                     ParamInfoArray[j]->parameterName, 
                     bNsInvisibleToCloudServer
                 );
-            }
+
             if ( bNsInvisibleToCloudServer )
             {
                 continue;
@@ -2895,27 +2448,6 @@ CcspCwmppoMpaGetParameterNames
         }
     }
 
-        if ( ppFcNameArray )
-        {
-            CcspTr069FreeStringArray(ppFcNameArray, ulFcArraySize, TRUE);
-            ppFcNameArray = NULL;
-        }
-
-        if ( ppDbusPathArray )
-        {
-            CcspTr069FreeStringArray(ppDbusPathArray, ulFcArraySize, TRUE);
-            ppDbusPathArray = NULL;
-        }
-
-        if ( ppSubsysArray )
-        {
-            CcspTr069FreeStringArray(ppSubsysArray, ulFcArraySize, TRUE);
-            ppSubsysArray = NULL;
-        }
-
-        pLink = AnscQueueGetNextEntry(pLink);
-    }
-
     /* construct result name info array */
     ulParameterCount = AnscQueueQueryDepth(&pFcNsList->NsList);
 
@@ -2928,7 +2460,7 @@ CcspCwmppoMpaGetParameterNames
 		}
 		else
 		{
-                        CcspTr069PaTraceDebug(("GPN will return Invalid Arg since PA returns no parameters under the specified path <%s>.\n", pOriginalParam));
+			CcspTr069PaTraceDebug(("GPN will return Invalid Arg since PA returns no parameters under the specified path <%s>.\n", pParamPath));
 			returnStatus = ANSC_STATUS_BAD_NAME;
 			goto EXIT2;
 		}
@@ -2955,10 +2487,6 @@ CcspCwmppoMpaGetParameterNames
         pSLinkEntry = AnscQueueGetNextEntry(pSLinkEntry);
 
         pCwmpParamInfoArray[i].Name      = pNsList->Args.paramInfo.parameterName;
-
-        /* Map DM instance to CWMP instance for returned names */
-        CcspCwmppoMpaMapParamInstNumDmIntToCwmp(pCwmpParamInfoArray[i].Name);
-
         pCwmpParamInfoArray[i++].bWritable = pNsList->Args.paramInfo.writable;
 
         pNsList->Args.paramInfo.parameterName = NULL;
@@ -3037,12 +2565,6 @@ EXIT1:
         CcspTr069FreeStringArray(ppSubsysArray, ulFcArraySize, TRUE);
     }
 
-    if (pMappedParamPath)
-    {
-        CcspTr069PaFreeMemory(pMappedParamPath);
-    }
-
-    CcspTr069FreeStringQueue(&ParamList, bAliasFound);
 
     return  returnStatus;
 }
@@ -3119,11 +2641,6 @@ CcspCwmppoMpaSetParameterAttributes
     char*                           pParamName           = NULL;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
 
-    BOOL                            bIncludeInvQuery     = !bExcludeInvNs;
-    QUEUE_HEADER                    ParamList;
-    PCCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY pSListEntry;
-    PSINGLE_LINK_ENTRY              pLink;
-
     *phSoapFault = (ANSC_HANDLE)NULL;
 
     AnscQueueInitializeHeader(&FcNsListQueue);
@@ -3157,45 +2674,18 @@ CcspCwmppoMpaSetParameterAttributes
         goto  EXIT1;
     }
 
-    // build a full params list including aliasing
-    // TODO: this has to be reworked to multiple objects support
-    AnscInitializeQueue(&ParamList);
-    for ( i = 0; i < ulArraySize; i++ )
-    {
-        pSListEntry = (PCCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY));
-        if ( pSListEntry )
-        {
-            CcspTr069PaMapFirstInternalAlias
-            (
-                pCcspCwmpCpeController->hTr069PaMapper,
-                &pSetParamAttrArray[i].Name,
-                &bIncludeInvQuery,
-                TRUE
-            );
-            pSListEntry->ParamAttr = &pSetParamAttrArray[i]; // deliberately no copying here
-            AnscQueuePushEntry(&ParamList, &pSListEntry->Linkage);
-        }
-        else
-        {
-            CcspTr069PaTraceError(("Failed to allocate memoty\n"));
-            goto EXIT1;
-        }
-    }
-    /*
+    /* 
      * Parse all parameters and identify owners - come up a list of parameters
      * for each FC and make SPA MBus call to each FC. With current architecture,
      * SPA must succeeds.
      */
-    pLink = AnscQueueGetFirstEntry(&ParamList);
-    while (pLink != NULL)
+    
+    for ( i = 0; i < ulArraySize; i++ )
     {
-        PCCSP_CWMP_SET_PARAM_ATTRIB pParamAttr;
         /* identify which sub-system(s) the parameter resides */
         NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
 
-        pSListEntry = ACCESS_CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY(pLink);
-        pParamAttr = pSListEntry->ParamAttr;
-        pParamName = pParamAttr->Name;
+        pParamName = pSetParamAttrArray[i].Name;
         if ( !pParamName                        || 
              AnscSizeOfString(pParamName) == 0  )
         {
@@ -3208,7 +2698,7 @@ CcspCwmppoMpaSetParameterAttributes
                 pParamName,
                 Subsystems,
                 &NumSubsystems,
-                bIncludeInvQuery
+                !bExcludeInvNs
             );
 
         /* query namespace manager for the namespace on identified sub-system */
@@ -3260,14 +2750,14 @@ CcspCwmppoMpaSetParameterAttributes
                 pAttrInfo       = &pNsList->Args.paramAttrInfo;
 
                 pAttrInfo->parameterName        = pParamName;
-                pAttrInfo->notificationChanged  = pParamAttr->bNotificationChange;
-                pAttrInfo->notification         = pParamAttr->Notification != CCSP_CWMP_NOTIFICATION_off;
+                pAttrInfo->notificationChanged  = pSetParamAttrArray[i].bNotificationChange;
+                pAttrInfo->notification         = pSetParamAttrArray[i].Notification != CCSP_CWMP_NOTIFICATION_off;
                 pAttrInfo->access               = CCSP_RW;      /* TODO: do not change access */
-                pAttrInfo->accessControlChanged = pParamAttr->bAccessListChange;
+                pAttrInfo->accessControlChanged = pSetParamAttrArray[i].bAccessListChange;
                 pAttrInfo->accessControlBitmask = CCSP_NS_ACCESS_ACSONLY;
 
-                if (pParamAttr->bAccessListChange &&
-                    AnscEqualString(pParamAttr->AccessList, "Subscriber", FALSE) )
+                if ( pSetParamAttrArray[i].bAccessListChange &&
+                     AnscEqualString(pSetParamAttrArray[i].AccessList, "Subscriber", FALSE) )
                 {
                     pAttrInfo->accessControlBitmask = CCSP_NS_ACCESS_SUBSCRIBER;
                 }
@@ -3294,7 +2784,6 @@ CcspCwmppoMpaSetParameterAttributes
             ppSubsysArray = NULL;
         }
 
-        pLink = AnscQueueGetNextEntry(pLink);
     }
 
     ulSessionID =
@@ -3471,8 +2960,7 @@ EXIT1:
             );
     }
 
-    CcspTr069FreeParamAttrQueue(&ParamList);
-
+   
     return  returnStatus;
 }
 
@@ -3567,14 +3055,6 @@ CcspCwmppoMpaGetParameterAttributes
     CCSP_INT                        nCcspError           = CCSP_SUCCESS;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
     BOOL                            bParamNameArrayEmpty = FALSE;
-    //CWMPtoDML and Aliasing for GPA
-    char*                           pOrigName	         = NULL;
-
-    BOOL                            bIncludeInvQuery     = !bExcludeInvNs;
-    QUEUE_HEADER                    ParamList;
-    SLIST_HEADER                    StringAllocList;
-    PCCSP_TR069PA_STRING_SLIST_ENTRY pSListEntry;
-    PSINGLE_LINK_ENTRY              pLink;
 
     *phSoapFault = (ANSC_HANDLE)NULL;
 
@@ -3608,40 +3088,18 @@ CcspCwmppoMpaGetParameterAttributes
         SlapAllocStringArray2(1, pParamNameArray);
     }
 
-    AnscInitializeQueue(&ParamList);
-    AnscInitializeSList(&StringAllocList);
-
-    /* build a full params list including aliasing */
-    returnStatus = CcspTr069PaMapArrayToInternalAliases
-        (
-            pCcspCwmpCpeController->hTr069PaMapper,
-            pParamNameArray,
-            &bIncludeInvQuery,
-            &ParamList,
-            &StringAllocList
-        );
-
-    if ( returnStatus != ANSC_STATUS_SUCCESS )
-    {
-        CcspTr069PaTraceError(("Failed to map to internal names\n"));
-        goto EXIT2;
-    }
-
     /* 
      * Parse all parameters and identify owners - come up a list of parameters
      * for each FC and make GPA MBus call to each FC. With current architecture,
      * GPA must succeeds.
      */
-
-    pLink = AnscQueueGetFirstEntry(&ParamList);
-    while (pLink != NULL)
+    
+    for ( i = 0; i < pParamNameArray->VarCount; i++ )
     {
         /* identify which sub-system(s) the parameter resides */
         NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
 
-        pSListEntry = ACCESS_CCSP_TR069PA_STRING_SLIST_ENTRY(pLink);
-        pParamName = pSListEntry ? pSListEntry->Value : NULL;
-
+        pParamName = pParamNameArray->Array.arrayString[i];
         if ( !pParamName || AnscSizeOfString(pParamName) == 0 )
         {
             pParamName = pRootObjName;
@@ -3653,7 +3111,7 @@ CcspCwmppoMpaGetParameterAttributes
                 pParamName,
                 Subsystems,
                 &NumSubsystems,
-                bIncludeInvQuery
+                !bExcludeInvNs
             );
 
         /* query namespace manager for the namespace on identified sub-system */
@@ -3698,7 +3156,7 @@ CcspCwmppoMpaGetParameterAttributes
                 pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_GPA;
                 pAttrInfo       = &pNsList->Args.paramAttrInfo;
 
-                pAttrInfo->parameterName = CcspTr069PaCloneString(pParamName);
+                pAttrInfo->parameterName = pParamName;
 
                 AnscQueuePushEntry(&pFcNsList->NsList, &pNsList->Linkage);
             }
@@ -3722,7 +3180,6 @@ CcspCwmppoMpaGetParameterAttributes
             ppSubsysArray = NULL;
         }
 
-        pLink = AnscQueueGetNextEntry(pLink);
     }
 
     ulSessionID =
@@ -3826,22 +3283,6 @@ CcspCwmppoMpaGetParameterAttributes
                     if ( !ppCcspAttrArray[k] ) continue;      /* some FC returns NULL, robustness check */
 					/*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ //fix RDKB-405
                     CcspCwmppoMpaMapParamInstNumDmIntToCwmp(ppCcspAttrArray[k]->parameterName);
-
-                    CcspTr069PaMapToExternalAlias
-                        (
-                            pCcspCwmpCpeController->hTr069PaMapper,
-                            &ppCcspAttrArray[k]->parameterName
-                        );
-
-                    // if the parameter name doesn't match the requested name
-                    // it's a side effect from aliasing, should not be returned
-                    if ( !CcspTr069PaMatchRequestQuery(ppCcspAttrArray[k]->parameterName, pParamNameArray) )
-                    {
-                        bNsInvisibleToCloudServer = TRUE;
-                    }
-                    else
-                    {
-
                     /* filter out namespace that is not supported by this PA, or invisible
                      * to cloud server through this PA
                      */
@@ -3852,7 +3293,7 @@ CcspCwmppoMpaGetParameterAttributes
                             ppCcspAttrArray[k]->parameterName, 
                             bNsInvisibleToCloudServer
                         );
-                    }
+
                     if ( bNsInvisibleToCloudServer )
                     {
                         if ( ppCcspAttrArray[k]->parameterName )
@@ -3935,18 +3376,7 @@ CcspCwmppoMpaGetParameterAttributes
                 pSLinkEntry = AnscQueueGetNextEntry(pSLinkEntry);
 
                 pCwmpPA = &pParamAttrArray[ulParamAttrArraySize++];
-                //Saving the original param name for avoiding Aliasing and CWMPtoDML issues
-                pOrigName = CcspTr069PaCloneString(pNsList->Args.paramAttrInfo.parameterName);
 
-                CcspTr069PaMapFirstInternalAlias
-                (
-                        pCcspCwmpCpeController->hTr069PaMapper,
-                        &pNsList->Args.paramAttrInfo.parameterName,
-                        &bIncludeInvQuery,
-                        TRUE
-                );
-
-                /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ //fix RDKB-405
                 CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
                 CcspTr069PaTraceDebug(("GPA %s\n", pNsList->Args.paramAttrInfo.parameterName));
 
@@ -3982,12 +3412,6 @@ CcspCwmppoMpaGetParameterAttributes
                             );
                     }
                 }
-                //Assign the saved original param name back to the param name to be sent back in response to ACS
-                if ( pCwmpPA->Name )
-                {
-                    CcspTr069PaFreeMemory(pCwmpPA->Name);
-                }
-                pCwmpPA->Name = pOrigName;
 
                 pCwmpPA->AccessList = NULL;
                 if ( pNsList->Args.paramAttrInfo.accessControlBitmask == CCSP_NS_ACCESS_SUBSCRIBER )
@@ -4104,10 +3528,6 @@ EXIT1:
         SlapFreeVarArray(pParamNameArray);
     }
 
-    CcspTr069FreeStringQueue(&ParamList, FALSE);
-
-    CcspTr069FreeStringSList(&StringAllocList, TRUE);
-
     return  returnStatus;
 }
 
@@ -4185,9 +3605,6 @@ CcspCwmppoMpaAddObject
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};  /*RDKB-7325, CID-32935, initialize before use */
     int                             NumSubsystems       = 0;
 
-    BOOL                            bIncludeInvQuery     = !bExcludeInvNs;
-    CCSP_STRING                     MappedInternalName         = NULL;
-
     *pulObjInsNumber = 0;
     *piStatus        = 0;
     *phSoapFault     = (ANSC_HANDLE)NULL;
@@ -4217,35 +3634,6 @@ CcspCwmppoMpaAddObject
         goto  EXIT2;
     }
 
-    // Only support single object mapping for variable-size tables
-    MappedInternalName = pObjName;
-
-    returnStatus = CcspTr069PaMapFirstInternalAlias
-        (
-            pCcspCwmpCpeController->hTr069PaMapper,
-            &pObjName,
-            &bIncludeInvQuery,
-            FALSE
-        );
-
-    if (returnStatus == ANSC_STATUS_SUCCESS)
-    {
-        // Pointers not matching indicates mapping was found
-        if (MappedInternalName != pObjName)
-        {
-            MappedInternalName = pObjName;
-        }
-        else
-        {
-            MappedInternalName = NULL;
-        }
-    }
-    else
-    {
-        MappedInternalName = NULL;
-        goto EXIT2;    
-    }
-
     /*
      * query namespace cache and get the FC that owns the
      * table object. Call AddTblRow to the FC.
@@ -4259,7 +3647,7 @@ CcspCwmppoMpaAddObject
             pObjName,
             Subsystems,
             &NumSubsystems,
-            bIncludeInvQuery
+            !bExcludeInvNs
         );
     
     if ( NumSubsystems <= 0 )
@@ -4401,11 +3789,6 @@ EXIT1:
         CcspTr069FreeStringArray(ppSubsysArray, ulFcArraySize, TRUE);
     }
 
-    if ( MappedInternalName )
-    {
-        CcspTr069PaFreeMemory(MappedInternalName);
-    }
-
     return  returnStatus;
 }
 
@@ -4477,9 +3860,6 @@ CcspCwmppoMpaDeleteObject
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33069, initialize before use */
     int                             NumSubsystems       = 0;
 
-    BOOL                            bIncludeInvQuery     = !bExcludeInvNs;
-    CCSP_STRING                     MappedInternalName   = NULL;
-
     *piStatus    = 0;
     *phSoapFault = (ANSC_HANDLE)NULL;
 
@@ -4509,35 +3889,6 @@ CcspCwmppoMpaDeleteObject
         goto  EXIT2;
     }
 
-    // Only support single object mapping for variable-size tables
-    MappedInternalName = pObjName;
-
-    returnStatus = CcspTr069PaMapFirstInternalAlias
-        (
-            pCcspCwmpCpeController->hTr069PaMapper,
-            &pObjName,
-            &bIncludeInvQuery,
-            FALSE
-        );
-
-    if (returnStatus == ANSC_STATUS_SUCCESS)
-    {
-        // Pointers not matching indicates mapping was found
-        if (MappedInternalName != pObjName)
-        {
-            MappedInternalName = pObjName;
-        }
-        else
-        {
-            MappedInternalName = NULL;
-        }
-    }
-    else
-    {
-        MappedInternalName = NULL;
-        goto EXIT2;
-    }
-
     /*
      * query namespace cache and get the FC that owns the
      * table object. Call DeleteTblRow to the FC.
@@ -4550,7 +3901,7 @@ CcspCwmppoMpaDeleteObject
             pObjName,
             Subsystems,
             &NumSubsystems,
-            bIncludeInvQuery
+            !bExcludeInvNs
         );
     
     if ( NumSubsystems <= 0 )
@@ -4691,11 +4042,6 @@ EXIT1:
     if ( ppSubsysArray )
     {
         CcspTr069FreeStringArray(ppSubsysArray, ulFcArraySize, TRUE);
-    }
-
-    if (MappedInternalName)
-    {
-        CcspTr069PaFreeMemory(MappedInternalName);
     }
 
     return  returnStatus;
