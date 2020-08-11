@@ -251,9 +251,8 @@ msParameterInfo managementServerParameters[] =
 // #if 0 //Not used anymore
 #ifndef _COSA_VEN501_
     { "X_CISCO_COM_ConnectionRequestURLPort", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "X_CISCO_COM_ConnectionRequestURLPath", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
+    { "X_CISCO_COM_ConnectionRequestURLPath", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) }
 #endif
-    { "X_RDKCENTRAL-COM_CustomDataModelEnabled", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) }
 };
 
 msParameterInfo autonomousTransferCompletePolicyParameters[] = 
@@ -1522,9 +1521,6 @@ void CcspManagementServer_GetSingleParameterValue(
         case ManagementServerX_CISCO_COM_DiagCompleteID:
             val->parameterValue = CcspManagementServer_CloneString("false");
             break;
-        case ManagementServerX_RDKCENTRAL_COM_CustomDataModelEnabledID:
-            val->parameterValue = CcspManagementServer_GetCustomDataModelEnabledStr(NULL);
-            break;
         default: break;
         }
     }
@@ -2223,43 +2219,6 @@ int CcspManagementServer_ValidateParameterValues(
                 case ManagementServerSTUNMaximumKeepAlivePeriodID:
                     if(CcspManagementServer_ValidateINT(val[i].parameterValue, TRUE, -1, FALSE, 0) != 0 && returnStatus == 0) returnStatus = TR69_INVALID_PARAMETER_VALUE;
                     else parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString(val[i].parameterValue);
-                    break;
-                case ManagementServerX_RDKCENTRAL_COM_CustomDataModelEnabledID:
-                    res = CcspManagementServer_ValidateBoolean(val[i].parameterValue);
-                    if(res == -1 && returnStatus == 0)
-                           {
-                           returnStatus = TR69_INVALID_PARAMETER_VALUE;
-                           }
-                    else if(res == 0)
-                           {
-                           parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("0");
-                           if (syscfg_init() != 0) 
-                             {
-                               return ANSC_STATUS_FAILURE;
-                             }
-                           if(syscfg_set(NULL, "custom_data_model_enabled", parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue) != 0) 
-                             {
-                               return ANSC_STATUS_FAILURE;
-                             }
-                           syscfg_commit();
-                           system("sysevent set firewall-restart");
-                           system("(sleep 5 ; systemctl restart CcspTr069PaSsp) &");
-                           }
-                    else
-                           {
-                           parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue = CcspManagementServer_CloneString("1");
-                           if (syscfg_init() != 0) 
-                             {
-                               return ANSC_STATUS_FAILURE;
-                             }
-                           if(syscfg_set(NULL, "custom_data_model_enabled", parameterSetting.msParameterValSettings[parameterSetting.currIndex].parameterValue) != 0)
-                             {
-                               return ANSC_STATUS_FAILURE;
-                             }
-                           syscfg_commit();
-                           system("sysevent set firewall-restart");
-                           system("(sleep 5 ; systemctl restart CcspTr069PaSsp) &");
-                           }
                     break;
                 default: break;
                 }

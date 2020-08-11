@@ -93,8 +93,6 @@ CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_process.c \
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_utility.c \
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_states.c \
-    ../CcspCwmpSoapParser/ccsp_cwmp_soappo_build.c \
-    ../Ccsp_CustomMapper/ccsp_alias_mgr_base.c \
-    ../Ccsp_CustomMapper/ccsp_alias_mgr_helper.c
+    ../CcspCwmpSoapParser/ccsp_cwmp_soappo_build.c
 
 CcspTr069PaSsp_LDFLAGS = -lccsp_common -lsyscfg -lsysevent -lutapi -lutctx -lcrypto

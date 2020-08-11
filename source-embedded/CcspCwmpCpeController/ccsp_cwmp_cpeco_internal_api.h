@@ -318,13 +318,6 @@ CcspCwmpCpecoSetPAMapperFile
     );
 
 ANSC_STATUS
-CcspCwmpCpecoSetPACustomMapperFile
-    (
-        ANSC_HANDLE                 hThisObject,
-        char*                       pName
-    );
-
-ANSC_STATUS
 CcspCwmpCpecoSetSDMXmlFilename
     (
         ANSC_HANDLE                 hThisObject,
