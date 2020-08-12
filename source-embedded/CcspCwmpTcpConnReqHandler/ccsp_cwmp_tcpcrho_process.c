@@ -351,7 +351,7 @@ CcspCwmpTcpcrhoProcessRequest
                 status = ANSC_STATUS_FAILURE;
             }
         }
-#ifdef _ANSC_IPV6_COMPATIBLE
+#ifdef _ANSC_IPV6_COMPATIBLE_
         errno_t rc = -1;
         rc = strcpy_s(pSessAuthInfo->RemoteAddress,sizeof(pSessAuthInfo->RemoteAddress), pWebSocket->PeerAddr);
         if(rc!=EOK)
