@@ -2638,9 +2638,6 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
     errno_t rc = -1;
 
     len1 = strlen(CcspManagementServer_ComponentName);
-    rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
-    ERR_CHK(rc);
-    pRecordName[len1] = '.';
     slapVar.Syntax = SLAP_VAR_SYNTAX_string;
     
     int valueChangeSize = 0;
@@ -2648,6 +2645,11 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
 
     for(; (unsigned int)i<parameterSetting.currIndex; i++)
     {
+        rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
+        ERR_CHK(rc);
+        pRecordName[len1] = '.';
+        pRecordName[len1 + 1] = '\0';
+  
         objectID = parameterSetting.msParameterValSettings[i].objectID;
         parameterID = parameterSetting.msParameterValSettings[i].parameterID;
 
@@ -2810,14 +2812,16 @@ int CcspManagementServer_RollBackParameterValues()
     char pRecordName[1000] = {0};
     size_t len1, len2, len3;
     errno_t rc = -1;
-    len1 = strlen(CcspManagementServer_ComponentName);
-    rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
-    ERR_CHK(rc);
-    pRecordName[len1] = '.';
+    len1 = strlen(CcspManagementServer_ComponentName);    
     slapVar.Syntax = SLAP_VAR_SYNTAX_string;
 
     for(; (unsigned int)i<parameterSetting.currIndex; i++)
     {
+      rc = strncpy_s(pRecordName, sizeof(pRecordName), CcspManagementServer_ComponentName, len1);
+      ERR_CHK(rc);
+      pRecordName[len1] = '.';
+      pRecordName[len1 + 1] = '\0';
+
         objectID = parameterSetting.msParameterValSettings[i].objectID;
         parameterID = parameterSetting.msParameterValSettings[i].parameterID;
         if(objectInfo[objectID].parameters[parameterID].access == CCSP_RO)
