@@ -79,7 +79,14 @@
 #include "ccsp_cwmp_ifo_sta.h"
 #include "Tr69_Tlv.h"
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
-#define TR69_DEFAULT_URL_FILE "/etc/url"
+/*
+   The "correct" path for the url file is unclear. Previously the file
+   was installed to /usr/ccsp/tr069pa/url but accessed via /etc/url
+   (a symlink back to the actual file). Changing the definition below
+   should hopefully allow the symlink to be removed.
+*/
+#define TR69_DEFAULT_URL_FILE "/usr/ccsp/tr069pa/url"
+
 PFN_CCSPMS_VALUECHANGE  CcspManagementServer_ValueChangeCB;
 CCSP_HANDLE             CcspManagementServer_cbContext;
 CCSP_HANDLE             CcspManagementServer_cpeContext;

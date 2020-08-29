@@ -82,7 +82,6 @@
 #include "syscfg/syscfg.h"
 
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
-#define TR69_DEFAULT_URL_FILE "/etc/url"
 #define MAX_UDP_VAL  257
 #define MAX_BUF_SIZE 256
 // TELEMETRY 2.0 //RDKB-25996

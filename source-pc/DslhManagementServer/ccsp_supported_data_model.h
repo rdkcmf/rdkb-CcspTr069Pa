@@ -93,7 +93,15 @@
 #define _SupportedDataModelObjectName         DM_ROOTNAME"DeviceInfo.SupportedDataModel."
 #define _SupportedDataModelTableName    DM_ROOTNAME"DeviceInfo.SupportedDataModel.{i}."
 
-#define _CCSP_MANAGEMENT_SERVER_DEFAULT_SDM_FILE    "./sdm.xml"
+/*
+   The "correct" path for the sdm.xml file is unclear. Previously the file
+   was installed to /usr/ccsp/tr069pa/sdm.xml but accessed via ./sdm.xml
+   Since ./sdm.xml is a relative path, it required a symlink from /usr/bin/sdm.xml
+   back to the actual file (/usr/bin is presumably the current directory
+   when CcspTr069PaSsp is run?). Changing the definition below should hopefully
+   allow the symlink to be removed.
+*/
+#define _CCSP_MANAGEMENT_SERVER_DEFAULT_SDM_FILE    "/usr/ccsp/tr069pa/sdm.xml"
 
 #define CCSP_SUPPORTED_DATA_MODEL_PARAMETER_NAME_LENGTH           9
 #define CCSP_SUPPORTED_DATA_MODEL_PARAMETER_VALUE_LENGTH          1000
