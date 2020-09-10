@@ -330,7 +330,7 @@ CcspCwmpsoDelayedActiveNotifTimerInvoke
 extern CCSP_VOID
 CcspCwmpsoStartRetryTimerCustom
     (
-        PCCSP_CWMP_SESSION_OBJECT                 pMyObject;
+        PCCSP_CWMP_SESSION_OBJECT                 pMyObject
     );
     
 ANSC_STATUS
