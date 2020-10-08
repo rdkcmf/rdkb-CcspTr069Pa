@@ -351,6 +351,9 @@
         </Param>
         <Param>
                 <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.CaptivePortalForNoCableRF.Enable</Name>
+        </Param>
+         <Param>
+                 <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadAndFactoryReset</Name>
         </Param>        
         <!-- Comcast specific Device.DeviceInfo. parameters -->
         <Param>
@@ -373,6 +376,12 @@
         </Param>
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_MTA_IP</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadURL</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareToDownload</Name>
         </Param>
         
 

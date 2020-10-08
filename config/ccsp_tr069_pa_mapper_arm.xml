@@ -338,6 +338,9 @@
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM.Ops.LogsUploadStatus</Name>
         </Param>
         <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadAndFactoryReset</Name>
+        </Param>
+        <Param>
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.Logging.xOpsDMUploadLogsNow</Name>
         </Param>
         <Param>
@@ -428,6 +431,12 @@
         </Param>
         <Param>
             <Name>Device.DeviceInfo.X_COMCAST-COM_rdkbPlatformCapable</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadURL</Name>
+        </Param>
+        <Param>
+            <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareToDownload</Name>
         </Param>
 	    <Param>
             <Name>Device.X_CISCO_COM_MTA.Dect.SoftwareVersion</Name>
