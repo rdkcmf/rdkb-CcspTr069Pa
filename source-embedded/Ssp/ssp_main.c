@@ -63,7 +63,9 @@
 #include "breakpad_wrapper.h"
 #endif
 #define DEBUG_INI_NAME  "/etc/debug.ini"
-
+#include "syscfg/syscfg.h"
+#include "cap.h"
+static cap_user appcaps;
 PCCSP_CWMP_CPE_CONTROLLER_OBJECT    g_pCcspCwmpCpeController    = NULL;
 BOOL                                bEngaged                = FALSE;
 
@@ -323,6 +325,22 @@ static int is_core_dump_opened(void)
 
 #endif
 
+static void drop_root()
+{
+  char buf[8] = {'\0'};
+  appcaps.caps = NULL;
+  appcaps.user_name = NULL;
+  syscfg_init();
+  syscfg_get( NULL, "NonRootSupport", buf, sizeof(buf));
+  if( buf != NULL )  {
+      if (strncmp(buf, "true", strlen("true")) == 0) {
+          init_capability();
+          drop_root_caps(&appcaps);
+          update_process_caps(&appcaps);
+          read_capability(&appcaps);
+      }
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -415,7 +433,7 @@ int main(int argc, char* argv[])
     }
 
 #elif defined(_ANSC_LINUX)
-
+    drop_root();
     if ( bRunAsDaemon )
     	daemonize();
 
