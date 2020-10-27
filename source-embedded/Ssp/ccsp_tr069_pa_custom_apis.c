@@ -659,7 +659,11 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
 	char cmp[64] = {'\0'};
 	char sharedText[128] = {'\0'}, sharedmd[64] = {'\0'};
 	int  iIndex = 0, sharedKey_len = 0, sharedText_len = 0,  sharedmd_len = 0;
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
 	HMAC_CTX ctx;
+#else
+	HMAC_CTX *pctx = HMAC_CTX_new();
+#endif
         
 	_ansc_sprintf(sharedText, "%s-%s", 
                       DeviceManufacturerOUI, DeviceProductClass);
@@ -673,10 +677,17 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
 
 	sharedText_len = strlen(sharedText);
 
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
 	HMAC_CTX_init( &ctx);
 	HMAC_Init(   &ctx, SharedKey,  sharedKey_len, EVP_sha256());
 	HMAC_Update( &ctx, (unsigned char *)sharedText, sharedText_len);
 	HMAC_Final(  &ctx, (unsigned char *)sharedmd, (unsigned int *)&sharedmd_len );
+#else
+	HMAC_CTX_reset (pctx);
+	HMAC_Init (pctx, SharedKey, sharedKey_len, EVP_sha256());
+	HMAC_Update (pctx, (unsigned char *) sharedText, sharedText_len);
+	HMAC_Final (pctx, (unsigned char *) sharedmd, (unsigned int *) &sharedmd_len);
+#endif
 
 	convertTo = cmp;
 	for (iIndex = 0; iIndex < sharedmd_len; iIndex++) 
@@ -689,7 +700,11 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
 	*/
 	DeviceDefaultPassword = cmp;
 
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
 	HMAC_CTX_cleanup( &ctx );
+#else
+	HMAC_CTX_free (pctx);
+#endif
         AnscTraceWarning(("%s -- default password is '%s', hashLength = %lu\n", 
                           __FUNCTION__, DeviceDefaultPassword, hashLength));
 
