@@ -76,7 +76,11 @@
 
 
 #include "ccsp_cwmp_acsco_global.h"
+#include <stdbool.h>
 
+#define TR069_HOSTS_CFG		"/usr/ccsp/tr069pa/tr69Hosts.cfg"
+char **hostNames = NULL;
+int numHosts = 0;
 
 /**********************************************************************
 
@@ -248,7 +252,65 @@ CcspCwmpAcscoRemove
     return  ANSC_STATUS_SUCCESS;
 }
 
+#define DEVICE_PROPERTIES    "/etc/device.properties"
+static int bIsComcastImage( void)
+{
+        char PartnerId[255] = {'\0'};
+        int isComcastImg = 1;
+        errno_t rc       = -1;
+        int     ind      = -1;
 
+        getPartnerId ( PartnerId ) ;
+        rc = strcmp_s("comcast", strlen("comcast"), PartnerId, &ind);
+        ERR_CHK(rc);
+        if((rc == EOK) && (ind != 0))
+        {
+                isComcastImg = 0;
+        }
+
+        return isComcastImg;
+}
+
+char **getHostNames()
+{
+	static bool initialized = false;
+	/* To load hostnames configuration file only once*/
+	if(!initialized)
+	{
+		FILE *fp;
+		fp = fopen(TR069_HOSTS_CFG, "r");
+		if(fp != NULL)
+		{
+			char ch;
+			char tempHost[128] = {'\0'};
+			while(!feof(fp))
+			{
+				ch = fgetc(fp);
+				if(ch == '\n')
+					numHosts++;
+			}
+			if(numHosts > 0)
+			{
+				hostNames = (char **)malloc(sizeof(char *) * numHosts);
+				int i = 0;
+				fseek(fp, 0, SEEK_SET);
+				while(fgets(tempHost, 128, fp) != NULL)
+				{
+					hostNames[i] = strndup(tempHost, strlen(tempHost)-1);
+					i++;
+				}
+			}
+			fclose(fp);
+		}
+		else
+		{
+			numHosts = 0;
+			hostNames = NULL;
+		}
+		initialized = true;
+	}
+	return hostNames;
+}
 /**********************************************************************
 
     caller:     owner of this object
@@ -283,7 +345,8 @@ CcspCwmpAcscoEnrollObjects
     PHTTP_BSP_INTERFACE             pHttpBspIf      = (PHTTP_BSP_INTERFACE    )pMyObject->hHttpBspIf;
     PHTTP_ACM_INTERFACE             pHttpAcmIf      = (PHTTP_ACM_INTERFACE    )pMyObject->hHttpAcmIf;
     PHTTP_SIMPLE_CLIENT_OBJECT      pHttpClient     = (PHTTP_SIMPLE_CLIENT_OBJECT)NULL;
-   errno_t rc = -1;
+    errno_t rc = -1;
+    HTTP_SCO_HOST_NAMES		    hosts;
 
     if ( !pHttpBspIf )
     {
@@ -353,6 +416,26 @@ CcspCwmpAcscoEnrollObjects
     pHttpClient->SetProductName(pHttpClient, "HTTP Client V1.0");
     pHttpClient->SetBspIf((ANSC_HANDLE)pHttpClient, pMyObject->hHttpBspIf);
     pHttpClient->SetClientMode(pHttpClient, HTTP_SCO_MODE_XSOCKET | HTTP_SCO_MODE_COMPACT | HTTP_SCO_MODE_NOTIFY_ON_ALL_CONN_ONCE);
+
+    memset(&hosts, 0, sizeof(HTTP_SCO_HOST_NAMES));
+    if ( bIsComcastImage() && getHostNames() != NULL)
+    {
+		char **phostNames = NULL;
+		int i = 0;
+		phostNames = getHostNames();
+		CcspTraceInfo(("Adding hostnames for validation\n"));
+		hosts.peerVerify = TRUE;
+		hosts.numHosts = numHosts;
+                hosts.hostNames = (char **)malloc(sizeof(char *)*numHosts);
+		for(i = 0; i<numHosts; i++)
+		{
+			if(phostNames[i] != NULL)
+			{
+				hosts.hostNames[i] = strdup(phostNames[i]);
+			}
+		}
+    }
+    pHttpClient->SetHostNames(pHttpClient, &hosts);
 
     pMyObject->hHttpSimpleClient = (ANSC_HANDLE)pHttpClient;
 
