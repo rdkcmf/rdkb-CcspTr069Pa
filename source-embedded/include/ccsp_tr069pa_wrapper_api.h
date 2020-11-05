@@ -232,7 +232,7 @@ CcspTr069PaCloneString(char* src)
 /*
  * SAFECLIB Erro Handling Logging APIs
  */
-#define RDK_SAFECLIB_ERR()  printf("safeclib error at %s %s:%d %s", __FILE__, __FUNCTION__, __LINE__)
+#define RDK_SAFECLIB_ERR()  printf("safeclib error at %s %s:%d", __FILE__, __FUNCTION__, __LINE__)
  
 #define ERR_CHK(rc)                                             \
     if(rc !=EOK) {                                              \
