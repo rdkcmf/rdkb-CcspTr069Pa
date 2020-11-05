@@ -1540,6 +1540,15 @@
         <Param>
             <Name>Device.WiFi.AccessPoint.{i}.Security.RadiusSecret</Name>
         </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.SecondaryRadiusServerIPAddr</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.SecondaryRadiusServerPort</Name>
+        </Param>
+        <Param>
+            <Name>Device.WiFi.AccessPoint.{i}.Security.SecondaryRadiusSecret</Name>
+        </Param>
 		<Param>
             <Name>Device.WiFi.AccessPoint.{i}.Security.X_CISCO_COM_EncryptionMethod</Name>
         </Param>
