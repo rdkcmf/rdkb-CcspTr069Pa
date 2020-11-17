@@ -227,7 +227,7 @@ CcspCwmpSoappoBuildSoapReq_GetRpcMethods
         char*                       pRequestID
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -292,7 +292,7 @@ CcspCwmpSoappoBuildSoapReq_GetRpcMethods
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -393,7 +393,7 @@ CcspCwmpSoappoBuildSoapReq_Inform
         ULONG                       ulArraySize
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -408,7 +408,6 @@ CcspCwmpSoappoBuildSoapReq_Inform
     PCHAR                           pXmlString   = (PCHAR)NULL;
     PANSC_UNIVERSAL_TIME            pTime        = NULL;
     CHAR                            pNodeName[64]= { 0 };
-    CHAR                            pIntValue[32]= { 0 };
 	CHAR							pAttrName[64]= { 0 };
 	CHAR							pAttrVal[64] = { 0 };
     ULONG                           length       = 0;
@@ -619,7 +618,7 @@ CcspCwmpSoappoBuildSoapReq_Inform
 			_ansc_sprintf
 				(
 					pAttrVal,
-					"%s:EventStruct[%d]",
+					"%s:EventStruct[%lu]",
 					CCSP_CWMP_NAMESPACE,
 					ulEventCount
 				);
@@ -943,7 +942,7 @@ CcspCwmpSoappoBuildSoapReq_Inform
 			_ansc_sprintf
 				(
 					pAttrVal,
-					"%s:ParameterValueStruct[%d]",
+					"%s:ParameterValueStruct[%lu]",
 					CCSP_CWMP_NAMESPACE,
 					eventCount
 				);
@@ -968,7 +967,7 @@ CcspCwmpSoappoBuildSoapReq_Inform
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -1048,7 +1047,7 @@ CcspCwmpSoappoBuildSoapReq_TransferComplete
         ANSC_HANDLE                 hCompleteTime
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -1299,7 +1298,7 @@ CcspCwmpSoappoBuildSoapReq_TransferComplete
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -1378,7 +1377,7 @@ CcspCwmpSoappoBuildSoapReq_Kicked
         char*                       pNext
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -1545,7 +1544,7 @@ CcspCwmpSoappoBuildSoapReq_Kicked
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -1616,7 +1615,7 @@ CcspCwmpSoappoBuildSoapReq_RequestDownload
         ULONG                       ulArraySize
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pListNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -1793,7 +1792,7 @@ CcspCwmpSoappoBuildSoapReq_RequestDownload
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -1897,7 +1896,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousTransferComplete
         char*                       pTargetFileName
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -2261,7 +2260,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousTransferComplete
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -2382,7 +2381,6 @@ CcspCwmpSoappoBuildSoapReq_DUStateChangeComplete_Results
     PANSC_XML_DOM_NODE_OBJECT       pResultNode         = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pNode               = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pFaultNode          = (PANSC_XML_DOM_NODE_OBJECT)NULL;
-    ULONG                           length              = 0;
     char                            buf[64];
     int                             i;
 
@@ -2460,7 +2458,8 @@ CcspCwmpSoappoBuildSoapReq_DUStateChangeComplete_Results
             );
 
         /* Fault */
-        CcspCwmpSoappoAddXmlChildNodeString(pResultNode, pFaultNode, "Fault", NULL);
+        char * temp_null = NULL;
+        CcspCwmpSoappoAddXmlChildNodeString(pResultNode, pFaultNode, "Fault", temp_null);
         if ( pFaultNode )
         {
             /* FaultCode */
@@ -2492,16 +2491,14 @@ CcspCwmpSoappoBuildSoapReq_DUStateChangeComplete
         char*                       pCommandKey
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT )hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PCCSP_TR069_DSCC_REQ            pDsccReq     = (PCCSP_TR069_DSCC_REQ     )hDsccReq;
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pResultsNode = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
-    PANSC_XML_DOM_NODE_OBJECT       pTempNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PCHAR                           pXmlString   = (PCHAR)NULL;
-    PANSC_UNIVERSAL_TIME            pTime        = NULL;
     CHAR                            pNodeName[64]= { 0 };
     ULONG                           length       = 0;
 
@@ -2603,7 +2600,7 @@ CcspCwmpSoappoBuildSoapReq_DUStateChangeComplete
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -2667,13 +2664,10 @@ CcspCwmpSoappoBuildSoapReq_AutonomousDUStateChangeComplete_Results
         PCCSP_TR069_ADSCC_REQ       pAdsccReq
     )
 {
-    PCCSP_TR069_ADSCC_OpResult      pAdsccResult;
-    char                            paramName[256];
     PANSC_XML_DOM_NODE_OBJECT       pRootNode           = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pResultNode         = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pNode               = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pFaultNode          = (PANSC_XML_DOM_NODE_OBJECT)NULL;
-    ULONG                           length              = 0;
     char                            buf[64];
     int                             i;
     ULONG                           NumUnFilteredRes    = 0;
@@ -2703,7 +2697,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousDUStateChangeComplete_Results
     _ansc_sprintf
         (
             buf, 
-            "cwmp:AutonOpResultStruct[%u]", 
+            "cwmp:AutonOpResultStruct[%lu]", 
             NumUnFilteredRes
         );
 
@@ -2773,7 +2767,8 @@ CcspCwmpSoappoBuildSoapReq_AutonomousDUStateChangeComplete_Results
             );
 
         /* Fault */
-        CcspCwmpSoappoAddXmlChildNodeString(pResultNode, pFaultNode, "Fault", NULL);
+        char * temp_null = NULL;
+        CcspCwmpSoappoAddXmlChildNodeString(pResultNode, pFaultNode, "Fault", temp_null);
         if ( pFaultNode )
         {
             /* FaultCode */
@@ -2807,15 +2802,12 @@ CcspCwmpSoappoBuildSoapReq_AutonomousDUStateChangeComplete
         ANSC_HANDLE                 hAdsccReq
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT )hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PCCSP_TR069_ADSCC_REQ           pAdsccReq    = (PCCSP_TR069_ADSCC_REQ    )hAdsccReq;
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
-    PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
-    PANSC_XML_DOM_NODE_OBJECT       pTempNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PCHAR                           pXmlString   = (PCHAR)NULL;
-    PANSC_UNIVERSAL_TIME            pTime        = NULL;
     CHAR                            pNodeName[64]= { 0 };
     ULONG                           length       = 0;
 
@@ -2895,7 +2887,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousDUStateChangeComplete
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -2963,6 +2955,7 @@ CcspCwmpSoappoBuildSoapRep_Error
         ANSC_HANDLE                 hSoapFault
     )
 {
+    UNREFERENCED_PARAMETER(pMethodName);
     /*
      * Actually, the Soap Fault message doesn't have the MethodName information.
      */
@@ -3019,7 +3012,7 @@ CcspCwmpSoappoBuildSoapRep_GetRPCMethods
         SLAP_STRING_ARRAY*          pMethodList
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pListNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -3117,7 +3110,7 @@ CcspCwmpSoappoBuildSoapRep_GetRPCMethods
 			_ansc_sprintf
 				(
 					pAttrVal,
-					"%s:string[%d]",
+					"%s:string[%lu]",
 					SOAP_XSD_NAMESPACE_NAME,
 					pMethodList->VarCount
 				);
@@ -3167,7 +3160,7 @@ CcspCwmpSoappoBuildSoapRep_GetRPCMethods
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -3234,7 +3227,7 @@ CcspCwmpSoappoBuildSoapRep_SetParameterValues
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -3337,7 +3330,7 @@ CcspCwmpSoappoBuildSoapRep_SetParameterValues
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -3409,7 +3402,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterValues
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pListNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -3421,7 +3414,6 @@ CcspCwmpSoappoBuildSoapRep_GetParameterValues
     CHAR                            pNodeName[256]={ 0 };
 	CHAR							pAttrName[64] ={ 0 };
 	CHAR							pAttrVal[64]  ={ 0 };
-    CHAR                            pIntBuf[32]  = { 0 };
     ULONG                           length       = 0;
     ULONG                           i            = 0;
 
@@ -3519,7 +3511,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterValues
 		_ansc_sprintf
 			(
 				pAttrVal,
-				"%s:ParameterValueStruct[%d]",
+				"%s:ParameterValueStruct[%lu]",
 				CCSP_CWMP_NAMESPACE,
 				ulArraySize
 			);
@@ -3627,7 +3619,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterValues
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -3699,7 +3691,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterNames
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject     = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode     = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode     = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pListNode     = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -3808,7 +3800,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterNames
 		_ansc_sprintf
 			(
 				pAttrVal,
-				"%s:ParameterInfoStruct[%d]",
+				"%s:ParameterInfoStruct[%lu]",
 				CCSP_CWMP_NAMESPACE,
 				ulArraySize
 			);
@@ -3910,7 +3902,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterNames
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -3972,7 +3964,7 @@ CcspCwmpSoappoBuildSoapRep_SetParameterAttributes
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -4050,7 +4042,7 @@ CcspCwmpSoappoBuildSoapRep_SetParameterAttributes
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -4122,13 +4114,12 @@ CcspCwmpSoappoBuildSoapRep_GetParameterAttributes
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pListNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
-    PANSC_XML_DOM_NODE_OBJECT       pList2Node   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PCCSP_CWMP_PARAM_ATTRIB         pAttrArray   = (PCCSP_CWMP_PARAM_ATTRIB)hParamAttribArray;
     PCCSP_CWMP_PARAM_ATTRIB         pCwmpAttr    = (PCCSP_CWMP_PARAM_ATTRIB)NULL;
     PCHAR                           pXmlString   = (PCHAR)NULL;
@@ -4235,7 +4226,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterAttributes
 		_ansc_sprintf
 			(
 				pAttrVal,
-				"%s:ParameterAttributeStruct[%d]",
+				"%s:ParameterAttributeStruct[%lu]",
 				CCSP_CWMP_NAMESPACE,
 				ulArraySize
 			);
@@ -4416,7 +4407,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterAttributes
 			_ansc_sprintf
 				(
 					pAttrVal,
-					"%s:string[%d]",
+					"%s:string[%lu]",
 					SOAP_XSD_NAMESPACE_NAME,
 					nAccess
 				);
@@ -4439,7 +4430,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterAttributes
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -4511,7 +4502,7 @@ CcspCwmpSoappoBuildSoapRep_AddObject
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -4634,7 +4625,7 @@ CcspCwmpSoappoBuildSoapRep_AddObject
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -4701,7 +4692,7 @@ CcspCwmpSoappoBuildSoapRep_DeleteObject
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -4804,7 +4795,7 @@ CcspCwmpSoappoBuildSoapRep_DeleteObject
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -4881,7 +4872,7 @@ CcspCwmpSoappoBuildSoapRep_Download
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -5066,7 +5057,7 @@ CcspCwmpSoappoBuildSoapRep_Download
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5130,7 +5121,7 @@ CcspCwmpSoappoBuildSoapRep_Reboot
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -5208,7 +5199,7 @@ CcspCwmpSoappoBuildSoapRep_Reboot
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5271,7 +5262,7 @@ CcspCwmpSoappoBuildSoapRep_ChangeDUState
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -5349,7 +5340,7 @@ CcspCwmpSoappoBuildSoapRep_ChangeDUState
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5421,7 +5412,7 @@ CcspCwmpSoappoBuildSoapRep_GetQueuedTransfers
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pListNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -5431,7 +5422,6 @@ CcspCwmpSoappoBuildSoapRep_GetQueuedTransfers
     PCCSP_CWMP_QUEUED_TRANSFER      pCwmpTrans   = (PCCSP_CWMP_QUEUED_TRANSFER)NULL;
     PCHAR                           pXmlString   = (PCHAR)NULL;
     CHAR                            pNodeName[64]= { 0 };
-    PANSC_UNIVERSAL_TIME            pTime        = NULL;
     ULONG                           length       = 0;
     ULONG                           i            = 0;
 
@@ -5583,7 +5573,7 @@ CcspCwmpSoappoBuildSoapRep_GetQueuedTransfers
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5645,7 +5635,7 @@ CcspCwmpSoappoBuildSoapRep_ScheduleInform
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -5723,7 +5713,7 @@ CcspCwmpSoappoBuildSoapRep_ScheduleInform
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5785,7 +5775,7 @@ CcspCwmpSoappoBuildSoapRep_SetVouchers
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -5863,7 +5853,7 @@ CcspCwmpSoappoBuildSoapRep_SetVouchers
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5935,7 +5925,7 @@ CcspCwmpSoappoBuildSoapRep_GetOptions
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pListNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -6242,7 +6232,7 @@ CcspCwmpSoappoBuildSoapRep_GetOptions
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -6319,7 +6309,7 @@ CcspCwmpSoappoBuildSoapRep_Upload
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode  = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -6504,7 +6494,7 @@ CcspCwmpSoappoBuildSoapRep_Upload
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -6566,7 +6556,7 @@ CcspCwmpSoappoBuildSoapRep_FactoryReset
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode    = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -6644,7 +6634,7 @@ CcspCwmpSoappoBuildSoapRep_FactoryReset
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -6706,7 +6696,7 @@ CcspCwmpSoappoBuildSoapRepFault
         ANSC_HANDLE                 hSoapFault
     )
 {
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject     = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_XML_DOM_NODE_OBJECT       pRootNode     = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pBodyNode     = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PANSC_XML_DOM_NODE_OBJECT       pParentNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
@@ -7013,7 +7003,7 @@ CcspCwmpSoappoBuildSoapRepFault
         goto EXIT;
     }
 
-    pXmlString = (PUCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {

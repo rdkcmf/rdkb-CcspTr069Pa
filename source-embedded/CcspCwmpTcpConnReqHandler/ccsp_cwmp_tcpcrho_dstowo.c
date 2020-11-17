@@ -122,8 +122,7 @@ CcspCwmpTcpcrhoDstowoAccept
         PANSC_HANDLE                phClientContext
     )
 {
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject      = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty      = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_DAEMON_SOCKET_TCP_OBJECT  pWebSocket     = (PANSC_DAEMON_SOCKET_TCP_OBJECT)hSocket;
     PANSC_BUFFER_DESCRIPTOR         pBufferDesp    = NULL;
 
@@ -211,9 +210,8 @@ CcspCwmpTcpcrhoDstowoSetOut
         ANSC_HANDLE                 hSocket
     )
 {
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
-
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(hSocket);
     return  ANSC_STATUS_SUCCESS;
 }
 
@@ -254,8 +252,7 @@ CcspCwmpTcpcrhoDstowoRemove
         ANSC_HANDLE                 hSocket
     )
 {
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
+    UNREFERENCED_PARAMETER(hThisObject);
     PANSC_DAEMON_SOCKET_TCP_OBJECT  pWebSocket    = (PANSC_DAEMON_SOCKET_TCP_OBJECT)hSocket;
     PANSC_BUFFER_DESCRIPTOR         pBufferDesp   = (PANSC_BUFFER_DESCRIPTOR       )pWebSocket->GetBufferContext((ANSC_HANDLE)pWebSocket);
 
@@ -341,8 +338,8 @@ CcspCwmpTcpcrhoDstowoQuery
         PANSC_HANDLE                phQueryContext
     )
 {
+    UNREFERENCED_PARAMETER(buffer);
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
     PANSC_DAEMON_SOCKET_TCP_OBJECT  pWebSocket    = (PANSC_DAEMON_SOCKET_TCP_OBJECT)hSocket;
     PANSC_BUFFER_DESCRIPTOR         pBufferDesp   = (PANSC_BUFFER_DESCRIPTOR       )pWebSocket->GetBufferContext((ANSC_HANDLE)pWebSocket);
     ULONG                           ulDstoPmode   = ANSC_DSTOWO_PMODE_PROCESS_SYNC;
@@ -449,7 +446,6 @@ CcspCwmpTcpcrhoDstowoProcessSync
 {
     ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
     PANSC_DAEMON_SOCKET_TCP_OBJECT  pWebSocket    = (PANSC_DAEMON_SOCKET_TCP_OBJECT)hSocket;
     PANSC_BUFFER_DESCRIPTOR         pBufferDesp   = (PANSC_BUFFER_DESCRIPTOR       )pWebSocket->GetBufferContext((ANSC_HANDLE)pWebSocket);
     ULONG                           ulSessQmode   = (ULONG)hQueryContext;
@@ -612,11 +608,11 @@ CcspCwmpTcpcrhoDstowoProcessAsync
         ANSC_HANDLE                 hQueryContext
     )
 {
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
-    PANSC_DAEMON_SOCKET_TCP_OBJECT  pWebSocket    = (PANSC_DAEMON_SOCKET_TCP_OBJECT)hSocket;
-    PANSC_BUFFER_DESCRIPTOR         pBufferDesp   = (PANSC_BUFFER_DESCRIPTOR       )pWebSocket->GetBufferContext((ANSC_HANDLE)pWebSocket);
-
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(hSocket);
+    UNREFERENCED_PARAMETER(buffer);
+    UNREFERENCED_PARAMETER(ulSize);
+    UNREFERENCED_PARAMETER(hQueryContext);
     return  ANSC_STATUS_UNAPPLICABLE;
 }
 
@@ -667,10 +663,10 @@ CcspCwmpTcpcrhoDstowoSendComplete
         ANSC_STATUS                 status
     )
 {
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
-    PANSC_DAEMON_SOCKET_TCP_OBJECT  pWebSocket    = (PANSC_DAEMON_SOCKET_TCP_OBJECT)hSocket;
-    PANSC_BUFFER_DESCRIPTOR         pBufferDesp   = (PANSC_BUFFER_DESCRIPTOR       )pWebSocket->GetBufferContext((ANSC_HANDLE)pWebSocket);
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(hSocket);
+    UNREFERENCED_PARAMETER(hReserved);
+    UNREFERENCED_PARAMETER(status);
 
     return  ANSC_STATUS_SUCCESS;
 }
@@ -722,9 +718,9 @@ CcspCwmpTcpcrhoDstowoNotify
         ANSC_HANDLE                 hReserved
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(hReserved);
     ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
     PANSC_DAEMON_SOCKET_TCP_OBJECT  pWebSocket    = (PANSC_DAEMON_SOCKET_TCP_OBJECT)hSocket;
     PANSC_BUFFER_DESCRIPTOR         pBufferDesp   = (PANSC_BUFFER_DESCRIPTOR       )pWebSocket->GetBufferContext((ANSC_HANDLE)pWebSocket);
 

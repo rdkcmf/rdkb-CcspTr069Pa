@@ -426,4 +426,50 @@ int CcspManagementServer_IsEncryptedFileInDB
 		int *pIsEncryptFileAvailable 
 	);
 
+CCSP_STRING
+CcspManagementServer_GetAliasBasedAddressingStr
+    (
+        CCSP_STRING                 ComponentName
+    );
+
+ANSC_STATUS
+CcspManagementServer_UtilGetParameterValues
+    (
+        char*                       parameterNames[],
+        int                         size,
+        int*                        pval_size,
+        parameterValStruct_t***     pppval
+    );
+
+ANSC_STATUS
+CcspManagementServer_UtilFreeParameterValStruct
+    (
+        int                         val_size,
+        parameterValStruct_t**      ppval
+    );
+
+CCSP_VOID CcspManagementServer_InitDBusCustom(CCSP_Base_Func_CB *cb);
+
+int CcspManagementServer_GetObjectID(
+    char *parameterName,   /* name has to be a full object name (ends with .) or full parameter name */
+    char **name
+    );
+
+int CcspManagementServer_GetParameterID(
+    int objectID,
+    char *paraName   /* parameterName is the pure name without object name prefix. */
+    );
+
+int CcspManagementServer_GetSingleObjectValues(
+    int objectID,
+    parameterValStruct_t **val,
+    int beginValID
+    );
+
+int CcspManagementServer_SetSingleParameterAttributes(
+    int sessionId,
+    int objectID,
+    int parameterID,
+    parameterAttributeStruct_t *val
+    );
 #endif

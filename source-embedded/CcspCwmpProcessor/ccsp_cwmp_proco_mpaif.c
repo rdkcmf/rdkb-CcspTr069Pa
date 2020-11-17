@@ -79,7 +79,8 @@
 **********************************************************************/
 
 #include "ccsp_cwmp_proco_global.h"
-
+#include "syscfg/syscfg.h"
+#include <string.h>
 /**********************************************************************
                                   MACROS
 **********************************************************************/
@@ -227,7 +228,7 @@ CcspCwmppoAddFunctionalComponents
             goto EXIT;
         }
 
-        for ( j = 0; j < ulFcArraySize; j ++ )
+        for ( j = 0; (unsigned int)j < ulFcArraySize; j ++ )
         {
             ppSsArray[j] = ppSubsysArray[j];
             ppFnArray[j] = ppFcNameArray[j];
@@ -257,7 +258,7 @@ CcspCwmppoAddFunctionalComponents
 
     if ( k >= 0 )
     {
-        for ( j = 0; j < NumComp; j ++ )
+        for ( j = 0; (unsigned int)j < NumComp; j ++ )
         {
             ppSubsysArray[k+j] = CcspTr069PaCloneString(pSubsystem);
             ppFcNameArray[k+j] = CcspTr069PaCloneString(ppComp[j]->componentName);
@@ -295,7 +296,6 @@ CcspCwmppoDiscoverFunctionalComponent
     int                             n;
     componentStruct_t**             ppComp               = NULL;
     ULONG                           NumComp              = 0;
-    ULONG                           ulFcArraySize        = 0;
     int                             nRet                 = 0;
 
     *pppSubsysArray     = NULL;
@@ -447,15 +447,12 @@ CcspCwmppoMpaLockWriteAccess
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject      = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
-    BOOL                            bWriteLocked   = FALSE;
-
+    UNREFERENCED_PARAMETER(hThisObject);
     /* 
      * Nothing to do under current CCSP architecture
      */
 
-    return  bWriteLocked;
+    return  FALSE;
 }
 
 
@@ -490,14 +487,13 @@ CcspCwmppoMpaUnlockWriteAccess
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject      = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
 
     /* 
      * Nothing to do under current CCSP architecture
      */
 
-    return  returnStatus;
+    return  ANSC_STATUS_SUCCESS;
 }
 
 
@@ -561,7 +557,6 @@ CcspCwmppoMpaSetParameterValues
         BOOL                        bExcludeInvNs
     )
 {
-    ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf           = (PCCSP_CWMP_MPA_INTERFACE        )pMyObject->hCcspCwmpMpaIf;
 
@@ -647,16 +642,12 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-	CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)pCcspCwmpCpeController->hMsgBusHandle;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
+    CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)pCcspCwmpCpeController->hMsgBusHandle;
     ULONG                           ulSessionID          = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_VALUE          pParameterValueArray = (PCCSP_CWMP_PARAM_VALUE     )pParamValueArray;
-	PCCSP_CWMP_PARAM_VALUE          pParameterRadio      = (PCCSP_CWMP_PARAM_VALUE     )NULL;
-    ULONG                           ulParameterCount     = (ULONG                      )0;
-    char*                           pFaultParamName      = (char*                      )NULL;
     BOOL                            bFaultEncountered    = (BOOL                       )FALSE;
-	BOOL                            bRadioRestartEn      = (BOOL                       )FALSE;
+    BOOL                            bRadioRestartEn      = (BOOL                       )FALSE;
     ULONG                           i                    = 0;
     QUEUE_HEADER                    FcNsListQueue;
     int                             nRet;
@@ -672,10 +663,10 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     BOOL                            bSucc                = TRUE;
     int                             nCcspError           = CCSP_SUCCESS;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
-	char							ParamName[MAX_NO_WIFI_PARAM][MAX_WIFI_PARAMNAME_LEN];
-	int								noOfParam;
-	char wifiFcName[64] = { 0 };
-	char wifiDbusPath[64] = { 0 };
+    char							ParamName[MAX_NO_WIFI_PARAM][MAX_WIFI_PARAMNAME_LEN];
+    int								noOfParam = 0;
+    char wifiFcName[64] = { 0 };
+    char wifiDbusPath[64] = { 0 };
 #ifndef  _CCSP_TR069_PA_INTERCEPT_ACS_CREDENTIAL_
     BOOL                            bAcsCredChanged      = FALSE;
 #endif
@@ -769,37 +760,37 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
      * flag to FALSE to indicate all FCs that have finished SPV calls
      * to rollback changes.
      */
-    
+
     for ( i = 0; i < ulArraySize; i++ )
     {
-	
+
 #ifndef  _CCSP_TR069_PA_INTERCEPT_ACS_CREDENTIAL_
         if ( !bAcsCredChanged && 
-             ( _ansc_strstr(pParameterValueArray[i].Name, ".ManagementServer.Username") || 
-              _ansc_strstr(pParameterValueArray[i].Name, ".ManagementServer.Password") ) )
+                ( _ansc_strstr(pParameterValueArray[i].Name, ".ManagementServer.Username") || 
+                  _ansc_strstr(pParameterValueArray[i].Name, ".ManagementServer.Password") ) )
         {
             bAcsCredChanged = TRUE;
         }
 #endif
-               rc = strcmp_s("Device.X_COMCAST_COM_CM.ReinitCmMac",strlen("Device.X_COMCAST_COM_CM.ReinitCmMac"),pParameterValueArray[i].Name, &ind);
-               ERR_CHK(rc);
-               if((rc == EOK) && (!ind))
-	       {
-	            // We need to internally query DeviceControl object
-                    AnscCopyString(pParameterValueArray[i].Name,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac");
-	       }
+        rc = strcmp_s("Device.X_COMCAST_COM_CM.ReinitCmMac",strlen("Device.X_COMCAST_COM_CM.ReinitCmMac"),pParameterValueArray[i].Name, &ind);
+        ERR_CHK(rc);
+        if((rc == EOK) && (!ind))
+        {
+            // We need to internally query DeviceControl object
+            AnscCopyString(pParameterValueArray[i].Name,"Device.X_CISCO_COM_DeviceControl.ReinitCmMac");
+        }
 
         /* identify which sub-system(s) the parameter resides */
         NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
         CcspTr069PA_GetNamespaceSubsystems
             (
-                pCcspCwmpCpeController->hTr069PaMapper,
-                pParameterValueArray[i].Name,
-                Subsystems,
-                &NumSubsystems,
-                !bExcludeInvNs
+             pCcspCwmpCpeController->hTr069PaMapper,
+             pParameterValueArray[i].Name,
+             Subsystems,
+             &NumSubsystems,
+             !bExcludeInvNs
             );
-        
+
         if ( NumSubsystems <= 0 )
         {
             Subsystems[0] = CcspTr069PaCloneString(pCcspCwmpCpeController->SubsysName);    /* assume 'local' sub-system will be used */
@@ -808,7 +799,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         else if ( NumSubsystems > 1 )
         {
             /* found more than one namespace, error! */
-        	CcspTr069PaTraceError(("More than one namespace matches '%s' in mapper file.\n", pParameterValueArray[i].Name));
+            CcspTr069PaTraceError(("More than one namespace matches '%s' in mapper file.\n", pParameterValueArray[i].Name));
             returnStatus = ANSC_STATUS_INTERNAL_ERROR;
             pInvalidParamName = pParameterValueArray[i].Name;
 
@@ -818,8 +809,8 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         /* query namespace manager for the namespace on identified sub-system */
         CCSP_TR069PA_DISCOVER_FC
             (
-                pParameterValueArray[i].Name,
-                TRUE
+             pParameterValueArray[i].Name,
+             TRUE
             );
 
         if ( nRet != CCSP_SUCCESS )
@@ -865,9 +856,9 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
         pNsList = 
             (PCCSP_TR069PA_NSLIST)CcspTr069PaAllocateMemory
-                (
-                    sizeof(CCSP_TR069PA_NSLIST)
-                );
+            (
+             sizeof(CCSP_TR069PA_NSLIST)
+            );
 
         if ( !pNsList )
         {
@@ -876,42 +867,42 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         }
         else
         {
-				PCCSP_PARAM_VALUE_INFO  pValueInfo;
-				pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
-				pValueInfo      = &pNsList->Args.paramValueInfo;
+            PCCSP_PARAM_VALUE_INFO  pValueInfo;
+            pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
+            pValueInfo      = &pNsList->Args.paramValueInfo;
 
-				pValueInfo->parameterName  = pParameterValueArray[i].Name;
-				pValueInfo->parameterValue = pParameterValueArray[i].Value->Variant.varString;
-				pValueInfo->type           = CcspTr069PA_Cwmp2CcspType(pParameterValueArray[i].Tr069DataType);
-				AnscQueuePushEntry(&pFcNsList->NsList, &pNsList->Linkage);
-                                rc = strcmp_s("eRT.com.cisco.spvtg.ccsp.wifi",strlen("eRT.com.cisco.spvtg.ccsp.wifi"),pFcNsList->FCName, &ind);
-                                ERR_CHK(rc);
-                                if((rc == EOK) && (!ind))
-                                {
-					printf("---- SPV for WiFi ---\n");
-					AnscCopyString(wifiFcName,pFcNsList->FCName);
-					AnscCopyString(wifiDbusPath,pFcNsList->DBusPath);
-					bRadioRestartEn = TRUE;
-					if(i<MAX_NO_WIFI_PARAM)
-					{
-                                		char aMem[128];
-		                                char *pParamN = aMem;
-						AnscCopyString(pParamN,pValueInfo->parameterName);
-						CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
-						AnscCopyString(ParamName[i],pParamN);
-						noOfParam = i;
-					}
-					
-				}
+            pValueInfo->parameterName  = pParameterValueArray[i].Name;
+            pValueInfo->parameterValue = pParameterValueArray[i].Value->Variant.varString;
+            pValueInfo->type           = CcspTr069PA_Cwmp2CcspType(pParameterValueArray[i].Tr069DataType);
+            AnscQueuePushEntry(&pFcNsList->NsList, &pNsList->Linkage);
+            rc = strcmp_s("eRT.com.cisco.spvtg.ccsp.wifi",strlen("eRT.com.cisco.spvtg.ccsp.wifi"),pFcNsList->FCName, &ind);
+            ERR_CHK(rc);
+            if((rc == EOK) && (!ind))
+            {
+                printf("---- SPV for WiFi ---\n");
+                AnscCopyString(wifiFcName,pFcNsList->FCName);
+                AnscCopyString(wifiDbusPath,pFcNsList->DBusPath);
+                bRadioRestartEn = TRUE;
+                if(i<MAX_NO_WIFI_PARAM)
+                {
+                    char aMem[128];
+                    char *pParamN = aMem;
+                    AnscCopyString(pParamN,pValueInfo->parameterName);
+                    CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
+                    AnscCopyString(ParamName[i],pParamN);
+                    noOfParam = i;
+                }
+
+            }
         }
     }
 
     ulSessionID = 
         pCcspCwmpCpeController->AcqCrSessionID
-            (
-                (ANSC_HANDLE)pCcspCwmpCpeController,
-                CCSP_TR069PA_SESSION_PRIORITY_WRTIABLE
-            );
+        (
+         (ANSC_HANDLE)pCcspCwmpCpeController,
+         CCSP_TR069PA_SESSION_PRIORITY_WRTIABLE
+        );
 
     if ( TRUE )
     {
@@ -921,13 +912,12 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
          * involved in this request 
          */
         parameterValStruct_t*       pParamValues    = NULL;
-        int                         nParamCount     = 0;
         int                         nNumFCs         = AnscQueueQueryDepth(&FcNsListQueue);
         PSINGLE_LINK_ENTRY          pSLinkEntry     = NULL;
         PSINGLE_LINK_ENTRY          pSLinkEntryNs   = NULL;
         int                         k;
         int                         nNsCount;
-        PCCSP_TR069PA_NSLIST        pNsList;
+        PCCSP_TR069PA_NSLIST        pNsList = NULL;
         int                         nResult         = CCSP_SUCCESS;
         char*                       pInvalidParam   = NULL;
         char                        sysbuf[8]          = {"\0"};
@@ -944,9 +934,9 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
             pParamValues = 
                 (parameterValStruct_t*)CcspTr069PaAllocateMemory
-                    (
-                        sizeof(parameterValStruct_t) * nNsCount
-                    );
+                (
+                 sizeof(parameterValStruct_t) * nNsCount
+                );
 
             if ( !pParamValues )
             {
@@ -976,168 +966,168 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
             rc = strcmp_s("Device.X_CISCO_COM_DeviceControl.RebootDevice",strlen("Device.X_CISCO_COM_DeviceControl.RebootDevice"),pNsList->Args.paramValueInfo.parameterName,&ind);
             ERR_CHK(rc);
             if((rc == EOK) && (!ind))
-	    {
-            if((strstr(pParamValues->parameterValue,"Router")!=NULL && strstr(pParamValues->parameterValue,"Wifi")!=NULL && strstr(pParamValues->parameterValue,"VoIP")!=NULL && strstr(pParamValues->parameterValue,"MoCA")!=NULL)||strstr(pParamValues->parameterValue,"Device")!=NULL)
- {   
-                        
-						if ( strstr( pParamValues->parameterValue, "Device" ) != NULL )
-						{
-							/* Before reboot device we need to set reboot reason */
-							parameterValStruct_t valStr 	 = { "Device.DeviceInfo.X_RDKCENTRAL-COM_LastRebootReason", "tr069-reboot" , ccsp_string };
-							char				 *faultParam = NULL;
-							
-							nResult = 
-								CcspBaseIf_setParameterValues
-									(
-										pCcspCwmpCpeController->hMsgBusHandle,
-										pFcNsList->FCName,
-										pFcNsList->DBusPath,
-										ulSessionID,
-										ulWriteID, 
-										&valStr,
-										1,
-										TRUE,
-										&faultParam
-									);
-							
-							if ( ( nResult != CCSP_SUCCESS )  && \
-								 ( faultParam )
-								)
-							{
-								CcspTr069PaTraceWarning
-									(
-										(
-											"RDKB_REBOOT : Failed to SetValue for param '%s' and ret val is %d\n", 
-											 valStr.parameterName,
-											 nResult
-										)
-									);
-							
-								 bus_info->freefunc(faultParam);
-							}
-						}
-
-                    	CcspTr069PaTraceWarning
-                            (
-                                (
-                                    "RDKB_REBOOT : RebootDevice triggered from TR69 with value '%s'\n", 
-                                     pParamValues->parameterValue
-                                )
-                            );
- }
- 
-}
- rc = strcmp_s("Device.X_CISCO_COM_DeviceControl.FactoryReset",strlen("Device.X_CISCO_COM_DeviceControl.FactoryReset"),pNsList->Args.paramValueInfo.parameterName, &ind);
- ERR_CHK(rc);
- if((rc == EOK) && (!ind))
- {
-        
-       
-  if((strstr(pParamValues->parameterValue,"Router")!=NULL && strstr(pParamValues->parameterValue,"Wifi")!=NULL && strstr(pParamValues->parameterValue,"VoIP")!=NULL)||strstr(pParamValues->parameterValue,"Router")!=NULL)
-  {	
-                        
-                    	CcspTr069PaTraceWarning
-                            (
-                                (
-                                    "RDKB_REBOOT : FactoryReset triggered from TR69 with value '%s'\n",pParamValues->parameterValue
-                                )
-                            );
-  }
- }
- rc = strcmp_s("Device.X_CISCO_COM_DeviceControl.DeviceMode",strlen("Device.X_CISCO_COM_DeviceControl.DeviceMode"),pNsList->Args.paramValueInfo.parameterName, &ind);
- ERR_CHK(rc);
- if((rc == EOK) && (!ind))
- {
-             if(strstr(pParamValues->parameterValue,"multiSsid")!=NULL||strstr(pParamValues->parameterValue,"cableHome11")!=NULL||strstr(pParamValues->parameterValue,"Ipv4")!=NULL||strstr(pParamValues->parameterValue,"Ipv6")!=NULL||strstr(pParamValues->parameterValue,"Dualstack")!=NULL)
-             {   
-                        
-                    	CcspTr069PaTraceWarning
-                            (
-                                (
-                                    "RDKB_REBOOT : RebootDevice triggered from TR69 with value '%s'\n", 
-                                     pParamValues->parameterValue
-                                )
-                            );
-             }
-}
-//Set the flag to false
-flag_pInvalidParam = FALSE;
-// Hide the LNF,XHS,MESH Backhaul SSIDs password based on RFC flag
-int match_found = 0;
-const char *WiFiAccesspoint1[WIFI_KEYPASSPHRASE_SET1] = {"Device.WiFi.AccessPoint.7.Security.KeyPassphrase", "Device.WiFi.AccessPoint.8.Security.KeyPassphrase", "Device.WiFi.AccessPoint.3.Security.KeyPassphrase", "Device.WiFi.AccessPoint.4.Security.KeyPassphrase", "Device.WiFi.AccessPoint.11.Security.KeyPassphrase", "Device.WiFi.AccessPoint.12.Security.KeyPassphrase", "Device.WiFi.AccessPoint.13.Security.KeyPassphrase", "Device.WiFi.AccessPoint.14.Security.KeyPassphrase", "Device.WiFi.AccessPoint.3.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.4.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.7.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.8.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.11.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.12.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.13.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.14.Security.X_COMCAST-COM_KeyPassphrase"};
-
-const char *WiFiAccesspoint2[WIFI_KEYPASSPHRASE_SET2] = {"Device.WiFi.AccessPoint.5.Security.KeyPassphrase", "Device.WiFi.AccessPoint.6.Security.KeyPassphrase", "Device.WiFi.AccessPoint.9.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10.Security.KeyPassphrase", "Device.WiFi.AccessPoint.5.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.6.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.9.Security.X_COMCAST-COM_KeyPassphrase","Device.WiFi.AccessPoint.10.Security.X_COMCAST-COM_KeyPassphrase"};
-
-    for (i=0; i<WIFI_KEYPASSPHRASE_SET1; i++)
-    {
-        rc =strcmp_s(WiFiAccesspoint1[i], strlen(WiFiAccesspoint1[i]), pNsList->Args.paramValueInfo.parameterName, &ind);
-        ERR_CHK(rc);
-        if((rc == EOK) && (!ind))
-        {
-            syscfg_init();
-            syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
-            if( sysbuf != NULL )
             {
-                // if TR069PSWDCTRLFLAG == false then Set not allowed.
-                rc = strcmp_s("false",strlen("false"),sysbuf,&ind);
+                if((strstr(pParamValues->parameterValue,"Router")!=NULL && strstr(pParamValues->parameterValue,"Wifi")!=NULL && strstr(pParamValues->parameterValue,"VoIP")!=NULL && strstr(pParamValues->parameterValue,"MoCA")!=NULL)||strstr(pParamValues->parameterValue,"Device")!=NULL)
+                {   
+
+                    if ( strstr( pParamValues->parameterValue, "Device" ) != NULL )
+                    {
+                        /* Before reboot device we need to set reboot reason */
+                        parameterValStruct_t valStr 	 = { "Device.DeviceInfo.X_RDKCENTRAL-COM_LastRebootReason", "tr069-reboot" , ccsp_string };
+                        char				 *faultParam = NULL;
+
+                        nResult = 
+                            CcspBaseIf_setParameterValues
+                            (
+                             pCcspCwmpCpeController->hMsgBusHandle,
+                             pFcNsList->FCName,
+                             pFcNsList->DBusPath,
+                             ulSessionID,
+                             ulWriteID, 
+                             &valStr,
+                             1,
+                             TRUE,
+                             &faultParam
+                            );
+
+                        if ( ( nResult != CCSP_SUCCESS )  && \
+                                ( faultParam )
+                           )
+                        {
+                            CcspTr069PaTraceWarning
+                                (
+                                 (
+                                  "RDKB_REBOOT : Failed to SetValue for param '%s' and ret val is %d\n", 
+                                  valStr.parameterName,
+                                  nResult
+                                 )
+                                );
+
+                            bus_info->freefunc(faultParam);
+                        }
+                    }
+
+                    CcspTr069PaTraceWarning
+                        (
+                         (
+                          "RDKB_REBOOT : RebootDevice triggered from TR69 with value '%s'\n", 
+                          pParamValues->parameterValue
+                         )
+                        );
+                }
+
+            }
+            rc = strcmp_s("Device.X_CISCO_COM_DeviceControl.FactoryReset",strlen("Device.X_CISCO_COM_DeviceControl.FactoryReset"),pNsList->Args.paramValueInfo.parameterName, &ind);
+            ERR_CHK(rc);
+            if((rc == EOK) && (!ind))
+            {
+
+
+                if((strstr(pParamValues->parameterValue,"Router")!=NULL && strstr(pParamValues->parameterValue,"Wifi")!=NULL && strstr(pParamValues->parameterValue,"VoIP")!=NULL)||strstr(pParamValues->parameterValue,"Router")!=NULL)
+                {	
+
+                    CcspTr069PaTraceWarning
+                        (
+                         (
+                          "RDKB_REBOOT : FactoryReset triggered from TR69 with value '%s'\n",pParamValues->parameterValue
+                         )
+                        );
+                }
+            }
+            rc = strcmp_s("Device.X_CISCO_COM_DeviceControl.DeviceMode",strlen("Device.X_CISCO_COM_DeviceControl.DeviceMode"),pNsList->Args.paramValueInfo.parameterName, &ind);
+            ERR_CHK(rc);
+            if((rc == EOK) && (!ind))
+            {
+                if(strstr(pParamValues->parameterValue,"multiSsid")!=NULL||strstr(pParamValues->parameterValue,"cableHome11")!=NULL||strstr(pParamValues->parameterValue,"Ipv4")!=NULL||strstr(pParamValues->parameterValue,"Ipv6")!=NULL||strstr(pParamValues->parameterValue,"Dualstack")!=NULL)
+                {   
+
+                    CcspTr069PaTraceWarning
+                        (
+                         (
+                          "RDKB_REBOOT : RebootDevice triggered from TR69 with value '%s'\n", 
+                          pParamValues->parameterValue
+                         )
+                        );
+                }
+            }
+            //Set the flag to false
+            flag_pInvalidParam = FALSE;
+            // Hide the LNF,XHS,MESH Backhaul SSIDs password based on RFC flag
+            int match_found = 0;
+            const char *WiFiAccesspoint1[WIFI_KEYPASSPHRASE_SET1] = {"Device.WiFi.AccessPoint.7.Security.KeyPassphrase", "Device.WiFi.AccessPoint.8.Security.KeyPassphrase", "Device.WiFi.AccessPoint.3.Security.KeyPassphrase", "Device.WiFi.AccessPoint.4.Security.KeyPassphrase", "Device.WiFi.AccessPoint.11.Security.KeyPassphrase", "Device.WiFi.AccessPoint.12.Security.KeyPassphrase", "Device.WiFi.AccessPoint.13.Security.KeyPassphrase", "Device.WiFi.AccessPoint.14.Security.KeyPassphrase", "Device.WiFi.AccessPoint.3.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.4.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.7.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.8.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.11.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.12.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.13.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.14.Security.X_COMCAST-COM_KeyPassphrase"};
+
+            const char *WiFiAccesspoint2[WIFI_KEYPASSPHRASE_SET2] = {"Device.WiFi.AccessPoint.5.Security.KeyPassphrase", "Device.WiFi.AccessPoint.6.Security.KeyPassphrase", "Device.WiFi.AccessPoint.9.Security.KeyPassphrase", "Device.WiFi.AccessPoint.10.Security.KeyPassphrase", "Device.WiFi.AccessPoint.5.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.6.Security.X_COMCAST-COM_KeyPassphrase", "Device.WiFi.AccessPoint.9.Security.X_COMCAST-COM_KeyPassphrase","Device.WiFi.AccessPoint.10.Security.X_COMCAST-COM_KeyPassphrase"};
+
+            for (i=0; i<WIFI_KEYPASSPHRASE_SET1; i++)
+            {
+                rc =strcmp_s(WiFiAccesspoint1[i], strlen(WiFiAccesspoint1[i]), pNsList->Args.paramValueInfo.parameterName, &ind);
                 ERR_CHK(rc);
                 if((rc == EOK) && (!ind))
                 {
-                    //Set it as fault code not writable
-                    nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
+                    syscfg_init();
+                    syscfg_get( NULL, "TR069PSWDCTRLFLAG", sysbuf, sizeof(sysbuf));
+                    if( sysbuf != NULL )
+                    {
+                        // if TR069PSWDCTRLFLAG == false then Set not allowed.
+                        rc = strcmp_s("false",strlen("false"),sysbuf,&ind);
+                        ERR_CHK(rc);
+                        if((rc == EOK) && (!ind))
+                        {
+                            //Set it as fault code not writable
+                            nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
 
-            // Set a flag to invalid param as true
-            flag_pInvalidParam = TRUE;
+                            // Set a flag to invalid param as true
+                            flag_pInvalidParam = TRUE;
 
-                   // not success send appropriate parameter name
-                   pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
+                            // not success send appropriate parameter name
+                            pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
+                        }
+                    }
+                    match_found = 1;
+                    break;
                 }
             }
-            match_found = 1;
-            break;
-         }
-     }
 
-      /*not found the match in the above*/
-      if(match_found == 0)
-      {
-          for (i=0; i<WIFI_KEYPASSPHRASE_SET2; i++)
-          {
-              rc =strcmp_s( WiFiAccesspoint2[i], strlen(WiFiAccesspoint2[i]), pNsList->Args.paramValueInfo.parameterName, &ind);
-              ERR_CHK(rc);
-              if((rc == EOK) && (!ind))
-              {
-                  //Set it as fault code not writable
-                  nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
+            /*not found the match in the above*/
+            if(match_found == 0)
+            {
+                for (i=0; i<WIFI_KEYPASSPHRASE_SET2; i++)
+                {
+                    rc =strcmp_s( WiFiAccesspoint2[i], strlen(WiFiAccesspoint2[i]), pNsList->Args.paramValueInfo.parameterName, &ind);
+                    ERR_CHK(rc);
+                    if((rc == EOK) && (!ind))
+                    {
+                        //Set it as fault code not writable
+                        nResult=CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
 
-                 // Set a flag to invalid param as true
-                 flag_pInvalidParam = TRUE;
+                        // Set a flag to invalid param as true
+                        flag_pInvalidParam = TRUE;
 
-                 // not success send appropriate parameter name
-                 pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
-                 break;
-              }
-          }
-       }
-//Disable set for xfinity-open and xfinity-secure WiFi passwords
+                        // not success send appropriate parameter name
+                        pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
+                        break;
+                    }
+                }
+            }
+            //Disable set for xfinity-open and xfinity-secure WiFi passwords
 
-if ( flag_pInvalidParam == FALSE )// Remaining SSID passwords and for TR069PSWDCTRLFLAG=true
-{
-            nResult = 
-                CcspBaseIf_setParameterValues
+            if ( flag_pInvalidParam == FALSE )// Remaining SSID passwords and for TR069PSWDCTRLFLAG=true
+            {
+                nResult = 
+                    CcspBaseIf_setParameterValues
                     (
-                        pCcspCwmpCpeController->hMsgBusHandle,
-                        pFcNsList->FCName,
-                        pFcNsList->DBusPath,
-                        ulSessionID,
-                        ulWriteID, 
-                        pParamValues,
-                        k,
-                        (nNumFCs == 1),
-                        &pInvalidParam
+                     pCcspCwmpCpeController->hMsgBusHandle,
+                     pFcNsList->FCName,
+                     pFcNsList->DBusPath,
+                     ulSessionID,
+                     ulWriteID, 
+                     pParamValues,
+                     k,
+                     (nNumFCs == 1),
+                     &pInvalidParam
                     );
-}
-            
+            }
+
             if (pParamValues)
             {
                 CcspTr069PaFreeMemory(pParamValues);
@@ -1166,56 +1156,56 @@ if ( flag_pInvalidParam == FALSE )// Remaining SSID passwords and for TR069PSWDC
                     switch ( spvFaultCode )
                     {
                         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName:
-                                
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
-                                    CcspTr069PaCloneString(pInvalidParam);
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
-                                    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName;
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
-                                    CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
-                                /* set the primary fault code to 9003 */
-                                nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
 
-                                break;
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
+                                CcspTr069PaCloneString(pInvalidParam);
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
+                                CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName;
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
+                                CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
+                            /* set the primary fault code to 9003 */
+                            nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
+
+                            break;
 
                         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType:
-                                
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
-                                    CcspTr069PaCloneString(pInvalidParam);
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
-                                    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType;
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
-                                    CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamType);
-                                /* set the primary fault code to 9003 */
-                                nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
 
-                                break;
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
+                                CcspTr069PaCloneString(pInvalidParam);
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
+                                CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType;
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
+                                CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamType);
+                            /* set the primary fault code to 9003 */
+                            nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
+
+                            break;
 
                         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue:
-                                
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
-                                    CcspTr069PaCloneString(pInvalidParam);
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
-                                    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue;
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
-                                    CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
-                                /* set the primary fault code to 9003 */
-                                nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
 
-                                break;
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
+                                CcspTr069PaCloneString(pInvalidParam);
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
+                                CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue;
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
+                                CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
+                            /* set the primary fault code to 9003 */
+                            nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
+
+                            break;
 
                         case    CCSP_CWMP_CPE_CWMP_FaultCode_notWritable:
-                                
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
-                                    CcspTr069PaCloneString(pInvalidParam);
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
-                                    CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
-                                pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
-                                    CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notWritable);
-                                /* set the primary fault code to 9003 */
-                                nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
 
-                                break;
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
+                                CcspTr069PaCloneString(pInvalidParam);
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
+                                CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
+                            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
+                                CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notWritable);
+                            /* set the primary fault code to 9003 */
+                            nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
+
+                            break;
                     }
 
                     pCwmpSoapFault->SetParamValuesFaultCount++;
@@ -1254,133 +1244,134 @@ if ( flag_pInvalidParam == FALSE )// Remaining SSID passwords and for TR069PSWDC
                 CcspTr069PaTraceDebug(("Invoking SetCommit on FC <%s>, DBus path <%s>\n", pFcNsList->FCName, pFcNsList->DBusPath));
                 nResult = 
                     CcspBaseIf_setCommit
-                        (
-                            pCcspCwmpCpeController->hMsgBusHandle,
-                            pFcNsList->FCName,
-                            pFcNsList->DBusPath,
-                            ulSessionID,
-                            ulWriteID,
-                            (dbus_bool)(nResult == CCSP_SUCCESS)
-                        );
+                    (
+                     pCcspCwmpCpeController->hMsgBusHandle,
+                     pFcNsList->FCName,
+                     pFcNsList->DBusPath,
+                     ulSessionID,
+                     ulWriteID,
+                     (dbus_bool)(nResult == CCSP_SUCCESS)
+                    );
 
                 CcspTr069PaTraceDebug(("SetCommit on FC %s, status = %d\n", pFcNsList->FCName, nResult));
             }
         }
-			if(bRadioRestartEn)
-			{
+        if(bRadioRestartEn)
+        {
 
 #if 0 /*RDKB-7325, CID-33526, unused variable, leading to memory leak*/
-			pParamValues = 
-					(parameterValStruct_t*)CcspTr069PaAllocateMemory
-						(
-							sizeof(parameterValStruct_t) * nNsCount
-						);
+            pParamValues = 
+                (parameterValStruct_t*)CcspTr069PaAllocateMemory
+                (
+                 sizeof(parameterValStruct_t) * nNsCount
+                );
 
-				if ( !pParamValues )
-				{
-					returnStatus = ANSC_STATUS_RESOURCES;
-					goto EXIT2;
-				}
+            if ( !pParamValues )
+            {
+                returnStatus = ANSC_STATUS_RESOURCES;
+                goto EXIT2;
+            }
 #endif				
-				bRadioRestartEn = FALSE;
-				pInvalidParam = NULL;
+            bRadioRestartEn = FALSE;
+            pInvalidParam = NULL;
 
-				char*   faultParam = NULL;
-				BOOL bRestartRadio1 = FALSE;
-				BOOL bRestartRadio2 = FALSE;
-				int nreq = 0,x,index;
-				int SSID =0,apply_rf;
-				parameterValStruct_t *val = NULL;
-				parameterValStruct_t val_set[4] = { { "Device.WiFi.Radio.1.X_CISCO_COM_ApplySettingSSID","1", ccsp_int}, 
-												{ "Device.WiFi.Radio.1.X_CISCO_COM_ApplySetting", "true", ccsp_boolean},
-												{ "Device.WiFi.Radio.2.X_CISCO_COM_ApplySettingSSID","2", ccsp_int},
-												{ "Device.WiFi.Radio.2.X_CISCO_COM_ApplySetting", "true", ccsp_boolean}};
-				for(x =0; x<= noOfParam; x++)
-				{
-				if(!strncmp(ParamName[x],"Device.WiFi.Radio.1.",20))
-					{
-						bRestartRadio1 = TRUE; 
-					}
-				else if(!strncmp(ParamName[x],"Device.WiFi.Radio.2.",20))
-					{
-						bRestartRadio2 = TRUE;
-					}
-					else{
-						
-							if((!strncmp(ParamName[x],"Device.WiFi.SSID.",17)))
-							{
-								
-								sscanf(ParamName[x],"Device.WiFi.SSID.%d",&index);
-								printf("index = %d\n",index);
-								SSID = (1 << ((index)-1));
-								apply_rf = (2  - ((index)%2));
-								printf("apply_rf = %d\n",apply_rf);
-								if(apply_rf == 1)
-									{
-										bRestartRadio1 = TRUE;
-									}
-									else if(apply_rf == 2)
-									{
-										bRestartRadio2 = TRUE;
-									}				
-								
-							}
-							else if(!strncmp(ParamName[x],"Device.WiFi.AccessPoint.",24))
-							{
-								sscanf(ParamName[x],"Device.WiFi.AccessPoint.%d",&index);
-								SSID = (1 << ((index)-1));
-								apply_rf = (2  - ((index)%2));
-								if(apply_rf == 1)
-									{
-										bRestartRadio1 = TRUE; 
-										
-									}
-								else if(apply_rf == 2)
-									{
-										bRestartRadio2 = TRUE; 
-									
-									}
-							}
-							
-						}
-				}
-				if((bRestartRadio1 == TRUE) && (bRestartRadio2 == TRUE))
-				{
-					printf("Need to restart both the Radios\n");
-					val = val_set;
-					nreq = 4;
-				}
-				else if(bRestartRadio1)
-				{
-					printf("Need to restart Radio 1\n");
-					val = val_set;
-					nreq = 2;
-				}
-				else if(bRestartRadio2)
-				{
-					printf("Need to restart Radio 2\n");
-					val = &val_set[2];
-					nreq = 2;
-				}
+            char*   faultParam = NULL;
+            BOOL bRestartRadio1 = FALSE;
+            BOOL bRestartRadio2 = FALSE;
+            int nreq = 0,x,index;
+            int apply_rf;
 
-				nResult = CcspBaseIf_setParameterValues
-				(
-					bus_info, 
-					wifiFcName, 
-					wifiDbusPath,
-					0, 0x0,   /* session id and write id */
-					val, 
-					nreq, 
-					TRUE,   /* no commit */
-					&faultParam
-				);	
-
-                if (nResult != CCSP_SUCCESS && faultParam)
+            parameterValStruct_t *val = NULL;
+            parameterValStruct_t val_set[4] = { { "Device.WiFi.Radio.1.X_CISCO_COM_ApplySettingSSID","1", ccsp_int}, 
+                { "Device.WiFi.Radio.1.X_CISCO_COM_ApplySetting", "true", ccsp_boolean},
+                { "Device.WiFi.Radio.2.X_CISCO_COM_ApplySettingSSID","2", ccsp_int},
+                { "Device.WiFi.Radio.2.X_CISCO_COM_ApplySetting", "true", ccsp_boolean}};
+            for(x =0; x<= noOfParam; x++)
+            {
+                if(!strncmp(ParamName[x],"Device.WiFi.Radio.1.",20))
                 {
-                    AnscTraceError(("Error:Failed to SetValue for param '%s'\n", faultParam));
-                    bus_info->freefunc(faultParam);
+                    bRestartRadio1 = TRUE; 
+                }
+                else if(!strncmp(ParamName[x],"Device.WiFi.Radio.2.",20))
+                {
+                    bRestartRadio2 = TRUE;
+                }
+                else{
+
+                    if((!strncmp(ParamName[x],"Device.WiFi.SSID.",17)))
+                    {
+
+                        sscanf(ParamName[x],"Device.WiFi.SSID.%d",&index);
+                        printf("index = %d\n",index);
+                        //SSID = (1 << ((index)-1));
+                        apply_rf = (2  - ((index)%2));
+                        printf("apply_rf = %d\n",apply_rf);
+                        if(apply_rf == 1)
+                        {
+                            bRestartRadio1 = TRUE;
+                        }
+                        else if(apply_rf == 2)
+                        {
+                            bRestartRadio2 = TRUE;
+                        }				
+
+                    }
+                    else if(!strncmp(ParamName[x],"Device.WiFi.AccessPoint.",24))
+                    {
+                        sscanf(ParamName[x],"Device.WiFi.AccessPoint.%d",&index);
+                        //SSID = (1 << ((index)-1));
+                        apply_rf = (2  - ((index)%2));
+                        if(apply_rf == 1)
+                        {
+                            bRestartRadio1 = TRUE; 
+
+                        }
+                        else if(apply_rf == 2)
+                        {
+                            bRestartRadio2 = TRUE; 
+
+                        }
+                    }
+
                 }
             }
+            if((bRestartRadio1 == TRUE) && (bRestartRadio2 == TRUE))
+            {
+                printf("Need to restart both the Radios\n");
+                val = val_set;
+                nreq = 4;
+            }
+            else if(bRestartRadio1)
+            {
+                printf("Need to restart Radio 1\n");
+                val = val_set;
+                nreq = 2;
+            }
+            else if(bRestartRadio2)
+            {
+                printf("Need to restart Radio 2\n");
+                val = &val_set[2];
+                nreq = 2;
+            }
+
+            nResult = CcspBaseIf_setParameterValues
+                (
+                 bus_info, 
+                 wifiFcName, 
+                 wifiDbusPath,
+                 0, 0x0,   /* session id and write id */
+                 val, 
+                 nreq, 
+                 TRUE,   /* no commit */
+                 &faultParam
+                );	
+
+            if (nResult != CCSP_SUCCESS && faultParam)
+            {
+                AnscTraceError(("Error:Failed to SetValue for param '%s'\n", faultParam));
+                bus_info->freefunc(faultParam);
+            }
+        }
     }
 
     if ( bSucc )
@@ -1403,8 +1394,8 @@ if ( flag_pInvalidParam == FALSE )// Remaining SSID passwords and for TR069PSWDC
     }
 
     /******************************************************************
-                GRACEFUL ROLLBACK PROCEDURES AND EXIT DOORS
-    ******************************************************************/
+      GRACEFUL ROLLBACK PROCEDURES AND EXIT DOORS
+     ******************************************************************/
 
 EXIT2:
 
@@ -1475,8 +1466,8 @@ EXIT1:
     {
         pCcspCwmpCpeController->RelCrSessionID
             (
-                (ANSC_HANDLE)pCcspCwmpCpeController,
-                ulSessionID
+             (ANSC_HANDLE)pCcspCwmpCpeController,
+             ulSessionID
             );
     }
 
@@ -1551,7 +1542,6 @@ CcspCwmppoMpaGetParameterValues
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     ULONG                           ulSessionID          = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_VALUE          pParameterValueArray = (PCCSP_CWMP_PARAM_VALUE     )NULL;
@@ -1581,7 +1571,6 @@ CcspCwmppoMpaGetParameterValues
     *phSoapFault       = (ANSC_HANDLE)NULL;
      errno_t rc        = -1;
      int ind           = -1;
-     int n             = 0;
      int validArg      = 0;
 	
     AnscQueueInitializeHeader(&FcNsListQueue);
@@ -1682,7 +1671,7 @@ CcspCwmppoMpaGetParameterValues
             goto EXIT2;
         } 
 
-        for ( j = 0; j < ulFcArraySize; j ++ )
+        for ( j = 0; (unsigned int)j < ulFcArraySize; j ++ )
         {
             CcspTr069PaAddFcIntoFcNsList(&FcNsListQueue, ppSubsysArray[j], ppFcNameArray[j], ppDbusPathArray[j], pFcNsList);
 
@@ -1747,7 +1736,6 @@ CcspCwmppoMpaGetParameterValues
          * each FC and make GetParameterValues call 
          */
         char**                      pParamNames     = NULL;
-        int                         nNumParamNames  = 0;
         parameterValStruct_t**      pParamValues    = NULL;
         int                         nParamCount     = 0;
         int                         nNumFCs         = AnscQueueQueryDepth(&FcNsListQueue);
@@ -1758,7 +1746,6 @@ CcspCwmppoMpaGetParameterValues
         int                         nNsCount;
         PCCSP_TR069PA_NSLIST        pNsList;
         int                         nResult         = CCSP_SUCCESS;
-        char*                       pPaSubsystem    = pCcspCwmpCpeController->SubsysName;
         char                        sysbuf[8]          = {"\0"};
 
         CcspTr069PaTraceDebug(("GPV involves %d Functional Component(s), sessionID = %u.\n", nNumFCs, (unsigned int)ulSessionID));
@@ -1901,31 +1888,23 @@ CcspCwmppoMpaGetParameterValues
                     if ((rc == EOK) && (!ind))
                     {
                         char tmp[200]={0};
-                        char paramname[200]={0};
-                        char paramval[200]={0};
-                        int size = 0;
-                        int retval = 0;
 
-			parameterValStruct_t varStruct;
-			varStruct.parameterName = paramname;
-			varStruct.parameterValue = paramval;
+                        if((pParamValues[k]->parameterValue) && (strlen(pParamValues[k]->parameterValue)))
+                        {
+                            rc = strncat_s(tmp, sizeof(tmp), pParamValues[k]->parameterValue, 64);
+                            ERR_CHK(rc);
+                        }
+                        else
+                        {
+                            CcspTr069PaTraceError(("RDKB SoftwareVersion is NULL\n"));
+                        }
 
-                      if((pParamValues[k]->parameterValue) && (strlen(pParamValues[k]->parameterValue)))
-                      {
-                              rc = strncat_s(tmp, sizeof(tmp), pParamValues[k]->parameterValue, 64);
-                              ERR_CHK(rc);
-                      }
-                      else
-                      {
-				CcspTr069PaTraceError(("RDKB SoftwareVersion is NULL\n"));
-                      }
-
-                      if(pParamValues[k]->parameterValue)
-                      {
-				CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
-				pParamValues[k]->parameterValue = NULL;
-                      }
-                      pParamValues[k]->parameterValue=AnscCloneString(tmp);
+                        if(pParamValues[k]->parameterValue)
+                        {
+                            CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
+                            pParamValues[k]->parameterValue = NULL;
+                        }
+                        pParamValues[k]->parameterValue=AnscCloneString(tmp);
                    }
 					 if(bDataModelReq == TRUE)
 					 {
@@ -2255,14 +2234,11 @@ CcspCwmppoMpaGetParameterNames
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr          = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
-    ULONG                           ulSessionID         = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault      = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_INFO           pCwmpParamInfoArray = (PCCSP_CWMP_PARAM_INFO      )NULL;
     ULONG                           ulParameterCount    = (ULONG                      )0;
     char*                           pRootObjName        = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
     ULONG                           i                   = 0;
-    char*                           pParamName          = NULL;
     QUEUE_HEADER                    FcGpnResultListQueue;
     int                             nRet;
     char**                          ppFcNameArray        = NULL;
@@ -2273,7 +2249,6 @@ CcspCwmppoMpaGetParameterNames
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33169, initialize before use*/
     int                             NumSubsystems        = 0;
     parameterInfoStruct_t**         ParamInfoArray       = NULL;
-    int                             nParamInfoArraySize  = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
     BOOL                            bNsInvisibleToCloudServer;
@@ -2492,7 +2467,7 @@ CcspCwmppoMpaGetParameterNames
     pSLinkEntry = AnscQueueGetFirstEntry(&pFcNsList->NsList);
     while ( pSLinkEntry )                                   
     {                                                       
-        pNsList     = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntry);
+        pNsList     = (PCCSP_TR069PA_NSLIST)ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntry);
         pSLinkEntry = AnscQueueGetNextEntry(pSLinkEntry);
 
         pCwmpParamInfoArray[i].Name      = pNsList->Args.paramInfo.parameterName;
@@ -2631,7 +2606,6 @@ CcspCwmppoMpaSetParameterAttributes
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_SET_PARAM_ATTRIB     pSetParamAttrArray   = (PCCSP_CWMP_SET_PARAM_ATTRIB)pSetParamAttribArray;
     ULONG                           i                    = 0;
@@ -2730,7 +2704,7 @@ CcspCwmppoMpaSetParameterAttributes
             goto EXIT2;
         } 
 
-        for ( j = 0; j < ulFcArraySize; j ++ )
+        for ( j = 0; (unsigned int)j < ulFcArraySize; j ++ )
         {
             CcspTr069PaAddFcIntoFcNsList(&FcNsListQueue, ppSubsysArray[j], ppFcNameArray[j], ppDbusPathArray[j], pFcNsList);
 
@@ -2808,7 +2782,6 @@ CcspCwmppoMpaSetParameterAttributes
          * each FC and make SetParameterAttributes call
          */
         parameterAttributeStruct_t* pParamAttributes= NULL;
-        int                         nParamCount     = 0;
         int                         nNumFCs         = AnscQueueQueryDepth(&FcNsListQueue);
         PSINGLE_LINK_ENTRY          pSLinkEntry     = NULL;
         PSINGLE_LINK_ENTRY          pSLinkEntryNs   = NULL;
@@ -2844,7 +2817,7 @@ CcspCwmppoMpaSetParameterAttributes
             pSLinkEntryNs = AnscSListGetFirstEntry(&pFcNsList->NsList);
             while ( pSLinkEntryNs )
             {
-                pNsList       = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
+                pNsList       = (PCCSP_TR069PA_NSLIST)ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
                 pSLinkEntryNs = AnscQueueGetNextEntry(pSLinkEntryNs);
 				 /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ // fix RDKB-405
                 CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
@@ -3040,7 +3013,6 @@ CcspCwmppoMpaGetParameterAttributes
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_ATTRIB         pParamAttrArray      = (PCCSP_CWMP_PARAM_ATTRIB    )NULL;
     ULONG                           ulParamAttrArraySize = 0;
@@ -3054,7 +3026,7 @@ CcspCwmppoMpaGetParameterAttributes
     char**                          ppDbusPathArray      = NULL;
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
-    int                             j;
+    ULONG                           j;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};  /*RDKB-7325, CID-32990, initialize before use */
     int                             NumSubsystems        = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
@@ -3204,7 +3176,6 @@ CcspCwmppoMpaGetParameterAttributes
          * each FC and make GetParameterAttributes call 
          */
         char**                      pParamNames     = NULL;
-        int                         nNumParamNames  = 0;
         int                         nNumFCs         = AnscQueueQueryDepth(&FcNsListQueue);
         PSINGLE_LINK_ENTRY          pSLinkEntry     = NULL;
         PSINGLE_LINK_ENTRY          pSLinkEntryNs   = NULL;
@@ -3213,14 +3184,13 @@ CcspCwmppoMpaGetParameterAttributes
         int                         nNsCount;
         PCCSP_TR069PA_NSLIST        pNsList;
         int                         nResult         = CCSP_SUCCESS;
-        char*                       pPaSubsystem    = pCcspCwmpCpeController->SubsysName;
 
         CcspTr069PaTraceDebug(("GPA involves %d Functional Component(s), sessionID = %u.\n", nNumFCs, (unsigned int)ulSessionID));
         
         /* for result NS list, we don't care sub-system, FC name, and DBus path */
         CcspTr069PaAddFcIntoFcNsList(&FcGpaResultListQueue, NULL, NULL, NULL, pFcGpaResNsList);
 
-        for ( j = 0; j < nNumFCs; j ++ )
+        for ( j = 0; (int)j < nNumFCs; j ++ )
         {
             pSLinkEntry = AnscQueueSearchEntryByIndex(&FcNsListQueue, j);
             pFcNsList   = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntry);
@@ -3244,7 +3214,7 @@ CcspCwmppoMpaGetParameterAttributes
             pSLinkEntryNs = AnscSListGetFirstEntry(&pFcNsList->NsList);
             while ( pSLinkEntryNs )
             {
-                pNsList       = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
+                pNsList       = (PCCSP_TR069PA_NSLIST)ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
                 pSLinkEntryNs = AnscQueueGetNextEntry(pSLinkEntryNs);
                 /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ //fix RDKB-405
                 CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
@@ -3602,13 +3572,11 @@ CcspCwmppoMpaAddObject
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr          = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault      = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     char**                          ppDbusPathArray     = NULL;
     char**                          ppFcNameArray       = NULL;
     char**                          ppSubsysArray       = NULL;
     ULONG                           ulFcArraySize       = 0;
-    ULONG                           i;
     int                             nRet;
     CCSP_INT                        nCcspError          = CCSP_SUCCESS;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};  /*RDKB-7325, CID-32935, initialize before use */
@@ -3857,13 +3825,11 @@ CcspCwmppoMpaDeleteObject
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr          = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault      = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     char**                          ppDbusPathArray     = NULL;
     char**                          ppFcNameArray       = NULL;
     char**                          ppSubsysArray       = NULL;
     ULONG                           ulFcArraySize       = 0;
-    ULONG                           i;
     int                             nRet;
     CCSP_INT                        nCcspError          = CCSP_SUCCESS;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33069, initialize before use */

@@ -204,8 +204,6 @@ CcspCwmpCpecoCancel
     ANSC_STATUS                     returnStatus          = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     
                                     pMyObject             = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   
-                                    pProperty             = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_ACS_BROKER_OBJECT    pCcspCwmpAcsBroker    = (PCCSP_CWMP_ACS_BROKER_OBJECT      )pMyObject->hCcspCwmpAcsBroker;
     PCCSP_CWMP_PROCESSOR_OBJECT     pCcspCwmpProcessor    = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
 #ifdef   _CCSP_CWMP_TCP_CONNREQ_HANDLER
@@ -328,8 +326,7 @@ CcspCwmpCpecoSetupEnv
      */
     ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
-    int                             nRet;
+//    int                             nRet = 0;
 
     if ( !pMyObject->PAMapperFile )
     {
@@ -369,7 +366,7 @@ CcspCwmpCpecoSetupEnv
 
     /* initialize message bus */
 #ifdef DBUS_INIT_SYNC_MODE
-    nRet = 
+//    nRet = 
         CCSP_Message_Bus_Init_Synced
             (
                 pMyObject->PANameWithPrefix,
@@ -379,7 +376,7 @@ CcspCwmpCpecoSetupEnv
                 (CCSP_MESSAGE_BUS_FREE)Ansc_FreeMemory_Callback
             );
 #else
-    nRet = 
+//    nRet = 
         CCSP_Message_Bus_Init
             (
                 pMyObject->PANameWithPrefix,
@@ -438,8 +435,6 @@ CcspCwmpCpecoCloseEnv
 {
     ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
-    int                             nRet;
 
     /* 
      * unregister PA from CR

@@ -104,6 +104,11 @@ ssp_BbhmWebAcmIfGetCredential
         PUCHAR*                     ppPassword
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(pHostName);
+    UNREFERENCED_PARAMETER(HostPort);
+    UNREFERENCED_PARAMETER(pUriPath);
+    UNREFERENCED_PARAMETER(pRealm);
     ANSC_STATUS                     returnStatus     = ANSC_STATUS_SUCCESS;
     char*                           pConnReqUsername = NULL;  
     char*                           pConnReqPassword = NULL;

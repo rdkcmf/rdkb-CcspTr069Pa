@@ -119,6 +119,7 @@
 #include "ccsp_tr069pa_psm_keys.h"
 #include "ccsp_psm_helper.h"
 #include "ccsp_management_server_pa_api.h"
+#include "ccsp_management_server.h"
 #include "ccsp_tr069_cds_definitions.h"
 #include "ccsp_rpc_ns_map.h"
 #include "ccsp_cwmp_helper_api.h"

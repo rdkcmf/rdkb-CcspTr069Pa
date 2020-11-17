@@ -219,6 +219,7 @@ CcspTr069PA_GetSubsystemCount
         CCSP_HANDLE                 MapperHandle
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     return  CcspTr069SubsystemsCount;
 }
 
@@ -233,6 +234,7 @@ CcspTr069PA_GetSubsystemByIndex
         CCSP_INT                    index
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     if ( index >= CcspTr069SubsystemsCount )
     {
         return  NULL;
@@ -304,11 +306,11 @@ CcspTr069Pa_run_test_map()
 
     if ( !pReturnStr )
     {
-        printf(("%s - CwmpToDmInt failed", __FUNCTION__));
+        printf("%s - CwmpToDmInt failed", __FUNCTION__);
     }
     else
     {
-        printf(("%s - CwmpToDmInt %s -> %s", __FUNCTION__, pCwmpString, pReturnStr));
+        printf("%s - CwmpToDmInt %s -> %s", __FUNCTION__, pCwmpString, pReturnStr);
         CcspTr069PaFreeMemory(pReturnStr);
         pReturnStr = NULL;
     }
@@ -317,11 +319,11 @@ CcspTr069Pa_run_test_map()
 
     if ( !pReturnStr )
     {
-        printf(("%s - DmIntToCwmp failed", __FUNCTION__));
+        printf("%s - DmIntToCwmp failed", __FUNCTION__);
     }
     else
     {
-        printf(("%s - DmIntToCwmp %s -> %s", __FUNCTION__, pCwmpString, pReturnStr));
+        printf("%s - DmIntToCwmp %s -> %s", __FUNCTION__, pCwmpString, pReturnStr);
         CcspTr069PaFreeMemory(pReturnStr);
         pReturnStr = NULL;
     }
@@ -725,7 +727,7 @@ CcspTr069PA_LoadParamInfo
     CCSP_CHAR                       buf[CCSP_TR069_RPC_Namespace_Length + 1]    = {0};
     CCSP_CHAR                       ss[CCSP_TR069_Subsystem_Length + 1]         = {0};
     BOOL                            bInvisible     = FALSE;
-    CCSP_BOOL                       bSucc          = FALSE;
+//    CCSP_BOOL                       bSucc          = FALSE;
 
     if (pPiNode == NULL) return CCSP_FALSE;
 
@@ -806,7 +808,7 @@ CcspTr069PA_LoadParamInfo
             }
         }
 
-        bSucc = 
+//        bSucc = 
             CcspTr069PA_PiTreeAddNamespace
                 (
                     CcspTr069InvPiTree,
@@ -835,7 +837,7 @@ CcspTr069PA_LoadParamInfo
             }
         }
 
-        bSucc = 
+//        bSucc = 
             CcspTr069PA_PiTreeAddNamespace
                 (
                     CcspTr069PiTree,
@@ -858,8 +860,6 @@ CcspTr069PA_LoadFromXMLFile(void*  pXMLHandle)
     PANSC_XML_DOM_NODE_OBJECT       pListNode      = NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
     CCSP_INT                        i;
-    CHAR                            name[1024]     = { 0 };
-    ULONG                           nameLen        = 1023;
 
     if( pXMLHandle == NULL)
     {
@@ -946,14 +946,11 @@ CcspTr069PA_LoadMappingFile
         CCSP_STRING                 MappingFile
     )
 {
-    CCSP_BOOL     bSucc         = CCSP_TRUE;
+//    CCSP_BOOL     bSucc         = CCSP_TRUE;
     struct stat   statBuf;
 
     /* load from XML file */
     PANSC_XML_DOM_NODE_OBJECT       pRootNode   = NULL;
-    PUCHAR                          pBack       = NULL;
-    PUCHAR                          pFileContent= NULL;
-    ULONG                           length      = 0;
 
     CcspTr069PaTraceDebug(("TR-069 PA is loading mapper file <%s> ...\n", MappingFile));
 
@@ -988,7 +985,8 @@ CcspTr069PA_LoadMappingFile
             /* loca from the node */
                 if (pRootNode != NULL)
                 {
-                    bSucc = CcspTr069PA_LoadFromXMLFile((void*)pRootNode);
+//                    bSucc = 
+                      CcspTr069PA_LoadFromXMLFile((void*)pRootNode);
 
                     pRootNode->Remove(pRootNode);
                 }
@@ -1020,6 +1018,7 @@ CcspTr069PA_UnloadMappingFile
         CCSP_HANDLE                 MapperHandle
         )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     CCSP_INT    i,j;
 
     CcspTr069PaFreeMemory(CcspTr069CpeErrMaps);
@@ -1089,6 +1088,7 @@ CcspTr069PA_MapCcspErrCode
         CCSP_INT                    CcspErrCode
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     CCSP_INT    i;
     for(i=0; i<NumOfErrMaps; i++)
     {
@@ -1156,7 +1156,7 @@ CcspTr069PA_MapInstNumCwmpToDmInt
             CCSP_CHAR       restDmlString[CCSP_TR069_INSTMAP_MaxStringSize] = {0}; //initialize - to resolve invlid chars issue in RPC response
             CCSP_INT        instNum = 0; //initialize - to resolve invlid chars issue in RPC response
 
-            if ( strlen(pCwmpString) < dmlNameLen+1 )
+            if ( strlen(pCwmpString) < (unsigned int)(dmlNameLen+1) )
             {
                 // Found match on table, but there is no instance number
                 break;
@@ -1267,7 +1267,7 @@ CcspTr069PA_MapInstNumDmIntToCwmp
             CCSP_CHAR               restDmlString[CCSP_TR069_INSTMAP_MaxStringSize] = {0}; //initialize - to resolve invlid chars issue in RPC response
             CCSP_INT                instNum = 0; //initialize - to resolve invlid chars issue in RPC response
 
-            if (strlen(pDmIntString) < dmlNameLen+1)
+            if (strlen(pDmIntString) < (unsigned int)(dmlNameLen+1))
             {
                 // Found match on table, but there is no instance number
                 break;
@@ -1332,6 +1332,7 @@ CcspTr069PA_GetRpcNamespace
         CCSP_STRING                 ArgName             /* NULL for RPCs that do not take any arguments such as Reboot */
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     CCSP_INT    i, j;
     for(i=0; i<NumOfRpcMaps; i++)
     {
@@ -1356,8 +1357,7 @@ CcspTr069PA_IsNameInsNumber
         CCSP_STRING                 Namespace
     )
 {
-    CCSP_INT                        i, len;
-    CCSP_BOOL                       bInsNumber      = CCSP_FALSE;
+    CCSP_INT                        len;
     CCSP_UINT                       InsNumber;
     CCSP_CHAR                       buf[32];
 
@@ -1551,7 +1551,6 @@ CcspTr069PA_GetNamespaceSubsystems
     PCCSP_TR069_PARAM_INFO          pParamInfo;
     CCSP_INT                        NumOfSubsystems     = 0;
     CCSP_INT                        MaxNumOfSubsystems  = *pNumSubsystems;
-    CCSP_INT                        nRet                = 0;
     CCSP_TR069PA_ENUM_NS            EnumNs;
     CCSP_BOOL                       bFoundInPiTree      = CCSP_FALSE;
 
@@ -1624,6 +1623,7 @@ CcspTr069PA_IsNamespaceSupported
         CCSP_BOOL                   bCheckInvPiTree     /* whether or not check invisible parameter tree */
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     PCCSP_TR069_PARAM_INFO          pParamInfo;
     BOOL                            bPartialNs = CcspCwmpIsPartialName(Namespace);
 
@@ -1674,6 +1674,7 @@ CcspTr069PA_IsNamespaceInvisible
         CCSP_STRING                 Namespace           /* namespace to be queried */
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     PCCSP_TR069_PARAM_INFO          pParamInfo;
 
     pParamInfo = CcspTr069PA_FindNamespace(CcspTr069InvPiTree, Namespace);
@@ -1698,6 +1699,7 @@ CcspTr069PA_TraversePiTree
         CCSP_HANDLE                 pCBContext
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     CCSP_BOOL                       bMatched = CCSP_TRUE;
     QUEUE_HEADER                    NodeStack;
     PSINGLE_LINK_ENTRY              pLinkEntry;
@@ -1806,7 +1808,7 @@ CcspTr069PA_GetPiFullName
         }
         else
         {
-        if ( AnscSizeOfString(pPiNode->Name) + AnscSizeOfString(pFnBuf) + 1 >= nFnBufLen )
+        if ( AnscSizeOfString(pPiNode->Name) + AnscSizeOfString(pFnBuf) + 1 >= (unsigned int)nFnBufLen )
         {
             return  -1;     /* buffer is not big enough? This is VIOLATION of TR-069 specification which defines 256 as maximum length of parameter name */
         }

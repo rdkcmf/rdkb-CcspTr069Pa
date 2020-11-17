@@ -118,7 +118,7 @@ CcspCwmpTcpcrhoCreate
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(hAnscReserved);
     PANSC_COMPONENT_OBJECT          pBaseObject  = NULL;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = NULL;
 
@@ -186,7 +186,6 @@ CcspCwmpTcpcrhoRemove
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
     PANSC_DSTO_WORKER_OBJECT        pDstoWorker   = (PANSC_DSTO_WORKER_OBJECT      )pMyObject->hDstoWorker;
 
@@ -236,7 +235,6 @@ CcspCwmpTcpcrhoEnrollObjects
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
     PANSC_DSTO_WORKER_OBJECT        pDstoWorker   = (PANSC_DSTO_WORKER_OBJECT      )pMyObject->hDstoWorker;
 
@@ -306,7 +304,6 @@ CcspCwmpTcpcrhoInitialize
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
 
     /*

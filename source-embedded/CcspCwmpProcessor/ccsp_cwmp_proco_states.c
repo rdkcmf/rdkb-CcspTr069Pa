@@ -200,7 +200,6 @@ CcspCwmppoGetCcspCwmpMpaIf
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
 
     return  pMyObject->hCcspCwmpMpaIf;
@@ -516,7 +515,6 @@ CcspCwmppoGetAcsUrl
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     char*                           pAcsUrl      = NULL;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
@@ -557,7 +555,6 @@ CcspCwmppoGetAcsUsername
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
     char*                           pAcsUsername = NULL;
@@ -598,7 +595,6 @@ CcspCwmppoGetAcsPassword
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
     char*                           pAcsPassword = NULL;
@@ -639,7 +635,6 @@ CcspCwmppoGetPeriodicInformEnabled
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
     BOOL                            bEnabled     = FALSE;
@@ -680,7 +675,6 @@ CcspCwmppoGetPeriodicInformInterval
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
     ULONG                           ulInterval   = 3600;
@@ -721,10 +715,8 @@ CcspCwmppoGetPeriodicInformTime
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty           = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PANSC_UNIVERSAL_TIME            pInformTime          = NULL;
     PANSC_UNIVERSAL_TIME            pCalendarTime       = NULL;
     char*                           pPeriodicInformTime = NULL;
@@ -795,7 +787,6 @@ CcspCwmppoGetProperty
         ANSC_HANDLE                 hProperty
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty    = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
 
@@ -840,7 +831,6 @@ CcspCwmppoSetProperty
         ANSC_HANDLE                 hProperty
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty    = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
 
@@ -880,7 +870,6 @@ CcspCwmppoResetProperty
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty    = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
 
@@ -927,7 +916,6 @@ CcspCwmppoReset
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
 
     if ( pMyObject->SecheduledCommandKey )

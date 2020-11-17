@@ -128,7 +128,6 @@ CcspCwmpAcsboMsoGetRpcMethods
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT   )NULL;
@@ -213,7 +212,6 @@ CcspCwmpAcsboMsoInform
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT     )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT       )NULL;
@@ -352,7 +350,6 @@ CcspCwmpAcsboMsoTransferComplete
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT   )NULL;
@@ -473,7 +470,6 @@ CcspCwmpAcsboMsoAutonomousTransferComplete
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT   )NULL;
@@ -567,7 +563,6 @@ CcspCwmpAcsboMsoDuStateChangeComplete
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT   )NULL;
@@ -653,7 +648,6 @@ CcspCwmpAcsboMsoAutonomousDuStateChangeComplete
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT   )NULL;
@@ -755,7 +749,6 @@ CcspCwmpAcsboMsoKicked
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT   )NULL;
@@ -843,7 +836,6 @@ CcspCwmpAcsboMsoRequestDownload
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT   )NULL;
@@ -932,7 +924,6 @@ CcspCwmpAcsboMsoValueChanged
 {
     ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject              = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty              = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor     = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession       = (PCCSP_CWMP_SESSION_OBJECT   )NULL;

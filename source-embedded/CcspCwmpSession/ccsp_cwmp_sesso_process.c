@@ -116,7 +116,6 @@ CcspCwmpsoRecvSoapMessage
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT     )hThisObject;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pSessionTimerObj   = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hSessionTimerObj;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT  )pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT     )pCcspCwmpCpeController->hCcspCwmpSoapParser;
@@ -196,7 +195,6 @@ CcspCwmpsoNotifySessionClosed
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT     )hThisObject;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pSessionTimerObj   = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hSessionTimerObj;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT  )pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     
     CcspTr069PaTraceDebug(("CcspCwmpsoNotifySessionClosed -- session state %d.\n", pMyObject->SessionState));
@@ -262,7 +260,6 @@ CcspCwmpsoAsyncProcessTask
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT  )pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT     )pCcspCwmpCpeController->hCcspCwmpSoapParser;
     PCCSP_CWMPSO_ASYNC_REQUEST       pWmpsoAsyncReq     = (PCCSP_CWMPSO_ASYNC_REQUEST    )NULL;
     PCCSP_CWMPSO_ASYNC_RESPONSE      pWmpsoAsyncRep     = (PCCSP_CWMPSO_ASYNC_RESPONSE   )NULL;
     PSINGLE_LINK_ENTRY              pSLinkEntry        = (PSINGLE_LINK_ENTRY           )NULL;
@@ -272,7 +269,7 @@ CcspCwmpsoAsyncProcessTask
     char*                           pMethodName        = (char*                        )NULL;
     ULONG                           ulMessageSize      = 20480;
     ULONG                           ulAvailableSize    = 20480;
-    PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf     = (PCCSP_CWMP_STAT_INTERFACE        )pCcspCwmpCpeController->hCcspCwmpCfgIf;
+    PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf     = (PCCSP_CWMP_CFG_INTERFACE        )pCcspCwmpCpeController->hCcspCwmpCfgIf;
  
     CcspTr069PaTraceDebug(("CcspCwmpsoAsyncProcessTask -- This is the beginning.\n"));
     errno_t rc       = -1;

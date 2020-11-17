@@ -116,8 +116,5 @@ CcspCwmpCreateAcsBroker
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_ACS_BROKER_OBJECT    pCcspCwmpAcsBroker  = NULL;
-
     return  CcspCwmpAcsboCreate(hContainerContext, hOwnerContext, hAnscReserved);
 }

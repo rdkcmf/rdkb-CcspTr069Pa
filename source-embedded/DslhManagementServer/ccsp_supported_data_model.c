@@ -105,10 +105,9 @@ LoadSDMObject
     if(pArgNode == NULL) return;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
     CCSP_CHAR                       sdmObjectName[100];
-    CCSP_CHAR                       paramterName[CCSP_SUPPORTED_DATA_MODEL_PARAMETER_NAME_LENGTH + 1];
     CCSP_CHAR                       paramterValue[CCSP_SUPPORTED_DATA_MODEL_PARAMETER_VALUE_LENGTH + 1];
     size_t                          len = strlen(sdmIdStr);
-    int                             i;
+    unsigned int                    i;
     int                             id = SupportedDataModelID + sdmId;
     unsigned long                   ulSize;
     errno_t     rc  = -1;
@@ -117,7 +116,7 @@ LoadSDMObject
     for(i=0; i<len; i++)
         sdmObjectName[i] = sdmIdStr[i];
     sdmObjectName[len] = '.';
-    sdmObjectName[len+1] = NULL;
+    sdmObjectName[len+1] = '\0';
 
     objectInfo[id].name = CcspManagementServer_MergeString(_SupportedDataModelObjectName, sdmObjectName); /* full name end with '.' */
     objectInfo[id].numberOfChildObjects = 0;
@@ -137,7 +136,6 @@ LoadSDMObject
         objectInfo[id].parameters[i].value = NULL;
     }
 
-    char * value; /* always char * for all kinds of parameters */
     pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetHeadChild(pArgNode);
     if( pChildNode == NULL) return;
     do
@@ -173,7 +171,7 @@ LoadSDMObject
           }
 
        }
-    }while(pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetNextChild(pArgNode, pChildNode));
+    }while((pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetNextChild(pArgNode, pChildNode)) != NULL);
 }
 
 static
@@ -181,11 +179,8 @@ CCSP_BOOL
 LoadFromXMLFile(void*  pXMLHandle)
 {
     PANSC_XML_DOM_NODE_OBJECT       pHandle        = (PANSC_XML_DOM_NODE_OBJECT)pXMLHandle;
-    PANSC_XML_DOM_NODE_OBJECT       pListNode      = NULL;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
     CCSP_INT                        i;
-    CHAR                            name[1024]     = { 0 };
-    ULONG                           nameLen        = 1023;
 
     //CcspTraceWarning("supportedDataModel", ( "LoadFromXMLFile 0: %p\n", pXMLHandle));
     if( pXMLHandle != NULL) sdmObjectNumber = pHandle->ChildNodeQueue.Depth;
@@ -249,13 +244,11 @@ static CCSP_BOOL CheckFileExists( const char *path )
 CCSP_VOID
 CcspManagementServer_FillInSDMObjectInfo()
 {
-    CCSP_BOOL     bSucc         = TRUE;
+//    CCSP_BOOL     bSucc         = TRUE;
     struct stat   statBuf       = {0};
 
     /* load from XML file */
     PANSC_XML_DOM_NODE_OBJECT       pRootNode   = NULL;
-    PUCHAR                          pFileContent= NULL;
-    ULONG                           length      = 0;
 
     if( CheckFileExists( _SupportedDataModelConfigFile ) )
     {
@@ -286,7 +279,8 @@ CcspManagementServer_FillInSDMObjectInfo()
                     /* loca from the node */
                     if( pRootNode != NULL)
                     {
-                        bSucc = LoadFromXMLFile((void*)pRootNode);
+//                        bSucc = 
+                        LoadFromXMLFile((void*)pRootNode);
                         pRootNode->Remove(pRootNode);
                     }
                     /*RDKB-7334, CID-33035, free memory after use*/
@@ -326,6 +320,7 @@ CcspManagementServer_GetSupportedDataModel_URL
         int                         ObjectID
     )
 {
+    UNREFERENCED_PARAMETER(ComponentName);
     return CcspManagementServer_CloneString(objectInfo[ObjectID].parameters[SupportedDataModelURLID].value);
 }
 
@@ -340,6 +335,7 @@ CcspManagementServer_GetSupportedDataModel_URN
         int                         ObjectID
     )
 {
+    UNREFERENCED_PARAMETER(ComponentName);
     return CcspManagementServer_CloneString(objectInfo[ObjectID].parameters[SupportedDataModelURNID].value);
 }
 
@@ -354,5 +350,6 @@ CcspManagementServer_GetSupportedDataModel_Features
         int                         ObjectID
     )
 {
+    UNREFERENCED_PARAMETER(ComponentName);
     return CcspManagementServer_CloneString(objectInfo[ObjectID].parameters[SupportedDataModelFeaturesID].value);
 }

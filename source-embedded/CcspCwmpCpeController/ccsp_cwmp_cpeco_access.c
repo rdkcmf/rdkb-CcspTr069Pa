@@ -130,9 +130,7 @@ CcspCwmpCpecoGetCcspCwmpMcoIf
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession   = (PCCSP_CWMP_SESSION_OBJECT     )pCcspCwmpProcessor->AcqWmpSession((ANSC_HANDLE)pCcspCwmpProcessor);
     PCCSP_CWMP_MCO_INTERFACE             pCcspCwmpMcoIf        = (PCCSP_CWMP_MCO_INTERFACE          )NULL;
@@ -182,9 +180,7 @@ CcspCwmpCpecoGetCcspCwmpMsoIf
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty      = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pCcspCwmpAcsBroker = (PCCSP_CWMP_ACS_BROKER_OBJECT      )pMyObject->hCcspCwmpAcsBroker;
 
     return  pCcspCwmpAcsBroker->hCcspCwmpMsoIf;
@@ -237,9 +233,9 @@ CcspCwmpCpecoGetParamValues
         PCCSP_VARIABLE              pParamValues
     )
 {
+    UNREFERENCED_PARAMETER(ppParamNames);
     ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty      = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf        = (PCCSP_CWMP_MPA_INTERFACE          )pCcspCwmpProcessor->GetCcspCwmpMpaIf((ANSC_HANDLE)pCcspCwmpProcessor);
     SLAP_STRING_ARRAY*              pSlapNameArray    = NULL;
@@ -267,13 +263,13 @@ CcspCwmpCpecoGetParamValues
 
     if ( returnStatus == ANSC_STATUS_SUCCESS )
     {
-        if ( ulCwmpValArraySize != NumOfParams )
+        if ( ulCwmpValArraySize != (ULONG)NumOfParams )
         {
             returnStatus = ANSC_STATUS_INTERNAL_ERROR;
         }
         else
         {
-            for ( i = 0; i < NumOfParams; i ++ )
+            for ( i = 0; i < (ULONG)NumOfParams; i ++ )
             {
                 SlapCloneVariable(pCwmpValArray[i].Value, pParamValues+i);
             }
@@ -350,7 +346,6 @@ CcspCwmpCpecoGetParamStringValues
 {
     ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf        = (PCCSP_CWMP_MPA_INTERFACE          )pCcspCwmpProcessor->GetCcspCwmpMpaIf((ANSC_HANDLE)pCcspCwmpProcessor);
     SLAP_STRING_ARRAY*              pSlapNameArray    = NULL;
@@ -370,7 +365,7 @@ CcspCwmpCpecoGetParamStringValues
         return  ANSC_STATUS_RESOURCES;
     }
 
-    for ( i = 0; i < NumOfParams; i ++ )
+    for ( i = 0; i < (ULONG)NumOfParams; i ++ )
     {
         pSlapNameArray->Array.arrayString[i] = ppParamNames[i];   
     }
@@ -389,13 +384,13 @@ CcspCwmpCpecoGetParamStringValues
 
     if ( returnStatus == ANSC_STATUS_SUCCESS )
     {
-        if ( ulCwmpValArraySize != NumOfParams )
+        if ( ulCwmpValArraySize != (ULONG)NumOfParams )
         {
             returnStatus = ANSC_STATUS_INTERNAL_ERROR;
         }
         else
         {
-            for ( i = 0; i < NumOfParams; i ++ )
+            for ( i = 0; i < (ULONG)NumOfParams; i ++ )
             {
                 SLAP_VARIABLE*      pSlapVar = pCwmpValArray[i].Value;
 
@@ -647,7 +642,6 @@ CcspCwmpCpecoAddObjects
 {
     ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf        = (PCCSP_CWMP_MPA_INTERFACE          )pCcspCwmpProcessor->GetCcspCwmpMpaIf((ANSC_HANDLE)pCcspCwmpProcessor);
     int                             iStatus           = 0;
@@ -770,12 +764,7 @@ CcspCwmpCpecoDelayedDelObjectsTask
 {
     PCCSP_CWMP_CPECO_DDO_TASK_CTX        pDdoTaskCtx       = (PCCSP_CWMP_CPECO_DDO_TASK_CTX     )hTaskContext;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )pDdoTaskCtx->hCcspCwmpCpeController;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
-    PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf        = (PCCSP_CWMP_MPA_INTERFACE          )pCcspCwmpProcessor->GetCcspCwmpMpaIf((ANSC_HANDLE)pCcspCwmpProcessor);
-    int                             iStatus           = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpFault        = NULL;
-    ULONG                           i;
     ULONG                           ulStart           = AnscGetTickInSeconds();
     ULONG                           ulNow             = ulStart;
 
@@ -835,7 +824,6 @@ CcspCwmpCpecoDeleteObjects
 {
     ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf        = (PCCSP_CWMP_MPA_INTERFACE          )pCcspCwmpProcessor->GetCcspCwmpMpaIf((ANSC_HANDLE)pCcspCwmpProcessor);
     int                             iStatus           = 0;
@@ -988,10 +976,8 @@ CcspCwmpCpecoMonitorOpState
 {
     ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf        = (PCCSP_CWMP_MPA_INTERFACE          )pCcspCwmpProcessor->GetCcspCwmpMpaIf((ANSC_HANDLE)pCcspCwmpProcessor);
-    int                             iStatus           = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpFault        = NULL;
     int                             i;
     char                            buf[512];
@@ -1129,7 +1115,6 @@ CcspCwmpCpecoRegisterPA
 {
     ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty      = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     int                             nRet;
 
     if ( bRegister )
@@ -1315,7 +1300,6 @@ CcspCwmpCpecoGetPAName
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
 
     return  pMyObject->PAName;
@@ -1470,7 +1454,6 @@ CcspCwmpCpecoGetSubsysName
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
 
     return  pMyObject->SubsysName;
@@ -1596,7 +1579,6 @@ CcspCwmpCpecoGetCRName
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
 
     return  pMyObject->CRName;
@@ -1702,7 +1684,6 @@ CcspCwmpCpecoGetCRBusPath
         char*                       pSubsystem
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
     int                             i;
 
@@ -1850,7 +1831,6 @@ CcspCwmpCpecoGetSDMXmlFilename
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
 
     return  pMyObject->SdmXmlFile;
@@ -1878,7 +1858,6 @@ CcspCwmpCpecoGetOutboundIfName
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
 
     return  pMyObject->OutboundIfName;
@@ -1914,7 +1893,6 @@ CcspCwmpCpecoGetMsgBusHandle
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
 
     return  pMyObject->hMsgBusHandle;
@@ -1957,7 +1935,6 @@ CcspCwmpCpecoGetParamNotification
         char*                       pParamName
     )
 {
-    ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject           = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
 
@@ -2068,7 +2045,6 @@ CcspCwmpCpecoGetParamDataType
         char*                       pParamName
     )
 {
-    ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject           = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr          = (PCCSP_NAMESPACE_MGR_OBJECT )pCcspCwmpProcessor->hCcspNamespaceMgr;
@@ -2244,7 +2220,6 @@ CcspCwmpCpecoLoadCfgFromPsm
         char*                       pCfgKey
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
     char*                           pCfgValue      = NULL;
     int                             nCcspError;

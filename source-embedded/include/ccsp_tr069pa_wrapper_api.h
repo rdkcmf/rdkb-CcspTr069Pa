@@ -77,6 +77,8 @@
 #include "safe_mem_lib.h"
 #endif
 
+#include "ccsp_memory.h"
+
 /*
  * g_Tr069_PA_Name needs to be set when TR-069 PA starts up as the first thing,
  * we expect it to be set as program argument. Since we define the name as global
@@ -101,7 +103,7 @@ CcspTr069PaAllocateMemory
         int                         mBlockSize
     )
 {
-    void*                           ptr = AnscAllocateMemory(mBlockSize);
+    void*                           ptr = (void *)AnscAllocateMemory(mBlockSize);
 
     if ( ptr )
     {
@@ -232,10 +234,10 @@ CcspTr069PaCloneString(char* src)
 /*
  * SAFECLIB Erro Handling Logging APIs
  */
-#define RDK_SAFECLIB_ERR()  printf("safeclib error at %s %s:%d", __FILE__, __FUNCTION__, __LINE__)
+#define RDK_SAFECLIB_ERR()  printf("safeclib error at %s %s:%d\n", __FILE__, __FUNCTION__, __LINE__)
  
 #define ERR_CHK(rc)                                             \
-    if(rc !=EOK) {                                              \
+    if((long)rc !=EOK) {                                              \
         RDK_SAFECLIB_ERR();                                     \
     }
 

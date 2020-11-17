@@ -111,9 +111,7 @@ CcspCwmpTcpcrhoGetCcspCwmpCpeController
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
 
     return  pMyObject->hCcspCwmpCpeController;
 }
@@ -154,9 +152,7 @@ CcspCwmpTcpcrhoSetCcspCwmpCpeController
         ANSC_HANDLE                 hCcspCwmpCpeController
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
 
     pMyObject->hCcspCwmpCpeController = hCcspCwmpCpeController;
 
@@ -194,9 +190,7 @@ CcspCwmpTcpcrhoGetWebAcmIf
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
 
     return  pMyObject->hWebAcmIf;
 }
@@ -237,9 +231,7 @@ CcspCwmpTcpcrhoSetWebAcmIf
         ANSC_HANDLE                 hWebAcmIf
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
 
     pMyObject->hWebAcmIf = hWebAcmIf;
 
@@ -282,7 +274,6 @@ CcspCwmpTcpcrhoGetProperty
         ANSC_HANDLE                 hProperty
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
     PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
 
@@ -327,7 +318,6 @@ CcspCwmpTcpcrhoSetProperty
         ANSC_HANDLE                 hProperty
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
     PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
 
@@ -367,7 +357,6 @@ CcspCwmpTcpcrhoResetProperty
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
     PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
     PWEB_AUTH_SERVER_PROPERTY       pAuthProperty= &pProperty->AuthProperty;
@@ -386,19 +375,19 @@ CcspCwmpTcpcrhoResetProperty
     pAuthProperty->bNoQop        = FALSE;
     pAuthProperty->NonceTimeout  = WEB_AUTH_NONCE_TIMEOUT_INTERVAL;
     errno_t rc =    -1;
-    
-rc = strcpy_s((char*)pAuthProperty->Realm,sizeof(pAuthProperty->Realm),"Cisco_CCSP_CWMP_TCPCR");
-if(rc!= EOK)
-{
-   ERR_CHK(rc);
-   return ANSC_STATUS_FAILURE;
-}
-rc = strcpy_s((char*)pAuthProperty->Domain,sizeof(pAuthProperty->Domain), "/");
-if(rc!= EOK)
-{
-  ERR_CHK(rc);
-  return ANSC_STATUS_FAILURE;
-}
+
+    rc = strcpy_s((char*)pAuthProperty->Realm,sizeof(pAuthProperty->Realm),"Cisco_CCSP_CWMP_TCPCR");
+    if(rc!= EOK)
+    {
+        ERR_CHK(rc);
+        return ANSC_STATUS_FAILURE;
+    }
+    rc = strcpy_s((char*)pAuthProperty->Domain,sizeof(pAuthProperty->Domain), "/");
+    if(rc!= EOK)
+    {
+        ERR_CHK(rc);
+        return ANSC_STATUS_FAILURE;
+    }
 
     return  ANSC_STATUS_SUCCESS;
 }
@@ -434,11 +423,8 @@ CcspCwmpTcpcrhoReset
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_TCPCR_HANDLER_SESSINFO    pWebAuthInfo = &pMyObject->AuthSessionInfo;
-    PWEB_AUTH_SERVER_PROPERTY       pAuthProperty= &pWebAuthInfo->ServerAuthInfo;
     ULONG                           ulTimes      = 0;
 
     pMyObject->LastAccessTime    = 0;

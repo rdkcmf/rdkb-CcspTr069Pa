@@ -52,12 +52,13 @@
 #include <sys/msg.h>
 #endif
 #endif
+#include <string.h>
+
+#include "ssp_global.h"
 
 #ifdef FEATURE_SUPPORT_RDKLOG
 #include "rdk_debug.h"
 #endif
-
-#include "ssp_global.h"
 
 #ifdef INCLUDE_BREAKPAD
 #include "breakpad_wrapper.h"
@@ -65,7 +66,15 @@
 #define DEBUG_INI_NAME  "/etc/debug.ini"
 #include "syscfg/syscfg.h"
 #include "cap.h"
+#include "telemetry_busmessage_sender.h"
+#if defined(_ANSC_LINUX)
 static cap_user appcaps;
+#endif
+
+#ifndef DISABLE_LOGAGENT
+extern int GetLogInfo(ANSC_HANDLE bus_handle, char *Subsytem, char *pParameterName);
+#endif
+
 PCCSP_CWMP_CPE_CONTROLLER_OBJECT    g_pCcspCwmpCpeController    = NULL;
 BOOL                                bEngaged                = FALSE;
 
@@ -91,8 +100,8 @@ char* g_Tr069PaAcsDefAddr = NULL;
 #define  CCSP_TR069PA_CFG_FILE                      "/fss/gw/usr/ccsp/tr069pa/ccsp_tr069_pa_cfg.xml"
 #define  CCSP_TR069PA_DEF_MAPPER_XML_FILE           "/fss/gw/usr/ccsp/tr069pa/ccsp_tr069_pa_mapper.xml"
 
-CCSP_CWMP_CFG_INTERFACE             ccspCwmpCfgIf           = {0};
-WEB_ACM_INTERFACE                   webAcmIf                = {0};
+CCSP_CWMP_CFG_INTERFACE             ccspCwmpCfgIf;
+WEB_ACM_INTERFACE                   webAcmIf;
 
 static char                         g_SdmXmlFile[256]       = {0};
 
@@ -198,7 +207,6 @@ static void _print_stack_backtrace(void)
 
 #if defined(_ANSC_LINUX)
 static void daemonize(void) {
-	int fd;
 	switch (fork()) {
 	case 0:
 		break;
@@ -221,6 +229,7 @@ static void daemonize(void) {
     */
 
 #ifndef  _DEBUG
+	int fd;
 
 	fd = open("/dev/null", O_RDONLY);
 	if (fd != 0) {
@@ -291,6 +300,7 @@ void sig_handler(int sig)
     }
 }
 
+#ifndef INCLUDE_BREAKPAD
 static int is_core_dump_opened(void)
 {
     FILE *fp;
@@ -322,9 +332,10 @@ static int is_core_dump_opened(void)
     fclose(fp);
     return 0;
 }
-
+#endif //ifndef INCLUDE_BREAKPAD
 #endif
 
+#if defined(_ANSC_LINUX)
 static void drop_root()
 {
   char buf[8] = {'\0'};
@@ -341,12 +352,11 @@ static void drop_root()
       }
     }
 }
-
+#endif
 int main(int argc, char* argv[])
 {
 	int                             cmdChar = 0;
 	int                             idx = 0;
-    int                             rpc_ip_num =0;
     BOOL                            bRunAsDaemon = TRUE;
     BOOL                            bShowDebugLog = FALSE;
     char                            cmd[1024]          = {0};
@@ -355,6 +365,8 @@ int main(int argc, char* argv[])
 #ifdef   _DEBUG
     /*AnscSetTraceLevel(CCSP_TRACE_LEVEL_DEBUG);*/
 #endif
+    memset(&ccspCwmpCfgIf, 0, sizeof(CCSP_CWMP_CFG_INTERFACE));
+    memset(&webAcmIf, 0, sizeof(WEB_ACM_INTERFACE));
  
 	for (idx = 1; idx < argc; idx++)
 	{

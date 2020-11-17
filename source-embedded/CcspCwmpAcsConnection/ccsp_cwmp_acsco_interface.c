@@ -117,7 +117,5 @@ CcspCwmpCreateAcsConnection
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
-
     return  CcspCwmpAcscoCreate(hContainerContext, hOwnerContext, hAnscReserved);
 }

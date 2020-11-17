@@ -96,6 +96,7 @@
 #include "ccsp_cwmp_soappo_global.h"
 #include "ansc_ato_interface.h"
 #include "ansc_ato_external_api.h"
+#include <string.h>
 
 /**********************************************************************
 
@@ -743,7 +744,6 @@ CcspCwmpSoappoProcessRequest_GetParameterNames
     BOOL                            bNextLevel   = FALSE;
     CHAR                            pValue[256]  = { 0 };
     ULONG                           length       = 256;
-    ULONG                           uCount       = 0;
 
     /***************************************************************************
     * Argument     | Type         | Description                               *
@@ -1032,7 +1032,6 @@ CcspCwmpSoappoProcessRequest_GetParameterAttributes
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PSLAP_STRING_ARRAY              pStringArray = (PSLAP_STRING_ARRAY        )NULL;
-	PANSC_ATOM_TABLE_OBJECT         pAtoName     = NULL;
     CHAR                            pValue[256]  = { 0 };
     ULONG                           length       = 256;
     ULONG                           uCount       = 0;
@@ -1580,7 +1579,6 @@ CcspCwmpSoappoProcessRequest_Download
     PCCSP_CWMP_MCO_DOWNLOAD_REQ     pDownReq     = &downloadReq;
     CHAR                            pValue[257]  = { 0 };
     ULONG                           length       = 256;
-    ULONG                           uLongValue   = 0;
 
     /***************************************************************************
     * Argument     | Type         | Description                               *
@@ -2027,7 +2025,6 @@ CcspCwmpSoappoProcessRequest_Upload
     PCCSP_CWMP_MCO_UPLOAD_REQ       pUploadReq   = &uploadReq;
     CHAR                            pValue[257]  = { 0 };
     ULONG                           length       = 256;
-    ULONG                           uLongValue   = 0;
 
     /***************************************************************************
     * Argument     | Type         | Description                               *
@@ -2555,7 +2552,6 @@ CcspCwmpSoappoProcessRequest_ChangeDUState
     PCCSP_TR069_CDS_REQ             pCcspCdsReq  = &CcspCdsReq;
     CHAR                            pValue[257]  = { 0 };
     ULONG                           length       = 256;
-    ULONG                           uLongValue   = 0;
 
     /***************************************************************************
         Operations {OperationStruct[]}
@@ -3083,11 +3079,12 @@ CcspCwmpSoappoProcessRequest
     PANSC_XML_DOM_NODE_OBJECT       pXmlNode     = (PANSC_XML_DOM_NODE_OBJECT)hXmlHandle;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PCHAR                           pNodeName    = (PCHAR)NULL;
-    CCSP_CWMP_SOAP_REQUEST     ccspCwmpSoapReq  = { 0 };
+    CCSP_CWMP_SOAP_REQUEST     ccspCwmpSoapReq;
     PCCSP_CWMP_SOAP_REQUEST    pCcspCwmpSoapReq = &ccspCwmpSoapReq;
     CHAR                            pXmlName[64] = { 0 };
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
 
+    memset(&ccspCwmpSoapReq, 0, sizeof(CCSP_CWMP_SOAP_REQUEST));
     /*
      *  check the CWMP SOAP header if it's available
      */
@@ -3818,7 +3815,6 @@ CcspCwmpSoappoProcessResponse
     PANSC_XML_DOM_NODE_OBJECT       pXmlNode     = (PANSC_XML_DOM_NODE_OBJECT)hXmlHandle;
     PANSC_XML_DOM_NODE_OBJECT       pChildNode   = (PANSC_XML_DOM_NODE_OBJECT)NULL;
     PCHAR                           pNodeName    = (PCHAR)NULL;
-    PCHAR                           pTempName    = (PCHAR)NULL;
     CHAR                            pXmlName[64] = { 0 };
     PCCSP_CWMP_SOAP_RESPONSE        pCcspCwmpSoapRep = (PCCSP_CWMP_SOAP_RESPONSE)NULL;
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
@@ -4529,8 +4525,6 @@ CcspCwmpSoappoProcessSingleEnvelope
     CHAR                            pValueBuf[256]  = { 0 };
     ULONG                           ulValueSize     = 256;
     CHAR                            pNameBuf[32]    = { 0 };
-    ULONG                           length          = 0;
-    ULONG                           uLongValue      = 0;
 
     pRootNode = (PANSC_XML_DOM_NODE_OBJECT)
         AnscXmlDomParseString((ANSC_HANDLE)NULL, (PCHAR*)&pBackBuffer, uMsgSize);
@@ -4764,9 +4758,8 @@ CcspCwmpSoappoProcessSoapEnvelopes
         ANSC_HANDLE                 hCcspCwmpMcoIf
    )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
-    PCCSP_CWMP_MCO_INTERFACE             pCcspCwmpMcoIf   = (PCCSP_CWMP_MCO_INTERFACE)hCcspCwmpMcoIf;
     PCHAR                           pMsgBegin    = NULL;
     CHAR                            pEnveNode[32]= { 0 };
     CHAR                            pNSpace[16]  = { 0 };

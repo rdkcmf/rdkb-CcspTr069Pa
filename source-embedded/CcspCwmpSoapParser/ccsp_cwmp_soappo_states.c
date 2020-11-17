@@ -105,7 +105,6 @@ CcspCwmpSoappoReset
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
-
+    UNREFERENCED_PARAMETER(hThisObject);
     return  ANSC_STATUS_SUCCESS;
 }
