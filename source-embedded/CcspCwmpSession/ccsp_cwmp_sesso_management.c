@@ -129,8 +129,8 @@ CcspCwmpsoAddCwmpEvent
     PCCSP_CWMP_EVENT                pCcspCwmpEventExist= (PCCSP_CWMP_EVENT           )NULL;
     BOOL                            bExist             = FALSE;
     ULONG                           i                  = 0;
-    errno_t   rc  =   -1,rc1 =-1;
-    int ind = -1, ind1 = -1;
+    errno_t   rc  =   -1;
+    int ind = -1;
 
 
     if ( pMyObject->EventCount >= CCSP_CWMPSO_MAX_EVENT_NUMBER )
@@ -405,10 +405,7 @@ CcspCwmpsoDelAllEvents
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;    
     PCCSP_CWMP_EVENT                pCcspCwmpEvent     = (PCCSP_CWMP_EVENT           )NULL;
     ULONG                           i                  = 0;
 
@@ -483,7 +480,6 @@ CcspCwmpsoAddModifiedParameter
 {
     ANSC_STATUS                         returnStatus            = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT           pMyObject               = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT    pCcspCwmpAcsConnection  = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT         pCcspCwmpProcessor      = (PCCSP_CWMP_PROCESSOR_OBJECT) pMyObject->hCcspCwmpProcessor;
     ULONG   i       = 0;
@@ -596,11 +592,7 @@ CcspCwmpsoDelAllParameters
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     ULONG                           i                  = 0;
 
     for ( i = 0; i < pMyObject->ModifiedParamCount; i++ )
@@ -694,12 +686,10 @@ CcspCwmpsoSaveCwmpEvent
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
     PCCSP_CWMP_EVENT                pCcspCwmpEvent     = (PCCSP_CWMP_EVENT           )NULL;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_CFG_INTERFACE             pCcspCwmpCfgIf         = (PCCSP_CWMP_CFG_INTERFACE        )pCcspCwmpCpeController->GetCcspCwmpCfgIf((ANSC_HANDLE)pCcspCwmpCpeController);
     char                            pSavedEvents[CCSP_CWMP_SAVED_EVENTS_MAX_LEN] = { 0 };
     PCHAR                           pCurBuf            = pSavedEvents;
     ULONG                           i                  = 0;
     ULONG                           uLength            = 0;
-    char*                           pRootObjName       = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
 
     /*
      * All the undiscarded events will be saved in a string seperated by a ',' and put as 

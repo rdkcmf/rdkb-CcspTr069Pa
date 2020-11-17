@@ -648,15 +648,7 @@ CcspCwmpSoappoUtilGetParamValue
     PSLAP_VARIABLE                  pSlapVariable= (PSLAP_VARIABLE)NULL;
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     CHAR                            pValue[1024] = { 0 };
-    ULONG                           dataType     = CCSP_CWMP_TR069_DATA_TYPE_Unspecified;
     ULONG                           length       = 1024;
-    ULONG                           uLongValue   = 0;
-    LONG                            longValue    = 0;
-    BOOL                            bBool        = FALSE;
-    BOOL                            bIsInteger   = FALSE;
-    PANSC_XML_ATTRIBUTE             pAttribute   = NULL;
-	char*							pDataType    = NULL;
-    char                            pTemp[64]    = { 0 };
     CHAR                            pHugeValue[32000]
                                                  = { 0 };  /* Config file value could be as big as 32K */
 
@@ -962,7 +954,7 @@ CcspCwmpSoappoUtilGetParamAttribute
             (
                 pChildNode,
                 NULL,
-                &pParamAttr->Notification
+                (PULONG)(&pParamAttr->Notification)   /// This would cause problem on 64 bit machine
             );
 
     if( returnStatus != ANSC_STATUS_SUCCESS)

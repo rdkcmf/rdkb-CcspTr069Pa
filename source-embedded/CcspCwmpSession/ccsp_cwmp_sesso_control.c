@@ -111,7 +111,6 @@ CcspCwmpsoIsAcsConnected
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
 
@@ -157,7 +156,6 @@ CcspCwmpsoConnectToAcs
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     char*                           pAcsUrl            = (char*                      )NULL;
     char*                           pAcsUsername       = (char*                      )NULL;
@@ -272,11 +270,9 @@ CcspCwmpsoCloseConnection
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT       pMyObject          = (PCCSP_CWMP_SESSION_OBJECT     )hThisObject;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pSessionTimerObj   = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hSessionTimerObj;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT  )pMyObject->hCcspCwmpAcsConnection;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT     pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_MPA_INTERFACE        pCcspCwmpMpaIf         = (PCCSP_CWMP_MPA_INTERFACE          )pCcspCwmpProcessor->GetCcspCwmpMpaIf((ANSC_HANDLE)pCcspCwmpProcessor);
     int                             DelayTimes        = 10; 

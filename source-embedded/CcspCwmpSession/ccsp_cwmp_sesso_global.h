@@ -115,4 +115,5 @@
 #include "slap_definitions.h"
 #include "ccsp_cwmp_definitions_cwmp.h"
 
+#include "ccsp_management_server.h"
 #endif

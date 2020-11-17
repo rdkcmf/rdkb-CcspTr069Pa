@@ -120,7 +120,7 @@ CcspCwmpSoappoCreate
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(hAnscReserved);
     PANSC_COMPONENT_OBJECT          pBaseObject  = NULL;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = NULL;
 
@@ -188,7 +188,6 @@ CcspCwmpSoappoRemove
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject       = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
 
     AnscCoRemove((ANSC_HANDLE)pMyObject);
@@ -227,7 +226,6 @@ CcspCwmpSoappoEnrollObjects
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject       = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
 
     AnscCoEnrollObjects((ANSC_HANDLE)pMyObject);
@@ -269,7 +267,6 @@ CcspCwmpSoappoInitialize
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pMyObject    = (PCCSP_CWMP_SOAP_PARSER_OBJECT)hThisObject;
 
     /*

@@ -319,11 +319,12 @@ void waitUntilSystemReady(	void*	cbContext)
 int checkIfSystemReady(void)
 {
     char str[256];
-    int val, ret;
+    unsigned int val;
+    int ret;
     snprintf(str, sizeof(str), "eRT.%s", CCSP_DBUS_INTERFACE_CR);
     // Query CR for system ready
     ret = CcspBaseIf_isSystemReady(bus_handle, str, &val);
-    CcspTr069PaTraceInfo(("checkIfSystemReady(): ret %d, val %d\n", ret, val));
+    CcspTr069PaTraceInfo(("checkIfSystemReady(): ret %d, val %u\n", ret, val));
     
     /*In case of RBus, CR will not be actively running and hence it will not send the SysReady
     event  (and hence the CcspCwmppoSysReadySignalCB() will not be called). So, perform the 
@@ -342,7 +343,7 @@ int checkIfSystemReady(void)
 	CcspTr069PaTraceInfo(("Received system ready signal, created /var/tmp/tr069paready file\n"));
 
     }
-    return val;
+    return (int)val;
 }
 
 void 
@@ -468,7 +469,7 @@ CcspCwmppoCheckCdsResults
         {
             if ( pInsNumbers[i] == 0 )
             {
-                for ( j = i; j < numInstances - 1; j ++ )
+                for ( j = i; (unsigned int)j < numInstances - 1; j ++ )
                 {
                     pInsNumbers[j] = pInsNumbers[j+1];
                 }
@@ -508,7 +509,7 @@ CcspCwmppoCheckCdsResults
                     CcspTr069PaFreeMemory(pCK);
                 }
 
-                for ( j = i; j < numInstances - 1; j ++ )
+                for ( j = i; (unsigned int)j < numInstances - 1; j ++ )
                 {
                     pInsNumbers[j] = pInsNumbers[j+1];
                 }
@@ -625,7 +626,7 @@ CcspCwmppoCheckCdsResults
                     CcspTr069PaFreeMemory(pValue);
                 }
 
-                if ( order >= total )
+                if ( (int)order >= total )
                 {
                     goto EXIT;
                 }
@@ -766,7 +767,7 @@ CcspCwmppoCheckCdsResults
                         (ANSC_HANDLE)pCcspCwmpCpeController,
                         CCSP_NS_CHANGEDUSTATE,
                         (int)pDsccReq->NumResults,
-                        pInsNumbers,
+                        (PULONG)pInsNumbers,               //This would cause problem with 64 bit machine where long is 64bit.
                         &pCwmpFault,
                         CCSP_TR069_CDS_REQ_OBJECT_DELAY_SECONDS
                     );
@@ -864,7 +865,6 @@ CcspCwmppoCheckAdsccAgainstPolicy
         PCCSP_TR069_ADSCC_REQ       pAdsccReq
     )
 {
-    CCSP_BOOL                       bEnabled;
     char*                           pOperationTypeFilter    = NULL;
     char*                           pResultTypeFilter       = NULL;
     char*                           pFaultCodeFilter        = NULL;
@@ -997,14 +997,8 @@ CcspCwmppoCheckAutonomousCdsResults
 {
     PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf      = (PCCSP_CWMP_MSO_INTERFACE)pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT   )pCcspCwmpCpeController->hCcspCwmpProcessor;
-    unsigned int                    numInstances    = 0;
-    unsigned int*                   pInsNumbers     = NULL;
-    int                             psmStatus;
-    int                             i, j;
+    int                             i;
     char                            buf[256];
-    char*                           pCK;
-    char*                           pValue;
-    int                             comp;
     PCCSP_TR069_ADSCC_REQ           pAdsccReq       = NULL;
     char**                          pParamNames     = NULL;
     char**                          pParamValues    = NULL;
@@ -1359,13 +1353,8 @@ CcspCwmppoRetrieveFirmwareDownloadResults
         char**                      ppCommandKey
     )
 {
-    PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf          = (PCCSP_CWMP_MSO_INTERFACE)pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
-    PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT   )pCcspCwmpCpeController->hCcspCwmpProcessor;
-    int                             i, j;
     char                            buf[256];
     ULONG                           order               = 0;
-    char*                           pValue;
-    int                             comp;
     char**                          pParamNames         = NULL;
     char**                          pParamValues        = NULL;
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
@@ -1673,7 +1662,7 @@ CcspCwmppoProcessPvcSignal
          * check sub-system prefix, if the parameter is on a sub-system
          * that this PA is managing, this value change is not for us.
          */
-        pParamName = val->parameterName;
+        pParamName = (char *)(val->parameterName);
 
         NumSubsystems = CCSP_SUBSYSTEM_MAX_COUNT;
 
@@ -1808,7 +1797,7 @@ CcspCwmppoProcessPvcSignal
         }
         else if ( _ansc_strstr(pVC->parameterName, s_ns_download_state) == pVC->parameterName &&
                   val && val->newValue &&
-                  AnscEqualString(val->newValue, "Idle", TRUE) /* PA only cares the state changed back to 'Idle' */  )
+                  AnscEqualString((char *)(val->newValue), "Idle", TRUE) /* PA only cares the state changed back to 'Idle' */  )
         {
             /* Download monitor state has changed */
             char*                   pCommandKey     = NULL;
@@ -2179,7 +2168,6 @@ CcspCwmppoProcessVcSignalTask
     PCCSP_CWMPPO_PVC_SIGNAL_LIST    pPvcSig;
     PSINGLE_LINK_ENTRY              pSLinkEntry;
     int                             nCount     = 0;
-	ULONG							ulThrottle;
 
     pMyObject->AsyncTaskCount++;
 

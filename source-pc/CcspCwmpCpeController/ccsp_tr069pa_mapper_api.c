@@ -304,11 +304,11 @@ CcspTr069Pa_run_test_map()
 
     if ( !pReturnStr )
     {
-        printf(("%s - CwmpToDmInt failed", __FUNCTION__));
+        printf("%s - CwmpToDmInt failed", __FUNCTION__);
     }
     else
     {
-        printf(("%s - CwmpToDmInt %s -> %s", __FUNCTION__, pCwmpString, pReturnStr));
+        printf("%s - CwmpToDmInt %s -> %s", __FUNCTION__, pCwmpString, pReturnStr);
         CcspTr069PaFreeMemory(pReturnStr);
         pReturnStr = NULL;
     }
@@ -317,11 +317,11 @@ CcspTr069Pa_run_test_map()
 
     if ( !pReturnStr )
     {
-        printf(("%s - DmIntToCwmp failed", __FUNCTION__));
+        printf("%s - DmIntToCwmp failed", __FUNCTION__);
     }
     else
     {
-        printf(("%s - DmIntToCwmp %s -> %s", __FUNCTION__, pCwmpString, pReturnStr));
+        printf("%s - DmIntToCwmp %s -> %s", __FUNCTION__, pCwmpString, pReturnStr);
         CcspTr069PaFreeMemory(pReturnStr);
         pReturnStr = NULL;
     }

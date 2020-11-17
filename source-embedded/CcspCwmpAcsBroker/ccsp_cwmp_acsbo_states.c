@@ -109,9 +109,7 @@ CcspCwmpAcsboGetCcspCwmpMsoIf
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pMyObject    = (PCCSP_CWMP_ACS_BROKER_OBJECT  )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY       pProperty    = (PCCSP_CWMP_ACS_BROKER_PROPERTY)&pMyObject->Property;
 
     return  pMyObject->hCcspCwmpMsoIf;
 }
@@ -147,9 +145,7 @@ CcspCwmpAcsboGetCcspCwmpCpeController
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pMyObject    = (PCCSP_CWMP_ACS_BROKER_OBJECT  )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY       pProperty    = (PCCSP_CWMP_ACS_BROKER_PROPERTY)&pMyObject->Property;
 
     return  pMyObject->hCcspCwmpCpeController;
 }
@@ -190,9 +186,7 @@ CcspCwmpAcsboSetCcspCwmpCpeController
         ANSC_HANDLE                 hCpeController
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pMyObject    = (PCCSP_CWMP_ACS_BROKER_OBJECT  )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY       pProperty    = (PCCSP_CWMP_ACS_BROKER_PROPERTY)&pMyObject->Property;
 
     pMyObject->hCcspCwmpCpeController = hCpeController;
 
@@ -235,7 +229,6 @@ CcspCwmpAcsboGetProperty
         ANSC_HANDLE                 hProperty
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pMyObject    = (PCCSP_CWMP_ACS_BROKER_OBJECT  )hThisObject;
     PCCSP_CWMP_ACS_BROKER_PROPERTY       pProperty    = (PCCSP_CWMP_ACS_BROKER_PROPERTY)&pMyObject->Property;
 
@@ -280,7 +273,6 @@ CcspCwmpAcsboSetProperty
         ANSC_HANDLE                 hProperty
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pMyObject    = (PCCSP_CWMP_ACS_BROKER_OBJECT  )hThisObject;
     PCCSP_CWMP_ACS_BROKER_PROPERTY       pProperty    = (PCCSP_CWMP_ACS_BROKER_PROPERTY)&pMyObject->Property;
 
@@ -320,7 +312,6 @@ CcspCwmpAcsboResetProperty
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pMyObject    = (PCCSP_CWMP_ACS_BROKER_OBJECT  )hThisObject;
     PCCSP_CWMP_ACS_BROKER_PROPERTY       pProperty    = (PCCSP_CWMP_ACS_BROKER_PROPERTY)&pMyObject->Property;
 
@@ -360,9 +351,6 @@ CcspCwmpAcsboReset
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_ACS_BROKER_OBJECT         pMyObject    = (PCCSP_CWMP_ACS_BROKER_OBJECT  )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY       pProperty    = (PCCSP_CWMP_ACS_BROKER_PROPERTY)&pMyObject->Property;
-
+    UNREFERENCED_PARAMETER(hThisObject);
     return  ANSC_STATUS_SUCCESS;
 }

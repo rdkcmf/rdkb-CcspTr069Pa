@@ -84,7 +84,10 @@
 #include <openssl/ssl.h>
 #include "linux/user_openssl.h"
 extern char* openssl_client_ca_certificate_files;
+extern int openssl_load_ca_certificates(int who_calls);
 #endif /* _ANSC_USE_OPENSSL_ */
+
+#include "ssp_ccsp_cwmp_cfg.h"
 
 #ifdef SAFEC_DUMMY_API
 /*This is required to support CiscoXB3 platform which cannot include safeclib due to the image size constraints */
@@ -92,6 +95,7 @@ extern char* openssl_client_ca_certificate_files;
 //adding strcmp_s definition
 errno_t strcmp_s(const char * d,int max ,const char * src,int *r)
 {
+  UNREFERENCED_PARAMETER(max);
   *r= strcmp(d,src);
   return EOK;
 }
@@ -99,6 +103,7 @@ errno_t strcmp_s(const char * d,int max ,const char * src,int *r)
 //adding strcasecmp_s definition
 errno_t strcasecmp_s(const char * d,int max ,const char * src,int *r)
 {
+  UNREFERENCED_PARAMETER(max);
   *r= strcasecmp(d,src);
   return EOK;
 }

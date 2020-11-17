@@ -114,6 +114,7 @@ extern char* g_Tr069PaAcsDefAddr;
 
 void CcspTr069PaSsp_GetPartnerID(char *partnerID);
 
+#if 0
 static ANSC_STATUS  
 CcspTr069PaSsp_XML_GetMultipleItemWithSameName
     (
@@ -176,6 +177,7 @@ CcspTr069PaSsp_XML_GetMultipleItemWithSameName
  EXIT:
     return returnStatus;
 }
+#endif
 
 static void
 CcspTr069PaSsp_XML_GetOneItemByName
@@ -186,7 +188,7 @@ CcspTr069PaSsp_XML_GetOneItemByName
      )
 {
     PANSC_XML_DOM_NODE_OBJECT pChildNode  = NULL;
-    int                       uLength     = 511;
+    ULONG                     uLength     = 511;
     char                      buffer[512] = {0};
 
     if (pRootNode && retVal && ItemName)
@@ -215,7 +217,6 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
         cJSON *json = NULL;
         cJSON *partnerObj = NULL;
         FILE *fileRead = NULL;
-        char cmd[512] = {0};
         int len;
 	char* buffer = NULL;
         errno_t rc   = -1;
@@ -436,6 +437,7 @@ CcspTr069PaSsp_CcspCwmpCfgNoRPCMethods
         ANSC_HANDLE                 hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ULONG                           ulNoMethods = 0;
 
     ulNoMethods = 
@@ -480,7 +482,8 @@ CcspTr069PaSsp_GetHttpSessionIdleTimeout
         ANSC_HANDLE                 hThisObject
     )
 {
-	return	SSP_CCSP_CWMP_HTTP_SESSION_IDLE_TIMEOUT;
+    UNREFERENCED_PARAMETER(hThisObject);
+    return	SSP_CCSP_CWMP_HTTP_SESSION_IDLE_TIMEOUT;
 }
 
 
@@ -490,7 +493,8 @@ CcspTr069PaSsp_GetCwmpRpcTimeout
         ANSC_HANDLE                 hThisObject
     )
 {
-	return	SSP_CCSP_CWMP_RPC_TIMEOUT;
+    UNREFERENCED_PARAMETER(hThisObject);
+    return SSP_CCSP_CWMP_RPC_TIMEOUT;
 }
 
 //custom

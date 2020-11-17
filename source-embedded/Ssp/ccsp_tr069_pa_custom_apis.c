@@ -134,7 +134,7 @@ int dmsb_type_from_name(char *name, int *type_ptr)
   int i = 0;
   if((name == NULL) || (type_ptr == NULL))
      return 0;
-  for (i = 0 ; i < NUM_DMSB_TYPES ; ++i)
+  for (i = 0 ; (unsigned int)i < NUM_DMSB_TYPES ; ++i)
   {
       rc = strcmp_s(name, strlen(name), dmsb_type_table[i].name, &ind);
       ERR_CHK(rc);
@@ -153,6 +153,7 @@ CcspCwmpsoStartRetryTimerCustom
         PCCSP_CWMP_SESSION_OBJECT                 pMyObject
     )
 {
+    UNREFERENCED_PARAMETER(pMyObject);
 }
 
 CCSP_VOID
@@ -161,6 +162,7 @@ CcspCwmpsoInformCustom
        PCCSP_CWMP_CFG_INTERFACE pCcspCwmpCfgIf
     )
 {
+    UNREFERENCED_PARAMETER(pCcspCwmpCfgIf);
 }
 
 CCSP_VOID
@@ -170,6 +172,8 @@ CcspCwmpsoInformCustom1
        PCCSP_CWMP_CFG_INTERFACE pCcspCwmpCfgIf
     )
 {
+    UNREFERENCED_PARAMETER(pCwmpEvent);
+    UNREFERENCED_PARAMETER(pCcspCwmpCfgIf);
 }
 
 ANSC_STATUS
@@ -226,7 +230,7 @@ CcspManagementServer_GetPeriodicInformTimeStrCustom
         CCSP_STRING                 ComponentName
     )
 {
-
+    UNREFERENCED_PARAMETER(ComponentName);
     if(!objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value){
       time_t t = time(NULL);
 		struct tm tm = *localtime(&t);
@@ -253,6 +257,15 @@ CcspManagementServer_InitCustom
         CCSP_STRING             sdmXmlFilename
     )
 {
+    UNREFERENCED_PARAMETER(ComponentName);
+    UNREFERENCED_PARAMETER(SubsystemPrefix);
+    UNREFERENCED_PARAMETER(hMBusHandle);
+    UNREFERENCED_PARAMETER(msValueChangeCB);
+    UNREFERENCED_PARAMETER(sysReadySignalCB);
+    UNREFERENCED_PARAMETER(diagCompleteSignalCB);
+    UNREFERENCED_PARAMETER(cbContext);
+    UNREFERENCED_PARAMETER(cpeContext);
+    UNREFERENCED_PARAMETER(sdmXmlFilename);
 };
 
 void CcspManagementServer_GenerateConnectionRequestURLCustom(
@@ -261,7 +274,10 @@ void CcspManagementServer_GenerateConnectionRequestURLCustom(
     char *ipAddr,
     msObjectInfo *objectInfo)
 {
-  
+    UNREFERENCED_PARAMETER(fromValueChangeSignal);
+    UNREFERENCED_PARAMETER(newValue);
+    UNREFERENCED_PARAMETER(ipAddr);
+    UNREFERENCED_PARAMETER(objectInfo);
 }
 /* Temporarily hardcode to support restartPA for now, will merge partial factory reset from USGv2 branch later */
 ANSC_STATUS
@@ -274,13 +290,15 @@ CcspManagementServer_RestoreDefaultValuesCustom
 }
 
 int CcspManagementServer_CommitParameterValuesCustom(int parameterID)
-{ 
-  return 0;
+{
+    UNREFERENCED_PARAMETER(parameterID);
+    return 0;
 }
 
 int CcspManagementServer_GetPAObjectIDCustom(int objectID)
-{  
-  return -1;
+{
+    UNREFERENCED_PARAMETER(objectID);
+    return -1;
 }
 
 int CcspManagementServer_ValidateParameterValuesCustom(
@@ -291,9 +309,13 @@ int CcspManagementServer_ValidateParameterValuesCustom(
     char ** invalidParameterName
     )
 {
- 
+    UNREFERENCED_PARAMETER(sessionId);
+    UNREFERENCED_PARAMETER(writeID);
+    UNREFERENCED_PARAMETER(val);
+    UNREFERENCED_PARAMETER(size);
+    UNREFERENCED_PARAMETER(invalidParameterName);
 
-  return 0;
+    return 0;
 }
 
 void CcspManagementServer_GetSingleParameterValueCustom(
@@ -302,77 +324,77 @@ void CcspManagementServer_GetSingleParameterValueCustom(
         parameterValStruct_t *val
     )
 {
+    UNREFERENCED_PARAMETER(objectID);
+    UNREFERENCED_PARAMETER(parameterID);
+    UNREFERENCED_PARAMETER(val);
 }
 
 int CcspManagementServer_GetObjectIDCustom(char *p1)
 {
-  return 0;
+    UNREFERENCED_PARAMETER(p1);
+    return 0;
 }
 
 CCSP_VOID CcspManagementServer_InitDBusCustom(CCSP_Base_Func_CB *cb)
 {
-
-  
+    UNREFERENCED_PARAMETER(cb);
 }
 
 CCSP_VOID
 CcspManagementServer_FillInObjectInfoCustom(msObjectInfo *objectInfo)
 {
-typedef struct _msParameter{
-    char * name; /* name without a path */
-} msParameter;
-msParameter ParamName[] = {
-{"dmsb.ManagementServer.PeriodicInformEnable"},
-{"dmsb.ManagementServer.PeriodicInformInterval"},
-//{"dmsb.ManagementServer.PeriodicInformTime"},
-{"dmsb.ManagementServer.DefaultActiveNotificationThrottle"},
-{"dmsb.ManagementServer.CWMPRetryMinimumWaitInterval"},
-{"dmsb.ManagementServer.CWMPRetryIntervalMultiplier"}
-};
-int i = 0;
-int ArrLen = sizeof(ParamName)/sizeof(char*);
-int ind      = -1;
-errno_t rc;
-int type = 0;
-int irc = 0;
+    typedef struct _msParameter{
+        char * name; /* name without a path */
+    } msParameter;
+    msParameter ParamName[] = {
+        {"dmsb.ManagementServer.PeriodicInformEnable"},
+        {"dmsb.ManagementServer.PeriodicInformInterval"},
+        //{"dmsb.ManagementServer.PeriodicInformTime"},
+        {"dmsb.ManagementServer.DefaultActiveNotificationThrottle"},
+        {"dmsb.ManagementServer.CWMPRetryMinimumWaitInterval"},
+        {"dmsb.ManagementServer.CWMPRetryIntervalMultiplier"}
+    };
+    int i = 0;
+    int ArrLen = sizeof(ParamName)/sizeof(char*);
+    int type = 0;
 
-for(i = 0;i < ArrLen;i++)
-{
-		 char *pValue = NULL;
-		 int res;
-		 res = PSM_Get_Record_Value2(
-                                bus_handle,
-                                CcspManagementServer_SubsystemPrefix,
-                                ParamName[i].name,
-                                NULL,
-                                &pValue);
-         if ( res == CCSP_SUCCESS)
-                    {
-                                     if (!dmsb_type_from_name(ParamName[i].name, &type))
-                                     {
-                                         printf("unrecognized type name: %s", ParamName[i].name);
-                                         return 0;
-                                     }
-                                     else
-                                     {
-                                        printf("type name found - %s", ParamName[i].name);
-                                        objectInfo[ManagementServerID].parameters[type].value
-							    = CcspManagementServer_CloneString(pValue);
-                                     } 
-                                     
-                    }
-                    else 
-                    {
-                        CcspTraceWarning(("%s - Cannot get PSM value for '%s'\n", __FUNCTION__, "dmsb.ManagementServer.ACSChangedURL"));
-                        res = TR69_INTERNAL_ERROR;
-						
-                    }
+    for(i = 0;i < ArrLen;i++)
+    {
+        char *pValue = NULL;
+        int res;
+        res = PSM_Get_Record_Value2(
+                bus_handle,
+                CcspManagementServer_SubsystemPrefix,
+                ParamName[i].name,
+                NULL,
+                &pValue);
+        if ( res == CCSP_SUCCESS)
+        {
+            if (!dmsb_type_from_name(ParamName[i].name, &type))
+            {
+                printf("unrecognized type name: %s", ParamName[i].name);
+                return ;
+            }
+            else
+            {
+                printf("type name found - %s", ParamName[i].name);
+                objectInfo[ManagementServerID].parameters[type].value
+                    = CcspManagementServer_CloneString(pValue);
+            } 
+
+        }
+        else 
+        {
+            CcspTraceWarning(("%s - Cannot get PSM value for '%s'\n", __FUNCTION__, "dmsb.ManagementServer.ACSChangedURL"));
+            res = TR69_INTERNAL_ERROR;
+
+        }
         if (pValue)
         {
             CcspTr069PaFreeMemory(pValue);
             pValue = NULL;
         }
-}
+    }
 }
 
 char*
@@ -382,8 +404,9 @@ CcspTr069PaSsp_GetCustomForcedInformParamsCustom
 	char *			     g_ForcedInformParams
     )
 {
-  
-  return NULL;
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(g_ForcedInformParams);
+    return NULL;
 }
 
 void
@@ -394,12 +417,15 @@ CcspTr069PaSsp_CcspCwmpCfgGetDevDataModelVersionCustom
         PULONG                      pulDevVersionMinor
     )
 {
-
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(pulDevVerionMajor);
+    UNREFERENCED_PARAMETER(pulDevVersionMinor);
 }
 
 int
 CcspTr069PaSsp_InitCcspCwmpCfgIf_Custom(ANSC_HANDLE hCcspCwmpCpeController)
 {
+    UNREFERENCED_PARAMETER(hCcspCwmpCpeController);
     return 0;
 }
 
@@ -636,11 +662,8 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
     }
 
     {
-        char                            HashStr[128]    = {0};
-        ANSC_CRYPTO_KEY                 key             = {0};
-        ANSC_CRYPTO_HASH                hash            = {0};
         ULONG                           hashLength      = 0;
-	char *tmp = NULL, *convertTo = NULL;
+	char *convertTo = NULL;
         //char shKey [ 256 ];
 	char cmp[64] = {'\0'};
 	char sharedText[128] = {'\0'}, sharedmd[64] = {'\0'};
@@ -676,7 +699,7 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
 	DeviceDefaultPassword = cmp;
 
 	HMAC_CTX_cleanup( &ctx );
-        AnscTraceWarning(("%s -- default password is '%s', hashLength = %d\n", 
+        AnscTraceWarning(("%s -- default password is '%s', hashLength = %lu\n", 
                           __FUNCTION__, DeviceDefaultPassword, hashLength));
 
         //        fprintf(stderr, "<RT> %s -- default password is '%s', hashLength = %d\n", 
@@ -690,6 +713,7 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
         {
             FILE*              pFile       = NULL;
             mode_t             origMod     = umask(0);
+            ANSC_CRYPTO_HASH                hash            = {0};
 
             pFile = fopen("/tmp/acsPasswd.txt", "w");
 
@@ -698,7 +722,7 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
                 fprintf
                 (
                         pFile,
-                        "Default password length = %d, first 4 bytes %02X%02X%02X%02X, value = %s\n",
+                        "Default password length = %lu, first 4 bytes %02X%02X%02X%02X, value = %s\n",
                         hashLength,
                         hash.Value[0], hash.Value[1], hash.Value[2], hash.Value[3],
                         DeviceDefaultPassword
@@ -736,7 +760,7 @@ CcspManagementServer_GenerateDefaultUsername
 
     {
         int len = _ansc_strlen(DefaultUsername);
-        if ( *pulLength < len )
+        if ( *pulLength < (ULONG)len )
         {
             return  ANSC_STATUS_MORE_DATA;
         }
@@ -773,7 +797,7 @@ CcspManagementServer_GenerateDefaultPassword
     {
         int len = _ansc_strlen(DeviceDefaultPassword);
 
-        if ( *pulLength < len )
+        if ( *pulLength < (ULONG)len )
         {
             return  ANSC_STATUS_MORE_DATA;
         }

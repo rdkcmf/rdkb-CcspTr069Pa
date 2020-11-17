@@ -109,7 +109,6 @@ CcspCwmpStunmoLoadPolicy
 {
     ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
 
     returnStatus = pMyObject->RegGetStunInfo   ((ANSC_HANDLE)pMyObject);
     returnStatus = pMyObject->ApplyStunSettings((ANSC_HANDLE)pMyObject);
@@ -148,12 +147,10 @@ CcspCwmpStunmoApplyStunSettings
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                         returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject           = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty           = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_STUN_INFO                pCcspCwmpStunInfo   = (PCCSP_CWMP_STUN_INFO            )&pMyObject->CcspCwmpStunInfo;
     PSTUN_SIMPLE_CLIENT_OBJECT          pStunSimpleClient   = (PSTUN_SIMPLE_CLIENT_OBJECT )pMyObject->hStunSimpleClient;
-    PCCSP_CWMP_SESSION_OBJECT           pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT  )NULL;
     char*                               pAcsHostName        = (char*                      )NULL;
     ANSC_IPV4_ADDRESS                   client_ip4_addr;
     ANSC_IPV4_ADDRESS                   server_ip4_addr;
@@ -253,7 +250,6 @@ CcspCwmpStunmoGetAcsHostName
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                         returnStatus            = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject               = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT         pCcspCwmpProcessor      = (PCCSP_CWMP_PROCESSOR_OBJECT)pCcspCwmpCpeController->hCcspCwmpProcessor;

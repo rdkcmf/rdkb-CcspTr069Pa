@@ -75,6 +75,16 @@
 
 
 #include "ccsp_cwmp_stunmo_global.h"
+#include "ccsp_memory.h"
+
+extern ULONG
+AnscCryptoHmacSha1Digest
+    (
+        PVOID                       buffer,
+        ULONG                       size,
+        PANSC_CRYPTO_HASH           hash,
+        PANSC_CRYPTO_KEY            key 
+    );
 
 typedef  struct
 _CCSP_CWMP_UDP_CONN_REQ_PARAMS
@@ -313,10 +323,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
 {
     ANSC_STATUS                     status              = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT  pMyObject           = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY pProperty           = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf          = (PCCSP_CWMP_CFG_INTERFACE        )pCcspCwmpCpeController->GetCcspCwmpCfgIf((ANSC_HANDLE)pCcspCwmpCpeController);
-    PSTUN_SIMPLE_CLIENT_OBJECT      pStunSimpleClient   = (PSTUN_SIMPLE_CLIENT_OBJECT )pMyObject->hStunSimpleClient;
     char*                           pMsg                = (char*                      )buffer;
     char*                           pMsgEnd             = pMsg + ulSize - 1;
     char*                           pConnReqUsername    = NULL;
@@ -497,7 +504,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
 
     if ( key.Length != 0 )
     {
-       rc = strcpy_s(key.Value[0],sizeof(key.Value[0]),pConnReqPassword);
+       rc = strcpy_s((char *)key.Value[0],sizeof(key.Value[0]),pConnReqPassword);
        if(rc!=EOK)
        {
           ERR_CHK(rc);
@@ -657,10 +664,9 @@ CcspCwmpStunmoStunBsmRecvMsg2
         ULONG                       ulSize
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_STUN_MANAGER_OBJECT       pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY     pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
-
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(buffer);
+    UNREFERENCED_PARAMETER(ulSize);
     /*
      * This function is reserved for future use...
      */
@@ -710,12 +716,11 @@ CcspCwmpStunmoStunBsmNotify
         ANSC_HANDLE                 hReserved
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(hReserved);
     PCCSP_CWMP_STUN_MANAGER_OBJECT       pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_STUN_MANAGER_PROPERTY     pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
     BOOL                            bRetryStun   = FALSE;
     PSTUN_SIMPLE_CLIENT_OBJECT      pStunSimpleClient   = (PSTUN_SIMPLE_CLIENT_OBJECT )pMyObject->hStunSimpleClient;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_STUN_INFO                pCcspCwmpStunInfo      = (PCCSP_CWMP_STUN_INFO            )&pMyObject->CcspCwmpStunInfo;
 
     switch ( ulEvent )

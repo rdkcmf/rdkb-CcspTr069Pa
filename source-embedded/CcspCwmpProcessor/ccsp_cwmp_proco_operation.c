@@ -149,7 +149,6 @@ CcspCwmppoEngage
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject          = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty          = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
 
     if ( pMyObject->bActive )
@@ -238,8 +237,6 @@ CcspCwmppoCancel
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject          = (PCCSP_CWMP_PROCESSOR_OBJECT   )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty          = (PCCSP_CWMP_PROCESSOR_PROPERTY )&pMyObject->Property;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )pMyObject->hCcspCwmpCpeController;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pPeriodicTimerObj  = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hPeriodicTimerObj;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pScheduleTimerObj  = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hScheduleTimerObj;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pPendingInformTimerObj  = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hPendingInformTimerObj;
@@ -306,7 +303,6 @@ CcspCwmppoSetupEnv
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject               = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty               = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault          = NULL;
     PANSC_ATOM_TABLE_OBJECT         pParamAttrCache         = (PANSC_ATOM_TABLE_OBJECT     )pMyObject->hParamAttrCache;
     char*                           pAcsUrl                 = NULL;
 
@@ -460,11 +456,8 @@ CcspCwmppoCloseEnv
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus            = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject               = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
-
-    return  returnStatus;
+    UNREFERENCED_PARAMETER(hThisObject);
+    return  ANSC_STATUS_SUCCESS;
 }
 
 
@@ -598,7 +591,6 @@ CcspCwmppoScheduleTimerInvoke
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject          = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession    = (PCCSP_CWMP_SESSION_OBJECT    )pMyObject->AcqWmpSession2((ANSC_HANDLE)pMyObject);
     PCCSP_CWMP_EVENT                pCcspCwmpEvent     = (PCCSP_CWMP_EVENT            )NULL;
 
@@ -849,16 +841,10 @@ CcspCwmppoGetUndeliveredTcEvents
     PCCSP_CWMP_PROCESSOR_OBJECT     pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT)hThisObject;
     PCCSP_CWMP_SESSION_OBJECT       pCcspCwmpSession    = (PCCSP_CWMP_SESSION_OBJECT  )hWmpSession;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PSLAP_VARIABLE                  pSlapVariable       = (PSLAP_VARIABLE             )NULL;
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     char*                           pCommandKey         = NULL;
     ULONG                           i                   = 0;
-    BOOL                            bTCEntryFound       = FALSE;
     int                             psmStatus;
-    unsigned int                    psmRecordType;
-    unsigned int                    psmContentType;
-    char                            buffer[257];
-    CCSP_CWMP_FAULT                 Fault               = {0};
     BOOL                            bIsDownload         = TRUE;
     unsigned int                    numInstances        = 0;
     unsigned int*                   pInsNumbers         = NULL;
@@ -1047,10 +1033,7 @@ CcspCwmppoGetUndeliveredAtcEvents
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_EVENT                pCcspCwmpEvent      = NULL;
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
-    ULONG                           i                       = 0;
     int                             psmStatus;
-    unsigned int                    psmRecordType;
-    unsigned int                    psmContentType;
     unsigned int                    numInstances            = 0;
     unsigned int*                   pInsNumbers             = NULL;
 
@@ -1151,11 +1134,8 @@ CcspCwmppoGetUndeliveredDscEvents
     char                            psmDsccName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     ULONG                           i;
     int                             psmStatus;
-    char                            buffer[257];
     unsigned int                    numInstances            = 0;
     unsigned int*                   pInsNumbers             = NULL;
-    char*                           pValue                  = NULL;
-    unsigned int                    NumReqInstances         = 0;
     BOOL                            bTcSingleEventAdded     = FALSE;
     char*                           pCommandKey             = NULL;
 
@@ -1412,7 +1392,6 @@ CcspCwmppoSaveTransferComplete
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     char                            buffer[257];
-    int                             psmTcNameLen            = 0;
     unsigned int                    numInstances            = 0;
     unsigned int*                   pInsNumbers             = NULL;
     unsigned int                    InsNumber;
@@ -1726,7 +1705,6 @@ ccspCwmppoLoadTransferCompleteTask
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject               = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf              = (PCCSP_CWMP_MSO_INTERFACE        )pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
-    PSLAP_VARIABLE                  pSlapVariable           = (PSLAP_VARIABLE             )NULL;
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     char*                           pCommandKey             = NULL;
     ULONG                           uStartTime              = 0;
@@ -1734,11 +1712,7 @@ ccspCwmppoLoadTransferCompleteTask
     ANSC_UNIVERSAL_TIME             timeStart               = { 0 };
     ANSC_UNIVERSAL_TIME             timeEnd                 = { 0 };
     ULONG                           i                       = 0;
-    BOOL                            bTCEntryFound           = FALSE;
     int                             psmStatus;
-    unsigned int                    psmRecordType;
-    unsigned int                    psmContentType;
-    char                            buffer[257];
     CCSP_CWMP_FAULT                 Fault                   = {0};
     BOOL                            bIsDownload             = TRUE;
     unsigned int                    numInstances            = 0;
@@ -2186,7 +2160,6 @@ CcspCwmppoSaveAutonomousTransferComplete
     PCCSP_CWMP_SOAP_FAULT           pCwmpFault              = (PCCSP_CWMP_SOAP_FAULT       )hFault;
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     char                            buffer[257];
-    int                             psmTcNameLen            = 0;
     unsigned int                    numInstances            = 0;
     unsigned int*                   pInsNumbers             = NULL;
     unsigned int                    InsNumber;
@@ -2629,9 +2602,6 @@ ccspCwmppoLoadAutonomousTransferCompleteTask
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     ULONG                           i                       = 0;
     int                             psmStatus;
-    unsigned int                    psmRecordType;
-    unsigned int                    psmContentType;
-    char                            buffer[257];
     unsigned int                    numInstances            = 0;
     unsigned int*                   pInsNumbers             = NULL;
     char*                           pValue                  = NULL;
@@ -3620,7 +3590,6 @@ ccspCwmppoLoadDUStateChangeCompleteTask
     char                            psmDsccName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     ULONG                           i,j;
     int                             psmStatus;
-    char                            buffer[257];
     unsigned int                    numInstances            = 0;
     unsigned int*                   pInsNumbers             = NULL;
     char*                           pValue                  = NULL;
@@ -4659,7 +4628,6 @@ ccspCwmppoLoadAutonomousDUStateChangeCompleteTask
     char                            psmAdsccName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     ULONG                           i,j;
     int                             psmStatus;
-    char                            buffer[257];
     unsigned int                    numInstances            = 0;
     unsigned int*                   pInsNumbers             = NULL;
     char*                           pValue                  = NULL;
@@ -5328,16 +5296,13 @@ CcspCwmppoLoadValueChangedTask
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus                = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject                  = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf         = (PCCSP_CWMP_MSO_INTERFACE        )pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
     ULONG                           i                           = 0;
-    ULONG                           CwmpDataType                = 0;
     ULONG                           Notification                = 0;
     int                             dataType                    = 0;
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
-    char                            psmValueCheck[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     int                             psmStatus;
     int                             status;
     unsigned int                    numInstances                = 0;
@@ -5534,10 +5499,8 @@ CcspCwmppoSaveValueChanged
     PCCSP_CWMP_PROCESSOR_OBJECT     pMyObject               = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
-    char                            psmVcValue[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     char*                           pValue                  = NULL;
     ULONG                           i                       = 0;
-    int                             psmTcNameLen            = 0;
     unsigned int                    numInstances            = 0;
     unsigned int*                   pInsNumbers             = NULL;
     unsigned int                    InsNumber               = 0;
@@ -5730,7 +5693,6 @@ CcspCwmppoDiscardValueChanged
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject               = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     char                            psmTcName[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
-    char                            psmValueCheck[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN];
     ULONG                           i                       = 0;
     int                             psmStatus;
     unsigned int                    numInstances            = 0;

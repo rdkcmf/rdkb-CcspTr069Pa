@@ -121,6 +121,7 @@ CcspCwmpAcsboCreate
         ANSC_HANDLE                 hAnscReserved
     )
 {
+    UNREFERENCED_PARAMETER(hAnscReserved);
     PANSC_COMPONENT_OBJECT          pBaseObject  = NULL;
     PCCSP_CWMP_ACS_BROKER_OBJECT    pMyObject    = NULL;
 

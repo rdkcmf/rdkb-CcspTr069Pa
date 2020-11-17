@@ -479,7 +479,6 @@ CcspCwmpCpecoReset
     )
 {
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject    = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    ULONG                           i            = 0;
 
     pMyObject->bDelayedInformCancelled  = FALSE;
 
@@ -517,7 +516,6 @@ CcspCwmpCpecoGetCcspCwmpCfgIf
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject    = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
 
     return  pMyObject->hCcspCwmpCfgIf;

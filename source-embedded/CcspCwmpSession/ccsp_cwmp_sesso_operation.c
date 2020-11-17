@@ -341,7 +341,6 @@ CcspCwmpsoStartRetryTimer
 {
     PCCSP_CWMP_SESSION_OBJECT        pMyObject           = (PCCSP_CWMP_SESSION_OBJECT       )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCwmpCpeCotroller   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT     )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_CFG_INTERFACE         pCcspCwmpCfgIf      = (PCCSP_CWMP_CFG_INTERFACE        )pCwmpCpeCotroller->GetCcspCwmpCfgIf((ANSC_HANDLE)pCwmpCpeCotroller);
     PCCSP_CWMP_STAT_INTERFACE        pCcspCwmpStatIf     = (PCCSP_CWMP_STAT_INTERFACE       )pCwmpCpeCotroller->hCcspCwmpStaIf;
     PANSC_TIMER_DESCRIPTOR_OBJECT    pRetryTimerObj      = (PANSC_TIMER_DESCRIPTOR_OBJECT   )pMyObject->hRetryTimerObj;
@@ -374,7 +373,6 @@ CcspCwmpsoStartRetryTimer
     }
     else
     {
-        ULONG                       ulSeed = AnscGetTickInMilliSeconds();
 
         pMyObject->RetryCount++;
         

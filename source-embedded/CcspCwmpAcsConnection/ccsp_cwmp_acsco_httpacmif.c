@@ -130,6 +130,9 @@ CcspCwmpAcscoHttpGetCredential
         PUCHAR*                     ppPassword
     )
 {
+    UNREFERENCED_PARAMETER(pHostName);
+    UNREFERENCED_PARAMETER(pUriPath);
+    UNREFERENCED_PARAMETER(HostPort);
     ANSC_STATUS                      returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT pMyObject           = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)hThisObject;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT       )pMyObject->hCcspCwmpSession;

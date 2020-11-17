@@ -238,11 +238,11 @@ CcspCwmpStunmoRegSetStunInfo
     )
 {
     ANSC_STATUS                         returnStatus           = ANSC_STATUS_SUCCESS;
+
+#if 0
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject              = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_STUN_INFO                pCcspCwmpStunInfo      = (PCCSP_CWMP_STUN_INFO            )&pMyObject->CcspCwmpStunInfo;
-
-#if 0
     /* save STUN settings into MS FC */
     CcspManagementServer_SetSTUNEnable
         (
@@ -290,7 +290,9 @@ CcspCwmpStunmoRegSetStunInfo
         (   
             pCcspCwmpCpeController->PANameWithPrefix,
             pCcspCwmpStunInfo->NATDetected
-        );  
+        ); 
+#else
+     UNREFERENCED_PARAMETER(hThisObject);
 #endif
 
     return  returnStatus;
