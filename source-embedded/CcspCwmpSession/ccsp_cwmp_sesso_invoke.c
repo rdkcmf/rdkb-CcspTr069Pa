@@ -674,7 +674,7 @@ else
             
                 for ( j = 0; j < ulPresetParamCount; j++ )
                 {
-                    rc = strcmp_s(pMyObject->ModifiedParamArray[i],sizeof(pMyObject->ModifiedParamArray[i]),pCwmpParamValueArray[j].Name,&ind);
+                    rc = strcmp_s(pMyObject->ModifiedParamArray[i],strlen(pMyObject->ModifiedParamArray[i]),pCwmpParamValueArray[j].Name,&ind);
                     ERR_CHK(rc);
                     if((!ind) && (rc == EOK))
                     {
@@ -682,8 +682,8 @@ else
                             pCcspCwmpProcessor->CheckParamAttrCache
                                 ( (ANSC_HANDLE)pCcspCwmpProcessor, pMyObject->ModifiedParamArray[i]) )
                         {    
-                            // printf("<RT> CcspCwmpsoInform -- VC parameter <%s> notification is %d. \n", pMyObject->ModifiedParamArray[i], 
-                            //    pCcspCwmpProcessor->CheckParamAttrCache( (ANSC_HANDLE)pCcspCwmpProcessor, pMyObject->ModifiedParamArray[i]));
+                            CcspTr069PaTraceDebug(("<RT> CcspCwmpsoInform -- VC parameter <%s> notification is %d. \n", pMyObject->ModifiedParamArray[i], 
+                               pCcspCwmpProcessor->CheckParamAttrCache( (ANSC_HANDLE)pCcspCwmpProcessor, pMyObject->ModifiedParamArray[i])));
                             bValChange = TRUE;
                         }
 
@@ -723,7 +723,7 @@ else
                         ulParamIndex++;
                         bValChange = TRUE;
                     }
-                    // printf("<RT> CcspCwmpsoInform -- VC parameter <%s> ADDED.\n", pMyObject->ModifiedParamArray[i]);
+                    CcspTr069PaTraceDebug(("<RT> CcspCwmpsoInform -- VC parameter <%s> ADDED.\n", pMyObject->ModifiedParamArray[i]));
                 }
             }
         }
