@@ -481,17 +481,15 @@ CcspCwmpsoAddModifiedParameter
         BOOL                        bConnectNow
     )
 {
-    ANSC_STATUS                     returnStatus       		= ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_SESSION_OBJECT       pMyObject          		= (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     
-									pCcspCwmpAcsConnection 	= (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     
-									pCcspCwmpCpeController 	= (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_PROCESSOR_OBJECT     pCcspCwmpProcessor  	= (PCCSP_CWMP_PROCESSOR_OBJECT)pMyObject->hCcspCwmpProcessor;
-    ULONG                           i                  		= 0;
-    ULONG                           bExist             		= FALSE;
-    errno_t rc       = -1;
-    int     ind      = -1;
+    ANSC_STATUS                         returnStatus            = ANSC_STATUS_SUCCESS;
+    PCCSP_CWMP_SESSION_OBJECT           pMyObject               = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
+    PCCSP_CWMP_ACS_CONNECTION_OBJECT    pCcspCwmpAcsConnection  = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
+    PCCSP_CWMP_PROCESSOR_OBJECT         pCcspCwmpProcessor      = (PCCSP_CWMP_PROCESSOR_OBJECT) pMyObject->hCcspCwmpProcessor;
+    ULONG   i       = 0;
+    ULONG   bExist  = FALSE;
+    errno_t rc      = -1;
+    int     ind     = -1;
 
     CcspTr069PaTraceDebug(("AddModifiedParameter - '%s'\n", pParamName));
 
@@ -500,6 +498,12 @@ CcspCwmpsoAddModifiedParameter
         CcspTr069PaFreeMemory(pParamName);
 
         return  ANSC_STATUS_RESOURCES;
+    }
+
+    if (pCcspCwmpProcessor != NULL && CCSP_CWMP_NOTIFICATION_off == pCcspCwmpProcessor->CheckParamAttrCache((ANSC_HANDLE)pCcspCwmpProcessor, pParamName))
+    {
+        CcspTr069PaTraceDebug(("Modified parameter '%s' not added as Notification='%d'\n",pParamName,CCSP_CWMP_NOTIFICATION_off));
+        return ANSC_STATUS_FAILURE;
     }
 
     for ( i = 0; i < pMyObject->ModifiedParamCount; i++ )
