@@ -479,13 +479,29 @@ int main(int argc, char* argv[])
     }
 
     cmd_dispatch('e');
-
-	#ifndef DISABLE_LOGAGENT
-	RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
-	RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
-	TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
-	TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
-	#endif
+    syscfg_init();
+    CcspTraceInfo(("TR69_DBG:-------Read Log Info\n"));
+    char buffer[5] = {0};
+    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_LoggerEnable" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
+    {
+        RDKLogEnable = (BOOL)atoi(buffer);
+    }
+    memset(buffer, 0, sizeof(buffer));
+    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_LogLevel" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
+    {
+        RDKLogLevel = (ULONG )atoi(buffer);
+    }
+    memset(buffer, 0, sizeof(buffer));
+    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_TR69_LogLevel" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
+    {
+        TR69_RDKLogLevel = (ULONG)atoi(buffer);
+    }
+    memset(buffer, 0, sizeof(buffer));
+    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_TR69_LoggerEnable" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
+    {
+        TR69_RDKLogEnable = (BOOL)atoi(buffer);
+    }
+    CcspTraceInfo(("TR69_DBG:-------Log Info values RDKLogEnable:%d,RDKLogLevel:%u,TR69_RDKLogLevel:%u,TR69_RDKLogEnable:%d\n",RDKLogEnable,RDKLogLevel,TR69_RDKLogLevel, TR69_RDKLogEnable ));
 
 	/*This is used for ccsp recovery manager */
     
