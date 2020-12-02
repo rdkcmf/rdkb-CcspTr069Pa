@@ -1106,7 +1106,7 @@ CcspCwmpSoappoProcessRequest_GetParameterAttributes
             {
 				CcspTr069PaTraceWarning(("Empty Parameter Name in 'GetParameterAttributes'.\n"));
 
-				pStringArray->Array.arrayString[i] = NULL;
+				pStringArray->Array.arrayString[i] = CcspTr069PaCloneString(DM_ROOTNAME);
             }
 
             i ++;
