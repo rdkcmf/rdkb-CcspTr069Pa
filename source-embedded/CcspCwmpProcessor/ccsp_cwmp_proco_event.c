@@ -74,6 +74,7 @@
 
 #include "ccsp_cwmp_proco_global.h"
 #include <unistd.h>
+#include "print_uptime.h"
 
 extern ANSC_HANDLE bus_handle;
 
@@ -228,7 +229,7 @@ CcspCwmppoSysReadySignalCB
 	// Touch a file to indicate that tr069 can proceed with further
 	if (access("/var/tmp/tr069paready", F_OK) != 0)
 	{
-		system("print_uptime \"boot_to_tr069_uptime\"");
+		print_uptime("boot_to_tr069_uptime",NULL);
 	}
 	system("touch /var/tmp/tr069paready");
 
@@ -336,7 +337,7 @@ int checkIfSystemReady(void)
        // Touch a file to indicate that tr069 can proceed with further
 	if (access("/var/tmp/tr069paready", F_OK) != 0)
 	{
-		system("print_uptime \"boot_to_tr069_uptime\"");
+		print_uptime("boot_to_tr069_uptime",NULL);
 	}
 	system("touch /var/tmp/tr069paready");
 
