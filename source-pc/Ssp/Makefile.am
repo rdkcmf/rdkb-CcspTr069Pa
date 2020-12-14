@@ -22,6 +22,7 @@ AM_CFLAGS += -D_ANSC_LITTLE_ENDIAN_
 AM_CFLAGS += -D_CCSP_CWMP_TCP_CONNREQ_HANDLER
 AM_LDFLAGS = -lccsp_common
 AM_LDFLAGS = -lsecure_wrapper
+AM_LDFLAGS = -lprint_uptime
 
 AM_CPPFLAGS = -Wall -Werror
 ACLOCAL_AMFLAGS = -I m4
@@ -92,4 +93,4 @@ CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_states.c \
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_build.c
 
-CcspTr069PaSsp_LDFLAGS = -lccsp_common -lcrypto
+CcspTr069PaSsp_LDFLAGS = -lccsp_common -lcrypto -lprint_uptime
