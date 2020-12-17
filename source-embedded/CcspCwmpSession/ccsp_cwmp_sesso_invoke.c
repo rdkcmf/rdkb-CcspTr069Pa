@@ -1356,8 +1356,14 @@ EXIT1:
 
     if ( returnStatus != ANSC_STATUS_SUCCESS )
     {
-        CcspTr069PaTraceError(("!!!Failed to construct Inform message!!!\n"));
-
+	if ( bBootStrap || !bValChange ) // "0 BOOTSTRAP" or NO passive/active VALUE CHANGE to be reported
+	{
+	    CcspTr069PaTraceWarning(("Discard: 0 BOOTSTRAP or No VALUE CHANGE event\n"));
+	}
+	else
+	{
+	    CcspTr069PaTraceError(("!!!Failed to construct Inform message!!!\n"));
+	}
         pMyObject->SessionState = CCSP_CWMPSO_SESSION_STATE_timeout;    /* retry session to redeliver this RPC */
         pCcspCwmpProcessor->SignalSession
             (
