@@ -383,10 +383,13 @@ CcspCwmppoSetupEnv
 
     if ( pAcsUrl )
     {
-        if ( AnscSizeOfString(pAcsUrl) < CCSP_CWMP_MAX_URL_SIZE )
+        size_t len = strlen (pAcsUrl);
+
+        if (len < sizeof(pProperty->AcsUrl))
         {
-            AnscCopyString(pProperty->AcsUrl, pAcsUrl);
+            memcpy (pProperty->AcsUrl, pAcsUrl, len + 1);
         }
+
         CcspTr069PaFreeMemory(pAcsUrl);
     }
 

@@ -355,24 +355,20 @@ CcspCwmppoGetAcsInfo
     /* ACS URL */
     pValue = CcspManagementServer_GetURL(pCcspCwmpCpeController->PANameWithPrefix);
 
-    if ( pValue && !AnscEqualString(pValue, pProperty->AcsUrl, TRUE) )
-    {
-        int                         ulSize = AnscSizeOfString(pValue);
-
-        if ( ulSize >= CCSP_CWMP_MAX_URL_SIZE )
-        {
-            ulSize = CCSP_CWMP_MAX_URL_SIZE - 1;
-        }
-        AnscCopyMemory(pProperty->AcsUrl, pValue, ulSize);
-        pProperty->AcsUrl[ulSize] = 0;
-        
-        pMyObject->SetInitialContact((ANSC_HANDLE)pMyObject, TRUE);
-
-        bAcsUrlChanged = TRUE;
-    }
-
     if ( pValue )
     {
+        size_t len = strlen (pValue);
+
+        /*
+           If the new URL is too long or the same as the current URL then ignore it.
+        */
+        if ((len < sizeof(pProperty->AcsUrl)) && (memcmp (pValue, pProperty->AcsUrl, len + 1) != 0))
+        {
+            memcpy (pProperty->AcsUrl, pValue, len + 1);
+            pMyObject->SetInitialContact((ANSC_HANDLE)pMyObject, TRUE);
+            bAcsUrlChanged = TRUE;
+        }
+
         CcspTr069PaFreeMemory(pValue);
     }
 
