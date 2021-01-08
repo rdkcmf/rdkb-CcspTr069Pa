@@ -657,7 +657,8 @@ CcspCwmpSoappoProcessRequest_GetParameterValues
             }
             else
             {
-                pStringArray->Array.arrayString[i] = CcspTr069PaCloneString("");
+                CcspTr069PaTraceWarning(("Empty Parameter Name in 'GetParameterValue'.\n"));
+                pStringArray->Array.arrayString[i] = CcspTr069PaCloneString(DM_ROOTNAME);
             }
 
             i ++;
