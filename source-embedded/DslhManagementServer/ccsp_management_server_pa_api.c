@@ -197,9 +197,18 @@ void ReadTr69TlvData()
 #endif
 	if ((file != NULL) && (object2))
 	{
-		fread(object2, sizeof(Tr69TlvData), 1, file);
+		size_t nm = fread(object2, sizeof(Tr69TlvData), 1, file);
 		fclose(file);
 		file = NULL;
+
+		if (nm != 1)
+		{
+			/*
+			   File is corrupted or couldn't be read.
+			   Fixme: do we need to handle this case better?
+			*/
+			memset (object2, 0, sizeof(Tr69TlvData));
+		}
 
 		AnscTraceInfo(("%s %s File is available and processing by Tr069\n", __FUNCTION__, TR69_TLVDATA_FILE ));
 		AnscTraceInfo(("**********************************************************\n"));

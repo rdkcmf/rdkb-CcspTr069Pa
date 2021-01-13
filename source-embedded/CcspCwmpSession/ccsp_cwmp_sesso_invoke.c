@@ -1244,31 +1244,32 @@ bFirstInform = 0;
                 }
                 else
                 {
-			if(tlvFileFlag == 0)
-			{				
-				tlvFileFlag = 1;
-				FILE * file= fopen(TR69_TLVDATA_FILE, "rb");
-				Tr69TlvData *object=malloc(sizeof(Tr69TlvData));
-				if (file != NULL) 
-				{
-					fread(object, sizeof(Tr69TlvData), 1, file);
-					fclose(file);					
-				}				
+			if (tlvFileFlag == 0)
+			{
+				Tr69TlvData tlvdata;
+				FILE *file;
 
-				if (object->Tr69Enable == 0)
+				tlvFileFlag = 1;
+
+				file = fopen (TR69_TLVDATA_FILE, "rb");
+				if (file != NULL)
 				{
-					file= fopen(TR69_TLVDATA_FILE, "wb");
-					if (file != NULL) 
+					size_t nm = fread (&tlvdata, sizeof(Tr69TlvData), 1, file);
+					fclose (file);
+
+					if ((nm == 1) && (tlvdata.Tr69Enable == 0))
 					{
-						fseek(file, 0, SEEK_SET);			
-						object->Tr69Enable = 1;
-						fwrite(object, sizeof(Tr69TlvData), 1, file);
-						fclose(file);						
+						tlvdata.Tr69Enable = 1;
+						file = fopen (TR69_TLVDATA_FILE, "wb");
+						if (file != NULL)
+						{
+							fwrite (&tlvdata, sizeof(Tr69TlvData), 1, file);
+							fclose (file);
+						}
 					}
 				}
-				free(object);
 			}
-			
+
                     if ( pCcspCwmpCfgIf && pCcspCwmpCfgIf->NotifyEvent )
                     {
                         BOOL                bHasBootEvent = FALSE;
