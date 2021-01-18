@@ -36,7 +36,7 @@
 -->
 
 <certificates>
-    <CA>/nvram/cacert.pem</CA>
+    <CA>/etc/cacert.pem</CA>
     <CA></CA>
     <DEV></DEV>
     <PrivateKey></PrivateKey>
