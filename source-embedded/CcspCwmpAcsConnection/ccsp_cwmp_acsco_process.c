@@ -95,17 +95,47 @@ extern int openssl_load_ca_certificates(int who_calls);
 //adding strcmp_s definition
 errno_t strcmp_s(const char * d,int max ,const char * src,int *r)
 {
-  UNREFERENCED_PARAMETER(max);
-  *r= strcmp(d,src);
-  return EOK;
+	UNREFERENCED_PARAMETER(max);
+	if(d)
+	{
+		if(src)
+		{
+			*r= strcmp(d,src);
+			return EOK;
+		}
+		else
+		{
+			CcspTr069PaTraceError(("source string is null\n"));
+		}
+	}
+	else
+	{
+		CcspTr069PaTraceError(("destination string is null\n"));
+	}
+	return -1;
 }
 
 //adding strcasecmp_s definition
 errno_t strcasecmp_s(const char * d,int max ,const char * src,int *r)
 {
-  UNREFERENCED_PARAMETER(max);
-  *r= strcasecmp(d,src);
-  return EOK;
+	UNREFERENCED_PARAMETER(max);
+	if(d)
+	{
+		if(src)
+		{
+			*r= strcasecmp(d,src);
+			return EOK;
+		}
+		else
+		{
+			CcspTr069PaTraceError(("source string is null\n"));
+		}
+	}
+	else
+	{
+		CcspTr069PaTraceError(("destination string is null\n"));
+	}
+	return -1;
 }
 
 #endif
