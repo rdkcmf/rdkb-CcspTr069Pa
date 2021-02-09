@@ -345,15 +345,6 @@ CcspCwmpCpecoSetupEnv
                 pMyObject->PAMapperFile
             );
 
-    if (pMyObject->PACustomMapperFile != NULL)
-    {
-        CcspTr069PA_LoadCustomMappingFile
-            (
-                pMyObject->hTr069PaMapper,
-                pMyObject->PACustomMapperFile
-            );
-    }
-
     if ( TRUE )
     {
         CCSP_INT                nSubsystems = 0;

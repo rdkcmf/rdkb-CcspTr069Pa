@@ -444,7 +444,6 @@ typedef  ANSC_STATUS
     char*                           CRName;                                                 \
     char*                           CRNameWithPrefix;                                       \
     char*                           PAMapperFile;                                           \
-    char*                           PACustomMapperFile;                                     \
     char*                           PANameWithPrefix;                                       \
     char*                           SdmXmlFile;                                             \
     char*                           OutboundIfName;                                         \
@@ -521,7 +520,6 @@ typedef  ANSC_STATUS
     PFN_CWMPCPECO_SETNAME2          SetCRBusPath;                                           \
     PFN_CWMPCPECO_GETNAME2          GetCRBusPath;                                           \
     PFN_CWMPCPECO_SETNAME           SetPAMapperFile;                                        \
-    PFN_CWMPCPECO_SETNAME           SetPACustomMapperFile;                                  \
     PFN_CWMPCPECO_SETNAME           SetSDMXmlFilename;                                      \
     PFN_CWMPCPECO_GETNAME           GetOutboundIfName;                                      \
     PFN_CWMPCPECO_SETNAME           SetOutboundIfName;                                      \
