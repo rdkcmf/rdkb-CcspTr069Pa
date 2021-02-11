@@ -1019,7 +1019,7 @@ CcspMemorySearch
             return  NULL;
         }
 
-        if ( pBufEnd - pNext + 1 >= ulPatternLen &&
+        if ( (ULONG)(pBufEnd - pNext + 1) >= ulPatternLen &&
              AnscEqualString2((char*)pNext, (char*)pPattern, ulPatternLen, bCaseSensitive) )
         {
             return  (char*)pNext;

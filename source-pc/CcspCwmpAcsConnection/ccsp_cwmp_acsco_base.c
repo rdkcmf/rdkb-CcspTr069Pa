@@ -120,7 +120,7 @@ CcspCwmpAcscoCreate
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(hAnscReserved);
     PANSC_COMPONENT_OBJECT          pBaseObject  = NULL;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pMyObject    = NULL;
 
@@ -188,7 +188,6 @@ CcspCwmpAcscoRemove
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pMyObject       = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)hThisObject;
     PHTTP_BSP_INTERFACE             pHttpBspIf      = (PHTTP_BSP_INTERFACE    )pMyObject->hHttpBspIf;
     PHTTP_ACM_INTERFACE             pHttpAcmIf      = (PHTTP_ACM_INTERFACE    )pMyObject->hHttpAcmIf;
@@ -280,12 +279,10 @@ CcspCwmpAcscoEnrollObjects
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pMyObject       = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)hThisObject;
     PHTTP_BSP_INTERFACE             pHttpBspIf      = (PHTTP_BSP_INTERFACE    )pMyObject->hHttpBspIf;
     PHTTP_ACM_INTERFACE             pHttpAcmIf      = (PHTTP_ACM_INTERFACE    )pMyObject->hHttpAcmIf;
     PHTTP_SIMPLE_CLIENT_OBJECT      pHttpClient     = (PHTTP_SIMPLE_CLIENT_OBJECT)NULL;
-    PHTTP_HFP_INTERFACE             pHttpHfpIf      = (PHTTP_HFP_INTERFACE)NULL;
 
     if ( !pHttpBspIf )
     {
@@ -392,7 +389,6 @@ CcspCwmpAcscoInitialize
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT     pMyObject    = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)hThisObject;
 
     /*

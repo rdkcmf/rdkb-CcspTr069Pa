@@ -115,6 +115,7 @@ CcspCwmpsoStartRetryTimerCustom
         PCCSP_CWMP_SESSION_OBJECT                 pMyObject
     )
 {
+    UNREFERENCED_PARAMETER(pMyObject);
 }
 
 CCSP_VOID
@@ -123,6 +124,7 @@ CcspCwmpsoInformCustom
        PCCSP_CWMP_CFG_INTERFACE pCcspCwmpCfgIf
     )
 {
+    UNREFERENCED_PARAMETER(pCcspCwmpCfgIf);
 }
 
 CCSP_VOID
@@ -132,6 +134,8 @@ CcspCwmpsoInformCustom1
        PCCSP_CWMP_CFG_INTERFACE pCcspCwmpCfgIf
     )
 {
+    UNREFERENCED_PARAMETER(pCwmpEvent);
+    UNREFERENCED_PARAMETER(pCcspCwmpCfgIf);
 }
 
 ANSC_STATUS
@@ -188,6 +192,7 @@ CcspManagementServer_GetPeriodicInformTimeStrCustom
         CCSP_STRING                 ComponentName
     )
 {
+    UNREFERENCED_PARAMETER(ComponentName);
 
     if(!objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value){
       time_t t = time(NULL);
@@ -215,6 +220,15 @@ CcspManagementServer_InitCustom
         CCSP_STRING             sdmXmlFilename
     )
 {
+    UNREFERENCED_PARAMETER(ComponentName);
+    UNREFERENCED_PARAMETER(SubsystemPrefix);
+    UNREFERENCED_PARAMETER(hMBusHandle);
+    UNREFERENCED_PARAMETER(msValueChangeCB);
+    UNREFERENCED_PARAMETER(sysReadySignalCB);
+    UNREFERENCED_PARAMETER(diagCompleteSignalCB);
+    UNREFERENCED_PARAMETER(cbContext);
+    UNREFERENCED_PARAMETER(cpeContext);
+    UNREFERENCED_PARAMETER(sdmXmlFilename);
 };
 
 void CcspManagementServer_GenerateConnectionRequestURLCustom(
@@ -223,7 +237,10 @@ void CcspManagementServer_GenerateConnectionRequestURLCustom(
     char *ipAddr,
     msObjectInfo *objectInfo)
 {
-  
+    UNREFERENCED_PARAMETER(fromValueChangeSignal);
+    UNREFERENCED_PARAMETER(newValue);
+    UNREFERENCED_PARAMETER(ipAddr);
+    UNREFERENCED_PARAMETER(objectInfo);
 }
 /* Temporarily hardcode to support restartPA for now, will merge partial factory reset from USGv2 branch later */
 ANSC_STATUS
@@ -237,11 +254,13 @@ CcspManagementServer_RestoreDefaultValuesCustom
 
 int CcspManagementServer_CommitParameterValuesCustom(int parameterID)
 { 
+    UNREFERENCED_PARAMETER(parameterID);
   return 0;
 }
 
 int CcspManagementServer_GetPAObjectIDCustom(int objectID)
 {  
+    UNREFERENCED_PARAMETER(objectID);
   return -1;
 }
 
@@ -253,8 +272,11 @@ int CcspManagementServer_ValidateParameterValuesCustom(
     char ** invalidParameterName
     )
 {
- 
-
+    UNREFERENCED_PARAMETER(sessionId);
+    UNREFERENCED_PARAMETER(writeID);
+    UNREFERENCED_PARAMETER(val);
+    UNREFERENCED_PARAMETER(size);
+    UNREFERENCED_PARAMETER(invalidParameterName);
   return 0;
 }
 
@@ -264,17 +286,20 @@ void CcspManagementServer_GetSingleParameterValueCustom(
         parameterValStruct_t *val
     )
 {
+    UNREFERENCED_PARAMETER(objectID);
+    UNREFERENCED_PARAMETER(parameterID);
+    UNREFERENCED_PARAMETER(val);
 }
 
 int CcspManagementServer_GetObjectIDCustom(char *p1)
 {
+    UNREFERENCED_PARAMETER(p1);
   return 0;
 }
 
 CCSP_VOID CcspManagementServer_InitDBusCustom(CCSP_Base_Func_CB *cb)
 {
-
-  
+    UNREFERENCED_PARAMETER(cb);
 }
 
 CCSP_VOID
@@ -352,7 +377,8 @@ CcspTr069PaSsp_GetCustomForcedInformParamsCustom
 	char *			     g_ForcedInformParams
     )
 {
-  
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(g_ForcedInformParams);
   return NULL;
 }
 
@@ -364,12 +390,15 @@ CcspTr069PaSsp_CcspCwmpCfgGetDevDataModelVersionCustom
         PULONG                      pulDevVersionMinor
     )
 {
-
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(pulDevVerionMajor);
+    UNREFERENCED_PARAMETER(pulDevVersionMinor);
 }
 
 int
 CcspTr069PaSsp_InitCcspCwmpCfgIf_Custom(ANSC_HANDLE hCcspCwmpCpeController)
 {
+    UNREFERENCED_PARAMETER(hCcspCwmpCpeController);
     return 0;
 }
 
@@ -515,11 +544,8 @@ CcspTr069PaSsp_DeviceDefaultPasswordGenerate
     }
 
     {
-        char                            HashStr[128]    = {0};
-        ANSC_CRYPTO_KEY                 key             = {0};
-        ANSC_CRYPTO_HASH                hash            = {0};
         ULONG                           hashLength      = 0;
-	char *tmp = NULL, *convertTo = NULL;
+    char *convertTo = NULL;
         //char shKey [ 256 ];
 	char cmp[64] = {'\0'};
 	char sharedText[128] = {'\0'}, sharedmd[64] = {'\0'};
@@ -585,7 +611,7 @@ CcspManagementServer_GenerateDefaultUsername
     }
 
     {
-        int len = _ansc_strlen(DefaultUsername);
+        ULONG len = _ansc_strlen(DefaultUsername);
         if ( *pulLength < len )
         {
             return  ANSC_STATUS_MORE_DATA;
@@ -615,7 +641,7 @@ CcspManagementServer_GenerateDefaultPassword
     }
     //else
     {
-        int len = _ansc_strlen(DeviceDefaultPassword);
+        ULONG len = _ansc_strlen(DeviceDefaultPassword);
 
         if ( *pulLength < len )
         {

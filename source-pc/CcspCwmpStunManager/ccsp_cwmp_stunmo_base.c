@@ -120,7 +120,7 @@ CcspCwmpStunmoCreate
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(hAnscReserved);
     PANSC_COMPONENT_OBJECT          pBaseObject  = NULL;
     PCCSP_CWMP_STUN_MANAGER_OBJECT  pMyObject    = NULL;
 
@@ -188,7 +188,6 @@ CcspCwmpStunmoRemove
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT  pMyObject         = (PCCSP_CWMP_STUN_MANAGER_OBJECT )hThisObject;
     PSTUN_BSM_INTERFACE             pStunBsmIf        = (PSTUN_BSM_INTERFACE       )pMyObject->hStunBsmIf;
     PSTUN_SIMPLE_CLIENT_OBJECT      pStunSimpleClient = (PSTUN_SIMPLE_CLIENT_OBJECT)pMyObject->hStunSimpleClient;
@@ -246,7 +245,6 @@ CcspCwmpStunmoEnrollObjects
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT  pMyObject         = (PCCSP_CWMP_STUN_MANAGER_OBJECT )hThisObject;
     PSTUN_BSM_INTERFACE             pStunBsmIf        = (PSTUN_BSM_INTERFACE       )pMyObject->hStunBsmIf;
     PSTUN_SIMPLE_CLIENT_OBJECT      pStunSimpleClient = (PSTUN_SIMPLE_CLIENT_OBJECT)pMyObject->hStunSimpleClient;
@@ -336,7 +334,6 @@ CcspCwmpStunmoInitialize
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT  pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT)hThisObject;
 
     /*

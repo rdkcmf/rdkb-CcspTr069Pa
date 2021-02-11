@@ -122,7 +122,7 @@ CcspCwmppoCreate
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(hAnscReserved);
     PANSC_COMPONENT_OBJECT          pBaseObject  = NULL;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = NULL;
 
@@ -190,7 +190,6 @@ CcspCwmppoRemove
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject         = (PCCSP_CWMP_PROCESSOR_OBJECT   )hThisObject;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pPeriodicTimerObj = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hPeriodicTimerObj;
     PANSC_TDO_CLIENT_OBJECT         pPeriodicTimerIf  = (PANSC_TDO_CLIENT_OBJECT      )pMyObject->hPeriodicTimerIf;
@@ -296,7 +295,6 @@ CcspCwmppoEnrollObjects
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT     pMyObject         = (PCCSP_CWMP_PROCESSOR_OBJECT   )hThisObject;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pPeriodicTimerObj = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hPeriodicTimerObj;
     PANSC_TDO_CLIENT_OBJECT         pPeriodicTimerIf  = (PANSC_TDO_CLIENT_OBJECT      )pMyObject->hPeriodicTimerIf;
@@ -508,7 +506,6 @@ CcspCwmppoInitialize
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject    = (PCCSP_CWMP_PROCESSOR_OBJECT)hThisObject;
 
     /*
@@ -590,7 +587,7 @@ CcspCwmppoInitialize
     pMyObject->AsyncConnectTask          = CcspCwmppoAsyncConnectTask;
 
     pMyObject->GetAcsInfo                = CcspCwmppoGetAcsInfo;
-    pMyObject->MsValueChanged            = CcspCwmppoMsValueChanged;
+    pMyObject->MsValueChanged            = (PFN_CCSPMS_VALUECHANGE)CcspCwmppoMsValueChanged;
 
     pMyObject->RedeliverEvents           = CcspCwmppoRedeliverEvents;
     pMyObject->GetUndeliveredEvents      = CcspCwmppoGetUndeliveredEvents;

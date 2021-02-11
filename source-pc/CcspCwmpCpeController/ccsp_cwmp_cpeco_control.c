@@ -81,6 +81,7 @@
 
 
 #include "ccsp_cwmp_cpeco_global.h"
+#include "ccsp_management_server.h"
 
 /**********************************************************************
 
@@ -360,8 +361,6 @@ ccspCwmpCpeBootstrapInformTask
     ULONG                           ulTimeStart        = AnscGetTickInSeconds();
     ULONG                           ulTimeNow          = ulTimeStart;
     BOOL                            bInitialContact    = FALSE;
-    char*                           pRootObjName       = pMyObject->GetRootObject((ANSC_HANDLE)pMyObject);
-    BOOL                            bRootDevice        = AnscEqualString(pRootObjName, DM_ROOTNAME, FALSE);
 
     pMyObject->bBootstrapInformScheduled = TRUE;
 
@@ -448,7 +447,6 @@ CcspCwmpCpecoStartCWMP
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject          = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty          = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pCcspCwmpAcsBroker     = (PCCSP_CWMP_ACS_BROKER_OBJECT      )pMyObject->hCcspCwmpAcsBroker;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf         = (PCCSP_CWMP_MSO_INTERFACE          )pCcspCwmpAcsBroker->hCcspCwmpMsoIf;
@@ -465,9 +463,6 @@ CcspCwmpCpecoStartCWMP
 #endif
     PANSC_TIMER_DESCRIPTOR_OBJECT   pStartCwmpTimerObj = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hStartCwmpTimerObj;
     PANSC_TDO_CLIENT_OBJECT         pStartCwmpTimerIf  = (PANSC_TDO_CLIENT_OBJECT      )pMyObject->hStartCwmpTimerIf;
-    char*                           pRootObjName       = pMyObject->GetRootObject((ANSC_HANDLE)pMyObject);
-    BOOL                            bRootDevice        = AnscEqualString(pRootObjName, DM_ROOTNAME, FALSE);
-    PCCSP_CWMP_PROCESSOR_PROPERTY   pWmppProperty      = &pCcspCwmpProcessor->Property;
     BOOL                            bCwmpEnabled       = FALSE;
     char                            psmKeyPrefixed[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN + 16];
 
@@ -847,12 +842,10 @@ CcspCwmpCpecoStopCWMP
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject          = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty          = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
 #ifdef   _CCSP_CWMP_TCP_CONNREQ_HANDLER
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pCcspCwmpTcpcrHandler  = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT   )pMyObject->hCcspCwmpTcpConnReqHandler;
 #endif
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pWmppProperty      = &pCcspCwmpProcessor->Property;
 
     if ( !pMyObject->bCWMPStarted )
     {
@@ -1083,9 +1076,9 @@ CcspCwmpCpecoNotifyEvent
         ANSC_HANDLE                 hEventContext
     )
 {
+    UNREFERENCED_PARAMETER(hEventContext);
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject          = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
-    PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession    = (PCCSP_CWMP_SESSION_OBJECT   )NULL;
 
     CcspTr069PaTraceDebug(("CcspCwmpCpecoNotifyEvent - event %u.\n", (unsigned int)ulEvent));
 
@@ -1190,12 +1183,12 @@ CcspCwmpCpecoAcqCrSessionID
         int                         Priority
     )
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject          = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
-    int                             nRet;
     int                             sid                = 0;
 
 #ifdef   _CCSP_TR069PA_USE_CR_SESSION_CONTROL
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject          = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
+    int                             nRet;
+
     nRet = 
         CcspBaseIf_requestSessionID
             (
@@ -1216,6 +1209,9 @@ CcspCwmpCpecoAcqCrSessionID
     {
         CcspTr069PaTraceDebug(("TR-069 PA has acquired session ID %u from CR.\n", (ULONG)sid));
     }
+#else
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(Priority);
 #endif
 
     return  (ULONG)sid;
@@ -1258,10 +1254,10 @@ CcspCwmpCpecoRelCrSessionID
     )
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject          = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
-    int                             nRet;
 
 #ifdef   _CCSP_TR069PA_USE_CR_SESSION_CONTROL
+    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject          = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
+    int                             nRet;
     nRet = 
         CcspBaseIf_informEndOfSession 
             (
@@ -1281,6 +1277,9 @@ CcspCwmpCpecoRelCrSessionID
     {
         CcspTr069PaTraceDebug(("TR-069 PA has released session ID %u acquired from CR.\n", CrSessionID));
     }
+#else
+    UNREFERENCED_PARAMETER(hThisObject);
+    UNREFERENCED_PARAMETER(CrSessionID);
 #endif
 
     return  returnStatus;

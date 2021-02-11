@@ -111,7 +111,6 @@ CcspCwmpsoGetCcspCwmpAcsConnection
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject    = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
 
     return  pMyObject->hCcspCwmpAcsConnection;
@@ -148,7 +147,6 @@ CcspCwmpsoGetCcspCwmpMcoIf
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject    = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
 
     return  pMyObject->hCcspCwmpMcoIf;
@@ -185,7 +183,6 @@ CcspCwmpsoGetCcspCwmpCpeController
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject    = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
 
     return  pMyObject->hCcspCwmpCpeController;
@@ -227,7 +224,6 @@ CcspCwmpsoSetCcspCwmpCpeController
         ANSC_HANDLE                 hCpeController
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject    = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
 
     pMyObject->hCcspCwmpCpeController = hCpeController;
@@ -266,7 +262,6 @@ CcspCwmpsoGetCcspCwmpProcessor
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject    = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
 
     return  pMyObject->hCcspCwmpProcessor;
@@ -308,7 +303,6 @@ CcspCwmpsoSetCcspCwmpProcessor
         ANSC_HANDLE                 hWmpProcessor
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject    = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
 
     pMyObject->hCcspCwmpProcessor = hWmpProcessor;
@@ -347,7 +341,6 @@ CcspCwmpsoReset
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject      = (PCCSP_CWMP_SESSION_OBJECT  )hThisObject;
     PCCSP_CWMPSO_ASYNC_REQUEST       pWmpsoAsyncReq = (PCCSP_CWMPSO_ASYNC_REQUEST )NULL;
     PCCSP_CWMPSO_ASYNC_RESPONSE      pWmpsoAsyncRep = (PCCSP_CWMPSO_ASYNC_RESPONSE)NULL;

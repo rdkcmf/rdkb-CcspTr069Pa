@@ -122,7 +122,7 @@ CcspCwmpsoCreate
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(hAnscReserved);
     PANSC_COMPONENT_OBJECT          pBaseObject  = NULL;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject    = NULL;
 
@@ -190,7 +190,6 @@ CcspCwmpsoRemove
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT       pMyObject          = (PCCSP_CWMP_SESSION_OBJECT     )hThisObject;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pSessionTimerObj   = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hSessionTimerObj;
     PANSC_TDO_CLIENT_OBJECT         pSessionTimerIf    = (PANSC_TDO_CLIENT_OBJECT      )pMyObject->hSessionTimerIf;
@@ -290,7 +289,6 @@ CcspCwmpsoEnrollObjects
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT       pMyObject          = (PCCSP_CWMP_SESSION_OBJECT    )hThisObject;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pSessionTimerObj   = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hSessionTimerObj;
     PANSC_TDO_CLIENT_OBJECT         pSessionTimerIf    = (PANSC_TDO_CLIENT_OBJECT      )pMyObject->hSessionTimerIf;
@@ -545,7 +543,6 @@ CcspCwmpsoInitialize
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject    = (PCCSP_CWMP_SESSION_OBJECT)hThisObject;
 
     /*

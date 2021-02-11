@@ -73,6 +73,7 @@
 **********************************************************************/
 
 #include "ccsp_cwmp_proco_global.h"
+#include "ccsp_management_server.h"
 #include <unistd.h>
 #include "print_uptime.h"
 
@@ -315,7 +316,7 @@ int checkIfSystemReady(void)
 	//snprintf(str, sizeof(str), "eRT.%s", CCSP_DBUS_INTERFACE_CR);
 	snprintf(str, sizeof(str), "simu.%s", CCSP_DBUS_INTERFACE_CR);//RDKB-EMU
 	// Query CR for system ready
-	ret = CcspBaseIf_isSystemReady(bus_handle, str, &val);
+	ret = CcspBaseIf_isSystemReady(bus_handle, str, (dbus_bool*) &val);
 	CcspTr069PaTraceInfo(("checkIfSystemReady(): ret %d, val %d\n", ret, val));
 	return val;
 }
@@ -398,10 +399,11 @@ CcspCwmppoCheckCdsResults
     unsigned int                    numInstances        = 0;
     unsigned int*                   pInsNumbers         = NULL;
     int                             psmStatus;
-    int                             i, j;
+    int                             i;
+    unsigned int                    j;
     char                            buf[256];
     char*                           pCK;
-    ULONG                           order;
+    int                             order;
     int                             total;
     char*                           pValue;
     int                             comp;
@@ -741,7 +743,7 @@ CcspCwmppoCheckCdsResults
                         (ANSC_HANDLE)pCcspCwmpCpeController,
                         CCSP_NS_CHANGEDUSTATE,
                         (int)pDsccReq->NumResults,
-                        pInsNumbers,
+                        (PULONG)pInsNumbers,
                         &pCwmpFault,
                         CCSP_TR069_CDS_REQ_OBJECT_DELAY_SECONDS
                     );
@@ -838,7 +840,6 @@ CcspCwmppoCheckAdsccAgainstPolicy
         PCCSP_TR069_ADSCC_REQ       pAdsccReq
     )
 {
-    CCSP_BOOL                       bEnabled;
     char*                           pOperationTypeFilter    = NULL;
     char*                           pResultTypeFilter       = NULL;
     char*                           pFaultCodeFilter        = NULL;
@@ -971,14 +972,8 @@ CcspCwmppoCheckAutonomousCdsResults
 {
     PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf      = (PCCSP_CWMP_MSO_INTERFACE)pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT   )pCcspCwmpCpeController->hCcspCwmpProcessor;
-    unsigned int                    numInstances    = 0;
-    unsigned int*                   pInsNumbers     = NULL;
-    int                             psmStatus;
-    int                             i, j;
+    int                             i;
     char                            buf[256];
-    char*                           pCK;
-    char*                           pValue;
-    int                             comp;
     PCCSP_TR069_ADSCC_REQ           pAdsccReq       = NULL;
     char**                          pParamNames     = NULL;
     char**                          pParamValues    = NULL;
@@ -1333,13 +1328,8 @@ CcspCwmppoRetrieveFirmwareDownloadResults
         char**                      ppCommandKey
     )
 {
-    PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf          = (PCCSP_CWMP_MSO_INTERFACE)pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
-    PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT   )pCcspCwmpCpeController->hCcspCwmpProcessor;
-    int                             i, j;
     char                            buf[256];
     ULONG                           order               = 0;
-    char*                           pValue;
-    int                             comp;
     char**                          pParamNames         = NULL;
     char**                          pParamValues        = NULL;
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
@@ -1609,7 +1599,7 @@ CcspCwmppoProcessPvcSignal
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController      = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf              = (PCCSP_CWMP_MSO_INTERFACE        )pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
     int                             i;
-    char*                           pParamName;
+    const char*                           pParamName;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT]    = {0};
     int                             NumSubsystems                           = 0;
     parameterSigStruct_t*           pVC;
@@ -1773,7 +1763,7 @@ CcspCwmppoProcessPvcSignal
         }
         else if ( _ansc_strstr(pVC->parameterName, s_ns_download_state) == pVC->parameterName &&
                   val && val->newValue &&
-                  AnscEqualString(val->newValue, "Idle", TRUE) /* PA only cares the state changed back to 'Idle' */  )
+                  AnscEqualString((char *)val->newValue, "Idle", TRUE) /* PA only cares the state changed back to 'Idle' */  )
         {
             /* Download monitor state has changed */
             char*                   pCommandKey     = NULL;
@@ -2050,7 +2040,7 @@ CcspCwmppoProcessPvcSignal
                 CCSP_STRING         pNotificationLimit = NULL;
                 ULONG               uTimeNow = AnscGetTickInSeconds();
 
-                uNotificationLimit = 
+                uNotificationLimit = (CCSP_UINT)
                     CcspManagementServer_GetUDPConnectionRequestAddressNotificationLimit
                         (
                             pCcspCwmpCpeController->PANameWithPrefix
@@ -2115,7 +2105,6 @@ CcspCwmppoProcessVcSignalTask
     PCCSP_CWMPPO_PVC_SIGNAL_LIST    pPvcSig;
     PSINGLE_LINK_ENTRY              pSLinkEntry;
     int                             nCount     = 0;
-	ULONG							ulThrottle;
 
     pMyObject->AsyncTaskCount++;
 
