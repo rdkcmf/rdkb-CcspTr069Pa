@@ -109,7 +109,6 @@ CcspCwmpAcsboEngage
 {
     ANSC_STATUS                      returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject          = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty          = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
 
     if ( pMyObject->bActive )
@@ -159,8 +158,6 @@ CcspCwmpAcsboCancel
 {
     ANSC_STATUS                      returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_ACS_BROKER_OBJECT     pMyObject          = (PCCSP_CWMP_ACS_BROKER_OBJECT    )hThisObject;
-    PCCSP_CWMP_ACS_BROKER_PROPERTY   pProperty          = (PCCSP_CWMP_ACS_BROKER_PROPERTY  )&pMyObject->Property;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
 
     if ( !pMyObject->bActive )
     {

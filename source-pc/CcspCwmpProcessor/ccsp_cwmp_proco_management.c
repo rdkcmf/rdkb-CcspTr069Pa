@@ -140,9 +140,7 @@ CcspCwmppoAcqWmpSession
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject       = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty       = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT    )NULL;
     PSINGLE_LINK_ENTRY              pSLinkEntry     = (PSINGLE_LINK_ENTRY          )NULL;
 
@@ -194,9 +192,7 @@ CcspCwmppoAcqWmpSession2
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject       = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty       = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT    )NULL;
     PSINGLE_LINK_ENTRY              pSLinkEntry     = (PSINGLE_LINK_ENTRY          )NULL;
 
@@ -294,9 +290,7 @@ CcspCwmppoAcqWmpSession3
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject       = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty       = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT    )NULL;
     PSINGLE_LINK_ENTRY              pSLinkEntry     = (PSINGLE_LINK_ENTRY          )NULL;
 
@@ -398,9 +392,7 @@ CcspCwmppoRelWmpSession
         ANSC_HANDLE                 hWmpSession
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject       = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty       = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
+    UNREFERENCED_PARAMETER(hThisObject);
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT    )hWmpSession;
 
     if ( pCcspCwmpSession )
@@ -447,9 +439,7 @@ CcspCwmppoDelWmpSession
         ANSC_HANDLE                 hWmpSession
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject       = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty       = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT    )hWmpSession;
 
     if ( !pCcspCwmpSession )
@@ -507,9 +497,7 @@ CcspCwmppoDelAllSessions
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject       = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty       = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_SESSION_OBJECT        pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT    )NULL;
     PSINGLE_LINK_ENTRY              pSLinkEntry     = (PSINGLE_LINK_ENTRY          )NULL;
 
@@ -781,7 +769,8 @@ CcspCwmppoPushVcSubOnLoad
         ULONG                       ulNotification
     )
 {
-    
+    UNREFERENCED_PARAMETER(ulNotification);
+
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT     pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
@@ -919,8 +908,6 @@ CcspCwmppoUpdateSingleParamAttr
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     void*                           hMBusHandle         = (void*                      )pCcspCwmpCpeController->hMsgBusHandle;
     PANSC_ATOM_DESCRIPTOR           pAtomDescriptor;
-    BOOL                            bPartialName;
-    ULONG                           i;
     char                            key[CCSP_BASE_PARAM_LENGTH*2];
     int                             nCcspError = CCSP_SUCCESS;
 
@@ -1020,14 +1007,11 @@ CcspCwmppoUpdateParamAttrCache
         ULONG                       ulParamCount
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject       = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
-    PANSC_ATOM_TABLE_OBJECT         pParamAttrCache = (PANSC_ATOM_TABLE_OBJECT    )pMyObject->hParamAttrCache;
     ULONG                           i;
     PCCSP_CWMP_SET_PARAM_ATTRIB     pParamAttrArray = (PCCSP_CWMP_SET_PARAM_ATTRIB)hParamAttrArray;
     PCCSP_CWMP_SET_PARAM_ATTRIB     pSetParamAttr;
-    BOOL                            bPartialName;
-    PANSC_ATOM_DESCRIPTOR           pAtomDescriptor;
 
 #ifdef   _CCSP_TR069PA_PUSH_VC_SIGNAL_ON_LOAD
     if ( s_bPushingAllVcToBackend )
@@ -1211,7 +1195,6 @@ CcspCwmppoSyncRemoteNamespace
     PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr          = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT )pCcspCwmpCpeController->hCcspCwmpProcessor;
-    CCSP_HANDLE                     hCcspTr069Mapper    = (CCSP_HANDLE                )pCcspCwmpCpeController->hTr069PaMapper;
     void*                           hMBusHandle         = (void*                      )pCcspCwmpCpeController->hMsgBusHandle;
     const char*                     pCrName             = pCcspCwmpCpeController->GetCRName((ANSC_HANDLE)pCcspCwmpCpeController);
     componentStruct_t**             ppComp;
@@ -1331,15 +1314,11 @@ CcspCwmppoSyncNamespacesWithCR
     const char*                     pCrName             = NULL;
     char*                           pSubsystem          = NULL;
     char*                           pCrMBusPath         = NULL;
-    char*                           pNameSep;
     int                             ret;
 	registeredComponent_t**			ppComp				= NULL;
     int                             NumComp, i, j;
-    char*                           pCompName;
-    char*                           pCompDBus;
     name_spaceType_t**              pNsArray;
     int                             nNsArraySize;
-    enum dataType_e                 dataType;
 
     /*
      * This API builds namespace caches on all namespaces managed

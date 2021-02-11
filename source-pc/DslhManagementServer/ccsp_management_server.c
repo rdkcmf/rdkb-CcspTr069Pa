@@ -80,6 +80,7 @@
 #include "ansc_string.h"
 #include "stdio.h"
 #include "dslh_definitions_database.h"
+#include "slap_vco_internal_api.h"
 
 #define TEMP_SIZE 23
 extern char             *_SupportedDataModelConfigFile;
@@ -219,89 +220,89 @@ char * pDTXml = "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\
 /* The program will crash if try to free the parameter values directly initialized here. */
 msParameterInfo managementServerParameters[] = 
 {
-    { "EnableCWMP", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-    { "URL", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "Username", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "Password", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "PeriodicInformEnable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-    { "PeriodicInformInterval", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) },
-    { "PeriodicInformTime", NULL, ccsp_dateTime, CCSP_RW, ~((unsigned int)0) },
-    { "ParameterKey", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "ConnectionRequestURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "ConnectionRequestUsername", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "ConnectionRequestPassword", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "ACSOverride", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-    { "UpgradesManaged", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-    { "X_CISCO_COM_DiagComplete", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
+    { "EnableCWMP", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "URL", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "Username", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "Password", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "PeriodicInformEnable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "PeriodicInformInterval", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "PeriodicInformTime", NULL, ccsp_dateTime, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "ParameterKey", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "ConnectionRequestURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "ConnectionRequestUsername", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "ConnectionRequestPassword", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "ACSOverride", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "UpgradesManaged", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "X_CISCO_COM_DiagComplete", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
 // #if 0 //Not used anymore
 #ifndef _COSA_VEN501_
-    { "KickURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "DownloadProgressURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "DefaultActiveNotificationThrottle", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) },
-    { "CWMPRetryMinimumWaitInterval", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) },
-    { "CWMPRetryIntervalMultiplier", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) },
+    { "KickURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "DownloadProgressURL", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "DefaultActiveNotificationThrottle", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "CWMPRetryMinimumWaitInterval", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "CWMPRetryIntervalMultiplier", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
 #endif
-    { "UDPConnectionRequestAddress", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "UDPConnectionRequestAddressNotificationLimit", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) },
-    { "STUNEnable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-    { "STUNServerAddress", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "STUNServerPort", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) },
-    { "STUNUsername", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "STUNPassword", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "STUNMaximumKeepAlivePeriod", NULL, ccsp_int, CCSP_RW, ~((unsigned int)0) },
-    { "STUNMinimumKeepAlivePeriod", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) },
-    { "NATDetected", NULL, ccsp_boolean, CCSP_RO, ~((unsigned int)0) },
-    { "AliasBasedAddressing", NULL, ccsp_boolean, CCSP_RO, ~((unsigned int)0) },
+    { "UDPConnectionRequestAddress", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "UDPConnectionRequestAddressNotificationLimit", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "STUNEnable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "STUNServerAddress", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "STUNServerPort", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "STUNUsername", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "STUNPassword", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "STUNMaximumKeepAlivePeriod", NULL, ccsp_int, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "STUNMinimumKeepAlivePeriod", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "NATDetected", NULL, ccsp_boolean, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "AliasBasedAddressing", NULL, ccsp_boolean, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
 // #if 0 //Not used anymore
 #ifndef _COSA_VEN501_
-    { "X_CISCO_COM_ConnectionRequestURLPort", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "X_CISCO_COM_ConnectionRequestURLPath", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) }
+    { "X_CISCO_COM_ConnectionRequestURLPort", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "X_CISCO_COM_ConnectionRequestURLPath", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 }
 #endif
 };
 
 msParameterInfo autonomousTransferCompletePolicyParameters[] = 
 {
-    { "Enable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-    { "TransferTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "ResultTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "FileTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) }
+    { "Enable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "TransferTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "ResultTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "FileTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 }
 };
 
 msParameterInfo duStateChangeComplPolicyParameters[] = 
 {
-    { "Enable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-    { "OperationTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "ResultTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "FaultCodeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) }
+    { "Enable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "OperationTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "ResultTypeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "FaultCodeFilter", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 }
 };
 
 msParameterInfo tr069paParameters[] = 
 {
-    { "Name", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "Version", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "Author", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "Health", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "State", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) },
-    { "DTXml", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0) }
+    { "Name", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "Version", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "Author", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "Health", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "State", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "DTXml", NULL, ccsp_string, CCSP_RO, ~((unsigned int)0), (unsigned int)0 }
 };
 
 msParameterInfo memoryParameters[] = 
 {
-    { "MinUsage", NULL, ccsp_unsignedInt, CCSP_RO, ~((unsigned int)0) },
-    { "MaxUsage", NULL, ccsp_unsignedInt, CCSP_RO, ~((unsigned int)0) },
-    { "Consumed", NULL, ccsp_unsignedInt, CCSP_RO, ~((unsigned int)0) }
+    { "MinUsage", NULL, ccsp_unsignedInt, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "MaxUsage", NULL, ccsp_unsignedInt, CCSP_RO, ~((unsigned int)0), (unsigned int)0 },
+    { "Consumed", NULL, ccsp_unsignedInt, CCSP_RO, ~((unsigned int)0), (unsigned int)0 }
 };
 
 msParameterInfo loggingParameters[] = 
 {
-    { "Enable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0) },
-    { "LogLevel", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0) }
+    { "Enable", NULL, ccsp_boolean, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "LogLevel", NULL, ccsp_unsignedInt, CCSP_RW, ~((unsigned int)0), (unsigned int)0 }
 };
 
 msParameterInfo notifyParameters[] = 
 {
-    { "X_RDKCENTRAL-COM_TR069_Notification", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) },
-    { "X_RDKCENTRAL-COM_Connected-Client", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0) }
+    { "X_RDKCENTRAL-COM_TR069_Notification", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 },
+    { "X_RDKCENTRAL-COM_Connected-Client", NULL, ccsp_string, CCSP_RW, ~((unsigned int)0), (unsigned int)0 }
 };
 
 extern CCSP_VOID
@@ -315,7 +316,7 @@ CcspManagementServer_FillInObjectInfo()
     /* First setup default object array. */
     objectInfo[DeviceID].name = CcspManagementServer_CloneString(_DeviceObjectName);
 
-    objectInfo[DeviceID].numberOfChildObjects = 3;
+    objectInfo[DeviceID].numberOfChildObjects = 2;
     objectInfo[DeviceID].childObjectIDs =
         CcspManagementServer_Allocate(objectInfo[DeviceID].numberOfChildObjects * sizeof(unsigned int));
     objectInfo[DeviceID].childObjectIDs[0] = ManagementServerID;
@@ -595,9 +596,7 @@ int getHealth()
 
 CCSP_VOID CcspManagementServer_InitDBus()
 {
-    int errcount = 0;
     int ret ;
-    int size;
     int times = 0;
     int success = 0;
 
@@ -635,8 +634,8 @@ CCSP_VOID CcspManagementServer_InitDBus()
     cb->setParameterAttributes  = CcspManagementServer_SetParameterAttributes;
     cb->getParameterAttributes  = CcspManagementServer_GetParameterAttributes;
     cb->AddTblRow  = CcspManagementServer_AddTblRow;
-    cb->DeleteTblRow  = CcspManagementServer_DeleteTblRow;
-    cb->getParameterNames  = CcspManagementServer_GetParameterNames;
+    cb->DeleteTblRow  = (CCSPBASEIF_DELETETBLROW)CcspManagementServer_DeleteTblRow;
+    cb->getParameterNames  = (CCSPBASEIF_GETPARAMETERNAMES)CcspManagementServer_GetParameterNames;
     CcspBaseIf_SetCallback (bus_handle,  cb);
     
     //Custom
@@ -649,7 +648,6 @@ ANSC_STATUS CcspManagementServer_RegisterNameSpace()
     int         namespaceNumber = 0;
     int         i, j;
     int         index = 0;
-    int         nLen;
     char CrName[256] = {0};
 
     if ( CcspManagementServer_SubsystemPrefix)
@@ -843,7 +841,7 @@ CcspManagementServer_UtilGetParameterValues
             CcspManagementServer_Free(pComponentPath);
         }
 
-        if( (res==CCSP_SUCCESS) && (pval_size > 0) )
+        if( (res==CCSP_SUCCESS) && ((int)pval_size > 0) )
         {
             return  ANSC_STATUS_SUCCESS;
         }
@@ -974,7 +972,7 @@ CcspManagementServer_RegisterWanInterface()
     if(val_size > 0){
         size_t len = strlen(pFirstUpstreamIpInterfaceIpv4AddrTbl);
         int i = 0;
-        unsigned int minInstance = 0;
+        int minInstance = 0;
         int minInstanceFlag = 0;
         for(; i<val_size; i++){
             int instanceNum = _ansc_atoi(parameterInfo[i]->parameterName + len);
@@ -1085,14 +1083,6 @@ ANSC_STATUS CcspManagementServer_GenerateConnectionRequestURL(
 
             parameterValStruct_t **parameterval = NULL;
             int val_size = 0;
-            int res = CcspBaseIf_getParameterValues(
-                bus_handle,
-                pPAMComponentName,
-                pPAMComponentPath,
-                parameterNames,
-                1,
-                &val_size,
-                &parameterval);
             if(parameterNames[0]) CcspManagementServer_Free(parameterNames[0]);
             if(val_size <= 0) return ANSC_STATUS_FAILURE;
             strcpy(ipAddr, parameterval[0]->parameterValue);
@@ -1223,11 +1213,11 @@ CcspManagementServer_paramValueChanged
 {
     int i = 0;
     for(; i < size; i++){
-        if(AnscEqualString(val[i].parameterName, pFirstUpstreamIpAddress, TRUE)){
-            CcspManagementServer_GenerateConnectionRequestURL(TRUE, val[i].newValue);
+        if(AnscEqualString((char*)val[i].parameterName, pFirstUpstreamIpAddress, TRUE)){
+            CcspManagementServer_GenerateConnectionRequestURL(TRUE, (char*)val[i].newValue);
             CcspTraceDebug(("CcspManagementServer_paramValueChanged %s %s\n", pFirstUpstreamIpAddress, val[i].newValue));
         }
-        else if(AnscEqualString(val[i].parameterName, FirstUpstreamIpInterfaceParameterName, TRUE)){
+        else if(AnscEqualString((char*)val[i].parameterName, FirstUpstreamIpInterfaceParameterName, TRUE)){
             RegisterWanInterfaceDone = FALSE;
             CcspManagementServer_RegisterWanInterface();
             CcspTraceDebug(("CcspManagementServer_paramValueChanged %s %s\n", FirstUpstreamIpInterfaceParameterName, val[i].newValue));
@@ -1341,7 +1331,7 @@ int CcspManagementServer_GetObjectID(
         /* Get intance number of the table object under SupportedDataModel. */
         char instanceNumber[50];
         int  i;
-        for(i=0; i<strlen(*name); i++)
+        for(i=0; i < (int)strlen(*name); i++)
         {
             if((*name)[i] == '\0' || (*name)[i] == '.' || i >= 49){
                 instanceNumber[i] = '\0';
@@ -1496,7 +1486,7 @@ void CcspManagementServer_GetSingleParameterValue(
             val->parameterValue = CcspManagementServer_GetNATDetectedStr(NULL);
             break;
         case ManagementServerAliasBasedAddressingID:
-            val->parameterValue = CcspManagementServer_GetAliasBasedAddressingStr(NULL);
+            val->parameterValue = (char*)CcspManagementServer_GetAliasBasedAddressingStr(NULL);
             break;
         case ManagementServerX_CISCO_COM_ConnectionRequestURLPortID:
             val->parameterValue = CcspManagementServer_GetConnectionRequestURLPort(NULL);
@@ -1667,6 +1657,8 @@ int CcspManagementServer_SetSingleParameterAttributes(
     parameterAttributeStruct_t *val
     )
 {
+    UNREFERENCED_PARAMETER(sessionId);
+
     /* write to PSM at the same time. */
     if(val->notificationChanged){
         objectInfo[objectID].parameters[parameterID].notification = val->notification;
@@ -1779,7 +1771,6 @@ static int CcspManagementServer_ValidateINT(
     int len = strlen(intStr);
     if(len <= 0) return -1;
     
-    int i = 0;
     while(*intStr == ' ') {
         intStr++;
         len--;
@@ -1804,7 +1795,6 @@ static int CcspManagementServer_ValidateBoolean(
     int len = strlen(boolStr);
     if(len <= 0) return -1;
     
-    int i = 0;
     while(*boolStr == ' ') {
         boolStr++;
         len--;
@@ -1813,8 +1803,8 @@ static int CcspManagementServer_ValidateBoolean(
 
     if(*boolStr == '1') return 1;
     if(*boolStr == '0') return 0;
-    if(AnscEqualString(boolStr, "true", FALSE)) return 1;
-    if(AnscEqualString(boolStr, "false", FALSE)) return 0;
+    if(AnscEqualString((char*)boolStr, "true", FALSE)) return 1;
+    if(AnscEqualString((char*)boolStr, "false", FALSE)) return 0;
     return -1;
 }
 
@@ -1823,7 +1813,7 @@ static int CcspManagementServer_ValidateStrLen(
     int lenLimit  /* -1 means no limit. */
     )
 {
-    if((lenLimit == -1)||(AnscSizeOfString(str) < lenLimit))
+    if((lenLimit == -1)||(AnscSizeOfString(str) < (unsigned int)lenLimit))
         return 0;
     else
         return -1;
@@ -1836,10 +1826,10 @@ static int CcspManagementServer_ValidateURL(
     if(CcspManagementServer_ValidateStrLen(URL, 256) != 0) return -1;
     /* get the hostname */
     char * hostname = strstr(URL, "//");
-    if(hostname == NULL) hostname  = URL;
+    if(hostname == NULL) hostname  = (char*)URL;
     else hostname += 2;
     char * hostnameEnd = strstr(hostname, "/");
-    if(hostnameEnd == NULL) hostnameEnd = &URL[strlen(URL) - 1];
+    if(hostnameEnd == NULL) hostnameEnd = (char*)(&URL[strlen(URL) - 1]);
     /* validate hostname */
     while(hostname < hostnameEnd){
         /* Each label must be between 1 and 63 characters long. */
@@ -1856,7 +1846,7 @@ static int CcspManagementServer_ValidateDateTime(
     const char * dt
     )
 {
-    PANSC_UNIVERSAL_TIME pUniversalTime = (PANSC_UNIVERSAL_TIME) SlapVcoStringToCalendarTime(NULL, dt);
+    PANSC_UNIVERSAL_TIME pUniversalTime = (PANSC_UNIVERSAL_TIME) SlapVcoStringToCalendarTime(NULL,  (char*)dt);
     if(!pUniversalTime) return -1;
     if(pUniversalTime->Year > 2100 || pUniversalTime->Year < 1970)
     {
@@ -1963,7 +1953,7 @@ int CcspManagementServer_ValidateParameterValues(
             /*
              *  Check if we still have enough buffer and double the size if needed
              */
-            if ( parameterSetting.currIndex >= parameterSetting.size )
+            if ( parameterSetting.currIndex >= (unsigned int)parameterSetting.size )
             {
                 msParameterValSetting*      pNewSettings    = NULL;
                 AnscTraceWarning
@@ -2360,17 +2350,20 @@ int CcspManagementServer_GetPAObjectID
     case SupportedDataModelID: return -1; /* This is useless here since SupportedDataModel cannot be changed. */
     default: return -1;
     }
+    return -1;
 }
 
 //Custom
 extern int CcspManagementServer_CommitParameterValuesCustom(int parameterID);
+extern void CcspCwmppoParamValueChangedCB(parameterSigStruct_t* val, int size, void* user_data);
+
 /* Commit the parameter setting stored in parameterSetting.
  */
  #ifdef USE_NOTIFY_COMPONENT
  #include "ccsp_cwmp_cpeco_interface.h"
  #include "ccsp_tr069pa_wrapper_api.h"
 extern  PCCSP_CWMP_CPE_CONTROLLER_OBJECT                 g_pCcspCwmpCpeController;
-Send_TR069_Notification(int parameterID, char* pString)
+void Send_TR069_Notification(int parameterID, char* pString)
 {
 
 	char* p_write_id;
@@ -2433,7 +2426,8 @@ Send_TR069_Notification(int parameterID, char* pString)
 #endif
 int CcspManagementServer_CommitParameterValues(unsigned int writeID)
 {
-    int i = 0, objectID, parameterID, paObjectID;
+    unsigned int i = 0;
+    int objectID, parameterID, paObjectID;
     int objectCommitedStatus[SupportedDataModelID] = {0}; /* We only support four objects (id: 1, 3, 4, 15) here. */
     SLAP_VARIABLE slapVar;
     int res;
@@ -2581,7 +2575,7 @@ int CcspManagementServer_CommitParameterValues(unsigned int writeID)
     }
 
 EXIT1:
-    for(i=0; i<valueChangeSize; i++)
+    for(i=0; i<(unsigned int)valueChangeSize; i++)
     {
         if(val[i].parameterName) CcspManagementServer_Free((void*)val[i].parameterName);
         if(val[i].oldValue) CcspManagementServer_Free((void*)val[i].oldValue);
@@ -2596,7 +2590,8 @@ EXIT1:
  */
 int CcspManagementServer_RollBackParameterValues()
 {
-    int i = 0, objectID, parameterID;
+    unsigned int i = 0;
+    int objectID, parameterID;
     SLAP_VARIABLE slapVar;
     int res;
     char pRecordName[1000] = {0};
@@ -2658,7 +2653,7 @@ int CcspManagementServer_FreeParameterSetting()
         parameterSetting.size = 0;
         return 0;
     }
-    int i = 0;
+    unsigned int i = 0;
     for(; i<parameterSetting.currIndex; i++)
     {
         if(parameterSetting.msParameterValSettings[i].parameterValue) {
@@ -2757,8 +2752,6 @@ CcspManagementServer_RestoreDefaultValues
     )
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
-    int                             ret                = CCSP_SUCCESS;
-    int                             i, j, res          = 0;
     
     CcspManagementServer_RestoreDefaultValuesCustom();
 

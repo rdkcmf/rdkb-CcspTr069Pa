@@ -220,10 +220,9 @@ CcspCwmpStunmoRegSetStunInfo
         ANSC_HANDLE                 hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
+
     ANSC_STATUS                         returnStatus           = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject              = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_STUN_INFO                pCcspCwmpStunInfo      = (PCCSP_CWMP_STUN_INFO            )&pMyObject->CcspCwmpStunInfo;
 
 #if 0
     /* save STUN settings into MS FC */

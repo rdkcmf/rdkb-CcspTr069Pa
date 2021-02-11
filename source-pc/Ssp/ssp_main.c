@@ -53,16 +53,16 @@
 #endif
 #endif
 
-#ifdef FEATURE_SUPPORT_RDKLOG
-#include "rdk_debug.h"
-#endif
-
 #include "ssp_global.h"
 
 #ifdef INCLUDE_BREAKPAD
 #include "breakpad_wrapper.h"
 #endif
 #define DEBUG_INI_NAME  "/etc/debug.ini"
+
+#ifndef DISABLE_LOGAGENT
+extern int GetLogInfo(ANSC_HANDLE bus_handle, char *Subsytem, char *pParameterName);
+#endif
 
 PCCSP_CWMP_CPE_CONTROLLER_OBJECT    g_pCcspCwmpCpeController    = NULL;
 BOOL                                bEngaged                = FALSE;
@@ -194,7 +194,6 @@ static void _print_stack_backtrace(void)
 
 #if defined(_ANSC_LINUX)
 static void daemonize(void) {
-	int fd;
 	switch (fork()) {
 	case 0:
 		break;
@@ -272,10 +271,10 @@ void sig_handler(int sig)
 
     	signal(SIGALRM, sig_handler); /* reset it to this function */
     	CcspTr069PaTraceInfo(("SIGALRM received!\n"));
-		RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
-		RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
-		TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
-		TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
+		RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
+		RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
+		TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
+		TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
     }
     else {
     	/* get stack trace first */
@@ -285,38 +284,6 @@ void sig_handler(int sig)
     }
 }
 
-static int is_core_dump_opened(void)
-{
-    FILE *fp;
-    char path[256];
-    char line[1024];
-    char *start, *tok, *sp;
-#define TITLE   "Max core file size"
-
-    snprintf(path, sizeof(path), "/proc/%d/limits", getpid());
-    if ((fp = fopen(path, "rb")) == NULL)
-        return 0;
-
-    while (fgets(line, sizeof(line), fp) != NULL) {
-        if ((start = strstr(line, TITLE)) == NULL)
-            continue;
-
-        start += strlen(TITLE);
-        if ((tok = strtok_r(start, " \t\r\n", &sp)) == NULL)
-            break;
-
-        fclose(fp);
-
-        if (strcmp(tok, "0") == 0)
-            return 0;
-        else
-            return 1;
-    }
-
-    fclose(fp);
-    return 0;
-}
-
 #endif
 
 
@@ -324,7 +291,6 @@ int main(int argc, char* argv[])
 {
 	int                             cmdChar = 0;
 	int                             idx = 0;
-    int                             rpc_ip_num =0;
     BOOL                            bRunAsDaemon = TRUE;
     BOOL                            bShowDebugLog = FALSE;
     char                            cmd[1024]          = {0};
@@ -454,10 +420,10 @@ int main(int argc, char* argv[])
 
     cmd_dispatch('e');
 
-	RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
-	RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
-	TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
-	TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
+	RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
+	RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
+	TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
+	TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
 
 	/*This is used for ccsp recovery manager */
     

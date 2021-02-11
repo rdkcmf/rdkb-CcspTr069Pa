@@ -132,11 +132,9 @@ CcspCwmppoConfigPeriodicInform
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject          = (PCCSP_CWMP_PROCESSOR_OBJECT   )hThisObject;
     PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty          = (PCCSP_CWMP_PROCESSOR_PROPERTY )&pMyObject->Property;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pPeriodicTimerObj  = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hPeriodicTimerObj;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )pMyObject->hCcspCwmpCpeController;
     ULONG                           ulTimeReferenceSec = (ULONG                        )0;
     ULONG                           ulCurrentTimeSec   = (ULONG                        )0;
     ANSC_UNIVERSAL_TIME             system_time;
@@ -296,9 +294,7 @@ CcspCwmppoScheduleInform
         char*                       pCommandKey
     )
 {
-    ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject         = (PCCSP_CWMP_PROCESSOR_OBJECT   )hThisObject;
-    PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty         = (PCCSP_CWMP_PROCESSOR_PROPERTY )&pMyObject->Property;
     PANSC_TIMER_DESCRIPTOR_OBJECT   pScheduleTimerObj = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hScheduleTimerObj;
 
     if ( pMyObject->SecheduledCommandKey )
@@ -395,7 +391,6 @@ CcspCwmppoSignalSession
         ANSC_HANDLE                 hWmpSession
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT     pMyObject       = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_SESSION_OBJECT       pCcspCwmpSession = (PCCSP_CWMP_SESSION_OBJECT    )hWmpSession;
 	char*							pState			= NULL;
@@ -447,9 +442,8 @@ CcspCwmppoAsyncConnectTask
     PCCSP_CWMP_PROCESSOR_OBJECT     pMyObject          = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_STAT_INTERFACE       pCcspCwmpStatIf    = (PCCSP_CWMP_STAT_INTERFACE        )pCcspCwmpCpeController->hCcspCwmpStaIf;
-    PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf     = (PCCSP_CWMP_STAT_INTERFACE        )pCcspCwmpCpeController->hCcspCwmpCfgIf;
+    PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf     = (PCCSP_CWMP_CFG_INTERFACE         )pCcspCwmpCpeController->hCcspCwmpCfgIf;
     PCCSP_CWMP_SESSION_OBJECT       pCcspCwmpSession   = (PCCSP_CWMP_SESSION_OBJECT    )NULL;
-    PSINGLE_LINK_ENTRY              pSLinkEntry        = (PSINGLE_LINK_ENTRY          )NULL;
     PCCSP_CWMP_PROCESSOR_PROPERTY   pProperty          = (PCCSP_CWMP_PROCESSOR_PROPERTY )&pMyObject->Property;
     ULONG                           ulEventTimeout     = CCSP_CWMPSO_SESSION_TIMEOUT * 1000;
     ULONG                           ulErrorCode        = 0;

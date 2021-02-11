@@ -118,7 +118,5 @@ CcspCwmpCreateWmpSession
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
-
     return  CcspCwmpsoCreate(hContainerContext, hOwnerContext, hAnscReserved);
 }
