@@ -118,9 +118,6 @@ CcspCwmpCreateStunManager
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus     = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_STUN_MANAGER_OBJECT  pCcspCwmpStunManager = NULL;
-
     return  CcspCwmpStunmoCreate(hContainerContext, hOwnerContext, hAnscReserved);
 }
 

@@ -204,8 +204,6 @@ CcspCwmpCpecoCancel
     ANSC_STATUS                     returnStatus          = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     
                                     pMyObject             = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   
-                                    pProperty             = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_ACS_BROKER_OBJECT    pCcspCwmpAcsBroker    = (PCCSP_CWMP_ACS_BROKER_OBJECT      )pMyObject->hCcspCwmpAcsBroker;
     PCCSP_CWMP_PROCESSOR_OBJECT     pCcspCwmpProcessor    = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
 #ifdef   _CCSP_CWMP_TCP_CONNREQ_HANDLER
@@ -328,8 +326,6 @@ CcspCwmpCpecoSetupEnv
      */
     ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
-    int                             nRet;
 
     if ( !pMyObject->PAMapperFile )
     {
@@ -366,38 +362,6 @@ CcspCwmpCpecoSetupEnv
                     );
         }
     }
-
-    /* initialize message bus */
-#ifdef DBUS_INIT_SYNC_MODE
-    nRet = 
-        CCSP_Message_Bus_Init_Synced
-            (
-                pMyObject->PANameWithPrefix,
-                CCSP_MSG_BUS_CFG,
-                (void**)&pMyObject->hMsgBusHandle,
-                (CCSP_MESSAGE_BUS_MALLOC)Ansc_AllocateMemory_Callback, 
-                (CCSP_MESSAGE_BUS_FREE)Ansc_FreeMemory_Callback
-            );
-#else
-    nRet = 
-        CCSP_Message_Bus_Init
-            (
-                pMyObject->PANameWithPrefix,
-                CCSP_MSG_BUS_CFG,
-                (void**)&pMyObject->hMsgBusHandle,
-                (CCSP_MESSAGE_BUS_MALLOC)Ansc_AllocateMemory_Callback, 
-                (CCSP_MESSAGE_BUS_FREE)Ansc_FreeMemory_Callback
-            );
-#endif
-
-/*
-    returnStatus = (nRet == CCSP_SUCCESS)? ANSC_STATUS_SUCCESS : ANSC_STATUS_FAILURE;
-
-    if ( returnStatus != ANSC_STATUS_SUCCESS )
-    {
-        CcspTr069PaTraceError(("TR-069 PA fails to connect to message bus!\n"));
-    }
-*/
 
     /* register PA to CR */
     returnStatus = pMyObject->RegisterPA((ANSC_HANDLE)pMyObject, TRUE);
@@ -438,8 +402,6 @@ CcspCwmpCpecoCloseEnv
 {
     ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject         = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pProperty         = (PCCSP_CWMP_CPE_CONTROLLER_PROPERTY)&pMyObject->Property;
-    int                             nRet;
 
     /* 
      * unregister PA from CR

@@ -128,7 +128,6 @@ CcspCwmpCreateCpeController
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                      returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = NULL;
     
     pCcspCwmpCpeController = 

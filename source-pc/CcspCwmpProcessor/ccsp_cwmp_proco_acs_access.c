@@ -155,8 +155,6 @@ CcspCwmppoGetAcsInfo
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject              = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
     PCCSP_CWMP_PROCESSOR_PROPERTY    pProperty              = (PCCSP_CWMP_PROCESSOR_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT )pMyObject->hCcspCwmpCpeController;
-    PCCSP_CWMP_CPE_CONTROLLER_PROPERTY   pCpecoProperty     = &pCcspCwmpCpeController->Property;
-    PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf          = (PCCSP_CWMP_CFG_INTERFACE         )pCcspCwmpCpeController->hCcspCwmpCfgIf;
 #ifdef   _CCSP_CWMP_TCP_CONNREQ_HANDLER
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT pCcspCwmpTcpcrHandler   = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )pCcspCwmpCpeController->hCcspCwmpTcpConnReqHandler;
     CCSP_CWMP_TCPCR_HANDLER_PROPERTY     tcpCrProperty;
@@ -166,7 +164,6 @@ CcspCwmppoGetAcsInfo
     char*                           pPeriodicInformTime     = NULL;
     BOOL                            bPiEnabled              = pProperty->bPeriodicInformEnabled;
     ULONG                           ulOldInterval           = pProperty->PeriodicInformInterval;
-    ANSC_UNIVERSAL_TIME             oldInformTime           = pProperty->PeriodicInformTime;
     BOOL                            bStartCWMP              = FALSE;
     BOOL                            bStopCWMP               = FALSE;
     BOOL                            bAcsUrlChanged          = FALSE;
@@ -179,7 +176,6 @@ CcspCwmppoGetAcsInfo
     PCCSP_CWMP_STUN_MANAGER_OBJECT  pCcspCwmpStunManager    = pCcspCwmpCpeController->hCcspCwmpStunManager;
     PCCSP_CWMP_STUN_INFO            pCcspCwmpStunInfo       = NULL;
 #endif
-    char                            psmKeyPrefixed[CCSP_TR069PA_PSM_NODE_NAME_MAX_LEN + 16];
 
     CcspTr069PaTraceDebug(("GetAcsInfo-bCWMPstarted=%s\n", bCwmpStarted?"Y":"N"));
 

@@ -219,6 +219,8 @@ CcspTr069PA_GetSubsystemCount
         CCSP_HANDLE                 MapperHandle
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
+
     return  CcspTr069SubsystemsCount;
 }
 
@@ -233,6 +235,8 @@ CcspTr069PA_GetSubsystemByIndex
         CCSP_INT                    index
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
+
     if ( index >= CcspTr069SubsystemsCount )
     {
         return  NULL;
@@ -263,431 +267,6 @@ static CCSP_BOOL CcspTr069PA_CheckFileExists( const char *path )
 
 static
 CCSP_VOID
-CcspTr069PA_LoadErrMapper
-    (
-        PCCSP_TR069_CPEERR_MAP      pMap,
-        PANSC_XML_DOM_NODE_OBJECT   pErrNode
-    )
-{
-    CCSP_LONG                       temp;
-    PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
-
-    if(pErrNode == NULL) return;
-
-    /* CcspError */
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pErrNode->GetHeadChild(pErrNode);
-    if( pChildNode != NULL)
-    {
-        pChildNode->GetDataLong(pChildNode, "CcspError", &temp);
-        pMap->CcspErrorCode = (CCSP_INT) temp;
-    }
-    /* Tr069CpeError */
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pErrNode->GetNextChild(pErrNode, pChildNode);
-    if( pChildNode != NULL)
-    {
-        pChildNode->GetDataLong(pChildNode, "Tr069CpeError", &temp);
-        pMap->Tr069CpeErrorCode = (CCSP_INT) temp;
-    }
-    CcspTr069PaTraceDebug(("CcspTr069PA_LoadErrMapper %d %d\n", pMap->CcspErrorCode, pMap->Tr069CpeErrorCode));
-}
-
-/*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
-static 
-CCSP_VOID
-CcspTr069Pa_run_test_map()
-{ 
-    CCSP_STRING                     pCwmpString  = "Device.WiFi.SSID.10002.Enable"; 
-    CCSP_STRING                     pDmIntString = "Device.WiFi.SSID.4.Enable";
-    CCSP_STRING                     pReturnStr;
-
-    pReturnStr = CcspTr069PA_MapInstNumCwmpToDmInt(pCwmpString);
-
-    if ( !pReturnStr )
-    {
-        printf("%s - CwmpToDmInt failed", __FUNCTION__);
-    }
-    else
-    {
-        printf("%s - CwmpToDmInt %s -> %s", __FUNCTION__, pCwmpString, pReturnStr);
-        CcspTr069PaFreeMemory(pReturnStr);
-        pReturnStr = NULL;
-    }
-
-    pReturnStr = CcspTr069PA_MapInstNumDmIntToCwmp(pDmIntString);
-
-    if ( !pReturnStr )
-    {
-        printf("%s - DmIntToCwmp failed", __FUNCTION__);
-    }
-    else
-    {
-        printf("%s - DmIntToCwmp %s -> %s", __FUNCTION__, pCwmpString, pReturnStr);
-        CcspTr069PaFreeMemory(pReturnStr);
-        pReturnStr = NULL;
-    }
-}
-
-static
-CCSP_VOID
-CcspTr069PA_LoadInstanceMapper
-    (
-        PCCSP_TR069_CPEINSTANCE_MAP pMap,
-        PANSC_XML_DOM_NODE_OBJECT   pInstanceNode
-    )
-{
-    CCSP_LONG                       temp;
-    PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
-    CCSP_ULONG                      ulSize;
-
-    CcspTr069PaTraceWarning(("%s... \n", __FUNCTION__));
-
-    if(pInstanceNode == NULL) return;
-
-    /* DmlTable - to apply map to - Device.WiFi.SSID.  */
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pInstanceNode->GetHeadChild(pInstanceNode);
-    if( pChildNode != NULL)
-    {
-        CCSP_CHAR  dmlTable[ CCSP_TR069_DmlTable_Length+ 1];
-        AnscZeroMemory(dmlTable,CCSP_TR069_DmlTable_Length  + 1);
-        ulSize = CCSP_TR069_DmlTable_Length;
-        pChildNode->GetDataString(pChildNode, "DmlTable", dmlTable, &ulSize);
-        pMap->CcspDmlName = (CCSP_STRING) CcspTr069PaAllocateMemory(ulSize + 1);
-
-        if ( !pMap->CcspDmlName ) return;
-
-        AnscZeroMemory(pMap->CcspDmlName, ulSize + 1);
-        AnscCopyString(pMap->CcspDmlName, dmlTable);
-    }
-
-    pMap->numMaps = (pInstanceNode->ChildNodeQueue.Depth-1)/2;
-    pMap->InstanceMap = (PCCSP_TR069_CPEINSTNUM_MAP) CcspTr069PaAllocateMemory(pMap->numMaps * sizeof(CCSP_TR069_CPEINSTNUM_MAP));
-
-    if ( !pMap->InstanceMap )
-    {
-        CcspTr069PaTraceWarning(("CcspTr069PA_LoadInstanceMapper - insufficient resource for mapping %s, %d entries \n", pMap->CcspDmlName, pMap->numMaps));
-        return;
-    }
-    else
-    {
-        CcspTr069PaTraceWarning(("CcspTr069PA_LoadInstanceMapper map %s has %d maps \n", pMap->CcspDmlName, pMap->numMaps));
-    }
-
-    int i = 0;
-    for (i=0; (i < pMap->numMaps) && (pChildNode != NULL) ; i++)
-    {
-        /* Tr069Instance */
-        pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pInstanceNode->GetNextChild(pInstanceNode, pChildNode);
-        if( pChildNode != NULL)
-        {
-            pChildNode->GetDataLong(pChildNode, "Tr069InstNum", &temp);
-            pMap->InstanceMap[i].Tr069CpeInstanceNumber = (CCSP_INT) temp;
-        } else {
-            break;
-        }
-
-        /* CcspInstance */
-        pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pInstanceNode->GetNextChild(pInstanceNode, pChildNode);
-        if( pChildNode != NULL)
-        {
-            pChildNode->GetDataLong(pChildNode, "CcspInstNum", &temp);
-            pMap->InstanceMap[i].CcspInstanceNumber = (CCSP_INT) temp;
-        } else {
-            break;
-        }
-        
-        CcspTr069PaTraceWarning(("CcspTr069PA_LoadInstanceMapper Cwmp %d to DmInt %d\n", pMap->InstanceMap[i].Tr069CpeInstanceNumber,  pMap->InstanceMap[i].CcspInstanceNumber));
-    }
-}
-/*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING ends */
-
-static
-CCSP_VOID
-CcspTr069PA_LoadArgMapper
-    (
-        PCCSP_RPC_ARG_MAP           pMap,
-        PANSC_XML_DOM_NODE_OBJECT   pArgNode
-    )
-{
-    if(pArgNode == NULL) return;
-    PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
-    CCSP_CHAR                       argName[CCSP_TR069_RPC_ArgName_Length + 1];
-    CCSP_CHAR                       nameSpace[CCSP_TR069_RPC_Namespace_Length + 1];
-    CCSP_ULONG                      ulSize;
-
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetHeadChild(pArgNode);
-    if( pChildNode != NULL)
-    {
-        AnscZeroMemory(argName, CCSP_TR069_RPC_ArgName_Length + 1);
-        ulSize = CCSP_TR069_RPC_ArgName_Length;
-        pChildNode->GetDataString(pChildNode, "ArgName", argName, &ulSize);
-        pMap->Name = (CCSP_STRING) CcspTr069PaAllocateMemory(ulSize + 1);
-	if ( !pMap->Name ) return;
-        AnscZeroMemory(pMap->Name, ulSize + 1);
-        AnscCopyString(pMap->Name, argName);
-    }
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetNextChild(pArgNode, pChildNode);
-    if( pChildNode != NULL)
-    {
-        AnscZeroMemory(nameSpace, CCSP_TR069_RPC_Namespace_Length + 1);
-        ulSize = CCSP_TR069_RPC_Namespace_Length;
-        pChildNode->GetDataString(pChildNode, "Namespace", nameSpace, &ulSize);
-        pMap->MappedNS = (CCSP_STRING) CcspTr069PaAllocateMemory(ulSize + 1);
-	if ( !pMap->MappedNS ) return;
-        AnscZeroMemory(pMap->MappedNS, ulSize + 1);
-        AnscCopyString(pMap->MappedNS, nameSpace);
-        CcspTr069PaTraceDebug(("CcspTr069PA_LoadArgMapper %s to %s\n", nameSpace, pMap->MappedNS));
-    }
-}
-
-
-static
-CCSP_VOID
-LoadRpcMapper
-    (
-        PCCSP_TR069_RPC_MAP         pMap,
-        PANSC_XML_DOM_NODE_OBJECT   pRpcNode
-    )
-{
-    CCSP_ULONG                      ulSize;
-    PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
-    CCSP_CHAR                       nameSpace[CCSP_TR069_RPC_Namespace_Length + 1];
-    CCSP_INT                        i;
-
-    if(pRpcNode == NULL) return;
-
-    if(AnscEqualString(pRpcNode->Name, "Download", TRUE))
-        pMap->RpcType = CCSP_TR069_RPC_TYPE_Download;
-    else if(AnscEqualString(pRpcNode->Name, "Upload", TRUE))
-        pMap->RpcType = CCSP_TR069_RPC_TYPE_Upload;
-    else if(AnscEqualString(pRpcNode->Name, "Reboot", TRUE))
-        pMap->RpcType = CCSP_TR069_RPC_TYPE_Reboot;
-    else if(AnscEqualString(pRpcNode->Name, "FactoryReset", TRUE))
-        pMap->RpcType = CCSP_TR069_RPC_TYPE_FactoryReset;
-    else if(AnscEqualString(pRpcNode->Name, "InstallPackage", TRUE))
-        pMap->RpcType = CCSP_TR069_RPC_TYPE_InstallPackage;
-    else if(AnscEqualString(pRpcNode->Name, "UpdatePackage", TRUE))
-        pMap->RpcType = CCSP_TR069_RPC_TYPE_UpdatePackage;
-    else if(AnscEqualString(pRpcNode->Name, "RemovePackage", TRUE))
-        pMap->RpcType = CCSP_TR069_RPC_TYPE_RemovePackage;
-    else 
-        pMap->RpcType = CCSP_TR069_RPC_TYPE_Unknown;
-
-    if(pMap->RpcType == CCSP_TR069_RPC_TYPE_Reboot || 
-        pMap->RpcType == CCSP_TR069_RPC_TYPE_FactoryReset)
-    {
-        pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pRpcNode->GetHeadChild(pRpcNode);
-        if( pChildNode != NULL)
-        {
-            AnscZeroMemory(nameSpace, CCSP_TR069_RPC_Namespace_Length + 1);
-            ulSize = CCSP_TR069_RPC_Namespace_Length;
-            pChildNode->GetDataString(pChildNode, "Namespace", nameSpace, &ulSize);
-            pMap->Namespace = (CCSP_STRING) CcspTr069PaAllocateMemory(ulSize + 1);
-	    if ( !pMap->Namespace ) return;
-            AnscZeroMemory(pMap->Namespace, ulSize + 1);
-            AnscCopyString(pMap->Namespace, nameSpace);
-            pMap->NumOfArgs = 0;
-            CcspTr069PaTraceDebug(("LoadRpcMapper %d %u %s to %s\n", pMap->RpcType, (unsigned int)ulSize, nameSpace, pMap->Namespace));
-        }
-        return;
-    }
-
-    pMap->NumOfArgs = pRpcNode->ChildNodeQueue.Depth;
-    pMap->ArgMaps = (PCCSP_RPC_ARG_MAP) CcspTr069PaAllocateMemory(pMap->NumOfArgs * sizeof(CCSP_RPC_ARG_MAP));
-    i = 0;
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pRpcNode->GetHeadChild(pRpcNode);
-    while (pChildNode != NULL)
-    {
-        CcspTr069PA_LoadArgMapper( &(pMap->ArgMaps[i]), pChildNode);
-        i++;
-        pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pRpcNode->GetNextChild(pRpcNode, pChildNode);
-    }
-}
-
-
-/* CcspTr069PA_AddSubsystem is called to add a  
- * sub-system related to PA.
- */
-static 
-CCSP_BOOL
-CcspTr069PA_AddSubsystem
-    (
-        CCSP_STRING                 Subsys
-    )
-{
-    CCSP_INT                        i;
-
-    if ( CcspTr069SubsystemsCount >= CCSP_SUBSYSTEM_MAX_COUNT )
-    {
-        CcspTr069PaTraceError(("TR-069 PA mapper file contains too many sub-system names!\n"));
-        return  CCSP_FALSE;
-    }
-
-    for ( i = 0; i < CcspTr069SubsystemsCount; i ++ )
-    {
-        if ( (!Subsys && !CcspTr069Subsystems[i]) || 
-             AnscEqualString(CcspTr069Subsystems[i], Subsys, TRUE) )    /* empty sub-system is allowed to indicate 'local' sub-system */
-        {
-            return  CCSP_TRUE;
-        }
-    }
-
-    CcspTr069Subsystems[CcspTr069SubsystemsCount ++] = CcspTr069PaCloneString(Subsys);
-
-    return CCSP_TRUE;
-}
-
-
-static
-BOOL
-CcspTr069PA_PiTreeAddNamespace
-    (
-        PCCSP_TR069_PARAM_INFO      pRoot,
-        CCSP_STRING                 Name,
-        CCSP_UINT                   CloudType,
-        CCSP_BOOL                   ReadOnly,
-        CCSP_STRING                 Subsystem
-    )
-{
-    PCCSP_TR069_PARAM_INFO          pNode               = (PCCSP_TR069_PARAM_INFO)pRoot;
-    PCCSP_TR069_PARAM_INFO          pChildNode          = (PCCSP_TR069_PARAM_INFO)NULL;
-    PANSC_TOKEN_CHAIN               pNsTokenChain       = (PANSC_TOKEN_CHAIN     )NULL;
-    PANSC_STRING_TOKEN              pStringToken        = (PANSC_STRING_TOKEN    )NULL;
-    CCSP_STRING                     pNodeName           = NULL;
-    PCCSP_TR069_PARAM_INFO          pPrevSibling        = NULL;
-    CCSP_BOOL                       bPartialNs          = CCSP_FALSE;
-    CCSP_INT                        nNameLen            = 0;
-    
-    if ( !Name || *Name == '\0' || *Name == '.' )
-    {
-        CcspTr069PaTraceWarning(("TR-069 PA mapper file contains invalid namespace: %s\n", Name ? Name:"NULL"));
-        return CCSP_FALSE;
-    }
-    else
-    {
-        if ( _ansc_strstr(Name, "..") )
-        {
-            CcspTr069PaTraceWarning(("TR-069 PA mapper file contains invalid namespace: %s\n", Name));
-            return CCSP_FALSE;
-        }
-    }
-
-    CcspTr069PA_AddSubsystem(Subsystem);
-
-    nNameLen = AnscSizeOfString(Name);
-    bPartialNs = ( Name[nNameLen-1] == '.' );
-
-    pNsTokenChain =
-        AnscTcAllocate
-            (
-                Name,
-                "."
-            );
-
-    /*RDKB-7323, CID-33464, CID-33324, null check before use */
-    if(!pNsTokenChain)
-    {
-        CcspTr069PaTraceWarning(("TR-069 PA mapper file Token creation failed: %s\n", Name));
-        return CCSP_FALSE;
-    }
-
-    /* find the last matching node on the tree */
-    while ( pNode && (pStringToken = AnscTcUnlinkToken(pNsTokenChain)) )
-    {
-        pNodeName = pStringToken->Name;
-
-        pPrevSibling = NULL;
-        pChildNode = pNode->Child;
-
-        /* find if any child node's name matches the token */
-        while ( pChildNode )
-        {
-            if ( AnscEqualString(pNodeName, pChildNode->Name, TRUE) )
-            {
-                pNode        = pChildNode;
-                break;
-            }
-            else
-            {
-                pPrevSibling = pChildNode;
-                pChildNode   = pChildNode->Sibling;
-            }
-        }
-
-        if ( !pChildNode )
-        {
-            /* no match - we found the last "matching" node */
-            break;
-        }
-
-        AnscFreeMemory(pStringToken);
-
-        /* go one level deeper */
-        pNode        = pChildNode;
-        pPrevSibling = NULL;
-    }
-
-    if ( !pStringToken )
-    {
-        AnscTcFree((ANSC_HANDLE)pNsTokenChain); /*RDKB-7323, CID-33478, free unused resource before exit */
-        return  CCSP_TRUE;      /* duplicate namespace, silently dropped */
-    }
-
-    /* create nodes on the tree for remaining tokens */
-    do 
-    {
-        pNodeName = pStringToken->Name;
-
-        pChildNode = 
-            (PCCSP_TR069_PARAM_INFO)CcspTr069PaAllocateMemory(sizeof(CCSP_TR069_PARAM_INFO));
-
-        if ( !pChildNode )
-        {
-            AnscTcFree((ANSC_HANDLE)pNsTokenChain); /*RDKB-7323, CID-33478, free unused resource before exit */
-            return  CCSP_FALSE;
-        }
-        else
-        {
-            AnscZeroMemory(pChildNode, sizeof(CCSP_TR069_PARAM_INFO));
-        }
-
-        pChildNode->Name        = CcspTr069PaCloneString(pNodeName);
-        pChildNode->PartialName = CCSP_TRUE;
-
-        if ( pPrevSibling )
-        {
-            pPrevSibling->Sibling = pChildNode;
-            pChildNode->Parent    = pPrevSibling->Parent;
-            pPrevSibling          = NULL;
-            pNode                 = pChildNode;
-        }
-        else
-        {
-            pNode->Child          = pChildNode;
-            pChildNode->Parent    = pNode;
-            pNode                 = pChildNode;
-        }
-
-        AnscFreeMemory(pStringToken);
-    }
-    while ( (pStringToken = AnscTcUnlinkToken(pNsTokenChain)) );
-
-    /* fill in parameter (or object possibly allowed) */
-    pChildNode->PartialName = bPartialNs;
-    pChildNode->CloudType   = CloudType;
-    pChildNode->ReadOnly    = ReadOnly;
-    pChildNode->Subsystem   = CcspTr069PaCloneString(Subsystem);
-
-    if ( pNsTokenChain )
-    {
-        AnscTcFree((ANSC_HANDLE)pNsTokenChain);
-    }
-
-    return  CCSP_TRUE;
-}
-
-
-static
-CCSP_VOID
 CcspTr069PA_FreePiTree
     (
         PCCSP_TR069_PARAM_INFO      pRoot
@@ -710,232 +289,6 @@ CcspTr069PA_FreePiTree
 }
 
 
-static
-CCSP_BOOL
-CcspTr069PA_LoadParamInfo
-    (
-        PANSC_XML_DOM_NODE_OBJECT   pPiNode
-    )
-{
-    PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
-    CCSP_UINT                       dataType       = CCSP_CLOUD_DATA_TYPE_UNSPECIFIED;
-    BOOL                            bWritable      = FALSE;
-    CCSP_ULONG                      ulSize;
-    CCSP_CHAR                       ns[CCSP_TR069_RPC_Namespace_Length + 1]     = {0};
-    CCSP_CHAR                       buf[CCSP_TR069_RPC_Namespace_Length + 1]    = {0};
-    CCSP_CHAR                       ss[CCSP_TR069_Subsystem_Length + 1]         = {0};
-    BOOL                            bInvisible     = FALSE;
-    CCSP_BOOL                       bSucc          = FALSE;
-
-    if (pPiNode == NULL) return CCSP_FALSE;
-
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pPiNode->GetChildByName((ANSC_HANDLE)pPiNode, "Name");
-    if ( pChildNode )
-    {
-        ulSize = CCSP_TR069_RPC_Namespace_Length;
-        pChildNode->GetDataString(pChildNode, NULL, ns, &ulSize);
-    }
-
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pPiNode->GetChildByName((ANSC_HANDLE)pPiNode, "Type");
-    if ( pChildNode )
-    {
-        pChildNode->GetDataString(pChildNode, NULL, buf, &ulSize);
-        if (AnscEqualString(buf, CCSP_CLOUD_DATA_TYPE_NAME_STRING, FALSE))
-        {
-            dataType = CCSP_CLOUD_DATA_TYPE_STRING;
-        }
-        else if (AnscEqualString(buf, CCSP_CLOUD_DATA_TYPE_NAME_INT, FALSE))
-        {
-            dataType = CCSP_CLOUD_DATA_TYPE_INT;
-        }
-        else if (AnscEqualString(buf, CCSP_CLOUD_DATA_TYPE_NAME_UINT, FALSE))
-        {
-            dataType = CCSP_CLOUD_DATA_TYPE_UINT;
-        }
-        else if (AnscEqualString(buf, CCSP_CLOUD_DATA_TYPE_NAME_BOOL, FALSE))
-        {
-            dataType = CCSP_CLOUD_DATA_TYPE_BOOL;
-        }
-        else if (AnscEqualString(buf, CCSP_CLOUD_DATA_TYPE_NAME_DATETIME, FALSE))
-        {
-            dataType = CCSP_CLOUD_DATA_TYPE_DATETIME;
-        }
-        else if (AnscEqualString(buf, CCSP_CLOUD_DATA_TYPE_NAME_BASE64, FALSE))
-        {
-            dataType = CCSP_CLOUD_DATA_TYPE_BASE64;
-        }
-    }
-
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pPiNode->GetChildByName((ANSC_HANDLE)pPiNode, "Writable");
-    if ( pChildNode )
-    {
-        pChildNode->GetDataBoolean(pChildNode, NULL, &bWritable);
-    }
-
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pPiNode->GetChildByName((ANSC_HANDLE)pPiNode, "SubSystem");
-    if ( pChildNode )
-    {
-        ulSize = CCSP_TR069_Subsystem_Length;
-        pChildNode->GetDataString(pChildNode, NULL, ss, &ulSize);
-    }
-
-    bInvisible = FALSE;
-    pPiNode->GetAttrBoolean
-        (
-            (ANSC_HANDLE)pPiNode,
-            "invisible",
-            &bInvisible
-        );
-
-    if ( bInvisible )
-    {
-        if ( !CcspTr069InvPiTree )
-        {
-            CcspTr069InvPiTree = 
-                (PCCSP_TR069_PARAM_INFO)CcspTr069PaAllocateMemory(sizeof(CCSP_TR069_PARAM_INFO));
-
-            if ( !CcspTr069InvPiTree )
-            {
-                return  CCSP_FALSE;
-            }
-            else
-            {
-                /* this root node is a virtual node - without node name */
-                AnscZeroMemory(CcspTr069InvPiTree, sizeof(CCSP_TR069_PARAM_INFO));
-                CcspTr069InvPiTree->PartialName = CCSP_TRUE;
-            }
-        }
-
-        bSucc = 
-            CcspTr069PA_PiTreeAddNamespace
-                (
-                    CcspTr069InvPiTree,
-                    ns[0] ? ns : NULL,
-                    dataType,
-                    !bWritable,
-                    ss[0] ? ss : NULL
-                );
-    }
-    else
-    {
-        if ( !CcspTr069PiTree )
-        {
-            CcspTr069PiTree = 
-                (PCCSP_TR069_PARAM_INFO)CcspTr069PaAllocateMemory(sizeof(CCSP_TR069_PARAM_INFO));
-
-            if ( !CcspTr069PiTree )
-            {
-                return  CCSP_FALSE;
-            }
-            else
-            {
-                /* this root node is a virtual node - without node name */
-                AnscZeroMemory(CcspTr069PiTree, sizeof(CCSP_TR069_PARAM_INFO));
-                CcspTr069PiTree->PartialName = CCSP_TRUE;
-            }
-        }
-
-        bSucc = 
-            CcspTr069PA_PiTreeAddNamespace
-                (
-                    CcspTr069PiTree,
-                    ns[0] ? ns : NULL,
-                    dataType,
-                    !bWritable,
-                    ss[0] ? ss : NULL
-                );
-    }
-
-    return CCSP_TRUE;
-}
-
-
-static
-CCSP_BOOL 
-CcspTr069PA_LoadFromXMLFile(void*  pXMLHandle)
-{
-    PANSC_XML_DOM_NODE_OBJECT       pHandle        = (PANSC_XML_DOM_NODE_OBJECT)pXMLHandle;
-    PANSC_XML_DOM_NODE_OBJECT       pListNode      = NULL;
-    PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
-    CCSP_INT                        i;
-    CHAR                            name[1024]     = { 0 };
-    ULONG                           nameLen        = 1023;
-
-    if( pXMLHandle == NULL)
-    {
-        return CCSP_FALSE;
-    }
-
-    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pHandle->GetHeadChild(pHandle);
-
-    do
-    {
-        //CcspTr069PaTraceDebug(("%s childNodeQueue depth: %d\n", pChildNode->Name, pChildNode->ChildNodeQueue.Depth));
-
-        if(AnscEqualString(pChildNode->Name, "ErrorMapper", TRUE))
-        {
-            NumOfErrMaps = pChildNode->ChildNodeQueue.Depth;
-            CcspTr069CpeErrMaps = (PCCSP_TR069_CPEERR_MAP) CcspTr069PaAllocateMemory(NumOfErrMaps * sizeof(CCSP_TR069_CPEERR_MAP));
-            i = 0;
-            pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetHeadChild(pChildNode);
-            while (pListNode != NULL)
-            {
-                CcspTr069PA_LoadErrMapper( &(CcspTr069CpeErrMaps[i]), pListNode);
-                //CcspTr069PaTraceDebug(("%s childNodeQueue depth: %d\n", pListNode->Name, pListNode->ChildNodeQueue.Depth));
-                i++;
-                pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
-            }
-        }
-        /* CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING */
-        else if(AnscEqualString(pChildNode->Name, "InstanceMapper", TRUE))
-        {
-            CcspTr069PaTraceWarning(("InstanceMapper loading...\n"));
-            NumOfInstanceMaps = pChildNode->ChildNodeQueue.Depth;
-            CcspTr069CpeInstanceMaps = (PCCSP_TR069_CPEINSTANCE_MAP) CcspTr069PaAllocateMemory(NumOfInstanceMaps * sizeof(CCSP_TR069_CPEINSTANCE_MAP));
-            i = 0;
-            pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetHeadChild(pChildNode);
-            while (pListNode != NULL)
-            {
-                CcspTr069PA_LoadInstanceMapper( &(CcspTr069CpeInstanceMaps[i]), pListNode);
-                CcspTr069PaTraceWarning(("%s childNodeQueue depth: %d\n", pListNode->Name, pListNode->ChildNodeQueue.Depth));
-                i++;
-                pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
-            }
-        }
-        else if(AnscEqualString(pChildNode->Name, "RpcMapper", TRUE))
-        {
-            NumOfRpcMaps = pChildNode->ChildNodeQueue.Depth;
-            CcspTr069RpcMaps = (PCCSP_TR069_RPC_MAP) CcspTr069PaAllocateMemory(NumOfRpcMaps * sizeof(CCSP_TR069_RPC_MAP));
-            i = 0;
-            pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetHeadChild(pChildNode);
-            while (pListNode != NULL)
-            {
-                LoadRpcMapper( &(CcspTr069RpcMaps[i]), pListNode);
-                //CcspTr069PaTraceDebug(("%s childNodeQueue depth: %d\n", pListNode->Name, pListNode->ChildNodeQueue.Depth));
-                i++;
-                pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
-            }
-        }
-        else if (AnscEqualString(pChildNode->Name, "ParamList", TRUE))
-        {
-            pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetHeadChild(pChildNode);
-            while (pListNode != NULL)
-            {
-                CcspTr069PA_LoadParamInfo(pListNode);
-                //CcspTr069PaTraceDebug(("%s childNodeQueue depth: %d\n", pListNode->Name, pListNode->ChildNodeQueue.Depth));
-                pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
-            }
-        }
-    } 
-    while ((pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pHandle->GetNextChild(pHandle, pChildNode)) != NULL);
-
-    /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
-    CcspTr069Pa_run_test_map();
-
-    return CCSP_TRUE;
-}
-
-
 /* CcspTr069PA_LoadMappingFile is called to load mapping file for TR-069 PA,
  * Return value - transparent handle to caller and will be used for all
  * other APIs.
@@ -946,14 +299,10 @@ CcspTr069PA_LoadMappingFile
         CCSP_STRING                 MappingFile
     )
 {
-    CCSP_BOOL     bSucc         = CCSP_TRUE;
     struct stat   statBuf;
 
     /* load from XML file */
     PANSC_XML_DOM_NODE_OBJECT       pRootNode   = NULL;
-    PUCHAR                          pBack       = NULL;
-    PUCHAR                          pFileContent= NULL;
-    ULONG                           length      = 0;
 
     CcspTr069PaTraceDebug(("TR-069 PA is loading mapper file <%s> ...\n", MappingFile));
 
@@ -988,8 +337,6 @@ CcspTr069PA_LoadMappingFile
             /* loca from the node */
                 if (pRootNode != NULL)
                 {
-                    bSucc = CcspTr069PA_LoadFromXMLFile((void*)pRootNode);
-
                     pRootNode->Remove(pRootNode);
                 }
 
@@ -1020,6 +367,7 @@ CcspTr069PA_UnloadMappingFile
         CCSP_HANDLE                 MapperHandle
         )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     CCSP_INT    i,j;
 
     CcspTr069PaFreeMemory(CcspTr069CpeErrMaps);
@@ -1089,6 +437,7 @@ CcspTr069PA_MapCcspErrCode
         CCSP_INT                    CcspErrCode
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     CCSP_INT    i;
     for(i=0; i<NumOfErrMaps; i++)
     {
@@ -1156,7 +505,7 @@ CcspTr069PA_MapInstNumCwmpToDmInt
             CCSP_CHAR       restDmlString[CCSP_TR069_INSTMAP_MaxStringSize] = {0}; //initialize - to resolve invlid chars issue in RPC response
             CCSP_INT        instNum = 0; //initialize - to resolve invlid chars issue in RPC response
 
-            if ( strlen(pCwmpString) < dmlNameLen+1 )
+            if ( strlen(pCwmpString) < (unsigned int)(dmlNameLen+1) )
             {
                 // Found match on table, but there is no instance number
                 break;
@@ -1267,7 +616,7 @@ CcspTr069PA_MapInstNumDmIntToCwmp
             CCSP_CHAR               restDmlString[CCSP_TR069_INSTMAP_MaxStringSize] = {0}; //initialize - to resolve invlid chars issue in RPC response
             CCSP_INT                instNum = 0; //initialize - to resolve invlid chars issue in RPC response
 
-            if (strlen(pDmIntString) < dmlNameLen+1)
+            if (strlen(pDmIntString) < (unsigned int)(dmlNameLen+1))
             {
                 // Found match on table, but there is no instance number
                 break;
@@ -1332,6 +681,7 @@ CcspTr069PA_GetRpcNamespace
         CCSP_STRING                 ArgName             /* NULL for RPCs that do not take any arguments such as Reboot */
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     CCSP_INT    i, j;
     for(i=0; i<NumOfRpcMaps; i++)
     {
@@ -1356,8 +706,7 @@ CcspTr069PA_IsNameInsNumber
         CCSP_STRING                 Namespace
     )
 {
-    CCSP_INT                        i, len;
-    CCSP_BOOL                       bInsNumber      = CCSP_FALSE;
+    CCSP_INT                        len;
     CCSP_UINT                       InsNumber;
     CCSP_CHAR                       buf[32];
 
@@ -1551,7 +900,6 @@ CcspTr069PA_GetNamespaceSubsystems
     PCCSP_TR069_PARAM_INFO          pParamInfo;
     CCSP_INT                        NumOfSubsystems     = 0;
     CCSP_INT                        MaxNumOfSubsystems  = *pNumSubsystems;
-    CCSP_INT                        nRet                = 0;
     CCSP_TR069PA_ENUM_NS            EnumNs;
     CCSP_BOOL                       bFoundInPiTree      = CCSP_FALSE;
 
@@ -1624,6 +972,7 @@ CcspTr069PA_IsNamespaceSupported
         CCSP_BOOL                   bCheckInvPiTree     /* whether or not check invisible parameter tree */
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     PCCSP_TR069_PARAM_INFO          pParamInfo;
     BOOL                            bPartialNs = CcspCwmpIsPartialName(Namespace);
 
@@ -1674,6 +1023,7 @@ CcspTr069PA_IsNamespaceInvisible
         CCSP_STRING                 Namespace           /* namespace to be queried */
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     PCCSP_TR069_PARAM_INFO          pParamInfo;
 
     pParamInfo = CcspTr069PA_FindNamespace(CcspTr069InvPiTree, Namespace);
@@ -1698,6 +1048,7 @@ CcspTr069PA_TraversePiTree
         CCSP_HANDLE                 pCBContext
     )
 {
+    UNREFERENCED_PARAMETER(MapperHandle);
     CCSP_BOOL                       bMatched = CCSP_TRUE;
     QUEUE_HEADER                    NodeStack;
     PSINGLE_LINK_ENTRY              pLinkEntry;
@@ -1806,7 +1157,7 @@ CcspTr069PA_GetPiFullName
         }
         else
         {
-        if ( AnscSizeOfString(pPiNode->Name) + AnscSizeOfString(pFnBuf) + 1 >= nFnBufLen )
+        if ( AnscSizeOfString(pPiNode->Name) + AnscSizeOfString(pFnBuf) + 1 >= (unsigned int)nFnBufLen )
         {
             return  -1;     /* buffer is not big enough? This is VIOLATION of TR-069 specification which defines 256 as maximum length of parameter name */
         }

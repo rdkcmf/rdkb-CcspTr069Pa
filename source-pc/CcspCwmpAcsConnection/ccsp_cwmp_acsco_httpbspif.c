@@ -278,7 +278,6 @@ CcspCwmpAcscoHttpBspBrowse
     PHTTP_BMO_REQ_OBJECT            pHttpBmoReq       = (PHTTP_BMO_REQ_OBJECT      )hBmoReq;
     PHTTP_BMO_REP_OBJECT            pHttpBmoRep       = (PHTTP_BMO_REP_OBJECT      )hBmoRep;
     PANSC_ACS_INTERN_HTTP_CONTENT   pHttpGetReq       = (PANSC_ACS_INTERN_HTTP_CONTENT )hReqContext;
-    PHTTP_RESPONSE_INFO             pHttpRepInfo      = (PHTTP_RESPONSE_INFO       )pHttpBmoRep->GetRepInfo ((ANSC_HANDLE)pHttpBmoRep);
     ULONG                           ulResponseSize    = (ULONG                     )pHttpBmoRep->GetBodySize((ANSC_HANDLE)pHttpBmoRep);
     char*                           pHttpResponse     = (char*                     )NULL;
     char*                           pHeaderLocation   = NULL;
@@ -286,7 +285,6 @@ CcspCwmpAcscoHttpBspBrowse
     ULONG                           ulCode            = 0;
     char*                           pCookieHeader     = NULL;
     ULONG                           ulCookieIndex     = 0;
-    BOOL                            bCookiesRemoved   = FALSE;
 
     if ( pHttpGetReq == NULL)
     {
@@ -558,7 +556,9 @@ CcspCwmpAcscoHttpBspNotify
         ANSC_HANDLE                 hBmoRep
     )
 {
-    ANSC_STATUS                      returnStatus           = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(ulError);
+    UNREFERENCED_PARAMETER(hBmoReq);
+
     PANSC_ACS_INTERN_HTTP_CONTENT    pHttpGetReq            = (PANSC_ACS_INTERN_HTTP_CONTENT )hReqContext;
     PCCSP_CWMP_ACS_CONNECTION_OBJECT pMyObject              = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)hThisObject;
     PCCSP_CWMP_SESSION_OBJECT        pWmpSession            = (PCCSP_CWMP_SESSION_OBJECT   )pMyObject->hCcspCwmpSession;

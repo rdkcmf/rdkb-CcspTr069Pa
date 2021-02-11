@@ -123,7 +123,6 @@ CcspCwmpTcpcrhoProcessRequest
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject           = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
     PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty           = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
     PWEB_ACM_INTERFACE              pAcmIf              = (PWEB_ACM_INTERFACE            )pMyObject->hWebAcmIf;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT   )pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_MWS_INTERFACE             pCcspCwmpMwsIf          = (PCCSP_CWMP_MWS_INTERFACE           )NULL;
     PANSC_DAEMON_SOCKET_TCP_OBJECT  pWebSocket          = (PANSC_DAEMON_SOCKET_TCP_OBJECT)hSocket;
     PWEB_AUTH_SERVER_PROPERTY       pAuthProperty       = &pProperty->AuthProperty;

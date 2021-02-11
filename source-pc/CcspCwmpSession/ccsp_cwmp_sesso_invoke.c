@@ -85,6 +85,8 @@
 
 
 #include "ccsp_cwmp_sesso_global.h"
+#include "ccsp_management_server.h"
+
 #include "slap_definitions.h"
 #include "Tr69_Tlv.h"
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
@@ -150,7 +152,6 @@ CcspCwmpsoGetRpcMethods
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT   )pCcspCwmpCpeController->hCcspCwmpSoapParser;
@@ -336,7 +337,6 @@ CcspCwmpsoInform
 {
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject            = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection   = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor    = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_STAT_INTERFACE            pCcspCwmpStatIf          = (PCCSP_CWMP_STAT_INTERFACE       )pCcspCwmpCpeController->hCcspCwmpStaIf;
@@ -357,8 +357,6 @@ CcspCwmpsoInform
     char                            request_id[16];
     char*                           pRootObjName         = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
     char                            paramName[512];
-    char**                          paramValues          = NULL;
-    int                             numParams            = 1;
     int                             notifAttr;
     PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf  = (PCCSP_CWMP_CFG_INTERFACE)pCcspCwmpCpeController->hCcspCwmpCfgIf;
     ULONG                           ulRpcCallTimeout= CCSP_CWMPSO_RPCCALL_TIMEOUT;
@@ -374,7 +372,6 @@ CcspCwmpsoInform
 	static char ProductClass[100];
     static char ProvisioningCode[100];
 	static char SerialNumber[100];
-	static char DeviceSummary[100];
 	static char HardwareVersion[100];
 	static char SoftwareVersion[100];
 
@@ -482,11 +479,11 @@ if(bFirstInform)
 else
 {
 
-	pCwmpDeviceId->Manufacturer = CcspManagementServer_CloneString(Manufacturer);
-	pCwmpDeviceId->OUI 			= CcspManagementServer_CloneString(ManufacturerOUI);
-	pCwmpDeviceId->ProductClass = CcspManagementServer_CloneString(ProductClass);
-	pCwmpDeviceId->SerialNumber = CcspManagementServer_CloneString(SerialNumber);
-    pCwmpDeviceId->ProvisioningCode = CcspManagementServer_CloneString(ProvisioningCode);
+	pCwmpDeviceId->Manufacturer = (char*)CcspManagementServer_CloneString(Manufacturer);
+	pCwmpDeviceId->OUI 			= (char*)CcspManagementServer_CloneString(ManufacturerOUI);
+	pCwmpDeviceId->ProductClass = (char*)CcspManagementServer_CloneString(ProductClass);
+	pCwmpDeviceId->SerialNumber = (char*)CcspManagementServer_CloneString(SerialNumber);
+    pCwmpDeviceId->ProvisioningCode = (char*)CcspManagementServer_CloneString(ProvisioningCode);
 }
 
     /*
@@ -1001,7 +998,7 @@ bFirstInform = 0;
     else
     {
         CcspTr069PaTraceDebug(("CcspCwmpsoInform -- Start to build the soap message.\n"));
-		int x = 0;
+		ULONG x = 0;
         AnscZeroMemory(request_id, 16);
         _ansc_itoa    (pMyObject->GlobalRequestID++, request_id, 10);
 
@@ -1391,14 +1388,12 @@ CcspCwmpsoTransferComplete
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT   )pCcspCwmpCpeController->hCcspCwmpSoapParser;
     PCCSP_CWMPSO_ASYNC_REQUEST       pWmpsoAsyncReq     = (PCCSP_CWMPSO_ASYNC_REQUEST  )NULL;
     PCCSP_CWMP_SOAP_RESPONSE        pCwmpSoapResponse  = (PCCSP_CWMP_SOAP_RESPONSE   )NULL;
     ULONG                           ulRetryTimes       = 0;
-    ULONG                           faultCode          = 0;
     char                            request_id[16];
     BOOL                            bConnectNow        = TRUE;
     PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf  = (PCCSP_CWMP_CFG_INTERFACE)pCcspCwmpCpeController->hCcspCwmpCfgIf;
@@ -1679,14 +1674,12 @@ CcspCwmpsoAutonomousTransferComplete
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT   )pCcspCwmpCpeController->hCcspCwmpSoapParser;
     PCCSP_CWMPSO_ASYNC_REQUEST       pWmpsoAsyncReq     = (PCCSP_CWMPSO_ASYNC_REQUEST  )NULL;
     PCCSP_CWMP_SOAP_RESPONSE        pCwmpSoapResponse  = (PCCSP_CWMP_SOAP_RESPONSE   )NULL;
     ULONG                           ulRetryTimes       = 0;
-    ULONG                           faultCode          = 0;
     char                            request_id[16];
     BOOL                            bConnectNow        = TRUE;
     PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf  = (PCCSP_CWMP_CFG_INTERFACE)pCcspCwmpCpeController->hCcspCwmpCfgIf;
@@ -1918,7 +1911,6 @@ CcspCwmpsoKicked
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT   )pCcspCwmpCpeController->hCcspCwmpSoapParser;
@@ -2137,7 +2129,6 @@ CcspCwmpsoRequestDownload
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT   )pCcspCwmpCpeController->hCcspCwmpSoapParser;
@@ -2317,7 +2308,6 @@ CcspCwmpsoDUStateChangeComplete
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT   )pCcspCwmpCpeController->hCcspCwmpSoapParser;
@@ -2325,7 +2315,6 @@ CcspCwmpsoDUStateChangeComplete
     PCCSP_CWMPSO_ASYNC_REQUEST       pWmpsoAsyncReq     = (PCCSP_CWMPSO_ASYNC_REQUEST  )NULL;
     PCCSP_CWMP_SOAP_RESPONSE        pCwmpSoapResponse  = (PCCSP_CWMP_SOAP_RESPONSE   )NULL;
     ULONG                           ulRetryTimes       = 0;
-    ULONG                           faultCode          = 0;
     char                            request_id[16];
     BOOL                            bConnectNow        = TRUE;
     char*                           pCommandKey        = pDsccReq->CommandKey;
@@ -2553,14 +2542,12 @@ CcspCwmpsoAutonomousDUStateChangeComplete
 {
     ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_SESSION_OBJECT        pMyObject          = (PCCSP_CWMP_SESSION_OBJECT   )hThisObject;
-    PCCSP_CWMP_ACS_CONNECTION_OBJECT     pCcspCwmpAcsConnection = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)pMyObject->hCcspCwmpAcsConnection;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
     PCCSP_CWMP_SOAP_PARSER_OBJECT        pCcspCwmpSoapParser    = (PCCSP_CWMP_SOAP_PARSER_OBJECT   )pCcspCwmpCpeController->hCcspCwmpSoapParser;
     PCCSP_CWMPSO_ASYNC_REQUEST       pWmpsoAsyncReq     = (PCCSP_CWMPSO_ASYNC_REQUEST  )NULL;
     PCCSP_CWMP_SOAP_RESPONSE        pCwmpSoapResponse  = (PCCSP_CWMP_SOAP_RESPONSE   )NULL;
     ULONG                           ulRetryTimes       = 0;
-    ULONG                           faultCode          = 0;
     char                            request_id[16];
     BOOL                            bConnectNow        = TRUE;
     PCCSP_CWMP_CFG_INTERFACE        pCcspCwmpCfgIf  = (PCCSP_CWMP_CFG_INTERFACE)pCcspCwmpCpeController->hCcspCwmpCfgIf;

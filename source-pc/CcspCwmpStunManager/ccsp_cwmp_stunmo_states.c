@@ -113,9 +113,7 @@ CcspCwmpStunmoGetCcspCwmpCpeController
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
 
     return  pMyObject->hCcspCwmpCpeController;
 }
@@ -156,9 +154,7 @@ CcspCwmpStunmoSetCcspCwmpCpeController
         ANSC_HANDLE                 hCpeController
     )
 {
-    ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
 
     pMyObject->hCcspCwmpCpeController = hCpeController;
 
@@ -196,9 +192,7 @@ CcspCwmpStunmoGetStunSimpleClient
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
 
     return  pMyObject->hStunSimpleClient;
 }
@@ -234,7 +228,6 @@ CcspCwmpStunmoGetClientAddr
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
 
@@ -277,7 +270,6 @@ CcspCwmpStunmoSetClientAddr
         ULONG                       ulAddr
     )
 {
-    ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
 
@@ -322,7 +314,6 @@ CcspCwmpStunmoGetProperty
         ANSC_HANDLE                 hProperty
     )
 {
-    ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
 
@@ -367,7 +358,6 @@ CcspCwmpStunmoSetProperty
         ANSC_HANDLE                 hProperty
     )
 {
-    ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
 
@@ -407,7 +397,6 @@ CcspCwmpStunmoResetProperty
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                         returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject           = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
     PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty           = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
     PCCSP_CWMP_STUN_INFO                pCcspCwmpStunInfo   = (PCCSP_CWMP_STUN_INFO            )&pMyObject->CcspCwmpStunInfo;
@@ -454,9 +443,7 @@ CcspCwmpStunmoReset
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                         returnStatus = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject    = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty    = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
+    UNREFERENCED_PARAMETER(hThisObject);
 
     return  ANSC_STATUS_SUCCESS;
 }

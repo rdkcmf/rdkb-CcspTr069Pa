@@ -159,7 +159,7 @@ CcspCwmppoAddFunctionalComponents
     )
 {
     int                         k = -1;
-    int                         j;
+    ULONG                       j;
     char**                      ppSubsysArray       = *pppSubsysArray;
     char**                      ppFcNameArray       = *pppFcNameArray;
     char**                      ppDbusPathArray     = *pppDbusPathArray;
@@ -292,7 +292,6 @@ CcspCwmppoDiscoverFunctionalComponent
     int                             n;
     componentStruct_t**             ppComp               = NULL;
     ULONG                           NumComp              = 0;
-    ULONG                           ulFcArraySize        = 0;
     int                             nRet                 = 0;
 
     *pppSubsysArray     = NULL;
@@ -444,8 +443,7 @@ CcspCwmppoMpaLockWriteAccess
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject      = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     BOOL                            bWriteLocked   = FALSE;
 
     /* 
@@ -487,8 +485,8 @@ CcspCwmppoMpaUnlockWriteAccess
         ANSC_HANDLE                 hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     returnStatus   = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject      = (PCCSP_CWMP_PROCESSOR_OBJECT  )hThisObject;
 
     /* 
      * Nothing to do under current CCSP architecture
@@ -558,7 +556,6 @@ CcspCwmppoMpaSetParameterValues
         BOOL                        bExcludeInvNs
     )
 {
-    ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf           = (PCCSP_CWMP_MPA_INTERFACE        )pMyObject->hCcspCwmpMpaIf;
 
@@ -645,13 +642,9 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
 	CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)pCcspCwmpCpeController->hMsgBusHandle;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     ULONG                           ulSessionID          = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_VALUE          pParameterValueArray = (PCCSP_CWMP_PARAM_VALUE     )pParamValueArray;
-	PCCSP_CWMP_PARAM_VALUE          pParameterRadio      = (PCCSP_CWMP_PARAM_VALUE     )NULL;
-    ULONG                           ulParameterCount     = (ULONG                      )0;
-    char*                           pFaultParamName      = (char*                      )NULL;
     BOOL                            bFaultEncountered    = (BOOL                       )FALSE;
 	BOOL                            bRadioRestartEn      = (BOOL                       )FALSE;
     ULONG                           i                    = 0;
@@ -883,7 +876,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         {
 				PCCSP_PARAM_VALUE_INFO  pValueInfo;
 				char aMem[128];
-				char *pParamN = &aMem;
+				char *pParamN = aMem;
 				pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
 				pValueInfo      = &pNsList->Args.paramValueInfo;
 
@@ -930,7 +923,6 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
          * involved in this request 
          */
         parameterValStruct_t*       pParamValues    = NULL;
-        int                         nParamCount     = 0;
         int                         nNumFCs         = AnscQueueQueryDepth(&FcNsListQueue);
         PSINGLE_LINK_ENTRY          pSLinkEntry     = NULL;
         PSINGLE_LINK_ENTRY          pSLinkEntryNs   = NULL;
@@ -964,9 +956,9 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
             k = 0;
 
             pSLinkEntryNs = AnscSListGetFirstEntry(&pFcNsList->NsList);
+            pNsList       = ACCESS_CCSP_TR069PA_NSLIST(pSLinkEntryNs);
             while ( pSLinkEntryNs )
             {
-                pNsList       = ACCESS_CCSP_TR069PA_NSLIST(pSLinkEntryNs);
                 pSLinkEntryNs = AnscQueueGetNextEntry(pSLinkEntryNs);
 
                 /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
@@ -1197,7 +1189,7 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
 				BOOL bRestartRadio1 = FALSE;
 				BOOL bRestartRadio2 = FALSE;
 				int nreq = 0,x,index;
-				int SSID =0,apply_rf;
+				int apply_rf;
 				parameterValStruct_t *val = NULL;
 				parameterValStruct_t val_set[4] = { { "Device.WiFi.Radio.1.X_CISCO_COM_ApplySettingSSID","1", ccsp_int}, 
 												{ "Device.WiFi.Radio.1.X_CISCO_COM_ApplySetting", "true", ccsp_boolean},
@@ -1220,7 +1212,6 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
 								
 								sscanf(ParamName[x],"Device.WiFi.SSID.%d",&index);
 								printf("index = %d\n",index);
-								SSID = (1 << ((index)-1));
 								apply_rf = (2  - ((index)%2));
 								printf("apply_rf = %d\n",apply_rf);
 								if(apply_rf == 1)
@@ -1236,7 +1227,6 @@ if(!strcmp(pNsList->Args.paramValueInfo.parameterName,"Device.X_CISCO_COM_Device
 							else if(!strncmp(ParamName[x],"Device.WiFi.AccessPoint.",24))
 							{
 								sscanf(ParamName[x],"Device.WiFi.AccessPoint.%d",&index);
-								SSID = (1 << ((index)-1));
 								apply_rf = (2  - ((index)%2));
 								if(apply_rf == 1)
 									{
@@ -1458,7 +1448,6 @@ CcspCwmppoMpaGetParameterValues
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     ULONG                           ulSessionID          = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_VALUE          pParameterValueArray = (PCCSP_CWMP_PARAM_VALUE     )NULL;
@@ -1472,7 +1461,7 @@ CcspCwmppoMpaGetParameterValues
     char**                          ppDbusPathArray      = NULL;
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
-    int                             j;
+    ULONG                           j;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33228, initialize before use*/
     int                             NumSubsystems        = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
@@ -1644,27 +1633,25 @@ CcspCwmppoMpaGetParameterValues
          * each FC and make GetParameterValues call 
          */
         char**                      pParamNames     = NULL;
-        int                         nNumParamNames  = 0;
         parameterValStruct_t**      pParamValues    = NULL;
         int                         nParamCount     = 0;
         int                         nNumFCs         = AnscQueueQueryDepth(&FcNsListQueue);
         PSINGLE_LINK_ENTRY          pSLinkEntry     = NULL;
         PSINGLE_LINK_ENTRY          pSLinkEntryNs   = NULL;
         PCCSP_TR069PA_FC_NSLIST     pFcGpvResNsList = NULL;
-        int                         k;
+        int                         k, l;
         int                         nNsCount;
         PCCSP_TR069PA_NSLIST        pNsList;
         int                         nResult         = CCSP_SUCCESS;
-        char*                       pPaSubsystem    = pCcspCwmpCpeController->SubsysName;
 
         CcspTr069PaTraceDebug(("GPV involves %d Functional Component(s), sessionID = %u.\n", nNumFCs, (unsigned int)ulSessionID));
         
         /* for result NS list, we don't care sub-system, FC name, and DBus path */
         CcspTr069PaAddFcIntoFcNsList(&FcGpvResultListQueue, NULL, NULL, NULL, pFcGpvResNsList);
 
-        for ( j = 0; j < nNumFCs; j ++ )
+        for ( l = 0; l < nNumFCs; l ++ )
         {
-            pSLinkEntry = AnscQueueSearchEntryByIndex(&FcNsListQueue, j);
+            pSLinkEntry = AnscQueueSearchEntryByIndex(&FcNsListQueue, l);
             pFcNsList   = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntry);
 
             nNsCount = AnscQueueQueryDepth(&pFcNsList->NsList);
@@ -2092,14 +2079,11 @@ CcspCwmppoMpaGetParameterNames
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr          = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
-    ULONG                           ulSessionID         = 0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault      = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_INFO           pCwmpParamInfoArray = (PCCSP_CWMP_PARAM_INFO      )NULL;
     ULONG                           ulParameterCount    = (ULONG                      )0;
     char*                           pRootObjName        = pCcspCwmpCpeController->GetRootObject((ANSC_HANDLE)pCcspCwmpCpeController);
     ULONG                           i                   = 0;
-    char*                           pParamName          = NULL;
     QUEUE_HEADER                    FcGpnResultListQueue;
     int                             nRet;
     char**                          ppFcNameArray        = NULL;
@@ -2110,7 +2094,6 @@ CcspCwmppoMpaGetParameterNames
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33169, initialize before use*/
     int                             NumSubsystems        = 0;
     parameterInfoStruct_t**         ParamInfoArray       = NULL;
-    int                             nParamInfoArraySize  = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
     PCCSP_TR069PA_NSLIST            pNsList              = NULL;
     BOOL                            bNsInvisibleToCloudServer;
@@ -2329,7 +2312,7 @@ CcspCwmppoMpaGetParameterNames
     pSLinkEntry = AnscQueueGetFirstEntry(&pFcNsList->NsList);
     while ( pSLinkEntry )                                   
     {                                                       
-        pNsList     = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntry);
+        pNsList     = (PCCSP_TR069PA_NSLIST)ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntry);
         pSLinkEntry = AnscQueueGetNextEntry(pSLinkEntry);
 
         pCwmpParamInfoArray[i].Name      = pNsList->Args.paramInfo.parameterName;
@@ -2467,7 +2450,6 @@ CcspCwmppoMpaSetParameterAttributes
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_SET_PARAM_ATTRIB     pSetParamAttrArray   = (PCCSP_CWMP_SET_PARAM_ATTRIB)pSetParamAttribArray;
     ULONG                           i                    = 0;
@@ -2479,7 +2461,7 @@ CcspCwmppoMpaSetParameterAttributes
     char**                          ppDbusPathArray      = NULL;
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
-    int                             j;
+    ULONG                           j;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};   /*RDKB-7325, CID-32906, initialize before use */
     int                             NumSubsystems        = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
@@ -2644,11 +2626,10 @@ CcspCwmppoMpaSetParameterAttributes
          * each FC and make SetParameterAttributes call
          */
         parameterAttributeStruct_t* pParamAttributes= NULL;
-        int                         nParamCount     = 0;
         int                         nNumFCs         = AnscQueueQueryDepth(&FcNsListQueue);
         PSINGLE_LINK_ENTRY          pSLinkEntry     = NULL;
         PSINGLE_LINK_ENTRY          pSLinkEntryNs   = NULL;
-        int                         k;
+        int                         k, l;
         int                         nNsCount;
         PCCSP_TR069PA_NSLIST        pNsList;
         int                         nResult         = CCSP_SUCCESS;
@@ -2656,9 +2637,9 @@ CcspCwmppoMpaSetParameterAttributes
 
         CcspTr069PaTraceDebug(("SPA involves %d Functional Component(s), sessionID = %u.\n", nNumFCs, (unsigned int)ulSessionID));
 
-        for ( j = 0; j < nNumFCs; j ++ )
+        for ( l = 0; l < nNumFCs; l ++ )
         {
-            pSLinkEntry = AnscQueueSearchEntryByIndex(&FcNsListQueue, j);
+            pSLinkEntry = AnscQueueSearchEntryByIndex(&FcNsListQueue, l);
             pFcNsList   = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntry);
 
             nNsCount = AnscQueueQueryDepth(&pFcNsList->NsList);
@@ -2680,7 +2661,7 @@ CcspCwmppoMpaSetParameterAttributes
             pSLinkEntryNs = AnscSListGetFirstEntry(&pFcNsList->NsList);
             while ( pSLinkEntryNs )
             {
-                pNsList       = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
+                pNsList       = (PCCSP_TR069PA_NSLIST)ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
                 pSLinkEntryNs = AnscQueueGetNextEntry(pSLinkEntryNs);
 				 /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ // fix RDKB-405
                 CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
@@ -2875,7 +2856,6 @@ CcspCwmppoMpaGetParameterAttributes
     ANSC_STATUS                     returnStatus         = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject            = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController   = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr           = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault       = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     PCCSP_CWMP_PARAM_ATTRIB         pParamAttrArray      = (PCCSP_CWMP_PARAM_ATTRIB    )NULL;
     ULONG                           ulParamAttrArraySize = 0;
@@ -2889,7 +2869,7 @@ CcspCwmppoMpaGetParameterAttributes
     char**                          ppDbusPathArray      = NULL;
     char**                          ppSubsysArray        = NULL;
     ULONG                           ulFcArraySize        = 0;
-    int                             j;
+    ULONG                           j;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};  /*RDKB-7325, CID-32990, initialize before use */
     int                             NumSubsystems        = 0;
     PCCSP_TR069PA_FC_NSLIST         pFcNsList            = NULL;
@@ -3039,25 +3019,23 @@ CcspCwmppoMpaGetParameterAttributes
          * each FC and make GetParameterAttributes call 
          */
         char**                      pParamNames     = NULL;
-        int                         nNumParamNames  = 0;
         int                         nNumFCs         = AnscQueueQueryDepth(&FcNsListQueue);
         PSINGLE_LINK_ENTRY          pSLinkEntry     = NULL;
         PSINGLE_LINK_ENTRY          pSLinkEntryNs   = NULL;
         PCCSP_TR069PA_FC_NSLIST     pFcGpaResNsList = NULL;
-        int                         k;
+        int                         k, l;
         int                         nNsCount;
         PCCSP_TR069PA_NSLIST        pNsList;
         int                         nResult         = CCSP_SUCCESS;
-        char*                       pPaSubsystem    = pCcspCwmpCpeController->SubsysName;
 
         CcspTr069PaTraceDebug(("GPA involves %d Functional Component(s), sessionID = %u.\n", nNumFCs, (unsigned int)ulSessionID));
         
         /* for result NS list, we don't care sub-system, FC name, and DBus path */
         CcspTr069PaAddFcIntoFcNsList(&FcGpaResultListQueue, NULL, NULL, NULL, pFcGpaResNsList);
 
-        for ( j = 0; j < nNumFCs; j ++ )
+        for ( l = 0; l < nNumFCs; l ++ )
         {
-            pSLinkEntry = AnscQueueSearchEntryByIndex(&FcNsListQueue, j);
+            pSLinkEntry = AnscQueueSearchEntryByIndex(&FcNsListQueue, l);
             pFcNsList   = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntry);
 
             nNsCount = AnscQueueQueryDepth(&pFcNsList->NsList);
@@ -3079,7 +3057,7 @@ CcspCwmppoMpaGetParameterAttributes
             pSLinkEntryNs = AnscSListGetFirstEntry(&pFcNsList->NsList);
             while ( pSLinkEntryNs )
             {
-                pNsList       = ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
+                pNsList       = (PCCSP_TR069PA_NSLIST)ACCESS_CCSP_TR069PA_FC_NSLIST(pSLinkEntryNs);
                 pSLinkEntryNs = AnscQueueGetNextEntry(pSLinkEntryNs);
                 /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/ //fix RDKB-405
                 CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pNsList->Args.paramAttrInfo.parameterName);
@@ -3433,13 +3411,11 @@ CcspCwmppoMpaAddObject
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr          = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault      = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     char**                          ppDbusPathArray     = NULL;
     char**                          ppFcNameArray       = NULL;
     char**                          ppSubsysArray       = NULL;
     ULONG                           ulFcArraySize       = 0;
-    ULONG                           i;
     int                             nRet;
     CCSP_INT                        nCcspError          = CCSP_SUCCESS;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0};  /*RDKB-7325, CID-32935, initialize before use */
@@ -3687,13 +3663,11 @@ CcspCwmppoMpaDeleteObject
     ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_PROCESSOR_OBJECT      pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-    PCCSP_NAMESPACE_MGR_OBJECT      pCcspNsMgr          = (PCCSP_NAMESPACE_MGR_OBJECT )pMyObject->hCcspNamespaceMgr;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault      = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     char**                          ppDbusPathArray     = NULL;
     char**                          ppFcNameArray       = NULL;
     char**                          ppSubsysArray       = NULL;
     ULONG                           ulFcArraySize       = 0;
-    ULONG                           i;
     int                             nRet;
     CCSP_INT                        nCcspError          = CCSP_SUCCESS;
     CCSP_STRING                     Subsystems[CCSP_SUBSYSTEM_MAX_COUNT] = {0}; /*RDKB-7325, CID-33069, initialize before use */

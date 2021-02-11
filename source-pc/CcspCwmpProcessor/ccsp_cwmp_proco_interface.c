@@ -118,7 +118,5 @@ CcspCwmpCreateProcessor
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus      = ANSC_STATUS_SUCCESS;
-
     return  CcspCwmppoCreate(hContainerContext, hOwnerContext, hAnscReserved);
 }

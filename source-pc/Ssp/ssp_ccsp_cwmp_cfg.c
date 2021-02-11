@@ -186,7 +186,7 @@ CcspTr069PaSsp_XML_GetOneItemByName
         uLength=511;
         pChildNode = (PANSC_XML_DOM_NODE_OBJECT) AnscXmlDomNodeGetChildByName(pRootNode, ItemName);
         if(pChildNode != NULL  && 
-           pChildNode->GetDataString(pChildNode, NULL, buffer, &uLength) == ANSC_STATUS_SUCCESS &&
+           pChildNode->GetDataString(pChildNode, NULL, buffer, (PULONG)&uLength) == ANSC_STATUS_SUCCESS &&
            uLength > 0)
         {
             *retVal = CcspTr069PaCloneString(buffer);
@@ -317,6 +317,7 @@ CcspTr069PaSsp_CcspCwmpCfgNoRPCMethods
         ANSC_HANDLE                 hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ULONG                           ulNoMethods = 0;
 
     ulNoMethods = 
@@ -361,6 +362,7 @@ CcspTr069PaSsp_GetHttpSessionIdleTimeout
         ANSC_HANDLE                 hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
 	return	SSP_CCSP_CWMP_HTTP_SESSION_IDLE_TIMEOUT;
 }
 
@@ -371,6 +373,7 @@ CcspTr069PaSsp_GetCwmpRpcTimeout
         ANSC_HANDLE                 hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
 	return	SSP_CCSP_CWMP_RPC_TIMEOUT;
 }
 
