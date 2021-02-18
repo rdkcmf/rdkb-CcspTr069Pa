@@ -126,10 +126,23 @@ ssp_BbhmWebAcmIfGetCredential
             (
                 g_pCcspCwmpCpeController->PANameWithPrefix
             );
-    rc = strcmp_s(pConnReqUsername,MAX_CONN_SIZE,(char*)pUserName,&ind);
-    if((!ind) && (rc == EOK))
+
+    /*
+       pConnReqUsername or pUserName (Fixme: which one?) may be NULL when
+       Device.ManagementServer.ConnectionRequestUsername is set to an empty
+       string, so explicit NULL checks are required.
+    */
+    if (pConnReqUsername && pUserName)
     {
-        *ppPassword = (PUCHAR)AnscCloneString(pConnReqPassword);
+        rc = strcmp_s(pConnReqUsername,MAX_CONN_SIZE,(char*)pUserName,&ind);
+        if((!ind) && (rc == EOK))
+        {
+            *ppPassword = (PUCHAR)AnscCloneString(pConnReqPassword);
+        }
+        else
+        {
+            returnStatus = ANSC_STATUS_FAILURE;
+        }
     }
     else
     {
