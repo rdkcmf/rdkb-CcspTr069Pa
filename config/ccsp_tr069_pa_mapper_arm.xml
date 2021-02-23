@@ -2630,12 +2630,6 @@
             <Name>Device.XHosts.XHost.{i}.AddressSource</Name>
         </Param>
         <Param>
-            <Name>Device.XHosts.XHost.{i}.X_RDKCENTRAL-COM_Parent</Name>
-        </Param>
-        <Param>
-            <Name>Device.XHosts.XHost.{i}.X_RDKCENTRAL-COM_DeviceType</Name>
-        </Param>
-        <Param>
             <Name>Device.XHosts.XHost.{i}.XIPv4AddressNumberOfEntries</Name>
         </Param>
         <Param>
