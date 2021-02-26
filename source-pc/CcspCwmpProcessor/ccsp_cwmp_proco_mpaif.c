@@ -884,7 +884,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 				pValueInfo->parameterValue = pParameterValueArray[i].Value->Variant.varString;
 				pValueInfo->type           = CcspTr069PA_Cwmp2CcspType(pParameterValueArray[i].Tr069DataType);
 				AnscQueuePushEntry(&pFcNsList->NsList, &pNsList->Linkage);
-				if(!strcmp(pFcNsList->FCName,"eRT.com.cisco.spvtg.ccsp.wifi"))
+				if(!strcmp(pFcNsList->FCName,"com.cisco.spvtg.ccsp.wifi"))
 				{
 					printf("---- SPV for WiFi ---\n");
 					AnscCopyString(wifiFcName,pFcNsList->FCName);

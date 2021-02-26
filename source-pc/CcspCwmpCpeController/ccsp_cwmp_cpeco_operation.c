@@ -363,7 +363,30 @@ CcspCwmpCpecoSetupEnv
         }
     }
 
-    /* register PA to CR */
+/* Initialize message bus */
+
+#ifdef DBUS_INIT_SYNC_MODE
+//    nRet = 
+        CCSP_Message_Bus_Init_Synced
+            (
+                pMyObject->PANameWithPrefix,
+                CCSP_MSG_BUS_CFG,
+                (void**)&pMyObject->hMsgBusHandle,
+                (CCSP_MESSAGE_BUS_MALLOC)Ansc_AllocateMemory_Callback, 
+                (CCSP_MESSAGE_BUS_FREE)Ansc_FreeMemory_Callback
+            );
+#else
+//    nRet = 
+        CCSP_Message_Bus_Init
+            (
+                pMyObject->PANameWithPrefix,
+                CCSP_MSG_BUS_CFG,
+                (void**)&pMyObject->hMsgBusHandle,
+                (CCSP_MESSAGE_BUS_MALLOC)Ansc_AllocateMemory_Callback, 
+                (CCSP_MESSAGE_BUS_FREE)Ansc_FreeMemory_Callback
+            );
+#endif 
+      /* register PA to CR */
     returnStatus = pMyObject->RegisterPA((ANSC_HANDLE)pMyObject, TRUE);
 
     return  returnStatus;

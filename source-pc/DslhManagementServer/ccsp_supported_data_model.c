@@ -79,6 +79,133 @@ extern char *CcspManagementServer_ComponentName;
 extern msObjectInfo *objectInfo;
 int                 sdmObjectNumber = 0;
 
+/* The node name cannot start with digits. So add 'm' before instance number. */
+/*  <SupportedDataModel>
+        <m1>
+            <URL>aa</URL> 
+            <URN>bb</URN> 
+            <Features>bb</Features> 
+        </m1>
+        <m2>
+            <URL>xx</URL> 
+            <URN>yy</URN> 
+            <Features>bb</Features> 
+        </m2>
+    </SupportedDataModel>
+ */
+
+static
+VOID
+LoadSDMObject
+    (
+        PANSC_XML_DOM_NODE_OBJECT   pArgNode,
+        int                         sdmId,
+        CCSP_STRING                 sdmIdStr
+    )
+{
+    if(pArgNode == NULL) return;
+    PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
+    CCSP_CHAR                       sdmObjectName[100];
+    CCSP_CHAR                       paramterValue[CCSP_SUPPORTED_DATA_MODEL_PARAMETER_VALUE_LENGTH + 1];
+    size_t                          len = strlen(sdmIdStr);
+    unsigned int                             i;
+    int                             id = SupportedDataModelID + sdmId;
+    unsigned long                   ulSize;
+
+    for(i=0; i<len; i++)
+        sdmObjectName[i] = sdmIdStr[i];
+    sdmObjectName[len] = '.';
+    sdmObjectName[len+1] = '\0';
+
+    objectInfo[id].name = CcspManagementServer_MergeString(_SupportedDataModelObjectName, sdmObjectName); /* full name end with '.' */
+    objectInfo[id].numberOfChildObjects = 0;
+    objectInfo[id].childObjectIDs = NULL;
+    objectInfo[id].numberOfParameters = 3;
+    objectInfo[id].parameters = (msParameterInfo *) CcspManagementServer_Allocate(3 * sizeof(msParameterInfo));
+    objectInfo[id].access = CCSP_RO;
+    objectInfo[id].parameters[SupportedDataModelURLID].name = CcspManagementServer_CloneString("URL");
+    objectInfo[id].parameters[SupportedDataModelURNID].name = CcspManagementServer_CloneString("URN");
+    objectInfo[id].parameters[SupportedDataModelFeaturesID].name = CcspManagementServer_CloneString("Features");
+    for(i = 0; i<3; i++)
+    {
+        objectInfo[id].parameters[i].notification = 0;
+        objectInfo[id].parameters[i].access = CCSP_RO;
+        objectInfo[id].parameters[i].accessControlBitmask = ~((unsigned int)0);
+        objectInfo[id].parameters[i].type = ccsp_string;
+        objectInfo[id].parameters[i].value = NULL;
+    }
+
+    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetHeadChild(pArgNode);
+    if( pChildNode == NULL) return;
+    do
+    {
+        memset(paramterValue, 0, CCSP_SUPPORTED_DATA_MODEL_PARAMETER_VALUE_LENGTH + 1);
+        ulSize = CCSP_SUPPORTED_DATA_MODEL_PARAMETER_VALUE_LENGTH + 1;
+        if(AnscEqualString(pChildNode->Name, "URL", TRUE))
+        {
+            pChildNode->GetDataString(pChildNode, "URL", paramterValue, &ulSize);
+            objectInfo[id].parameters[SupportedDataModelURLID].value = CcspManagementServer_CloneString(paramterValue);
+        }else if(AnscEqualString(pChildNode->Name, "URN", TRUE))
+        {
+            pChildNode->GetDataString(pChildNode, "URN", paramterValue, &ulSize);
+            objectInfo[id].parameters[SupportedDataModelURNID].value = CcspManagementServer_CloneString(paramterValue);
+        }else if(AnscEqualString(pChildNode->Name, "Features", TRUE))
+        {
+            pChildNode->GetDataString(pChildNode, "Features", paramterValue, &ulSize);
+            objectInfo[id].parameters[SupportedDataModelFeaturesID].value = CcspManagementServer_CloneString(paramterValue);
+        }
+    }while((pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetNextChild(pArgNode, pChildNode)) != NULL);
+}
+
+static
+CCSP_BOOL 
+LoadFromXMLFile(void*  pXMLHandle)
+{
+    PANSC_XML_DOM_NODE_OBJECT       pHandle        = (PANSC_XML_DOM_NODE_OBJECT)pXMLHandle;
+    PANSC_XML_DOM_NODE_OBJECT       pChildNode     = NULL;
+    CCSP_INT                        i;
+
+    //CcspTraceWarning("supportedDataModel", ( "LoadFromXMLFile 0: %p\n", pXMLHandle));
+    if( pXMLHandle != NULL) sdmObjectNumber = pHandle->ChildNodeQueue.Depth;
+    else sdmObjectNumber = 0;
+    if(sdmObjectNumber < 0) sdmObjectNumber = 0;
+
+    CcspTraceDebug(( "LoadFromXMLFile 0: %p, smbObjNum=%d\n", pXMLHandle, sdmObjectNumber));
+
+    objectInfo = (msObjectInfo *)CcspManagementServer_Allocate((SupportedDataModelID + sdmObjectNumber + 1) * sizeof(msObjectInfo));
+
+    objectInfo[SupportedDataModelID].name = CcspManagementServer_CloneString(_SupportedDataModelObjectName);
+    objectInfo[SupportedDataModelID].numberOfChildObjects = sdmObjectNumber;
+    if(sdmObjectNumber > 0)
+    {
+        objectInfo[SupportedDataModelID].childObjectIDs = (unsigned int *) CcspManagementServer_Allocate(sdmObjectNumber * sizeof(unsigned int));
+        for(i = 0; i<sdmObjectNumber; i++)
+        {
+            objectInfo[SupportedDataModelID].childObjectIDs[i] = SupportedDataModelID + i + 1;
+        }
+    }
+    else
+    {
+        objectInfo[SupportedDataModelID].childObjectIDs = NULL;
+    }
+    objectInfo[SupportedDataModelID].numberOfParameters = 0;
+    objectInfo[SupportedDataModelID].parameters = NULL;
+    objectInfo[SupportedDataModelID].access = CCSP_RO;
+
+    if(sdmObjectNumber <= 0) return TRUE;
+
+    pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pHandle->GetHeadChild(pHandle);
+
+    do{
+        /* Since xml node name cannot start with digits, add 'm' before instance number. */
+        i = atoi(&(pChildNode->Name[1]));
+        if(i > 0)  /* Instance number cannot be 0. */
+        {
+            LoadSDMObject(pChildNode, i, &(pChildNode->Name[1]));
+        }
+    } while((pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pHandle->GetNextChild(pHandle, pChildNode)) != NULL);
+    return TRUE;
+}
 /* Check for the existence of a config file path */
 static CCSP_BOOL CheckFileExists( const char *path )
 {
@@ -104,7 +231,7 @@ CcspManagementServer_FillInSDMObjectInfo()
     /* load from XML file */
     PANSC_XML_DOM_NODE_OBJECT       pRootNode   = NULL;
 
-    if( ( _SupportedDataModelConfigFile ) && ( CheckFileExists( _SupportedDataModelConfigFile ) ) )
+    if( CheckFileExists( _SupportedDataModelConfigFile ) ) 
     {
         CCSP_INT fileHandle   = open(_SupportedDataModelConfigFile,  O_RDONLY);
         CCSP_INT iContentSize = 0;
@@ -133,6 +260,7 @@ CcspManagementServer_FillInSDMObjectInfo()
                     /* loca from the node */
                     if( pRootNode != NULL)
                     {
+			LoadFromXMLFile((void*)pRootNode);
                         pRootNode->Remove(pRootNode);
                     }
                     /*RDKB-7334, CID-33035, free memory after use*/

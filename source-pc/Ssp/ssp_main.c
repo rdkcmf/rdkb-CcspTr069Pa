@@ -271,10 +271,10 @@ void sig_handler(int sig)
 
     	signal(SIGALRM, sig_handler); /* reset it to this function */
     	CcspTr069PaTraceInfo(("SIGALRM received!\n"));
-		RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
-		RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
-		TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
-		TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
+		RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
+		RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
+		TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
+		TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
     }
     else {
     	/* get stack trace first */
@@ -420,10 +420,10 @@ int main(int argc, char* argv[])
 
     cmd_dispatch('e');
 
-	RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
-	RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
-	TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
-	TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
+	RDKLogEnable = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
+	RDKLogLevel = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
+	TR69_RDKLogLevel = GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LogLevel");
+	TR69_RDKLogEnable = (char)GetLogInfo(g_pCcspCwmpCpeController->hMsgBusHandle,"simu.","Device.LogAgent.X_RDKCENTRAL-COM_TR69_LoggerEnable");
 
 	/*This is used for ccsp recovery manager */
     

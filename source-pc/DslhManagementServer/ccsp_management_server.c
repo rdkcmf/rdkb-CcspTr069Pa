@@ -316,7 +316,7 @@ CcspManagementServer_FillInObjectInfo()
     /* First setup default object array. */
     objectInfo[DeviceID].name = CcspManagementServer_CloneString(_DeviceObjectName);
 
-    objectInfo[DeviceID].numberOfChildObjects = 3;
+    objectInfo[DeviceID].numberOfChildObjects = 2;
     objectInfo[DeviceID].childObjectIDs =
         CcspManagementServer_Allocate(objectInfo[DeviceID].numberOfChildObjects * sizeof(unsigned int));
     objectInfo[DeviceID].childObjectIDs[0] = ManagementServerID;
