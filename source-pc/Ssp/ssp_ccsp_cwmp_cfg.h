@@ -120,5 +120,17 @@ CcspTr069PaSsp_GetCustomForcedInformParams
         ANSC_HANDLE                 hThisObject
     );
 
+ANSC_STATUS
+CcspTr069PaSsp_LoadCfgFile
+    (
+        char*                       pCfgFileName
+    );
+
+ANSC_STATUS
+CcspTr069PaSsp_GetTr069CertificateLocationForSyndication
+    (
+                char**                                          ppretTr069CertLocation 
+        );
+
 #endif
 

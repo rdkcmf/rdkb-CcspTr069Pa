@@ -124,7 +124,7 @@ CcspCwmpCpecoCreate
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    UNREFERENCED_PARAMETER(hAnscReserved);
     PANSC_COMPONENT_OBJECT          pBaseObject  = NULL;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject    = NULL;
 
@@ -192,7 +192,6 @@ CcspCwmpCpecoRemove
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus            = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     
                                     pMyObject               = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
     PCCSP_CWMP_ACS_BROKER_OBJECT    pCcspCwmpAcsBroker      = (PCCSP_CWMP_ACS_BROKER_OBJECT    )pMyObject->hCcspCwmpAcsBroker;
@@ -350,7 +349,6 @@ CcspCwmpCpecoEnrollObjects
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus        = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject           = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
     PCCSP_CWMP_ACS_BROKER_OBJECT         pCcspCwmpAcsBroker      = (PCCSP_CWMP_ACS_BROKER_OBJECT    )pMyObject->hCcspCwmpAcsBroker;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT )pMyObject->hCcspCwmpProcessor;
@@ -589,9 +587,7 @@ CcspCwmpCpecoInitialize
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pMyObject    = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)hThisObject;
-    ULONG                           i            = 0;
 
     /*
      * Until you have to simulate C++ object-oriented programming style with standard C, you don't

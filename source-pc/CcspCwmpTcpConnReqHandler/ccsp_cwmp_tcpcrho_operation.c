@@ -214,7 +214,6 @@ CcspCwmpTcpcrhoCancel
 {
     ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
     PANSC_DAEMON_SERVER_TCP_OBJECT  pTcpServer    = (PANSC_DAEMON_SERVER_TCP_OBJECT)pMyObject->hTcpServer;
 
     if ( !pMyObject->bActive )
@@ -268,7 +267,6 @@ CcspCwmpTcpcrhoCreateTcpServers
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
     PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
     PANSC_DAEMON_SERVER_TCP_OBJECT  pTcpServer    = (PANSC_DAEMON_SERVER_TCP_OBJECT)pMyObject->hTcpServer;
@@ -343,9 +341,7 @@ CcspCwmpTcpcrhoRemoveTcpServers
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject     = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT    )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty     = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY  )&pMyObject->Property;
     PANSC_DAEMON_SERVER_TCP_OBJECT  pTcpServer = (PANSC_DAEMON_SERVER_TCP_OBJECT)pMyObject->hTcpServer;
 
     if ( pTcpServer )
@@ -389,9 +385,7 @@ CcspCwmpTcpcrhoWorkerInit
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
+    UNREFERENCED_PARAMETER(hThisObject);
 
     return  ANSC_STATUS_SUCCESS;
 }
@@ -427,9 +421,7 @@ CcspCwmpTcpcrhoWorkerUnload
         ANSC_HANDLE                 hThisObject
     )
 {
-    ANSC_STATUS                     returnStatus  = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
-    PCCSP_CWMP_TCPCR_HANDLER_PROPERTY    pProperty    = (PCCSP_CWMP_TCPCR_HANDLER_PROPERTY)&pMyObject->Property;
+    UNREFERENCED_PARAMETER(hThisObject);
 
     return  ANSC_STATUS_SUCCESS;
 }

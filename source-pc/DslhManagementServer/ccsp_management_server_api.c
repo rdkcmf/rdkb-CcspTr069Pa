@@ -108,6 +108,9 @@ int  CcspManagementServer_SetCommit(
     void* user_data
     )
 {
+    UNREFERENCED_PARAMETER(sessionId);
+    UNREFERENCED_PARAMETER(user_data);
+
     if(commit)
     {
         CcspManagementServer_CommitParameterValues(writeID);
@@ -127,6 +130,9 @@ int  CcspManagementServer_GetParameterValues(
     void* user_data
     )
 {
+    UNREFERENCED_PARAMETER(writeID);
+    UNREFERENCED_PARAMETER(user_data);
+
     /* first count return size. */
     int i = 0;
     *val_size = 0;
@@ -205,6 +211,8 @@ int  CcspManagementServer_SetParameterAttributes(
     void* user_data
 )
 {
+    UNREFERENCED_PARAMETER(user_data);
+
     int i = 0;
     for(; i<size; i++)
     {
@@ -249,6 +257,8 @@ int  CcspManagementServer_GetParameterAttributes(
     void* user_data
 )
 {
+    UNREFERENCED_PARAMETER(user_data);
+
     /* first count return size. */
     int i = 0;
     *val_size = 0;
@@ -321,6 +331,11 @@ int  CcspManagementServer_AddTblRow(
     void* user_data
 )
 {
+    UNREFERENCED_PARAMETER(sessionId);
+    UNREFERENCED_PARAMETER(objectName);
+    UNREFERENCED_PARAMETER(instanceNumber);
+    UNREFERENCED_PARAMETER(user_data);
+
     return CCSP_ERR_NOT_SUPPORT;
 }
 
@@ -331,6 +346,11 @@ int  CcspManagementServer_DeleteTblRow(
     void* user_data
     )
 {
+    UNREFERENCED_PARAMETER(sessionId);
+    UNREFERENCED_PARAMETER(objectName);
+    UNREFERENCED_PARAMETER(instanceNumber);
+    UNREFERENCED_PARAMETER(user_data);
+
     return CCSP_ERR_NOT_SUPPORT;
 }
 
@@ -407,6 +427,8 @@ int CcspManagementServer_GetParameterNames(
     void* user_data
 )
 {
+    UNREFERENCED_PARAMETER(user_data);
+
     char *name;
     //CcspTraceWarning("sample_component", ( "CcspManagementServer_GetParameterNames 1: %s\n", parameterName));
     int objectID = CcspManagementServer_GetObjectID(parameterName, &name);

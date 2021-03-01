@@ -66,6 +66,8 @@
 
 **********************************************************************/
 
+#include <string.h>
+
 #ifndef  _CCSP_TYPES_DEF_
 #define  _CCSP_TYPES_DEF_
 

@@ -220,12 +220,12 @@ CcspCwmpTcpcrhoParseBasicCredentials
         ULONG                       ulSize
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
+
     /* basic-credentials = "Basic" SP basic-cookie */
 
     PHTTP_AUTH_CREDENTIAL           pCredentials    = (PHTTP_AUTH_CREDENTIAL)hCredentials;
     PHTTP_CREDENTIAL_BASIC          pBasicCookie    = &pCredentials->Credential.Basic;
-    PUCHAR                          pToken          = pBuf;
-    BOOL                            bSucc           = TRUE;
     PUCHAR                          pDecodedString;
     PUCHAR                          pString         = NULL;
     ULONG                           ulDecodedStringLen;
@@ -339,6 +339,8 @@ CcspCwmpTcpcrhoParseDigestCredentials
         ULONG                       ulSize
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
+
     /* auth-scheme = token */
     /* auth-param = token "=" quoted-string */
 
@@ -400,6 +402,7 @@ CcspCwmpTcpcrhoIsRequestComplete
         ULONG                       ulSize
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     char                            eom[][5]            = { "\n\r\n", "\n\n", "\r\r" };
     int                             num_eom             = sizeof(eom)/sizeof(eom[0]);
     int                             i;
@@ -476,15 +479,9 @@ CcspCwmpTcpcrhoIsValidConnRequest
     /* the message has to be a valid HTTP request */
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject           = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT )hThisObject;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT     pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
-	PCCSP_CWMP_CFG_INTERFACE				pCcspCwmpCfgIf		    = (PCCSP_CWMP_CFG_INTERFACE		  )pCcspCwmpCpeController->GetCcspCwmpCfgIf((ANSC_HANDLE)pCcspCwmpCpeController);
     PUCHAR                          pMsg                = pBuf;
     PUCHAR                          pMsgEnd             = pMsg + ulSize - 1;
-    PUCHAR                          pNext               = NULL;
     BOOL                            bValid              = TRUE;
-    PUCHAR                          pEndHeaders         = NULL;
-    char                            eom[][5]            = { "\n\r\n", "\n\n", "\r\r" };
-    int                             num_eom             = sizeof(eom)/sizeof(eom[0]);
-    int                             i;
     PUCHAR                          pUrlPath           = NULL;
     PUCHAR                          pUrlPathOrg        = NULL;
     PUCHAR                          pPath;
@@ -583,7 +580,7 @@ CcspCwmpTcpcrhoIsValidConnRequest
         pPath = _ansc_memchr(pPath+7, '/', pReqLineEnd - pUrlPath - 6);
     }
 
-    if ( !pPath || AnscSizeOfString((char*)pUrlPath) != (pPathEnd - pPath) || 
+    if ( !pPath || AnscSizeOfString((char*)pUrlPath) != (ULONG)(pPathEnd - pPath) || 
          !AnscEqualMemory((char*)pPath, (char*)pUrlPath, AnscSizeOfString((char*)pUrlPath)) )
     {
         bValid = FALSE;

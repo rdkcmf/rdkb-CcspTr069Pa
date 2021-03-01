@@ -186,7 +186,7 @@ ssp_dumpPiTreeNodeCB
         PCCSP_TR069_PARAM_INFO      pParamInfo
     )
 {
-    PCCSP_TR069_PARAM_INFO          pPiNode = pParamInfo;
+    UNREFERENCED_PARAMETER(pContext);
     char                            fullName[257] = {0};
 
     CcspTr069PA_GetPiFullName(pParamInfo, fullName, 257);        
@@ -255,7 +255,6 @@ void ssp_testNsSyncWithCR()
                 else
                 {
                     PCCSP_CWMP_PROCESSOR_OBJECT  pCcspCwmpProcessor = NULL;
-                    ANSC_STATUS                 status;
 
                     pCcspCwmpProcessor = (PCCSP_CWMP_PROCESSOR_OBJECT)g_pCcspCwmpCpeController->GetCcspCwmpProcessor((ANSC_HANDLE)g_pCcspCwmpCpeController);
 
@@ -276,7 +275,6 @@ void ssp_testNsAgainstMapper()
 {
                     char            ns[256] = {0};
                     char            ss[32];
-                    int             size, i;
 
                     printf("Input namespace to check if it's supported: ");
                     fflush(stdin);
@@ -523,9 +521,7 @@ static void ssp_testSPV_withWriteID(ULONG ulWriteID)
     PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf         = (PCCSP_CWMP_MPA_INTERFACE        )pCcspCwmpProcessor->hCcspCwmpMpaIf;
     CCSP_CWMP_PARAM_VALUE           pv                 = {0};
     PCCSP_CWMP_PARAM_VALUE          pParamValueArray   = (PCCSP_CWMP_PARAM_VALUE     )&pv;
-    ULONG                           ulArraySize        = (ULONG                      )0;
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault     = (PCCSP_CWMP_SOAP_FAULT      )NULL;
-    ULONG                           i                  = 0;
     ANSC_STATUS                     returnStatus;
     char                            ns[256];
     char                            dataType[32];
@@ -701,7 +697,6 @@ void ssp_testSPA()
     char                            ns[MAX_NS_AL_LEN];
     char                            c;
     BOOL                            bChangeNotif       = FALSE;
-    ULONG                           ulNotif            = 0;
     BOOL                            bChangeAL          = FALSE;
     char                            al[MAX_NS_AL_LEN]; /*RDKB-7336, CID-33191, increasing the memory to avoid out of bound access*/
 
@@ -856,7 +851,6 @@ void ssp_testDeleteObject()
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault     = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     ANSC_STATUS                     returnStatus;
     char                            ns[256];
-    ULONG                           ulObjInstance      = 0;
     int                             iStatus            = 0;
 
     printf("Input namespace: ");
@@ -901,8 +895,6 @@ void ssp_testDeleteObject()
 void ssp_checkCachedParamAttr()
 {
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )g_pCcspCwmpCpeController->hCcspCwmpProcessor;
-    PCCSP_CWMP_MPA_INTERFACE             pCcspCwmpMpaIf         = (PCCSP_CWMP_MPA_INTERFACE        )pCcspCwmpProcessor->hCcspCwmpMpaIf;
-    PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault     = (PCCSP_CWMP_SOAP_FAULT      )NULL;
     char                            ns[256];
     ULONG                           ulNotification;
 
@@ -939,15 +931,10 @@ void ssp_flipInvNamespaceChkFlag()
 
 void ssp_sendValueChangeSignal()
 {
-    PCCSP_CWMP_PROCESSOR_OBJECT     pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )g_pCcspCwmpCpeController->hCcspCwmpProcessor;
-    ANSC_STATUS                     returnStatus;
     char                            ns[MAX_NS_AL_LEN];
     char                            oldValue[MAX_VALUE_ARRAY_LEN]      = {0};
     char                            newValue[MAX_VALUE_ARRAY_LEN]      = {0};
-    SLAP_VARIABLE                   slapVar            = {0};
     parameterSigStruct_t            vcSig              = {0};
-    char*                           ssPrefix           = NULL;
-    unsigned int                    writeID            = 0;
     char                            dataType[MAX_DATA_TYPR_LEN]       = {0};
     int                             ret;
     void*                           hBusHandle         = g_pCcspCwmpCpeController->hMsgBusHandle;
@@ -1019,7 +1006,6 @@ void ssp_sendValueChangeSignal()
 
 void ssp_sendDiagCompleteSignal()
 {
-    PCCSP_CWMP_PROCESSOR_OBJECT     pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT )g_pCcspCwmpCpeController->hCcspCwmpProcessor;
     int                             ret;
     void*                           hBusHandle         = g_pCcspCwmpCpeController->hMsgBusHandle;
 

@@ -110,7 +110,6 @@ CcspCwmpStunmoEngage
 {
     ANSC_STATUS                         returnStatus            = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject               = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty               = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
     PSTUN_BSM_INTERFACE                 pStunBsmIf              = (PSTUN_BSM_INTERFACE        )pMyObject->hStunBsmIf;
     PSTUN_SIMPLE_CLIENT_OBJECT          pStunSimpleClient       = (PSTUN_SIMPLE_CLIENT_OBJECT )pMyObject->hStunSimpleClient;
     PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController  = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
@@ -173,10 +172,7 @@ CcspCwmpStunmoCancel
 {
     ANSC_STATUS                         returnStatus       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject          = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty          = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
-    PSTUN_BSM_INTERFACE                 pStunBsmIf         = (PSTUN_BSM_INTERFACE        )pMyObject->hStunBsmIf;
     PSTUN_SIMPLE_CLIENT_OBJECT          pStunSimpleClient  = (PSTUN_SIMPLE_CLIENT_OBJECT )pMyObject->hStunSimpleClient;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
     ULONG                               ulMaxWaitTimes     = 10;
     ULONG                               ulWaitTimes        = 0;
 
@@ -235,9 +231,9 @@ CcspCwmpStunmoSetupEnv
         ANSC_HANDLE                 hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
+
     ANSC_STATUS                         returnStatus           = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject              = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;    
     
     return  returnStatus;
 }
@@ -273,10 +269,9 @@ CcspCwmpStunmoCloseEnv
         ANSC_HANDLE                 hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
+
     ANSC_STATUS                         returnStatus           = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_STUN_MANAGER_OBJECT      pMyObject              = (PCCSP_CWMP_STUN_MANAGER_OBJECT  )hThisObject;
-    PCCSP_CWMP_STUN_MANAGER_PROPERTY    pProperty              = (PCCSP_CWMP_STUN_MANAGER_PROPERTY)&pMyObject->Property;
-    PCCSP_CWMP_CPE_CONTROLLER_OBJECT    pCcspCwmpCpeController = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)pMyObject->hCcspCwmpCpeController;
 
     return  returnStatus;
 }

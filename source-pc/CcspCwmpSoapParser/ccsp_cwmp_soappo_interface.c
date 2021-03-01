@@ -117,7 +117,5 @@ CcspCwmpCreateSoapParser
         ANSC_HANDLE                 hAnscReserved
     )
 {
-    ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
-
     return  CcspCwmpSoappoCreate(hContainerContext, hOwnerContext, hAnscReserved);
 }

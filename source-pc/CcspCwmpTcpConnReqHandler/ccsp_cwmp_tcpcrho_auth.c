@@ -667,8 +667,8 @@ CcspCwmpTcpcrhoCalcDigestHA1
         PUCHAR                      pHA1
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     status       = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
     char*                           pBuf         = NULL;
     ULONG                           ulSize       = 0;
     ANSC_CRYPTO_HASH                MD5Hash;
@@ -807,14 +807,12 @@ CcspCwmpTcpcrhoCalcDigestHA2
         PUCHAR                      pHA2
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     status       = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
     char*                           pBuf         = NULL;
     ULONG                           ulSize       = 0;
     BOOL                            bAuthInt     = FALSE;
-    PUCHAR                          pHostName    = NULL;
     PUCHAR                          pUriPath     = NULL;
-    USHORT                          HostPort     = 0;
     ANSC_CRYPTO_HASH                MD5Hash      = {0}; /*RDKB-7327, CID-32923, initialize before use */
 
     pUriPath = pDigestUri;
@@ -916,8 +914,8 @@ CcspCwmpTcpcrhoGetRequestHostUri
         PUCHAR                      *ppUriPath
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     status       = ANSC_STATUS_BAD_PAYLOAD;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
     PUCHAR                          pMsg         = (PUCHAR                    )buffer;
     PUCHAR                          pMsgEnd      = pMsg + ulSize - 1;
     char*                           pHost        = NULL;
@@ -1104,7 +1102,6 @@ CcspCwmpTcpcrhoGetAuthInfo
         ULONG                       ulSize
     )
 {
-    ANSC_STATUS                     status       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
     PHTTP_HFO_AUTHORIZATION         pHfoAuth     = (PHTTP_HFO_AUTHORIZATION   )NULL;
     PHTTP_AUTHO_INFO                pAuthInfo    = (PHTTP_AUTHO_INFO          )NULL;
@@ -1257,8 +1254,8 @@ CcspCwmpTcpcrhoGetDigestAuthInfo
         PUCHAR                      pDigData
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     status       = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
     PHTTP_AUTHO_INFO                pAuthInfo    = (PHTTP_AUTHO_INFO          )hAuthInfo;
     char*                           pChal        = (char*)pDigData;
     char*                           pNext = NULL, *pValue= NULL, *pValueLast= NULL;
@@ -1277,10 +1274,10 @@ CcspCwmpTcpcrhoGetDigestAuthInfo
         }
 
         pNext       = _ansc_strchr(pChal, ',');
-        ulLen       = pNext ? pNext - pChal : AnscSizeOfString(pChal);
+        ulLen       = pNext ? (ULONG)(pNext - pChal) : AnscSizeOfString(pChal);
 
         pValue      = _ansc_memchr(pChal, '=', ulLen);
-        ulNameLen   = (ULONG)(pValue ? (pValue - pChal) : AnscSizeOfString(pChal));
+        ulNameLen   = pValue ? (ULONG)(pValue - pChal) : AnscSizeOfString(pChal);
         pValue ++;
         pValueLast  = pNext ? pNext - 1 : pChal + AnscSizeOfString(pChal) - 1;
 
@@ -1424,7 +1421,7 @@ CcspCwmpTcpcrhoGetDigestAuthInfo
                 	        }
 
             	            pNext   = (PUCHAR)_ansc_strchr((char*)pDomain, ' ');
-        	                ulLen   = pNext ? pNext - pDomain : AnscSizeOfString((char*)pDomain);
+        	                ulLen   = pNext ? (ULONG)(pNext - pDomain) : AnscSizeOfString((char*)pDomain);
 
     	                    HttpAuthCloneMemory(pURIs[ulCount], pDomain, ulLen);
 	                        ulCount ++;
@@ -1476,7 +1473,7 @@ CcspCwmpTcpcrhoGenBasicChallenge
         PUCHAR                      pRealm
     )
 {
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT  )hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
 
     return (PUCHAR)CcspTr069PaCloneString((char*)pRealm);
 }
@@ -1545,7 +1542,7 @@ CcspCwmpTcpcrhoGenDigestChallenge
         BOOL                        bNonceExpired
     )
 {
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
+    UNREFERENCED_PARAMETER(hThisObject);
     char*							pDigChal     = NULL;
     ULONG                           ulSize       = 0;
 
@@ -1701,7 +1698,6 @@ CcspCwmpTcpcrhoGenBasicResponse
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
     PHTTP_HFO_WWW_AUTHENTICATE      pHfoWwwAuth  = NULL;
     PHTTP_AUTH_CHALLENGE            pAuthChal    = NULL;
-    BOOL                            bBasicAuth   = TRUE;
     PUCHAR                          pChalReq     = NULL;
     PHTTP_CHALLENGE_BASIC           pBasicAuth   = NULL;
 
@@ -1916,11 +1912,6 @@ CcspCwmpTcpcrhoGenResponse
     char*                           pMsg         = (char*                          )buffer;
     ULONG                           ulSize       = *pulSize;
     PHTTP_HFO_WWW_AUTHENTICATE      pHfoWwwAuth  = (PHTTP_HFO_WWW_AUTHENTICATE)hAuthHeader;
-    PHTTP_HFO_CONTENT_TYPE          pHfoConType  = NULL;
-    PHTTP_HFO_CONNECTION            pHfoConn     = NULL;
-    PHTTP_HFO_CONTENT_LENGTH        pHfoConLen   = NULL;
-    PHTTP_RESPONSE_INFO             pRepInfo     = NULL;
-    ULONG                           ulContentLen = 0;
 
     *pMsg = 0;
 
@@ -2131,10 +2122,9 @@ CcspCwmpTcpcrhoGenNonce
         ULONG                       ulNonceLen
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     status       = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
     ULONG                           ulTimeNow    = AnscGetTickInMilliSeconds();
-    PUCHAR                          pRandomBytes = NULL;
     ULONG                           ulRandomBytes= 0;
     ANSC_CRYPTO_HASH                MD5Hash;
 
@@ -2246,9 +2236,6 @@ CcspCwmpTcpcrhoVerify
     ANSC_STATUS                     status       = ANSC_STATUS_SUCCESS;
     PCCSP_CWMP_TCPCR_HANDLER_OBJECT      pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
     PHTTP_AUTHO_INFO                pAuthInfo    = (PHTTP_AUTHO_INFO          )hAuthInfo;
-    PUCHAR                          pHostName    = NULL;
-    PUCHAR                          pUriPath     = NULL;
-    USHORT                          HostPort     = 0;
 
     if ( !pAuthInfo )
     {
@@ -2469,14 +2456,10 @@ CcspCwmpTcpcrhoGenResResponse
         ULONG                       ulResLen
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                     status       = ANSC_STATUS_SUCCESS;
-    PCCSP_CWMP_TCPCR_HANDLER_OBJECT pMyObject    = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)hThisObject;
     char*                           pMsg         = (char*                     	   )buffer;
     ULONG                           ulSize       = *pulSize;
-    PHTTP_HFO_CONTENT_TYPE          pHfoConType  = NULL;
-    PHTTP_HFO_CONNECTION            pHfoConn     = NULL;
-    PHTTP_HFO_CONTENT_LENGTH        pHfoConLen   = NULL;
-    PHTTP_RESPONSE_INFO             pRepInfo     = NULL;
     ULONG                           ulContentLen = 0;
 
     *pMsg = 0;
