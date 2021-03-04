@@ -145,6 +145,36 @@
 #define WIFI_KEYPASSPHRASE_SET1 16
 #define WIFI_KEYPASSPHRASE_SET2 8
 
+/*
+   There are 3 possible cases for external -> internal index mappings:
+
+   1) If external -> internal index mappings are defined within the
+   <InstanceMapper> section of ccsp_tr069_pa_mapper.xml, the ACS should use
+   the external indexes. Attempts to use the internal indexes will be rejected.
+   In this case _CWMP_ALLOW_INTERNAL_INDEXES_ should NOT be defined.
+
+   2) If external -> internal index mappings are not defined, the ACS should
+   use the internal indexes. In this case _CWMP_ALLOW_INTERNAL_INDEXES_ should
+   NOT be defined.
+
+   3) The special case where a single firmware image needs to be used with
+   multiple different ACSs, some of which are configured to use internal indexes
+   and some of which are configured to use external indexes. This can be
+   supported by defining external -> internal index mappings in
+   ccsp_tr069_pa_mapper.xml and disabling the error checks which normally
+   prevent an internal index being used when an external -> internal index
+   mapping is defined. In this special case (which happens to be required for
+   Comcast internal builds and is therefore the default)
+   _CWMP_ALLOW_INTERNAL_INDEXES_ should be defined.
+
+   Note that the 3rd case may not be compatible with the Alias Manager. If the
+   Alias Manager is used then the ACS and ccsp_tr069_pa_mapper.xml should be
+   configured to use either internal or external indexes, not a mixture of both.
+*/
+
+#define _CWMP_ALLOW_INTERNAL_INDEXES_
+
+
 /**********************************************************************
                                   MACROS
 **********************************************************************/
@@ -978,8 +1008,12 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
     for ( i = 0; i < ulArraySize; i++ )
     {
         BOOL bIncludeInvParam = !bExcludeInvNs;
+#if defined (_CWMP_ALLOW_INTERNAL_INDEXES_)
+        if ( !pParameterValueArray[i].Name || CcspCwmpIsPartialName(pParameterValueArray[i].Name))
+#else
         if ( !pParameterValueArray[i].Name || CcspCwmpIsPartialName(pParameterValueArray[i].Name)
             || CcspCwmppoMpaCheckInstance(pParameterValueArray[i].Name))
+#endif
         {
             bFaultEncountered = TRUE;
 
@@ -1085,7 +1119,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
              pParameterValueArray[i].Name,
              Subsystems,
              &NumSubsystems,
-             !bExcludeInvNs
+             bIncludeInvQuery
             );
 
         if ( NumSubsystems <= 0 )
@@ -1454,6 +1488,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
                     /*CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING*/
                     CcspCwmppoMpaMapInvalidParamInstNumDmIntToCwmp(pInvalidParam);
+                    CcspTr069PaMapToExternalAlias(pCcspCwmpCpeController->hTr069PaMapper,&pInvalidParam);
 
                     switch ( spvFaultCode )
                     {
@@ -1896,6 +1931,8 @@ CcspCwmppoMpaGetParameterValues
 	
     AnscQueueInitializeHeader(&FcNsListQueue);
     AnscQueueInitializeHeader(&FcGpvResultListQueue);
+    AnscInitializeQueue(&ParamList);
+    AnscInitializeSList(&StringAllocList);
 
     /*
      * A fault response MUST make use of the SOAP Fault element using the following conventions:
@@ -1924,8 +1961,18 @@ CcspCwmppoMpaGetParameterValues
         SlapAllocStringArray2(1, pParamNameArray);
     }
 
-    AnscInitializeQueue(&ParamList);
-    AnscInitializeSList(&StringAllocList);
+#if !defined (_CWMP_ALLOW_INTERNAL_INDEXES_)
+    //If passed paramter to GPV is an internal instance of Data Model, return error.
+    for ( i = 0; i < pParamNameArray->VarCount; i++ )
+    {
+      char * pParamName = pParamNameArray->Array.arrayString[i];
+      if(CcspCwmppoMpaCheckInstance(pParamName))
+      {
+         returnStatus = ANSC_STATUS_BAD_NAME;
+         goto EXIT2;
+      }
+    }
+#endif
 
     /* build a full params list including aliasing */
     returnStatus = CcspTr069PaMapArrayToInternalAliases
@@ -2270,6 +2317,7 @@ CcspCwmppoMpaGetParameterValues
                             &pParamValues[k]->parameterName
                         );
 
+#if !defined (_CWMP_ALLOW_INTERNAL_INDEXES_)
                     // if the parameter name doesn't match the requested name
                     // it's a side effect from aliasing, should not be returned
                     if (!bParamNameArrayEmpty && !CcspTr069PaMatchRequestQuery(pParamValues[k]->parameterName, pParamNameArray) )
@@ -2277,6 +2325,7 @@ CcspCwmppoMpaGetParameterValues
                         bNsInvisibleToCloudServer = TRUE;
                     }
                     else
+#endif
                     {
 
                     /* filter out namespace that is not supported by this PA, or invisible
@@ -2627,6 +2676,7 @@ CcspCwmppoMpaGetParameterNames
     *phSoapFault      = (ANSC_HANDLE)NULL;
 
     AnscQueueInitializeHeader(&FcGpnResultListQueue);
+    AnscInitializeQueue(&ParamList);
 
     /*
      * A fault response MUST make use of the SOAP Fault element using the following conventions:
@@ -2688,7 +2738,6 @@ CcspCwmppoMpaGetParameterNames
     }
 
     pOriginalParam = pParamPath;
-    AnscInitializeQueue(&ParamList);
     if ( (pInternalNames = CcspTr069PA_GetParamInternalNames(pCcspCwmpCpeController->hTr069PaMapper, pParamPath)))
     {
         while ( (InternalName = (char*)CcspTr069PA_GetNextInternalName(pInternalNames)) )
@@ -3106,7 +3155,7 @@ CcspCwmppoMpaSetParameterAttributes
     *phSoapFault = (ANSC_HANDLE)NULL;
     
     AnscQueueInitializeHeader(&FcNsListQueue);
-
+    AnscInitializeQueue(&ParamList);
 
     /*
      * A fault response MUST make use of the SOAP Fault element using the following conventions:
@@ -3138,7 +3187,6 @@ CcspCwmppoMpaSetParameterAttributes
 
     // build a full params list including aliasing
     // TODO: this has to be reworked to multiple objects support
-    AnscInitializeQueue(&ParamList);
     for ( i = 0; i < ulArraySize; i++ )
     {
         pSListEntry = (PCCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY));
@@ -3557,7 +3605,8 @@ CcspCwmppoMpaGetParameterAttributes
 
     AnscQueueInitializeHeader(&FcNsListQueue);
     AnscQueueInitializeHeader(&FcGpaResultListQueue);
-
+    AnscInitializeQueue(&ParamList);
+    AnscInitializeSList(&StringAllocList);
 
     /*
      * A fault response MUST make use of the SOAP Fault element using the following conventions:
@@ -3584,9 +3633,6 @@ CcspCwmppoMpaGetParameterAttributes
         bParamNameArrayEmpty = TRUE;
         SlapAllocStringArray2(1, pParamNameArray);
     }
-
-    AnscInitializeQueue(&ParamList);
-    AnscInitializeSList(&StringAllocList);
 
     /* build a full params list including aliasing */
     returnStatus = CcspTr069PaMapArrayToInternalAliases
