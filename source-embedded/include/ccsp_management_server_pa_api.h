@@ -1163,4 +1163,16 @@ CcspManagementServer_SetLogging_LogLevelStr
         CCSP_STRING                 Value
     );
 
+CCSP_STRING
+CcspManagementServer_GetTR069_NotificationStr
+    (
+        CCSP_STRING                 ComponentName
+    );
+
+CCSP_STRING
+CcspManagementServer_GetConnected_ClientStr
+    (
+        CCSP_STRING                 ComponentName
+    );
+
 #endif
