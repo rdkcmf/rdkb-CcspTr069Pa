@@ -255,8 +255,10 @@ CcspCwmpAcscoRemove
 #define DEVICE_PROPERTIES    "/etc/device.properties"
 static int bIsComcastImage( void)
 {
+    static int isComcastImage = -1;
+    if (isComcastImage == -1)
+    {
         char PartnerId[255] = {'\0'};
-        int isComcastImg = 1;
         errno_t rc       = -1;
         int     ind      = -1;
 
@@ -264,11 +266,12 @@ static int bIsComcastImage( void)
         rc = strcmp_s("comcast", strlen("comcast"), PartnerId, &ind);
         ERR_CHK(rc);
         if((rc == EOK) && (ind != 0))
-        {
-                isComcastImg = 0;
-        }
+            isComcastImage = 1;
+        else
+            isComcastImage = 0;
+    }
 
-        return isComcastImg;
+    return (isComcastImage == 1);
 }
 
 char **getHostNames()
