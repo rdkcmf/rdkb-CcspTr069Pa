@@ -1191,6 +1191,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                     char *pParamN = aMem;
                     AnscCopyString(pParamN,pValueInfo->parameterName);
                     CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
+                    ParamName[i] = (char*)CcspTr069PaAllocateMemory(sizeof(char)*MAX_WIFI_PARAMNAME_LEN);
                     AnscCopyString(ParamName[i],pParamN);
                     noOfParam = i;
                 }
