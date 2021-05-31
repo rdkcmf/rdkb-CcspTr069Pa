@@ -5172,10 +5172,31 @@
         <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.DiagTests.TestResult</Name>
     </Param>
     <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.DiagTests.X_BROADCOM_COM_DiagTestValid</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.DiagTests.X_BROADCOM_COM_DiagTestValue</Name>
+    </Param>
+    <Param>
         <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.DiagTests.X_RDKCENTRAL-COM_DiagTestValid</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.DiagTests.X_RDKCENTRAL-COM_DiagTestValue</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.X_RDKCENTRAL-COM_Stats.HookState</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.X_RDKCENTRAL-COM_Stats.OverCurrentStatus</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.X_RDKCENTRAL-COM_Stats.CallUpdateTime</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.X_RDKCENTRAL-COM_Stats.HDAudioStatus</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.X_RDKCENTRAL-COM_Stats.SDPParam</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.POTS.FXS.{i}.X_BROADCOM_COM_Stats.HookState</Name>
@@ -5205,6 +5226,21 @@
         <Name>Device.Services.VoiceService.{i}.POTS.Ringer.Event.{i}.Cadence</Name>
     </Param>
     <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_LocalTimeZone</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EmtaSafeReset</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EmtaMacAddress</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EmtaProvisioningState</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EventLogNumberOfEntries</Name>
+    </Param>
+    <Param>
         <Name>Device.Services.VoiceService.{i}.POTS.X_RDKCENTRAL-COM_LocalTimeZone</Name>
     </Param>
     <Param>
@@ -5218,6 +5254,21 @@
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.POTS.X_RDKCENTRAL-COM_EventLogNumberOfEntries</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EventLog.{i}.LogTime</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EventLog.{i}.LogId</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EventLog.{i}.LogText</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EventLog.{i}.LogEndpointName</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.POTS.X_BROADCOM_COM_EventLog.{i}.LogAdditionalInfo</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.POTS.X_RDKCENTRAL-COM_EventLog.{i}.LogTime</Name>
@@ -5248,6 +5299,9 @@
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.SIP.X_RDKCENTRAL-COM_OperatorNumberOfEntries</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.SIP.X_BROADCOM_COM_OperatorNumberOfEntries</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.SIP.Client.{i}.Enable</Name>
@@ -5347,6 +5401,12 @@
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.SIP.Client.{i}.EventSubscribe.{i}.X_BROADCOM_COM_State</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.SIP.Client.{i}.X_BROADCOM_COM_IMPU.IMPUIdType</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.SIP.Client.{i}.X_BROADCOM_COM_IMPU.IMPUId</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.SIP.Client.{i}.X_RDKCENTRAL-COM_IMPU.IMPUIdType</Name>
@@ -5589,7 +5649,13 @@
         <Name>Device.Services.VoiceService.{i}.SIP.Network.{i}.EventSubscribe.{i}.ExpireTime</Name>
     </Param>
     <Param>
+        <Name>Device.Services.VoiceService.{i}.SIP.Network.{i}.X_BROADCOM_COM_Operator</Name>
+    </Param>
+    <Param>
         <Name>Device.Services.VoiceService.{i}.SIP.Network.{i}.X_RDKCENTRAL-COM_Operator</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.SIP.X_BROADCOM_COM_Operator.{i}.Domain</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.SIP.X_RDKCENTRAL-COM_Operator.{i}.Domain</Name>
@@ -5793,7 +5859,13 @@
         <Name>Device.Services.VoiceService.{i}.CallControl.Line.{i}.Stats.DSP.Underruns</Name>
     </Param>
     <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.Line.{i}.X_BROADCOM_COM_HookState</Name>
+    </Param>
+    <Param>
         <Name>Device.Services.VoiceService.{i}.CallControl.Line.{i}.X_RDKCENTRAL-COM_HookState</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.Line.{i}.X_BROADCOM_COM_SDPParms</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.CallControl.Line.{i}.X_RDKCENTRAL-COM_SDPParms</Name>
@@ -5998,6 +6070,45 @@
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.SCF.{i}.ForwardedToNumber</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.NoAnsTOEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.CIDBlockEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.CIDDeliveryEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.CallHoldEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.ThreeWayCallEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.AutoRecallEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.BLVEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.EmSvcEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.COTEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.HeldMediaEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.LocalSpeedDialEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.DMVarEnable</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_BROADCOM_COM_RSTFeat.HotLineEnable</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.CallControl.CallingFeatures.Set.{i}.X_RDKCENTRAL-COM_RSTFeat.NoAnsTOEnable</Name>
@@ -6444,6 +6555,150 @@
        <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.Destination.VoiceQuality.WorstVoIPQualityIndicatorTimestamps</Name>
     </Param>
     <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.MOSCQScore</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RFSignalToNoiseLevel</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.ResidualEchoRetLoss</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.AvgTxDelay</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.JBAdjRate</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.SignalLevel</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.NoiseLevel</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RfTxLevel</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RfRxLevel</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.CallTrace</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.Line</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.MOSLQScore</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.DialMode</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.PktLossConcealmentType</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.BurstLossDensity</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.GapLossDensity</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.BurstDuration</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.GapDuration</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.MinGapThreshold</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RFactor</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.ExtRFactor</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.JbAdaptive</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.JbAbsMax</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemMOSLQScore</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemMOSCQScore</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemResidualEchoRetLoss</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemSignalLevel</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemNoiseLevel</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemPktLossConcealmentType</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemJBDiscardRate</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemBurstLossDensity</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemGapLossDensity</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemBurstDuration</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemGapDuration</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemNetRdTripDelay</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemMinGapThreshold</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemRFactor</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemExtRFactor</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemJbAdaptive</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemJbRate</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemJbNominal</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemJbAbsMax</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemJbMax</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.Codec</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RemCodec</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RfCWErrors</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RfCWErrorRate</Name>
+    </Param>
+    <Param>
+       <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_BROADCOM_COM_Stats.RfMicroReflections</Name>
+    </Param>
+    <Param>
        <Name>Device.Services.VoiceService.{i}.CallLog.{i}.Session.{i}.X_RDKCENTRAL-COM_Stats.MOSCQScore</Name>
     </Param>
     <Param>
@@ -6721,6 +6976,42 @@
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_BROADCOM_COM_Device.DevEnabled</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.ResetNow</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.SerialNumber</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.SwCurrentVers</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.FQDN</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.ServerDhcp1</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.ServerDhcp2</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.ServerDns1</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.ServerDns2</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.EUEDevDnsAddr</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.ProvisioningState</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.SignalingNumOfCallsTotal</Name>
+    </Param>
+    <Param>
+        <Name>Device.Services.VoiceService.{i}.VoIPProfile.{i}.X_RDKCENTRAL-COM_Device.DevEnabled</Name>
     </Param>
     <Param>
         <Name>Device.Services.VoiceService.{i}.CodecProfile.{i}.Enable</Name>
