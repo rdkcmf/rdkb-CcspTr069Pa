@@ -226,7 +226,7 @@ CcspCwmppoSysReadySignalCB
 	// Touch a file to indicate that tr069 can proceed with further
     if (access("/var/tmp/tr069paready", F_OK) != 0)
     {
-        print_uptime("boot_to_tr069_uptime",NULL);
+        print_uptime("boot_to_tr069_uptime",NULL, NULL);
     }
 	system("touch /var/tmp/tr069paready");
 
