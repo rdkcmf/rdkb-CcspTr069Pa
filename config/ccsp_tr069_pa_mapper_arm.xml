@@ -368,6 +368,9 @@
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.PartnerId</Name>
         </Param>
         <Param>
+            <Name>Device.DeviceInfo.X_COMCAST-COM_MTA_IPV6</Name>
+        </Param>
+        <Param>
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.CloudUI.brandname</Name>
         </Param>
         <Param>
@@ -454,6 +457,60 @@
         </Param>
         <Param>
             <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareToDownload</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.PrimaryDHCPv6Server</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.SecondaryDHCPv6Server</Name>
+        </Param>
+        <Param>
+		<Name>Device.X_CISCO_COM_MTA_V6.IPV6Address</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.Prefix</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.BootFileName</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.FQDN</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.Gateway</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.LeaseTimeRemaining</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.RebindTimeRemaining</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.RenewTimeRemaining</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.PrimaryDNS</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.SecondaryDNS</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.DHCPOption3</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.DHCPOption6</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.DHCPOption7</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.DHCPOption8</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.PCVersion</Name>
+        </Param>
+        <Param>
+            <Name>Device.X_CISCO_COM_MTA_V6.MACAddress</Name>
         </Param>
 	    <Param>
             <Name>Device.X_CISCO_COM_MTA.Dect.SoftwareVersion</Name>
