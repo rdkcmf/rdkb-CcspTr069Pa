@@ -266,12 +266,12 @@ static int bIsComcastImage( void)
         rc = strcmp_s("comcast", strlen("comcast"), PartnerId, &ind);
         ERR_CHK(rc);
         if((rc == EOK) && (ind != 0))
-            isComcastImage = 1;
-        else
             isComcastImage = 0;
+        else
+            isComcastImage = 1;
     }
 
-    return (isComcastImage == 1);
+    return isComcastImage;
 }
 
 char **getHostNames()
