@@ -821,9 +821,9 @@ CcspTr069PaFindFcNsList
                                                                                                         \
             if ( pFcNsList )                                                                            \
             {                                                                                           \
-                pFcNsList->Subsystem= CcspTr069PaCloneString(pSubSystem);                               \
-                pFcNsList->FCName   = CcspTr069PaCloneString(pFcName);                                  \
-                pFcNsList->DBusPath = CcspTr069PaCloneString(pDbusPath);                                \
+                pFcNsList->Subsystem= pSubSystem ? CcspTr069PaCloneString(pSubSystem) : NULL;           \
+                pFcNsList->FCName   = pFcName? CcspTr069PaCloneString(pFcName) : NULL;                  \
+                pFcNsList->DBusPath = pDbusPath ? CcspTr069PaCloneString(pDbusPath) : NULL;             \
                 AnscQueueInitializeHeader(&pFcNsList->NsList);                                          \
                                                                                                         \
                 AnscQueuePushEntry(pFcNsListQueue, &pFcNsList->Linkage);                                \

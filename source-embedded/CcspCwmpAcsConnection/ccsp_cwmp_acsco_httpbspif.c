@@ -345,7 +345,7 @@ CcspCwmpAcscoHttpBspBrowse
         pAuthHeaderValue = pHttpBmoReq->GetHeaderValueById((ANSC_HANDLE)pHttpBmoReq, HTTP_HEADER_ID_AUTHORIZATION);
 
         if ( pMyObject->AuthHeaderValue ) CcspTr069PaFreeMemory(pMyObject->AuthHeaderValue);
-        pMyObject->AuthHeaderValue = CcspTr069PaCloneString(pAuthHeaderValue);
+        pMyObject->AuthHeaderValue = pAuthHeaderValue ? CcspTr069PaCloneString(pAuthHeaderValue) : NULL;
     }
 
     /* look for Set-Cookie headers */

@@ -290,7 +290,7 @@ CcspCwmppoAddFunctionalComponents
     {
         for ( j = 0; (unsigned int)j < NumComp; j ++ )
         {
-            ppSubsysArray[k+j] = CcspTr069PaCloneString(pSubsystem);
+            ppSubsysArray[k+j] = pSubsystem ? CcspTr069PaCloneString(pSubsystem) : NULL;
             ppFcNameArray[k+j] = CcspTr069PaCloneString(ppComp[j]->componentName);
             ppDbusPathArray[k+j] = CcspTr069PaCloneString(ppComp[j]->dbusPath);
         }

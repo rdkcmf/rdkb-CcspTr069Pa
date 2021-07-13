@@ -535,7 +535,7 @@ CcspTr069PA_AddSubsystem
         }
     }
 
-    CcspTr069Subsystems[CcspTr069SubsystemsCount ++] = CcspTr069PaCloneString(Subsys);
+    CcspTr069Subsystems[CcspTr069SubsystemsCount ++] = Subsys ? CcspTr069PaCloneString(Subsys) : NULL;
 
     return CCSP_TRUE;
 }
@@ -679,7 +679,7 @@ CcspTr069PA_PiTreeAddNamespace
     pChildNode->PartialName = bPartialNs;
     pChildNode->CloudType   = CloudType;
     pChildNode->ReadOnly    = ReadOnly;
-    pChildNode->Subsystem   = CcspTr069PaCloneString(Subsystem);
+    pChildNode->Subsystem   = Subsystem ? CcspTr069PaCloneString(Subsystem) : NULL;
 
     if ( pNsTokenChain )
     {

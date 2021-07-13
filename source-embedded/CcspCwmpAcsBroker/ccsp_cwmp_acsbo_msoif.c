@@ -242,7 +242,7 @@ CcspCwmpAcsboMsoInform
     else
     {
         pCcspCwmpEvent->EventCode  = CcspTr069PaCloneString(pEventCode );
-        pCcspCwmpEvent->CommandKey = CcspTr069PaCloneString(pCommandKey);
+        pCcspCwmpEvent->CommandKey = pCommandKey ? CcspTr069PaCloneString(pCommandKey) : NULL;
 
         /* Per TR-069 specification, if "0 BOOTSTRAP" event is included, all undelivered 
          * events must be discarded 

@@ -1520,10 +1520,10 @@ CcspCwmppoCloneParamValueChangeSignalStruct
             pNewVC = pNewSigStruct + i;
             pVC    = pSigStruct + i;
 
-            pNewVC->parameterName    = CcspTr069PaCloneString((char*)pVC->parameterName);
-            pNewVC->oldValue         = CcspTr069PaCloneString((char*)pVC->oldValue);
-            pNewVC->newValue         = CcspTr069PaCloneString((char*)pVC->newValue);
-            pNewVC->subsystem_prefix = CcspTr069PaCloneString((char*)pVC->subsystem_prefix);
+            pNewVC->parameterName    = pVC->parameterName ? CcspTr069PaCloneString((char*)pVC->parameterName) : NULL;
+            pNewVC->oldValue         = pVC->oldValue ? CcspTr069PaCloneString((char*)pVC->oldValue) : NULL;
+            pNewVC->newValue         = pVC->newValue ? CcspTr069PaCloneString((char*)pVC->newValue) : NULL;
+            pNewVC->subsystem_prefix = pVC->subsystem_prefix ? CcspTr069PaCloneString((char*)pVC->subsystem_prefix) : NULL;
         }
     }
 

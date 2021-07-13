@@ -1644,7 +1644,7 @@ CcspCwmpCpecoSetCRBusPath
 
     if ( i >= pMyObject->NumSubsystems )
     {
-        pMyObject->Subsystem[pMyObject->NumSubsystems  ] = CcspTr069PaCloneString(pSubsystem);
+        pMyObject->Subsystem[pMyObject->NumSubsystems  ] = pSubsystem ? CcspTr069PaCloneString(pSubsystem) : NULL;
         pMyObject->MBusPath  [pMyObject->NumSubsystems++] = CcspTr069PaCloneString(pBusPath);
     }
 
