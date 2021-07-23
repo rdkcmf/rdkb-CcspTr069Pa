@@ -72,10 +72,11 @@
 
 #include "ansc_time.h"
 #include "ccsp_base_api.h"
+#include "dslh_definitions_database.h"
 #include "ccsp_cwmp_definitions_cwmp.h"
 #include "ccsp_tr069pa_wrapper_api.h"
 
-#define  CCSP_TR069PA_WRITE_ID                      CCSP_COMPONENT_ID_ACS
+#define  CCSP_TR069PA_WRITE_ID                      DSLH_MPA_ACCESS_CONTROL_ACS
 
 #define  CCSP_NS_ACCESS_ACSONLY                     0x00000000
 #define  CCSP_NS_ACCESS_SUBSCRIBER                  0xFFFFFFFF
