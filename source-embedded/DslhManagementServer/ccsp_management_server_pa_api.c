@@ -134,6 +134,15 @@ CcspManagementServer_InitCustom
         CCSP_STRING             sdmXmlFilename
     );
 
+/* Customizable default password generation, platform specific
+ */
+extern ANSC_STATUS
+CcspManagementServer_GenerateDefaultPassword
+    (
+        CCSP_STRING             pDftPassword,
+        PULONG                  pulLength
+    );
+
 #if defined (INTEL_PUMA7)
 //Intel Proposed RDKB Generic Bug Fix from XB6 SDK
 //Used to obtain the output from the shell for the given cmd
@@ -827,17 +836,6 @@ CcspManagementServer_GetUsername
  * Device.ManagementServer.Password.
  * Return value - always empty.
  */
-
-/*DH  Customizable default password generation, platform specific*/
-//#ifdef CONFIG_VENDOR_CUSTOMER_COMCAST || _COSA_SIM_
-ANSC_STATUS
-CcspManagementServer_GenerateDefaultPassword
-    (
-        CCSP_STRING                 pDftPassword,
-        PULONG                      pulLength
-    );
-//#endif
-
 CCSP_STRING
 CcspManagementServer_GetPassword
     (
