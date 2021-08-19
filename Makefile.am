@@ -16,9 +16,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-if CCSP_ARCH_PC
-SUBDIRS = source-pc 
-else
-SUBDIRS = source-embedded
-endif
 
+SUBDIRS = source-embedded
