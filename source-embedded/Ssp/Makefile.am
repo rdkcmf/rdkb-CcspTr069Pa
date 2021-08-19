@@ -16,9 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-AM_CFLAGS = -D_ANSC_LINUX
-AM_CFLAGS += -D_ANSC_USER
-AM_CFLAGS += -D_ANSC_LITTLE_ENDIAN_
+AM_CFLAGS =
 AM_CFLAGS += -D_CCSP_CWMP_TCP_CONNREQ_HANDLER
 
 ACLOCAL_AMFLAGS = -I m4
@@ -90,4 +88,4 @@ CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_states.c \
     ../CcspCwmpSoapParser/ccsp_cwmp_soappo_build.c
 
-CcspTr069PaSsp_LDFLAGS = -lccsp_common -lsyscfg -lsysevent -lutapi -lutctx -lcrypto -lsecure_wrapper -lprint_uptime -lprivilege -lcjson
+CcspTr069PaSsp_LDFLAGS = -lccsp_common -lsyscfg -lsysevent -lutapi -lutctx -ltelemetry_msgsender -lsecure_wrapper -lprint_uptime -lprivilege -lcjson -lcrypto

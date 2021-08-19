@@ -35,7 +35,6 @@
    limitations under the License.
 -->
 
-<!-- This file resides in boards/intel_usg_arm/ -->
 <Tr069Mapper>
 	<ErrorMapper>
 		<Error1>

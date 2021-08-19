@@ -35,7 +35,6 @@
    limitations under the License.
 -->
 
-<!-- This file resides in boards/intel_usg_arm/ -->
 <SupportedDataModel>
 	<m1>
 		<URL>https://www.broadband-forum.org/cwmp/tr-181-2-11-0.xml</URL>

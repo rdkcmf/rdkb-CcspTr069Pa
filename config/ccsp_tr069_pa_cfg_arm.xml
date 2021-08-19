@@ -35,7 +35,6 @@
    limitations under the License.
 -->
 
-<!-- This file resides in boards/intel_usg_arm/ -->
 <ccsp_tr069pa_cfg>
 
     <!-- for OpenSsl -->
