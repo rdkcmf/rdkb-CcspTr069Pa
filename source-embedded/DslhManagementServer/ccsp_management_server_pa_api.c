@@ -82,6 +82,7 @@
 #include "syscfg/syscfg.h"
 
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
+#define ETHWAN_FILE     "/nvram/ETHWAN_ENABLE"
 #define MAX_UDP_VAL  257
 #define MAX_BUF_SIZE 256
 // TELEMETRY 2.0 //RDKB-25996
@@ -498,6 +499,8 @@ CcspManagementServer_Init
 {
     size_t nameLen = strlen(ComponentName) + 1;
     errno_t rc = -1;
+    int res;
+    char recordName[MAX_BUF_SIZE];
 
     if ( s_MS_Init_Done ) return;
 
@@ -586,7 +589,39 @@ CcspManagementServer_Init
     }
 
     s_MS_Init_Done = TRUE;
-    ReadTr69TlvData();
+	if (access(ETHWAN_FILE, F_OK) != 0)
+	{
+		ReadTr69TlvData();
+	}
+	else
+	{
+		if(objectInfo[ManagementServerID].parameters[ManagementServerURLID].value == NULL)
+		{
+			//We are here because, PSM DB doesnt have a valid ACS url, device in EWAN mode, setting value from partners_defaults.json to PSM DB
+			AnscTraceWarning(("%s -#- PSM DB reported NULL ACS URL.. Device in EWAN mode, setting URL from partners_defaults.json and continue..\n", __FUNCTION__));
+
+			//g_Tr069PaAcsDefAddr has the ACS url from partners_defaults.json, populated via CcspTr069PaSsp_LoadCfgFile() during initialization
+			if (g_Tr069PaAcsDefAddr!= NULL)
+			{
+				AnscTraceWarning(("ACS URL = %s  \n",g_Tr069PaAcsDefAddr));
+				objectInfo[ManagementServerID].parameters[ManagementServerURLID].value = CcspManagementServer_CloneString(g_Tr069PaAcsDefAddr);
+				rc = memset_s( recordName, sizeof( recordName ), 0, sizeof( recordName ) );                                                                                       
+				ERR_CHK(rc);                                                                                                                                                      
+				_ansc_sprintf(recordName, "%s.%sURL.Value", CcspManagementServer_ComponentName, objectInfo[ManagementServerID].name);
+				res = PSM_Set_Record_Value2(bus_handle, CcspManagementServer_SubsystemPrefix, recordName, ccsp_string, g_Tr069PaAcsDefAddr);
+				if(res != CCSP_SUCCESS){
+					AnscTraceWarning(("%s -#- Failed to write g_Tr069PaAcsDefAddr <%s> into PSM!\n", __FUNCTION__, g_Tr069PaAcsDefAddr));
+				}
+			}
+			else
+			{
+				AnscTraceWarning(("Unable to retrieve ACS URL , ACS url retrieved as NULL \n"));
+			}
+
+		}
+		AnscTraceWarning(("%s -#- ACS URL from PSM DB- %s\n", __FUNCTION__, objectInfo[ManagementServerID].parameters[ManagementServerURLID].value));
+
+	}
     char str[100] = {0};
     _ansc_ultoa(g_ulAllocatedSizeCurr, str, 10);
     objectInfo[MemoryID].parameters[MemoryMinUsageID].value = CcspManagementServer_CloneString(str);
