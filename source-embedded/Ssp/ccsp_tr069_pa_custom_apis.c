@@ -92,6 +92,7 @@
 #include "ccsp_cwmp_ifo_cfg.h"
 
 #include "ccsp_tr069pa_wrapper_api.h"
+#include "secure_wrapper.h"
 
 extern msObjectInfo *objectInfo;
 extern char *CcspManagementServer_SubsystemPrefix;
@@ -545,8 +546,8 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 {
 	FILE	*fp 			= NULL;
 	char	 key [ 256 ],
-		 	 retKey [ 256 ] = { 0 },
-		 	 cmd[ 128 ] 	= { 0 };	
+		 	 retKey [ 256 ] = { 0 };
+		 	
 	int 	len 			= 0;
 	BOOL isEncryptedFileIsThere = FALSE;
         errno_t          rc             = -1;
@@ -570,8 +571,7 @@ char * CcspTr069PaSsp_retrieveSharedKey( void )
 		AnscTraceWarning(("%s -- Encrypted Shared Key Available\n", __FUNCTION__));
 
 		//Decrypt shared key
-		snprintf( cmd, sizeof(cmd), "GetConfigFile %s", TEMP_SHARED_KEY_PATH );
-		system( cmd );
+                v_secure_system("GetConfigFile "TEMP_SHARED_KEY_PATH);
 		
 		if ( ( fp = fopen ( TEMP_SHARED_KEY_PATH, "r" ) ) != NULL ) 
 		{

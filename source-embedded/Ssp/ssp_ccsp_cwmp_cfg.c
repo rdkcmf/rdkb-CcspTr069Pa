@@ -80,7 +80,7 @@
 #include "ansc_xml_dom_parser_external_api.h"
 #include "ansc_xml_dom_parser_status.h"
 #include "cJSON.h"
-
+#include "secure_wrapper.h"
 
 
 extern  CCSP_CWMP_CFG_INTERFACE                          ccspCwmpCfgIf;
@@ -314,6 +314,7 @@ CcspTr069PaSsp_LoadCfgFile
     char*                           pXMLContent        = NULL;
     ULONG                           uBufferSize        = 0;
     char partnerID[128];
+    int ret = 0;
     /* load configuration file */
     {
         ANSC_HANDLE  pFileHandle = NULL;
@@ -379,7 +380,7 @@ CcspTr069PaSsp_LoadCfgFile
 
         if ( ANSC_STATUS_SUCCESS != CcspTr069PaSsp_GetTr069CertificateLocationForSyndication( &openssl_client_ca_certificate_files ) )
         {
-            char cmd[512] = {0};
+            
 
             // Fallback case to load default cerification file
             CcspTr069PaSsp_JSON_GetItemByName(partnerID, CCSP_TR069PA_CERTIFICATE_CFG_Name_ca, &openssl_client_ca_certificate_files);
@@ -387,9 +388,12 @@ CcspTr069PaSsp_LoadCfgFile
             // Load  Certfication file only if it is not NULL
             if (openssl_client_ca_certificate_files)
             {
-                snprintf(cmd, sizeof(cmd), "psmcli set dmsb.device.deviceinfo.X_RDKCENTRAL-COM_Syndication.TR69CertLocation  %s", openssl_client_ca_certificate_files);
-                CcspTr069PaTraceWarning(("%s\n",cmd));
-                system(cmd);
+                CcspTr069PaTraceWarning(("psmcli set dmsb.device.deviceinfo.X_RDKCENTRAL-COM_Syndication.TR69CertLocation  %s", openssl_client_ca_certificate_files));
+                ret = v_secure_system("psmcli set dmsb.device.deviceinfo.X_RDKCENTRAL-COM_Syndication.TR69CertLocation  %s", openssl_client_ca_certificate_files);
+                if(ret != 0)
+                {
+                    CcspTr069PaTraceWarning(("Failed in executing the command via v_secure_system() ret %d\n",ret));
+                }
             }
         }
 

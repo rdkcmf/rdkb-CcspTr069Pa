@@ -98,7 +98,7 @@
 #include "ccsp_cwmp_sesso_global.h"
 #include "ccsp_cwmp_acsbo_interface.h"
 #include "ccsp_cwmp_acsbo_exported_api.h"
-
+#include "secure_wrapper.h"
 #define  CWMP_MAXI_UPLOAD_DOWNLOAD_DELAY_SECONDS    3600 * 36       /* 36 hours */
 
 /*
@@ -5008,7 +5008,7 @@ void
 CcspCwmpsoAsyncReboot()
 {
     AnscSleep(3*1000);
-    system("/rdklogger/backupLogs.sh");
+    v_secure_system("/rdklogger/backupLogs.sh");
     //system("reboot");
 }
 #endif

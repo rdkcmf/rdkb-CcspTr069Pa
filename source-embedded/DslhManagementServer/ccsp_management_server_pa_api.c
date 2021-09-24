@@ -80,7 +80,7 @@
 #include "ccsp_cwmp_ifo_sta.h"
 #include "Tr69_Tlv.h"
 #include "syscfg/syscfg.h"
-
+#include <sys/stat.h>
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
 #define ETHWAN_FILE     "/nvram/ETHWAN_ENABLE"
 
@@ -395,7 +395,7 @@ void ReadTr69TlvData()
 		
 		AnscTraceWarning(("%s TLV data file is missing!!!\n", __FUNCTION__));
 		AnscTraceInfo(("%s %s File is not available so unable to process by Tr069\n", __FUNCTION__, TR69_TLVDATA_FILE ));
-		system("touch /tmp/.TLVmissedtoparsebytr069");
+		creat("/tmp/.TLVmissedtoparsebytr069",S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
 		//Check whether PSM entry is there or not
                 rc = memset_s( recordName, sizeof( recordName ), 0, sizeof( recordName ) );

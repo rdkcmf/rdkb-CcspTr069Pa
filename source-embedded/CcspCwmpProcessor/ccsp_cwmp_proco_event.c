@@ -75,7 +75,7 @@
 #include "ccsp_cwmp_proco_global.h"
 #include <unistd.h>
 #include "print_uptime.h"
-
+#include <sys/stat.h>
 extern ANSC_HANDLE bus_handle;
 
 static
@@ -231,8 +231,7 @@ CcspCwmppoSysReadySignalCB
 	{
 		print_uptime("boot_to_tr069_uptime",NULL, NULL);
 	}
-	system("touch /var/tmp/tr069paready");
-
+	creat("/var/tmp/tr069paready",S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	CcspTr069PaTraceInfo(("Received system ready signal, created /var/tmp/tr069paready file\n"));
 
 	CcspTr069PaTraceInfo(("%s, user_data - 0x%p\n",
@@ -282,7 +281,7 @@ void waitUntilSystemReady(	void*	cbContext)
 			if(checkIfSystemReady())
 			{
 				CcspTr069PaTraceInfo(("Checked CR - System is ready, proceed with tr069 start up\n"));
-				system("touch /var/tmp/tr069paready");
+				creat("/var/tmp/tr069paready",S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 				/* The checkIfSystemReady() returns true, then the file pointer will be NULL.
 				 * So, breaking from here will never start the CcspCwmppoProcessSysReadySignal();
 				 * We must call from here as it is going to create a thread and return;
