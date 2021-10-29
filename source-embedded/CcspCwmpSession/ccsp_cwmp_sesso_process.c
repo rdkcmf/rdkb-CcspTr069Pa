@@ -197,7 +197,7 @@ CcspCwmpsoNotifySessionClosed
     PANSC_TIMER_DESCRIPTOR_OBJECT   pSessionTimerObj   = (PANSC_TIMER_DESCRIPTOR_OBJECT)pMyObject->hSessionTimerObj;
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor  = (PCCSP_CWMP_PROCESSOR_OBJECT   )pMyObject->hCcspCwmpProcessor;
     
-    CcspTr069PaTraceDebug(("CcspCwmpsoNotifySessionClosed -- session state %d.\n", pMyObject->SessionState));
+    CcspTr069PaTraceDebug(("CcspCwmpsoNotifySessionClosed -- session state %lu.\n", pMyObject->SessionState));
 
     pSessionTimerObj->Stop((ANSC_HANDLE)pSessionTimerObj);
 

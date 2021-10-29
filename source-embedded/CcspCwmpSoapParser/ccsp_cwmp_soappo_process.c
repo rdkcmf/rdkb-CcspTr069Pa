@@ -384,7 +384,7 @@ CcspCwmpSoappoProcessRequest_SetParameterValues
 
     if( uParamCount >= uMaxParam)
     {
-        CcspTr069PaTraceError(("Too many parameters (%u) in 'SetParameterValues', maximum number set to %u\n", uParamCount, uMaxParam));
+        CcspTr069PaTraceError(("Too many parameters (%lu) in 'SetParameterValues', maximum number set to %lu\n", uParamCount, uMaxParam));
 
         goto EXIT2;
     }
@@ -646,7 +646,7 @@ CcspCwmpSoappoProcessRequest_GetParameterValues
 
             if( returnStatus != ANSC_STATUS_SUCCESS)
             {
-                CcspTr069PaTraceError(("Failed to get the argument '%d' of method 'GetParameterValues'\n", i));
+                CcspTr069PaTraceError(("Failed to get the argument '%lu' of method 'GetParameterValues'\n", i));
 
                 goto EXIT2;
             }
@@ -904,7 +904,7 @@ CcspCwmpSoappoProcessRequest_SetParameterAttributes
 
     if( uParamCount >= uMaxParam)
     {
-        CcspTr069PaTraceError(("Too many parameters (%u) in 'SetParameterAttributes', maximum number set to %u\n", uParamCount, uMaxParam));
+        CcspTr069PaTraceError(("Too many parameters (%lu) in 'SetParameterAttributes', maximum number set to %lu\n", uParamCount, uMaxParam));
 
         goto EXIT2;
     }
@@ -1092,7 +1092,7 @@ CcspCwmpSoappoProcessRequest_GetParameterAttributes
 
             if( returnStatus != ANSC_STATUS_SUCCESS)
             {
-                CcspTr069PaTraceError(("Failed to get the argument '%d' of method 'GetParameterAttributes'\n", i));
+                CcspTr069PaTraceError(("Failed to get the argument '%lu' of method 'GetParameterAttributes'\n", i));
 
                 goto EXIT2;
             }
@@ -2884,7 +2884,7 @@ CcspCwmpSoappoProcessRequest_SetVouchers
 
             if( returnStatus != ANSC_STATUS_SUCCESS)
             {
-                CcspTr069PaTraceError(("Failed to get the argument '%d' of method 'SetVouchers'\n", i));
+                CcspTr069PaTraceError(("Failed to get the argument '%lu' of method 'SetVouchers'\n", i));
 
                 goto EXIT;
             }
@@ -3641,7 +3641,7 @@ CcspCwmpSoappoProcessResponse_GetRPCMethods
 
         if( returnStatus != ANSC_STATUS_SUCCESS)
         {
-            CcspTr069PaTraceError(("Failed to get item (%d) of GetRPCMethods response.\n", i));
+            CcspTr069PaTraceError(("Failed to get item (%lu) of GetRPCMethods response.\n", i));
         }
         else if( length > 0)
         {
@@ -4434,7 +4434,7 @@ CcspCwmpSoappoProcessFault
      {
         CcspTr069PaTraceWarning
             ((
-                "Process Fault Response:\r\n(FaultCode=%d)%s\r\n",
+                "Process Fault Response:\r\n(FaultCode=%lu)%s\r\n",
                 pCcspCwmpSoapRep->Fault->Fault.FaultCode,
                 pCcspCwmpSoapRep->Fault->Fault.FaultString
             ));
@@ -4856,7 +4856,7 @@ CcspCwmpSoappoProcessSoapEnvelopes
 	 * According to WT151, there's only one envelope is allowed
 	 * in the message.
 	 */
-    CcspTr069PaTraceDebug(("There're %d SOAP Envelope messages.\n", uCount));
+    CcspTr069PaTraceDebug(("There're %lu SOAP Envelope messages.\n", uCount));
 
 	if( uCount > 1)
 	{
@@ -4890,14 +4890,14 @@ CcspCwmpSoappoProcessSoapEnvelopes
 
         if( bIsFault)
         {
-            CcspTr069PaTraceDebug(("Envelope #%d is a fault message.\n", (i+1)));
+            CcspTr069PaTraceDebug(("Envelope #%lu is a fault message.\n", (i+1)));
 
             /* return ANSC_STATUS_FAILURE; */
         }
 
         if( returnStatus != ANSC_STATUS_SUCCESS)
         {
-            CcspTr069PaTraceError(("Failed to process Envelope number %d\n", (i+1)));
+            CcspTr069PaTraceError(("Failed to process Envelope number %lu\n", (i+1)));
 
             return ANSC_STATUS_FAILURE;
         }

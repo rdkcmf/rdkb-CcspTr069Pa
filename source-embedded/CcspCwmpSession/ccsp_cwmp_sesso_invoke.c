@@ -677,7 +677,7 @@ else
                             pCcspCwmpProcessor->CheckParamAttrCache
                                 ( (ANSC_HANDLE)pCcspCwmpProcessor, pMyObject->ModifiedParamArray[i]) )
                         {    
-                            CcspTr069PaTraceDebug(("<RT> CcspCwmpsoInform -- VC parameter <%s> notification is %d. \n", pMyObject->ModifiedParamArray[i], 
+                            CcspTr069PaTraceDebug(("<RT> CcspCwmpsoInform -- VC parameter <%s> notification is %lu. \n", pMyObject->ModifiedParamArray[i], 
                                pCcspCwmpProcessor->CheckParamAttrCache( (ANSC_HANDLE)pCcspCwmpProcessor, pMyObject->ModifiedParamArray[i])));
                             bValChange = TRUE;
                         }
@@ -757,7 +757,7 @@ else
         {
             char*                   pValue = NULL;
 
-            CcspTr069PaTraceDebug(("CcspCwmpsoInform -- Start to get parameter value #%d: %s.\n", i, pCwmpParamValueArray[i].Name));
+            CcspTr069PaTraceDebug(("CcspCwmpsoInform -- Start to get parameter value #%lu: %s.\n", i, pCwmpParamValueArray[i].Name));
 
             if ( i < ulPresetParamCount )
             {

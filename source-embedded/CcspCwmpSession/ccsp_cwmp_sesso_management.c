@@ -202,7 +202,7 @@ CcspCwmpsoAddCwmpEvent
         if( !bExist )
         {
   		    pMyObject->EventArray[pMyObject->EventCount++] = (ANSC_HANDLE)pCcspCwmpEvent;
-            CcspTr069PaTraceDebug(("<RT> Event '%s' with CommandKey '%s' added at location '%d'\n",
+            CcspTr069PaTraceDebug(("<RT> Event '%s' with CommandKey '%s' added at location '%lu'\n",
                                    pCcspCwmpEvent->EventCode, pCcspCwmpEvent->CommandKey, pMyObject->EventCount));
         }
         else
@@ -248,7 +248,7 @@ CcspCwmpsoAddCwmpEvent
 
 				ulInterval = pProperty->DefActiveNotifThrottle - ulDelta;
  
-    			        CcspTr069PaTraceDebug(("Active notification will be delayed by %u seconds\n", ulInterval));
+			        CcspTr069PaTraceDebug(("Active notification will be delayed by %lu seconds\n", ulInterval));
 
                                 if ( !pMyObject->bDelayedActiveNotifTimerScheduled )
                                 {

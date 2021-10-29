@@ -235,7 +235,7 @@ CcspCwmppoSysReadySignalCB
 
 	CcspTr069PaTraceInfo(("Received system ready signal, created /var/tmp/tr069paready file\n"));
 
-	CcspTr069PaTraceInfo(("%s, user_data - 0x%X\n",
+	CcspTr069PaTraceInfo(("%s, user_data - 0x%p\n",
 								__FUNCTION__, 
 								(user_data != NULL) ? user_data : 0 ));
 
@@ -335,7 +335,7 @@ CcspCwmppoProcessSysReadySignal
 		void*	cbContext
     )
 {
-	CcspTr069PaTraceInfo(("%s, cbContext - 0x%X\n",
+	CcspTr069PaTraceInfo(("%s, cbContext - 0x%p\n",
 								__FUNCTION__, 
 								(cbContext != NULL) ? cbContext : 0 ));
 	if( NULL != cbContext )

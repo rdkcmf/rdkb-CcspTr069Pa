@@ -562,7 +562,7 @@ CcspCwmpSoappoUtilGetCwmpMethodName
 
             default:
 
-                CcspTr069PaTraceError(("Unknown CWMP Client method type: %d\n", uMethod));
+                CcspTr069PaTraceError(("Unknown CWMP Client method type: %lu\n", uMethod));
 
                 return ANSC_STATUS_FAILURE;
         }
@@ -597,7 +597,7 @@ CcspCwmpSoappoUtilGetCwmpMethodName
 
             default:
 
-                CcspTr069PaTraceError(("Unknown CWMP Server method type: %d\n", uMethod));
+                CcspTr069PaTraceError(("Unknown CWMP Server method type: %lu\n", uMethod));
 
                 return ANSC_STATUS_FAILURE;
         }

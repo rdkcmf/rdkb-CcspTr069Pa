@@ -450,7 +450,7 @@ CcspCwmpAcscoHttpBspBrowse
             goto  EXIT1;
         }
 
-        CcspTr069PaTraceInfo(("ACS URL moved (HTTP code=%u) to: %s\n", ulCode, pHeaderLocation));
+        CcspTr069PaTraceInfo(("ACS URL moved (HTTP code=%lu) to: %s\n", ulCode, pHeaderLocation));
 
         pHttpGetReq->ulContentSize = AnscSizeOfString(pHeaderLocation);
         pHttpGetReq->pContent      = CcspTr069PaCloneString(pHeaderLocation);
@@ -633,7 +633,7 @@ CcspCwmpAcscoHttpBspNotify
                     if ( pHeaderLocation && AnscSizeOfString(pHeaderLocation) != 0 )
                     {
                         ULONG       ulCode = pHttpBmoRep->GetCode((ANSC_HANDLE)pHttpBmoRep);
-                        CcspTr069PaTraceInfo(("ACS URL moved (HTTP code=%u) to: %s\n", ulCode, pHeaderLocation));
+                        CcspTr069PaTraceInfo(("ACS URL moved (HTTP code=%lu) to: %s\n", ulCode, pHeaderLocation));
 
                         pHttpGetReq->ulContentSize = AnscSizeOfString(pHeaderLocation);
                         pHttpGetReq->pContent      = CcspTr069PaCloneString(pHeaderLocation);
@@ -654,7 +654,7 @@ CcspCwmpAcscoHttpBspNotify
         case HTTP_BSP_EVENT_TLS_TIMEOUT:
         case HTTP_BSP_EVENT_TLS_ERROR:
 
-                CcspTr069PaTraceDebug(("HttpClient TLS Notify: %d\n", ulEvent));
+                CcspTr069PaTraceDebug(("HttpClient TLS Notify: %lu\n", ulEvent));
 
                 if( pCcspCwmpStatIf)
                 {
@@ -672,7 +672,7 @@ CcspCwmpAcscoHttpBspNotify
 
         default :
 
-                CcspTr069PaTraceDebug(("HttpClient Notify: %d\n", ulEvent));
+                CcspTr069PaTraceDebug(("HttpClient Notify: %lu\n", ulEvent));
 
                 if ( pHttpGetReq )
                 {

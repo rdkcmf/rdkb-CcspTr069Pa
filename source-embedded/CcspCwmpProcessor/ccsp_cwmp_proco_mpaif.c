@@ -1986,7 +1986,7 @@ CcspCwmppoMpaGetParameterValues
 
     if ( returnStatus != ANSC_STATUS_SUCCESS )
     {
-        CcspTr069PaTraceError(("Failed to map to internal aliases, error code %d\n", returnStatus));
+        CcspTr069PaTraceError(("Failed to map to internal aliases, error code %lu\n", returnStatus));
         goto EXIT2;
     }
     /*

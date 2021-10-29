@@ -639,7 +639,7 @@ CcspCwmpSoappoBuildSoapReq_Inform
 
             if( pCwmpEvent->EventCode == NULL || AnscSizeOfString(pCwmpEvent->EventCode) == 0)
             {
-                CcspTr069PaTraceWarning(("Empty EventCode '%d' in Inform message, ignored!\n", i));
+                CcspTr069PaTraceWarning(("Empty EventCode '%lu' in Inform message, ignored!\n", i));
 
                 continue;
             }

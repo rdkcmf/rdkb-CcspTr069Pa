@@ -336,7 +336,7 @@ CcspCwmpTcpcrhoCreateTcpServers
                  {
                     CcspTr069PaTraceInfo(("%s, ipv4_wan_ipaddr got from sysevent is: %s\n",__FUNCTION__,buf));
                     pProperty->HostAddress.Value = _ansc_inet_addr(buf);
-                    CcspTr069PaTraceInfo(("%s,pProperty->HostAddress.Value: %lu\n",__FUNCTION__,pProperty->HostAddress.Value));
+                    CcspTr069PaTraceInfo(("%s,pProperty->HostAddress.Value: %u\n",__FUNCTION__,pProperty->HostAddress.Value));
                  }
                  else
                  {

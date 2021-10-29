@@ -5393,7 +5393,7 @@ CcspCwmppoLoadValueChangedTask
                 );
             if ( (pParameterValue != NULL) && (pParameterName != NULL) )
             {
-                CcspTr069PaTraceInfo(("CcspCwmppoLoadValueChanged - ParameterName:%s, ParameterValue:%s, Notification:%d, datatype:%d\n", pParameterName, pParameterValue, Notification, dataType));
+                CcspTr069PaTraceInfo(("CcspCwmppoLoadValueChanged - ParameterName:%s, ParameterValue:%s, Notification:%lu, datatype:%d\n", pParameterName, pParameterValue, Notification, dataType));
                 /* notify value change */
                 pCcspCwmpMsoIf->ValueChanged( pCcspCwmpMsoIf->hOwnerContext, pParameterName, pParameterValue, dataType, Notification == CCSP_CWMP_NOTIFICATION_active );
             }
