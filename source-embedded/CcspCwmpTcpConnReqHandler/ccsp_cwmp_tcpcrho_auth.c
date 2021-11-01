@@ -1987,10 +1987,10 @@ CcspCwmpTcpcrhoGenResponse
         (
             pMsg+AnscSizeOfString(pMsg),
             ulSize - AnscSizeOfString(pMsg),
-            "Set-Cookie: %s=\"%u/%u\"; Version=\"1\"; Path=\"/\"\r\n",
+            "Set-Cookie: %s=\"%u/%lu\"; Version=\"1\"; Path=\"/\"\r\n",
             CCSP_CWMP_TCPCR_COOKIE_MAGIC_NUMBER,
             (unsigned int)pMyObject->MagicID,
-            (unsigned int)buffer
+            (long unsigned)buffer
         );
 
     /* WWW-Authenticate */

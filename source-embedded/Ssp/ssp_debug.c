@@ -990,7 +990,7 @@ void ssp_sendValueChangeSignal()
         vcSig.subsystem_prefix = g_Subsystem;
     }
 
-    vcSig.writeID = (ULONG)-1;
+    vcSig.writeID = (UINT)-1;
 
     ret =
         CcspBaseIf_SendparameterValueChangeSignal
