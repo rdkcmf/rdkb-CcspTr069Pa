@@ -234,7 +234,7 @@ CcspManagementServer_GetPeriodicInformTimeStrCustom
     if(!objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value){
       time_t t = time(NULL);
 		struct tm tm = *localtime(&t);
-		char p[30];
+		char p[45];
 		sprintf(p,"%d-%d-%d%s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,"T00:00:00Z");
 		objectInfo[ManagementServerID].parameters[ManagementServerPeriodicInformTimeID].value = CcspManagementServer_CloneString(p);
     }

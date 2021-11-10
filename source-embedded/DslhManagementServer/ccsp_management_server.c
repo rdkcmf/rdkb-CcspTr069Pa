@@ -689,7 +689,7 @@ CCSP_VOID CcspManagementServer_InitDBus()
     cb->setParameterAttributes  = CcspManagementServer_SetParameterAttributes;
     cb->getParameterAttributes  = CcspManagementServer_GetParameterAttributes;
     cb->AddTblRow  = CcspManagementServer_AddTblRow;
-    cb->DeleteTblRow  = (CCSPBASEIF_DELETETBLROW )CcspManagementServer_DeleteTblRow;
+    cb->DeleteTblRow  = (CCSPBASEIF_DELETETBLROW )((void *)CcspManagementServer_DeleteTblRow);
     cb->getParameterNames  = (CCSPBASEIF_GETPARAMETERNAMES )CcspManagementServer_GetParameterNames;
     CcspBaseIf_SetCallback (bus_handle,  cb);
     

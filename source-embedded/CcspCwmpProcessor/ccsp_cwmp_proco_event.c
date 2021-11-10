@@ -988,6 +988,7 @@ CcspCwmppoCheckAutonomousCdsResults
     int                             order           = 0;
     CCSP_BOOL                       bEnabled;
     ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
+    errno_t                         rc              = -1;
 
     bEnabled = 
         CcspManagementServer_GetDUStateChangeComplPolicy_Enable
@@ -1036,34 +1037,64 @@ CcspCwmppoCheckAutonomousCdsResults
     AnscZeroMemory(pParamValues, sizeof(char*) * CCSP_NS_ACDS_RESULT_ARG_COUNT);
 
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_UUID);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_UUID);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_DEPLOYMENT_UNIT_REF);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_DEPLOYMENT_UNIT_REF);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_VERSION);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_VERSION);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_CURRENT_STATE);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_CURRENT_STATE);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_RESOLVED);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_RESOLVED);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_EXECUTION_UNIT_REF_LIST);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_EXECUTION_UNIT_REF_LIST);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_START_TIME);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_START_TIME);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_COMPLETE_TIME);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_COMPLETE_TIME);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_ERROR);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_ERROR);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
-    _ansc_sprintf(buf, "%s.%s", pAdscReqObject, CCSP_NS_CDS_OPERATION);
+    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_OPERATION);
+    if(rc < EOK) {
+        ERR_CHK(rc);
+    }
     pParamNames[order++] = AnscCloneString(buf);
 
     /* retreive result values */
@@ -1613,6 +1644,7 @@ CcspCwmppoProcessPvcSignal
     parameterSigStruct_t*           pVC;
     ULONG                           Notification;
     ANSC_STATUS                     status;
+    errno_t                         rc              = -1;
 
     if ( !s_ns_download_state[0] )
     {
@@ -1742,7 +1774,10 @@ CcspCwmppoProcessPvcSignal
                             &pCommandKey
                         );
 
-                _ansc_sprintf(buf, "%s%s", (char*)buf, CCSP_NS_CDS_PSM_NODE_COMPLETE);
+                rc = snprintf(buf + strlen(buf), sizeof(buf),"%s", CCSP_NS_CDS_PSM_NODE_COMPLETE);
+                if(rc < EOK) {
+                    ERR_CHK(rc);
+                }
 
                 if ( psmStatus != CCSP_SUCCESS )
                 {
