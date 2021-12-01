@@ -141,7 +141,6 @@
                 }                                                                   \
             }
 #define MAX_NO_WIFI_PARAM 10
-#define MAX_WIFI_PARAMNAME_LEN 128
 #define WIFI_KEYPASSPHRASE_SET1 16
 #define WIFI_KEYPASSPHRASE_SET2 8
 
@@ -1199,11 +1198,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         else
         {
             PCCSP_PARAM_VALUE_INFO  pValueInfo;
-            //pParamN may be reallocated by CcspCwmppoMpaMapParamInstNumCwmpToDmInt()
-            // Need to keep the original address to free the memory after used.
-            char *pOrigParamN = CcspTr069PaAllocateMemory(AnscSizeOfString(pParameterValueArray[i].Name)+1);
-            char *pParamN = pOrigParamN;
-            UNREFERENCED_PARAMETER(pParamN);
+
             pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_SPV;
             pValueInfo      = &pNsList->Args.paramValueInfo;
 
@@ -1221,15 +1216,21 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                 bRadioRestartEn = TRUE;
                 if(i<MAX_NO_WIFI_PARAM)
                 {
-                    char aMem[128];
-                    char *pParamN = aMem;
-                    AnscCopyString(pParamN,pValueInfo->parameterName);
-                    CcspCwmppoMpaMapParamInstNumCwmpToDmInt(pParamN);
-                    ParamName[i] = (char*)CcspTr069PaAllocateMemory(sizeof(char)*MAX_WIFI_PARAMNAME_LEN);
-                    AnscCopyString(ParamName[i],pParamN);
+                    /*
+                       If CcspCwmppoMpaMapParamInstNumCwmpToDmInt() allocates a new
+                       buffer (ie it updates pParamN) then use it. Otherwise allocate
+                       a new buffer here and copy the original parameter name into it.
+                    */
+                    char *pParamN = pValueInfo->parameterName;
+                    CcspCwmppoMpaMapParamInstNumCwmpToDmInt (pParamN);
+                    if (pParamN == pValueInfo->parameterName)
+                    {
+                        pParamN = CcspTr069PaCloneString (pValueInfo->parameterName);
+                    }
+
+                    ParamName[i] = pParamN;
                     noOfParam = i;
                 }
-
             }
         }
     }
