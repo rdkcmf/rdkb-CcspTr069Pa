@@ -980,14 +980,13 @@ CcspCwmppoCheckAutonomousCdsResults
     PCCSP_CWMP_MSO_INTERFACE             pCcspCwmpMsoIf      = (PCCSP_CWMP_MSO_INTERFACE)pCcspCwmpCpeController->GetCcspCwmpMsoIf(pCcspCwmpCpeController);
     PCCSP_CWMP_PROCESSOR_OBJECT      pCcspCwmpProcessor   = (PCCSP_CWMP_PROCESSOR_OBJECT   )pCcspCwmpCpeController->hCcspCwmpProcessor;
     int                             i;
-    char                            buf[256];
+    char                            buf[600];
     PCCSP_TR069_ADSCC_REQ           pAdsccReq       = NULL;
     char**                          pParamNames     = NULL;
     char**                          pParamValues    = NULL;
     int                             order           = 0;
     CCSP_BOOL                       bEnabled;
     ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
-    errno_t                         rc              = -1;
 
     bEnabled = 
         CcspManagementServer_GetDUStateChangeComplPolicy_Enable
@@ -1035,65 +1034,34 @@ CcspCwmppoCheckAutonomousCdsResults
     }
     AnscZeroMemory(pParamValues, sizeof(char*) * CCSP_NS_ACDS_RESULT_ARG_COUNT);
 
-
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_UUID);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_UUID);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_DEPLOYMENT_UNIT_REF);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_DEPLOYMENT_UNIT_REF);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_VERSION);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_VERSION);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_CURRENT_STATE);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_CURRENT_STATE);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_RESOLVED);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_RESOLVED);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_EXECUTION_UNIT_REF_LIST);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_EXECUTION_UNIT_REF_LIST);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_START_TIME);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_START_TIME);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_COMPLETE_TIME);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_COMPLETE_TIME);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_ERROR);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_ERROR);
     pParamNames[order++] = AnscCloneString(buf);
 
-    rc = snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_OPERATION);
-    if(rc < EOK) {
-        ERR_CHK(rc);
-    }
+    snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_OPERATION);
     pParamNames[order++] = AnscCloneString(buf);
 
     /* retreive result values */
@@ -1643,7 +1611,6 @@ CcspCwmppoProcessPvcSignal
     parameterSigStruct_t*           pVC;
     ULONG                           Notification;
     ANSC_STATUS                     status;
-    errno_t                         rc              = -1;
 
     if ( !s_ns_download_state[0] )
     {
@@ -1773,10 +1740,7 @@ CcspCwmppoProcessPvcSignal
                             &pCommandKey
                         );
 
-                rc = snprintf(buf + strlen(buf), sizeof(buf),"%s", CCSP_NS_CDS_PSM_NODE_COMPLETE);
-                if(rc < EOK) {
-                    ERR_CHK(rc);
-                }
+                snprintf(buf + strlen(buf), sizeof(buf),"%s", CCSP_NS_CDS_PSM_NODE_COMPLETE);
 
                 if ( psmStatus != CCSP_SUCCESS )
                 {
