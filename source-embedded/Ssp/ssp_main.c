@@ -344,51 +344,19 @@ static void drop_root()
   }
 }
 
-BOOL is_customer_data_model()
+static BOOL is_customer_data_model (void)
 {
-    char sysbuf[8] = {0};
+    char sysbuf[8];
 
-    syscfg_init();
-
-    syscfg_get( NULL, "custom_data_model_enabled", sysbuf, sizeof(sysbuf));
-
-    if (sysbuf[0] != 0)
+    if (syscfg_get(NULL, "custom_data_model_enabled", sysbuf, sizeof(sysbuf)) == 0)
     {
-        if ( AnscEqualString(sysbuf, "1", FALSE) )
+        if (strcmp(sysbuf, "1") == 0)
         {
             return TRUE;
         }
-        else
-        {
-            return FALSE;
-        }
     }
-    else
-    {
-        CcspTr069PaTraceDebug(("syscfg_get returned an empty string for custom_data_model_enabled\n"));
-        return FALSE;
-    }
-}
 
-char* get_customer_data_model_file_name()
-{
-    char* sysbuf = AnscAllocateMemory(256);
-    AnscZeroMemory(sysbuf, 256);
-
-    syscfg_init();
-
-    syscfg_get( NULL, "custom_data_model_file_name", sysbuf, 256);
-
-    if ( sysbuf[0] != 0 )
-    {
-        return sysbuf;
-    }
-    else
-    {
-        CcspTr069PaTraceDebug(("syscfg_get returned an empty string for custom_data_model_file_name\n"));
-        AnscFreeMemory(sysbuf);
-        return NULL;
-    }
+    return FALSE;
 }
 
 int main(int argc, char* argv[])
@@ -461,13 +429,15 @@ int main(int argc, char* argv[])
 
     if ( g_PaCustMapperFile[0] == 0 && is_customer_data_model() )
     {
-        char* customer_file_name = get_customer_data_model_file_name();
+        syscfg_get(NULL, "custom_data_model_file_name", g_PaCustMapperFile, sizeof(g_PaCustMapperFile));
 
-        if ( customer_file_name )
+        if (g_PaCustMapperFile[0] == 0)
         {
-            CcspTr069PaTraceDebug(("Customer data-model file name is %s\n", customer_file_name));
-            AnscCopyString(g_PaCustMapperFile, customer_file_name);
-            AnscFreeMemory(customer_file_name);
+            CcspTr069PaTraceDebug(("syscfg_get returned an empty string for custom_data_model_file_name\n"));
+        }
+        else
+        {
+            CcspTr069PaTraceDebug(("Customer data-model file name is %s\n", g_PaCustMapperFile));
         }
     }
 #ifdef FEATURE_SUPPORT_RDKLOG
@@ -523,7 +493,6 @@ int main(int argc, char* argv[])
     }
 
     cmd_dispatch('e');
-    syscfg_init();
 
 	/*This is used for ccsp recovery manager */
     
