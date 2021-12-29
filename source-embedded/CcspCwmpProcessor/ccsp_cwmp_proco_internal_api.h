@@ -666,7 +666,7 @@ void
 CcspCwmppoMsValueChanged
     (
         ANSC_HANDLE                 hThisObject,
-        ULONG                       hMsvcObjectID
+        int                         hMsvcObjectID
     );
 
 /***********************************************************

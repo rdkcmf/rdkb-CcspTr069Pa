@@ -456,7 +456,7 @@ void
 CcspCwmppoMsValueChanged
     (
         ANSC_HANDLE                 hThisObject,
-        ULONG                       ulMsvcObjectID
+        int                         ulMsvcObjectID
     )
 {
     PCCSP_CWMP_PROCESSOR_OBJECT     pMyObject           = (PCCSP_CWMP_PROCESSOR_OBJECT )hThisObject;
