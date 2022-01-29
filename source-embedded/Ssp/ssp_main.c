@@ -43,14 +43,12 @@
 #endif
 #endif
 
-#ifdef _ANSC_LINUX
 #include <sys/types.h>
 #include <sys/ipc.h>
 #ifdef _BUILD_ANDROID
 #include <linux/msg.h>
 #else
 #include <sys/msg.h>
-#endif
 #endif
 #include <string.h>
 
@@ -67,9 +65,7 @@
 #include "syscfg/syscfg.h"
 #include "cap.h"
 #include "telemetry_busmessage_sender.h"
-#if defined(_ANSC_LINUX)
 static cap_user appcaps;
-#endif
 
 #ifndef DISABLE_LOGAGENT
 extern int GetLogInfo(ANSC_HANDLE bus_handle, char *Subsytem, char *pParameterName);
@@ -206,7 +202,6 @@ static void _print_stack_backtrace(void)
 #endif
 }
 
-#if defined(_ANSC_LINUX)
 static void daemonize(void) {
 	switch (fork()) {
 	case 0:
@@ -328,9 +323,7 @@ static int is_core_dump_opened(void)
     return 0;
 }
 #endif //ifndef INCLUDE_BREAKPAD
-#endif
 
-#if defined(_ANSC_LINUX)
 static void drop_root()
 {
   appcaps.caps = NULL;
@@ -350,7 +343,6 @@ static void drop_root()
     read_capability(&appcaps);
   }
 }
-#endif
 
 BOOL is_customer_data_model()
 {
@@ -484,29 +476,6 @@ int main(int argc, char* argv[])
 
     CcspTr069PaTraceDebug(("<%s>: PaName=%s, CrName=%s, Xml=%s, Subsys=%s\n", __FUNCTION__, g_Tr069PaName, g_CrName, g_PaMapperXmlFile, g_Subsystem));
 
-#if  defined(_ANSC_WINDOWSNT)
-
-    AnscStartupSocketWrapper(NULL);
-
-    display_info();
-
-    cmd_dispatch('e');
-
-    while ( cmdChar != 'q' )
-    {
-        cmdChar = getchar();
-
-        if ( cmdChar != EOF )
-        {
-        cmd_dispatch(cmdChar);
-        }
-        else
-        {
-            AnscSleep(500);
-        }
-    }
-
-#elif defined(_ANSC_LINUX)
     drop_root();
     if ( bRunAsDaemon )
     	daemonize();
@@ -590,7 +559,6 @@ int main(int argc, char* argv[])
             }
 		}
     }
-#endif
 
     if ( bEngaged )
     {

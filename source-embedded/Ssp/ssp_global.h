@@ -63,9 +63,6 @@
 
 #include "ssp_ccsp_cwmp_cfg.h"
 
-#if  defined(_ANSC_WINDOWSNT)
-#include "ansc_socket_interface.h"
-#endif
 
 #include "ccsp_management_server_pa_api.h"
 #include "ccsp_tr069pa_wrapper_api.h"
