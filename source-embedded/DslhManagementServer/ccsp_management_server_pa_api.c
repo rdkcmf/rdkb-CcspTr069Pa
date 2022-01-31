@@ -83,6 +83,7 @@
 #include <sys/stat.h>
 #define TR69_TLVDATA_FILE "/nvram/TLVData.bin"
 #define ETHWAN_FILE     "/nvram/ETHWAN_ENABLE"
+#include "secure_wrapper.h"
 
 #define MAX_UDP_VAL  257
 #define MAX_BUF_SIZE 256
@@ -147,26 +148,17 @@ CcspManagementServer_GenerateDefaultPassword
 #if defined (INTEL_PUMA7)
 //Intel Proposed RDKB Generic Bug Fix from XB6 SDK
 //Used to obtain the output from the shell for the given cmd
-void _get_shell_output(char * cmd, char * out, int len)
-{
-    FILE * fp;
-    char   buf[MAX_BUF_SIZE];
+void _get_shell_output(FILE *fp, char * out, int len)
+{    
     char * p;
-    errno_t rc  = -1;
-
-    fp = popen(cmd, "r");
-
     if (fp)
     {
-        fgets(buf, sizeof(buf), fp);
-
-        /*we need to remove the \n char in buf*/
-        if ((p = strchr(buf, '\n'))) *p = 0;
-        rc = strcpy_s(out, len, buf);
-        ERR_CHK(rc);
-        pclose(fp);
-    }
-
+        fgets(out, len, fp);
+        if ((p = strchr(out, '\n'))) 
+        {
+           *p = '\0';
+        }
+    }     
 }
 #endif
 
@@ -179,7 +171,6 @@ void ReadTr69TlvData()
 
 #if defined (INTEL_PUMA7)
 	//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
-	char cmd[MAX_BUF_SIZE] = {0};
 	char out[MAX_BUF_SIZE] = {0};
 #endif
 	Tr69TlvData *object2=malloc(sizeof(Tr69TlvData));
@@ -189,11 +180,23 @@ void ReadTr69TlvData()
 	//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
 	FILE *file = NULL;
 	int watchdog = NO_OF_RETRY;
-
+        FILE *fp = NULL;
+	int ret = 0;
 	do
 	{
-		sprintf(cmd, "sysevent get TLV202-status");
-		_get_shell_output(cmd, out, MAX_BUF_SIZE);
+		fp = v_secure_popen("r", "sysevent get TLV202-status");
+		if(!fp)
+		{
+		    AnscTraceWarning(("%s Error in opening pipe! \n",__FUNCTION__));
+		}
+                else
+                {
+		   _get_shell_output(fp, out, MAX_BUF_SIZE);
+		   ret = v_secure_pclose(fp);
+		   if(ret !=0) {
+                       AnscTraceWarning(("%s Error in closing command pipe! [%d] \n",__FUNCTION__,ret));
+		   }
+                }
 		sleep(1);
 		watchdog--;
 	}while ((!strstr(out,"success")) && (watchdog != 0));
