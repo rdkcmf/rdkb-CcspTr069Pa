@@ -2351,7 +2351,6 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
         returnStatus = ANSC_STATUS_RESOURCES;
         goto EXIT;
     }
-    AnscZeroMemory(pCdsReq->Operations, sizeof(CCSP_TR069_CDS_Operation) * ulOpCount);
 
     ulOpCount = 0;
     pOpNode = (PANSC_XML_DOM_NODE_OBJECT)AnscXmlDomNodeGetHeadChild((ANSC_HANDLE)pOperationsNode);

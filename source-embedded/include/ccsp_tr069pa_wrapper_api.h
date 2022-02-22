@@ -104,12 +104,6 @@ CcspTr069PaAllocateMemory
     )
 {
     void*                           ptr = (void *)AnscAllocateMemory(mBlockSize);
-
-    if ( ptr )
-    {
-        AnscZeroMemory(ptr, mBlockSize);
-    }
-
     return ptr;
 }
 
