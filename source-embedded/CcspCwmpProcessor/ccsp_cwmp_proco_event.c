@@ -563,14 +563,12 @@ CcspCwmppoCheckCdsResults
             {
                 goto EXIT;
             }
-            AnscZeroMemory(pParamNames, total * sizeof(char*) * CCSP_NS_CDS_RESULT_ARG_COUNT);
 
             pParamValues = (char**)AnscAllocateMemory(total * sizeof(char*) * CCSP_NS_CDS_RESULT_ARG_COUNT);
             if ( !pParamValues )
             {
                 goto EXIT;
             }
-            AnscZeroMemory(pParamValues, total * sizeof(char*) * CCSP_NS_CDS_RESULT_ARG_COUNT);
 
             for ( i = 0; i < total; i ++ )
             {
@@ -1025,14 +1023,12 @@ CcspCwmppoCheckAutonomousCdsResults
     {
         goto EXIT;
     }
-    AnscZeroMemory(pParamNames, sizeof(char*) * CCSP_NS_ACDS_RESULT_ARG_COUNT);
 
     pParamValues = (char**)AnscAllocateMemory(sizeof(char*) * CCSP_NS_ACDS_RESULT_ARG_COUNT);
     if ( !pParamValues )
     {
         goto EXIT;
     }
-    AnscZeroMemory(pParamValues, sizeof(char*) * CCSP_NS_ACDS_RESULT_ARG_COUNT);
 
     snprintf(buf, sizeof(buf),"%s.%s", pAdscReqObject, CCSP_NS_CDS_UUID);
     pParamNames[order++] = AnscCloneString(buf);
@@ -1355,14 +1351,12 @@ CcspCwmppoRetrieveFirmwareDownloadResults
     {
         goto EXIT;
     }
-    AnscZeroMemory(pParamNames, sizeof(char*) * CCSP_NS_DOWNLOAD_RESULT_ARG_COUNT);
 
     pParamValues = (char**)AnscAllocateMemory(sizeof(char*) * CCSP_NS_DOWNLOAD_RESULT_ARG_COUNT);
     if ( !pParamValues )
     {
         goto EXIT;
     }
-    AnscZeroMemory(pParamValues, sizeof(char*) * CCSP_NS_DOWNLOAD_RESULT_ARG_COUNT);
 
     _ansc_sprintf(buf, "%s%s", CCSP_NS_DOWNLOAD, CCSP_NS_DOWNLOAD_COMMAND_KEY);
     pParamNames[order++] = AnscCloneString(buf);

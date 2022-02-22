@@ -724,7 +724,6 @@ CcspCwmppoGetPeriodicInformTime
 	pInformTime = (PANSC_UNIVERSAL_TIME)AnscAllocateMemory(sizeof(ANSC_UNIVERSAL_TIME));
 
 	if ( !pInformTime ) return NULL;
-    AnscZeroMemory(pInformTime, sizeof(ANSC_UNIVERSAL_TIME));
     
 	pPeriodicInformTime = 
         CcspManagementServer_GetPeriodicInformTimeStr

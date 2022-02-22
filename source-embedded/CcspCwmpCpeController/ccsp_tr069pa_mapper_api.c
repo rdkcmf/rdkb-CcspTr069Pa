@@ -359,7 +359,6 @@ CcspTr069PA_LoadInstanceMapper
 
         if ( !pMap->CcspDmlName ) return;
 
-        AnscZeroMemory(pMap->CcspDmlName, ulSize + 1);
         AnscCopyString(pMap->CcspDmlName, dmlTable);
     }
 
@@ -426,7 +425,6 @@ CcspTr069PA_LoadArgMapper
         pChildNode->GetDataString(pChildNode, "ArgName", argName, &ulSize);
         pMap->Name = (CCSP_STRING) AnscAllocateMemory(ulSize + 1);
 	if ( !pMap->Name ) return;
-        AnscZeroMemory(pMap->Name, ulSize + 1);
         AnscCopyString(pMap->Name, argName);
     }
     pChildNode = (PANSC_XML_DOM_NODE_OBJECT)pArgNode->GetNextChild(pArgNode, pChildNode);
@@ -437,7 +435,6 @@ CcspTr069PA_LoadArgMapper
         pChildNode->GetDataString(pChildNode, "Namespace", nameSpace, &ulSize);
         pMap->MappedNS = (CCSP_STRING) AnscAllocateMemory(ulSize + 1);
 	if ( !pMap->MappedNS ) return;
-        AnscZeroMemory(pMap->MappedNS, ulSize + 1);
         AnscCopyString(pMap->MappedNS, nameSpace);
         CcspTr069PaTraceDebug(("CcspTr069PA_LoadArgMapper %s to %s\n", nameSpace, pMap->MappedNS));
     }
@@ -487,7 +484,6 @@ LoadRpcMapper
             pChildNode->GetDataString(pChildNode, "Namespace", nameSpace, &ulSize);
             pMap->Namespace = (CCSP_STRING) AnscAllocateMemory(ulSize + 1);
 	    if ( !pMap->Namespace ) return;
-            AnscZeroMemory(pMap->Namespace, ulSize + 1);
             AnscCopyString(pMap->Namespace, nameSpace);
             pMap->NumOfArgs = 0;
             CcspTr069PaTraceDebug(("LoadRpcMapper %d %u %s to %s\n", pMap->RpcType, (unsigned int)ulSize, nameSpace, pMap->Namespace));
@@ -649,10 +645,7 @@ CcspTr069PA_PiTreeAddNamespace
             AnscTcFree((ANSC_HANDLE)pNsTokenChain); /*RDKB-7323, CID-33478, free unused resource before exit */
             return  CCSP_FALSE;
         }
-        else
-        {
-            AnscZeroMemory(pChildNode, sizeof(CCSP_TR069_PARAM_INFO));
-        }
+
 
         pChildNode->Name        = AnscCloneString(pNodeName);
         pChildNode->PartialName = CCSP_TRUE;
@@ -906,7 +899,6 @@ CcspTr069PA_LoadParamInfo
             else
             {
                 /* this root node is a virtual node - without node name */
-                AnscZeroMemory(CcspTr069InvPiTree, sizeof(CCSP_TR069_PARAM_INFO));
                 CcspTr069InvPiTree->PartialName = CCSP_TRUE;
             }
         }
@@ -947,7 +939,6 @@ CcspTr069PA_LoadParamInfo
             else
             {
                 /* this root node is a virtual node - without node name */
-                AnscZeroMemory(CcspTr069PiTree, sizeof(CCSP_TR069_PARAM_INFO));
                 CcspTr069PiTree->PartialName = CCSP_TRUE;
             }
         }
@@ -1113,8 +1104,6 @@ CcspTr069PA_LoadMappingFile
             
             if ( pFileContent )
             {
-                AnscZeroMemory(pFileContent, iContentSize + 1);
-
                 if ( read((int)fileHandle, pFileContent, iContentSize) > 0)
                 {
                     /* Some Unicode file may have hidden content at the beginning. So search for the first '<' to begin the XML parse. */

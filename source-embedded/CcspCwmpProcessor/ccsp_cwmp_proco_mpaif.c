@@ -3941,14 +3941,6 @@ CcspCwmppoMpaGetParameterAttributes
                 returnStatus = ANSC_STATUS_RESOURCES;
                 goto EXIT2;
             }
-            else
-            {
-                AnscZeroMemory
-                    (
-                        pParamAttrArray, 
-                        sizeof(CCSP_CWMP_PARAM_ATTRIB) * ulTotalParamCount
-                    );
-            }
 
             pSLinkEntry = AnscQueueGetFirstEntry(&pFcGpaResNsList->NsList);
             while ( pSLinkEntry )                                   
