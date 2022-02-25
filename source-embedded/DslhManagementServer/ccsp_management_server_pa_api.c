@@ -205,7 +205,7 @@ void ReadTr69TlvData()
 
 	file = fopen(TR69_TLVDATA_FILE, "rb");
 #endif
-	if ((file != NULL) && (object2))
+	if ((file != NULL) && (object2) && (access(ETHWAN_FILE, F_OK) != 0)) //RDKB-40531: As T69_TLVDATA_FILE should not be considered for ETHWAN mode
 	{
 		size_t nm = fread(object2, sizeof(Tr69TlvData), 1, file);
 		fclose(file);
@@ -583,11 +583,9 @@ CcspManagementServer_Init
     }
 
     s_MS_Init_Done = TRUE;
-	if (access(ETHWAN_FILE, F_OK) != 0)
-	{
-		ReadTr69TlvData();
-	}
-	else
+	// Function has to be called if TLV_DATA_FILE is present or not
+	ReadTr69TlvData();
+	if (access(ETHWAN_FILE, F_OK) != -1) //RDKB-40531: URL updated for EWAN mode
 	{
 		if(objectInfo[ManagementServerID].parameters[ManagementServerURLID].value == NULL)
 		{
