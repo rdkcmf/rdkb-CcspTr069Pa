@@ -188,20 +188,20 @@ CcspCwmpsoInformPopulateTRInformationCustom
     ANSC_STATUS returnStatus = ANSC_STATUS_SUCCESS;
     ULONG index_start = *ulPresetParamCount;
 
-    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceSummary"                        );
-    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.HardwareVersion"           );
-    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.SoftwareVersion"           );
-    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.DeviceInfo.ProvisioningCode"           );
-    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.ManagementServer.ConnectionRequestURL");
-    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.ManagementServer.ParameterKey"        );
+    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.DeviceSummary"                        );
+    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.DeviceInfo.HardwareVersion"           );
+    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.DeviceInfo.SoftwareVersion"           );
+    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.DeviceInfo.ProvisioningCode"           );
+    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.ManagementServer.ConnectionRequestURL");
+    pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.ManagementServer.ParameterKey"        );
 
     if ( !bDevice20OrLater )
     {
-        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.GatewayInfo.ManufacturerOUI"      );
-        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.GatewayInfo.ProductClass"         );
-        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.GatewayInfo.SerialNumber"         );
-        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.LAN.IPAddress"                    );
-        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = CcspTr069PaCloneString("Device.LAN.MACAddress"                   );
+        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.GatewayInfo.ManufacturerOUI"      );
+        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.GatewayInfo.ProductClass"         );
+        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.GatewayInfo.SerialNumber"         );
+        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.LAN.IPAddress"                    );
+        pCwmpParamValueArray[(*ulPresetParamCount)++].Name  = AnscCloneString("Device.LAN.MACAddress"                   );
     }
 
     if ( !pCwmpParamValueArray[index_start+0].Name ||
@@ -392,7 +392,7 @@ CcspManagementServer_FillInObjectInfoCustom(msObjectInfo *objectInfo)
         }
         if (pValue)
         {
-            CcspTr069PaFreeMemory(pValue);
+            AnscFreeMemory(pValue);
             pValue = NULL;
         }
     }

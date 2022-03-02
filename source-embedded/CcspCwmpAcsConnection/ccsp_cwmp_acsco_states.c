@@ -269,7 +269,7 @@ CcspCwmpAcscoSetAcsUrl
  
     if(pMyObject->AcsUrl != NULL)
     {
-        CcspTr069PaFreeMemory(pMyObject->AcsUrl);
+        AnscFreeMemory(pMyObject->AcsUrl);
 
         pMyObject->AcsUrl = NULL;
     }
@@ -287,7 +287,7 @@ CcspCwmpAcscoSetAcsUrl
 
     if( _ansc_strstr(pName, ACS_DSLF_CWMPS) == pName)
     {
-        pMyObject->AcsUrl = (PCHAR)CcspTr069PaAllocateMemory(AcsUrlSize);
+        pMyObject->AcsUrl = (PCHAR)AnscAllocateMemory(AcsUrlSize);
 
         if( pMyObject->AcsUrl == NULL)
         {
@@ -297,7 +297,7 @@ CcspCwmpAcscoSetAcsUrl
         if(rc != EOK)
         {
             ERR_CHK(rc);
-            CcspTr069PaFreeMemory(pMyObject->AcsUrl);
+            AnscFreeMemory(pMyObject->AcsUrl);
             return  ANSC_STATUS_FAILURE;
         }
         
@@ -310,7 +310,7 @@ CcspCwmpAcscoSetAcsUrl
     }
     else if( _ansc_strstr(pName, ACS_DSLF_CWMP) == pName)
     {
-        pMyObject->AcsUrl = (PCHAR)CcspTr069PaAllocateMemory(AcsUrlSize);
+        pMyObject->AcsUrl = (PCHAR)AnscAllocateMemory(AcsUrlSize);
 
         if( pMyObject->AcsUrl == NULL)
         {
@@ -321,7 +321,7 @@ CcspCwmpAcscoSetAcsUrl
         if(rc != EOK)
         {
             ERR_CHK(rc);
-            CcspTr069PaFreeMemory(pMyObject->AcsUrl);
+            AnscFreeMemory(pMyObject->AcsUrl);
             return  ANSC_STATUS_FAILURE;
         }
  
@@ -334,7 +334,7 @@ CcspCwmpAcscoSetAcsUrl
     }
     else
     {
-        pMyObject->AcsUrl = CcspTr069PaCloneString(pName);
+        pMyObject->AcsUrl = AnscCloneString(pName);
     }
 
     return ANSC_STATUS_SUCCESS;
@@ -428,13 +428,13 @@ CcspCwmpAcscoSetUsername
 
     if(pMyObject->Username != NULL)
     {
-        CcspTr069PaFreeMemory(pMyObject->Username);
+        AnscFreeMemory(pMyObject->Username);
         pMyObject->Username = NULL;
     }
 
     if( pName != NULL)
     {
-        pMyObject->Username = CcspTr069PaCloneString(pName);
+        pMyObject->Username = AnscCloneString(pName);
     }
 
     if ( pHttpClient )
@@ -535,13 +535,13 @@ CcspCwmpAcscoSetPassword
 
     if(pMyObject->Password != NULL)
     {
-        CcspTr069PaFreeMemory(pMyObject->Password);
+        AnscFreeMemory(pMyObject->Password);
         pMyObject->Password = NULL;
     }
 
     if( pPassword != NULL)
     {
-        pMyObject->Password = CcspTr069PaCloneString(pPassword);
+        pMyObject->Password = AnscCloneString(pPassword);
     }
 
     if ( pHttpClient )

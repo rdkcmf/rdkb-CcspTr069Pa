@@ -271,7 +271,7 @@ ccspCwmpCpeFirstInformTask
 
         if(!pMyObject->bActive)
         {
-            CcspTr069PaFreeMemory(pBITaskContext);
+            AnscFreeMemory(pBITaskContext);
             pMyObject->bBootInformScheduled = FALSE;
 
             return ANSC_STATUS_SUCCESS;
@@ -312,7 +312,7 @@ ccspCwmpCpeFirstInformTask
         pCcspCwmpProcessor->ConfigPeriodicInform((ANSC_HANDLE)pCcspCwmpProcessor);
     }
 
-    CcspTr069PaFreeMemory(pBITaskContext);
+    AnscFreeMemory(pBITaskContext);
 
     pMyObject->bBootInformScheduled = FALSE;
 
@@ -401,7 +401,7 @@ ccspCwmpCpeBootstrapInformTask
                 );
     }
 
-    CcspTr069PaFreeMemory(pBITaskContext);
+    AnscFreeMemory(pBITaskContext);
 
     pMyObject->bBootstrapInformScheduled = FALSE;
 
@@ -519,7 +519,7 @@ CcspCwmpCpecoStartCWMP
 
         if ( pStartCwmpTimerIf )
         {
-            CcspTr069PaFreeMemory(pStartCwmpTimerIf);
+            AnscFreeMemory(pStartCwmpTimerIf);
             pMyObject->hStartCwmpTimerIf = NULL;
         }
 
@@ -551,7 +551,7 @@ CcspCwmpCpecoStartCWMP
 
     if ( pStartCwmpTimerIf )
     {
-        CcspTr069PaFreeMemory(pStartCwmpTimerIf);
+        AnscFreeMemory(pStartCwmpTimerIf);
         pMyObject->hStartCwmpTimerIf = NULL;
     }
 
@@ -633,7 +633,7 @@ if ( bInformAcs )
         {
             PCCSP_CWMP_BOOTSTRAP_INFORM_CTX  pBITaskContext;
 
-            pBITaskContext = (PCCSP_CWMP_BOOTSTRAP_INFORM_CTX)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_BOOTSTRAP_INFORM_CTX));
+            pBITaskContext = (PCCSP_CWMP_BOOTSTRAP_INFORM_CTX)AnscAllocateMemory(sizeof(CCSP_CWMP_BOOTSTRAP_INFORM_CTX));
 
             if ( !pBITaskContext )
             {
@@ -755,7 +755,7 @@ if ( bInformAcs )
 
             if (pSavedEvents) {
                 CcspTr069PaTraceDebug(("CcspCwmpCpecoStartCWMP - saved events: %s\n", pSavedEvents));
-                CcspTr069PaFreeMemory(pSavedEvents);
+                AnscFreeMemory(pSavedEvents);
                 pSavedEvents = NULL;
             }
 
@@ -771,7 +771,7 @@ if ( bInformAcs )
     {
         PCCSP_CWMP_BOOT_INFORM_CTX       pBITaskContext;
 
-        pBITaskContext = (PCCSP_CWMP_BOOT_INFORM_CTX)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_BOOT_INFORM_CTX));
+        pBITaskContext = (PCCSP_CWMP_BOOT_INFORM_CTX)AnscAllocateMemory(sizeof(CCSP_CWMP_BOOT_INFORM_CTX));
 
         if ( !pBITaskContext )
         {
@@ -807,16 +807,16 @@ if ( bInformAcs )
 EXIT:
     if (pAcsUrl)
     {
-        CcspTr069PaFreeMemory(pAcsUrl);
+        AnscFreeMemory(pAcsUrl);
     }
     if ( pTriggerCommand )
     {
-        CcspTr069PaFreeMemory(pTriggerCommand);
+        AnscFreeMemory(pTriggerCommand);
     }
 
     if ( pTriggerCommandKey )
     {
-        CcspTr069PaFreeMemory(pTriggerCommandKey);
+        AnscFreeMemory(pTriggerCommandKey);
     }
 
     return  returnStatus;

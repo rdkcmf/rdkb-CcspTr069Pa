@@ -479,7 +479,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
     {
         if ( pConnReqUsername )
         {
-            CcspTr069PaFreeMemory(pConnReqUsername);
+            AnscFreeMemory(pConnReqUsername);
         }
 
         CcspTr069PaTraceWarning(("CcspCwmpStunmoStunBsmRecvMsg1 - username does not match, dropped! \n"));
@@ -488,7 +488,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
 
     if ( pConnReqUsername )
     {
-        CcspTr069PaFreeMemory(pConnReqUsername);
+        AnscFreeMemory(pConnReqUsername);
     }
 
     /* prepare 'Key' */
@@ -514,7 +514,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
 
     if ( pConnReqPassword )
     {
-        CcspTr069PaFreeMemory(pConnReqPassword);
+        AnscFreeMemory(pConnReqPassword);
     }
 
     /* prepare 'Text' */
@@ -524,7 +524,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
         (CrParams.pUsername ? AnscSizeOfString(CrParams.pUsername) : 0) +
         AnscSizeOfString(CrParams.pCnonce);
 
-    pText = (char*)CcspTr069PaAllocateMemory(ulTextLen + 2);
+    pText = (char*)AnscAllocateMemory(ulTextLen + 2);
     if ( !pText )
     {
         CcspTr069PaTraceWarning(("CcspCwmpStunmoStunBsmRecvMsg1 - out of resources, dropped! \n"));
@@ -535,14 +535,14 @@ CcspCwmpStunmoStunBsmRecvMsg1
     if(rc!=EOK)
     {
       ERR_CHK(rc);
-      CcspTr069PaFreeMemory(pText);
+      AnscFreeMemory(pText);
       return  ANSC_STATUS_FAILURE;
     }
     rc = strcat_s(pText,ulTextLen + 2,CrParams.pMessageID);
         if(rc!=EOK)
     {
       ERR_CHK(rc);
-      CcspTr069PaFreeMemory(pText);
+      AnscFreeMemory(pText);
       return  ANSC_STATUS_FAILURE;
     }
 
@@ -552,7 +552,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
        if(rc!=EOK)
       {
          ERR_CHK(rc);
-         CcspTr069PaFreeMemory(pText);
+         AnscFreeMemory(pText);
          return  ANSC_STATUS_FAILURE;
       }
 
@@ -561,7 +561,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
     if(rc!=EOK)
     {
          ERR_CHK(rc);
-          CcspTr069PaFreeMemory(pText);
+          AnscFreeMemory(pText);
          return  ANSC_STATUS_FAILURE;
     }
     hash.Length = ANSC_SHA1_OUTPUT_SIZE;
@@ -573,7 +573,7 @@ CcspCwmpStunmoStunBsmRecvMsg1
             &key
         );
 
-    CcspTr069PaFreeMemory(pText);
+    AnscFreeMemory(pText);
 
     if ( hash.Length != ANSC_SHA1_OUTPUT_SIZE &&
          !AnscEqualMemory(hash.Value, CrParams.pSignature, ANSC_SHA1_OUTPUT_SIZE) )

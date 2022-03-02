@@ -129,7 +129,7 @@ CcspCwmppoCreate
     /*
      * We create object by first allocating memory for holding the variables and member functions.
      */
-    pMyObject = (PCCSP_CWMP_PROCESSOR_OBJECT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_PROCESSOR_OBJECT));
+    pMyObject = (PCCSP_CWMP_PROCESSOR_OBJECT)AnscAllocateMemory(sizeof(CCSP_CWMP_PROCESSOR_OBJECT));
 
     if ( !pMyObject )
     {
@@ -211,7 +211,7 @@ CcspCwmppoRemove
 
     if ( pPeriodicTimerIf )
     {
-        CcspTr069PaFreeMemory(pPeriodicTimerIf);
+        AnscFreeMemory(pPeriodicTimerIf);
     }
 
     if ( pScheduleTimerObj )
@@ -221,7 +221,7 @@ CcspCwmppoRemove
 
     if ( pScheduleTimerIf )
     {
-        CcspTr069PaFreeMemory(pScheduleTimerIf);
+        AnscFreeMemory(pScheduleTimerIf);
     }
 
     if ( pPendingInformTimerObj )
@@ -231,12 +231,12 @@ CcspCwmppoRemove
 
     if ( pPendingInformTimerIf )
     {
-        CcspTr069PaFreeMemory(pPendingInformTimerIf);
+        AnscFreeMemory(pPendingInformTimerIf);
     }
 
     if ( pCcspCwmpMpaIf )
     {
-        CcspTr069PaFreeMemory(pCcspCwmpMpaIf);
+        AnscFreeMemory(pCcspCwmpMpaIf);
 
         pMyObject->hCcspCwmpMpaIf = (ANSC_HANDLE)NULL;
     }
@@ -244,12 +244,12 @@ CcspCwmppoRemove
     if ( pCcspNsMgr )
     {
         pCcspNsMgr->CleanAll((ANSC_HANDLE)pCcspNsMgr);
-        CcspTr069PaFreeMemory(pCcspNsMgr);
+        AnscFreeMemory(pCcspNsMgr);
     }
 
     if ( pMyObject->SecheduledCommandKey ) 
     {
-        CcspTr069PaFreeMemory(pMyObject->SecheduledCommandKey);
+        AnscFreeMemory(pMyObject->SecheduledCommandKey);
     }
 
     AnscFreeLock (&pMyObject->WmpsoQueueLock   );
@@ -330,7 +330,7 @@ CcspCwmppoEnrollObjects
 
     if ( !pPeriodicTimerIf )
     {
-        pPeriodicTimerIf = (PANSC_TDO_CLIENT_OBJECT)CcspTr069PaAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
+        pPeriodicTimerIf = (PANSC_TDO_CLIENT_OBJECT)AnscAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
 
         if ( !pPeriodicTimerIf )
         {
@@ -374,7 +374,7 @@ CcspCwmppoEnrollObjects
 
     if ( !pScheduleTimerIf )
     {
-        pScheduleTimerIf = (PANSC_TDO_CLIENT_OBJECT)CcspTr069PaAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
+        pScheduleTimerIf = (PANSC_TDO_CLIENT_OBJECT)AnscAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
 
         if ( !pScheduleTimerIf )
         {
@@ -417,7 +417,7 @@ CcspCwmppoEnrollObjects
 
     if ( !pPendingInformTimerIf )
     {
-        pPendingInformTimerIf = (PANSC_TDO_CLIENT_OBJECT)CcspTr069PaAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
+        pPendingInformTimerIf = (PANSC_TDO_CLIENT_OBJECT)AnscAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
 
         if ( !pPendingInformTimerIf )
         {
@@ -436,7 +436,7 @@ CcspCwmppoEnrollObjects
 
     if ( !pCcspCwmpMpaIf )
     {
-        pCcspCwmpMpaIf = (PCCSP_CWMP_MPA_INTERFACE)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_MPA_INTERFACE));
+        pCcspCwmpMpaIf = (PCCSP_CWMP_MPA_INTERFACE)AnscAllocateMemory(sizeof(CCSP_CWMP_MPA_INTERFACE));
 
         if ( !pCcspCwmpMpaIf )
         {

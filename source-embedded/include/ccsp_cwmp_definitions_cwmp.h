@@ -433,7 +433,7 @@ CCSP_CWMP_PARAM_VALUE,  *PCCSP_CWMP_PARAM_VALUE;
          {                                                                                  \
             if ( param_value->Name )                                                        \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_value->Name);                                   \
+                AnscFreeMemory(param_value->Name);                                          \
                                                                                             \
                 param_value->Name = NULL;                                                   \
             }                                                                               \
@@ -449,7 +449,7 @@ CCSP_CWMP_PARAM_VALUE,  *PCCSP_CWMP_PARAM_VALUE;
 #define  CcspCwmpFreeParamValue(param_value)                                                \
          {                                                                                  \
             CcspCwmpCleanParamValue(param_value);                                           \
-            CcspTr069PaFreeMemory         (param_value);                                    \
+            AnscFreeMemory         (param_value);                                           \
          }
 
 typedef  struct
@@ -464,7 +464,7 @@ CCSP_CWMP_PARAM_INFO,  *PCCSP_CWMP_PARAM_INFO;
          {                                                                                  \
             if ( param_info->Name )                                                         \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_info->Name);                                    \
+                AnscFreeMemory(param_info->Name);                                           \
                                                                                             \
                 param_info->Name = NULL;                                                    \
             }                                                                               \
@@ -473,7 +473,7 @@ CCSP_CWMP_PARAM_INFO,  *PCCSP_CWMP_PARAM_INFO;
 #define  CcspCwmpFreeParamInfo(param_info)                                                  \
          {                                                                                  \
             CcspCwmpCleanParamInfo(param_info);                                             \
-            CcspTr069PaFreeMemory        (param_info);                                      \
+            AnscFreeMemory        (param_info);                                             \
          }
 
 typedef  struct
@@ -491,14 +491,14 @@ CCSP_CWMP_SET_PARAM_ATTRIB,  *PCCSP_CWMP_SET_PARAM_ATTRIB;
          {                                                                                  \
             if ( set_param_attrib->Name )                                                   \
             {                                                                               \
-                CcspTr069PaFreeMemory(set_param_attrib->Name);                              \
+                AnscFreeMemory(set_param_attrib->Name);                                     \
                                                                                             \
                 set_param_attrib->Name = NULL;                                              \
             }                                                                               \
                                                                                             \
             if ( set_param_attrib->AccessList )                                             \
             {                                                                               \
-                CcspTr069PaFreeMemory(set_param_attrib->AccessList);                        \
+                AnscFreeMemory(set_param_attrib->AccessList);                               \
                                                                                             \
                 set_param_attrib->AccessList = NULL;                                        \
             }                                                                               \
@@ -507,7 +507,7 @@ CCSP_CWMP_SET_PARAM_ATTRIB,  *PCCSP_CWMP_SET_PARAM_ATTRIB;
 #define  CcspCwmpFreeSetParamAttrib(set_param_attrib)                                       \
          {                                                                                  \
             CcspCwmpCleanSetParamAttrib(set_param_attrib);                                  \
-            CcspTr069PaFreeMemory             (set_param_attrib);                           \
+            AnscFreeMemory             (set_param_attrib);                                  \
          }
 
 typedef  struct
@@ -523,14 +523,14 @@ CCSP_CWMP_PARAM_ATTRIB,  *PCCSP_CWMP_PARAM_ATTRIB;
          {                                                                                  \
             if ( param_attrib->Name )                                                       \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_attrib->Name);                                  \
+                AnscFreeMemory(param_attrib->Name);                                         \
                                                                                             \
                 param_attrib->Name = NULL;                                                  \
             }                                                                               \
                                                                                             \
             if ( param_attrib->AccessList )                                                 \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_attrib->AccessList);                            \
+                AnscFreeMemory(param_attrib->AccessList);                                   \
                                                                                             \
                 param_attrib->AccessList = NULL;                                            \
             }                                                                               \
@@ -539,7 +539,7 @@ CCSP_CWMP_PARAM_ATTRIB,  *PCCSP_CWMP_PARAM_ATTRIB;
 #define  CcspCwmpFreeParamAttrib(param_attrib)                                              \
          {                                                                                  \
             CcspCwmpCleanParamAttrib(param_attrib);                                         \
-            CcspTr069PaFreeMemory          (param_attrib);                                  \
+            AnscFreeMemory          (param_attrib);                                         \
          }
 
 /*
@@ -564,33 +564,33 @@ CCSP_CWMP_DEVICE_ID,  *PCCSP_CWMP_DEVICE_ID;
          {                                                                                  \
             if ( device_id->Manufacturer )                                                  \
             {                                                                               \
-                CcspTr069PaFreeMemory(device_id->Manufacturer);                             \
+                AnscFreeMemory(device_id->Manufacturer);                                    \
                                                                                             \
                 device_id->Manufacturer = NULL;                                             \
             }                                                                               \
             if ( device_id->ProvisioningCode )                                                  \
             {                                                                               \
-                CcspTr069PaFreeMemory(device_id->ProvisioningCode);                             \
+                AnscFreeMemory(device_id->ProvisioningCode);                                \
                                                                                             \
                 device_id->ProvisioningCode = NULL;                                             \
             }                                                                               \
             if ( device_id->OUI )                                                           \
             {                                                                               \
-                CcspTr069PaFreeMemory(device_id->OUI);                                      \
+                AnscFreeMemory(device_id->OUI);                                             \
                                                                                             \
                 device_id->OUI = NULL;                                                      \
             }                                                                               \
                                                                                             \
             if ( device_id->ProductClass )                                                  \
             {                                                                               \
-                CcspTr069PaFreeMemory(device_id->ProductClass);                             \
+                AnscFreeMemory(device_id->ProductClass);                                    \
                                                                                             \
                 device_id->ProductClass = NULL;                                             \
             }                                                                               \
                                                                                             \
             if ( device_id->SerialNumber )                                                  \
             {                                                                               \
-                CcspTr069PaFreeMemory(device_id->SerialNumber);                             \
+                AnscFreeMemory(device_id->SerialNumber);                                    \
                                                                                             \
                 device_id->SerialNumber = NULL;                                             \
             }                                                                               \
@@ -599,7 +599,7 @@ CCSP_CWMP_DEVICE_ID,  *PCCSP_CWMP_DEVICE_ID;
 #define  CcspCwmpFreeDeviceId(device_id)                                                    \
          {                                                                                  \
             CcspCwmpCleanDeviceId(device_id);                                               \
-            CcspTr069PaFreeMemory       (device_id);                                        \
+            AnscFreeMemory       (device_id);                                               \
          }
 
 typedef  struct
@@ -614,14 +614,14 @@ CCSP_CWMP_EVENT,  *PCCSP_CWMP_EVENT;
          {                                                                                  \
             if ( event->EventCode )                                                         \
             {                                                                               \
-                CcspTr069PaFreeMemory(event->EventCode);                                    \
+                AnscFreeMemory(event->EventCode);                                           \
                                                                                             \
                 event->EventCode = NULL;                                                    \
             }                                                                               \
                                                                                             \
             if ( event->CommandKey )                                                        \
             {                                                                               \
-                CcspTr069PaFreeMemory(event->CommandKey);                                   \
+                AnscFreeMemory(event->CommandKey);                                          \
                                                                                             \
                 event->CommandKey = NULL;                                                   \
             }                                                                               \
@@ -630,7 +630,7 @@ CCSP_CWMP_EVENT,  *PCCSP_CWMP_EVENT;
 #define  CcspCwmpFreeEvent(event)                                                           \
          {                                                                                  \
             CcspCwmpCleanEvent(event);                                                      \
-            CcspTr069PaFreeMemory    (event);                                               \
+            AnscFreeMemory    (event);                                                      \
          }
 
 typedef  struct
@@ -645,7 +645,7 @@ CCSP_CWMP_FAULT,  *PCCSP_CWMP_FAULT;
          {                                                                                  \
             if ( fault->FaultString )                                                       \
             {                                                                               \
-                CcspTr069PaFreeMemory(fault->FaultString);                                  \
+                AnscFreeMemory(fault->FaultString);                                         \
                                                                                             \
                 fault->FaultString = NULL;                                                  \
             }                                                                               \
@@ -654,7 +654,7 @@ CCSP_CWMP_FAULT,  *PCCSP_CWMP_FAULT;
 #define  CcspCwmpFreeFault(fault)                                                           \
          {                                                                                  \
             CcspCwmpCleanFault(fault);                                                      \
-            CcspTr069PaFreeMemory    (fault);                                               \
+            AnscFreeMemory    (fault);                                                      \
          }
 
 typedef  struct
@@ -670,14 +670,14 @@ CCSP_CWMP_SET_PARAM_FAULT,  *PCCSP_CWMP_SET_PARAM_FAULT;
          {                                                                                  \
             if ( param_fault->ParameterName )                                               \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_fault->ParameterName);                          \
+                AnscFreeMemory(param_fault->ParameterName);                                 \
                                                                                             \
                 param_fault->ParameterName = NULL;                                          \
             }                                                                               \
                                                                                             \
             if ( param_fault->FaultString )                                                 \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_fault->FaultString);                            \
+                AnscFreeMemory(param_fault->FaultString);                                   \
                                                                                             \
                 param_fault->FaultString = NULL;                                            \
             }                                                                               \
@@ -686,7 +686,7 @@ CCSP_CWMP_SET_PARAM_FAULT,  *PCCSP_CWMP_SET_PARAM_FAULT;
 #define  CcspCwmpFreeSetParamFault(param_fault)                                             \
          {                                                                                  \
             CcspCwmpCleanSetParamFault(param_fault);                                        \
-            CcspTr069PaFreeMemory            (param_fault);                                 \
+            AnscFreeMemory            (param_fault);                                        \
          }
 
 /*
@@ -707,7 +707,7 @@ CCSP_CWMP_QUEUED_TRANSFER,  *PCCSP_CWMP_QUEUED_TRANSFER;
          {                                                                                  \
             if ( queued_transfer->CommandKey )                                              \
             {                                                                               \
-                CcspTr069PaFreeMemory(queued_transfer->CommandKey);                         \
+                AnscFreeMemory(queued_transfer->CommandKey);                                \
                                                                                             \
                 queued_transfer->CommandKey = NULL;                                         \
             }                                                                               \
@@ -716,7 +716,7 @@ CCSP_CWMP_QUEUED_TRANSFER,  *PCCSP_CWMP_QUEUED_TRANSFER;
 #define  CcspCwmpFreeQueuedTransfer(queued_transfer)                                        \
          {                                                                                  \
             CcspCwmpCleanQueuedTransfer(queued_transfer);                                   \
-            CcspTr069PaFreeMemory             (queued_transfer);                            \
+            AnscFreeMemory             (queued_transfer);                                   \
          }
 
 typedef  struct
@@ -736,7 +736,7 @@ CCSP_CWMP_OPTION,  *PCCSP_CWMP_OPTION;
          {                                                                                  \
             if ( option->OptionName )                                                       \
             {                                                                               \
-                CcspTr069PaFreeMemory(option->OptionName);                                  \
+                AnscFreeMemory(option->OptionName);                                         \
                                                                                             \
                 option->OptionName = NULL;                                                  \
             }                                                                               \
@@ -745,7 +745,7 @@ CCSP_CWMP_OPTION,  *PCCSP_CWMP_OPTION;
 #define  CcspCwmpFreeOption(option)                                                         \
          {                                                                                  \
             CcspCwmpCleanOption(option);                                                    \
-            CcspTr069PaFreeMemory     (option);                                             \
+            AnscFreeMemory     (option);                                                    \
          }
 
 /*
@@ -764,14 +764,14 @@ CCSP_CWMP_FILE_TYPE,  *PCCSP_CWMP_FILE_TYPE;
          {                                                                                  \
             if ( file_type->Name )                                                          \
             {                                                                               \
-                CcspTr069PaFreeMemory(file_type->Name);                                     \
+                AnscFreeMemory(file_type->Name);                                            \
                                                                                             \
                 file_type->Name = NULL;                                                     \
             }                                                                               \
                                                                                             \
             if ( file_type->Value )                                                         \
             {                                                                               \
-                CcspTr069PaFreeMemory(file_type->Value);                                    \
+                AnscFreeMemory(file_type->Value);                                           \
                                                                                             \
                 file_type->Value = NULL;                                                    \
             }                                                                               \
@@ -780,7 +780,7 @@ CCSP_CWMP_FILE_TYPE,  *PCCSP_CWMP_FILE_TYPE;
 #define  CcspCwmpFreeFileType(file_type)                                                    \
          {                                                                                  \
             CcspCwmpCleanFileType(file_type);                                               \
-            CcspTr069PaFreeMemory       (file_type);                                        \
+            AnscFreeMemory       (file_type);                                               \
          }
 
 
@@ -846,7 +846,7 @@ CCSP_CWMP_SOAP_HEADER,  *PCCSP_CWMP_SOAP_HEADER;
          {                                                                                  \
             if ( soap_header->ID )                                                          \
             {                                                                               \
-                CcspTr069PaFreeMemory(soap_header->ID);                                     \
+                AnscFreeMemory(soap_header->ID);                                            \
                                                                                             \
                 soap_header->ID = NULL;                                                     \
             }                                                                               \
@@ -855,7 +855,7 @@ CCSP_CWMP_SOAP_HEADER,  *PCCSP_CWMP_SOAP_HEADER;
 #define  CcspCwmpFreeSoapHeader(soap_header)                                                \
          {                                                                                  \
             CcspCwmpCleanSoapHeader(soap_header);                                           \
-            CcspTr069PaFreeMemory         (soap_header);                                    \
+            AnscFreeMemory         (soap_header);                                           \
          }
 
 typedef  struct
@@ -875,7 +875,7 @@ CCSP_CWMP_SOAP_REQUEST,  *PCCSP_CWMP_SOAP_REQUEST;
 #define  CcspCwmpFreeSoapReq(soap_req)                                                      \
          {                                                                                  \
             CcspCwmpCleanSoapReq(soap_req);                                                 \
-            CcspTr069PaFreeMemory      (soap_req);                                          \
+            AnscFreeMemory      (soap_req);                                                 \
          }
 
 typedef  struct
@@ -895,14 +895,14 @@ CCSP_CWMP_SOAP_FAULT,  *PCCSP_CWMP_SOAP_FAULT;
                                                                                             \
             if ( soap_fault->soap_faultcode )                                               \
             {                                                                               \
-                CcspTr069PaFreeMemory(soap_fault->soap_faultcode);                          \
+                AnscFreeMemory(soap_fault->soap_faultcode);                                 \
                                                                                             \
                 soap_fault->soap_faultcode = NULL;                                          \
             }                                                                               \
                                                                                             \
             if ( soap_fault->soap_faultstring )                                             \
             {                                                                               \
-                CcspTr069PaFreeMemory(soap_fault->soap_faultstring);                        \
+                AnscFreeMemory(soap_fault->soap_faultstring);                               \
                                                                                             \
                 soap_fault->soap_faultstring = NULL;                                        \
             }                                                                               \
@@ -918,7 +918,7 @@ CCSP_CWMP_SOAP_FAULT,  *PCCSP_CWMP_SOAP_FAULT;
 #define  CcspCwmpFreeSoapFault(soap_fault)                                                  \
          {                                                                                  \
             CcspCwmpCleanSoapFault(soap_fault);                                             \
-            CcspTr069PaFreeMemory        (soap_fault);                                      \
+            AnscFreeMemory        (soap_fault);                                             \
          }
 
 typedef  struct
@@ -952,7 +952,7 @@ CCSP_CWMP_SOAP_RESPONSE,  *PCCSP_CWMP_SOAP_RESPONSE;
                 }                                                                           \
                 else if ( soap_rep->Method == CCSP_CWMP_METHOD_Kicked )                     \
                 {                                                                           \
-                    CcspTr069PaFreeMemory((char*)soap_rep->hRepArguments);                  \
+                    AnscFreeMemory((char*)soap_rep->hRepArguments);                         \
                                                                                             \
                     soap_rep->hRepArguments = (ANSC_HANDLE)NULL;                            \
                 }                                                                           \
@@ -962,7 +962,7 @@ CCSP_CWMP_SOAP_RESPONSE,  *PCCSP_CWMP_SOAP_RESPONSE;
 #define  CcspCwmpFreeSoapResponse(soap_rep)                                                 \
          {                                                                                  \
             CcspCwmpCleanSoapResponse(soap_rep);                                            \
-            CcspTr069PaFreeMemory           (soap_rep);                                     \
+            AnscFreeMemory           (soap_rep);                                            \
          }
 
 /*

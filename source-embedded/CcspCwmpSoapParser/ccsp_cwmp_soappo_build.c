@@ -292,7 +292,7 @@ CcspCwmpSoappoBuildSoapReq_GetRpcMethods
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -301,7 +301,7 @@ CcspCwmpSoappoBuildSoapReq_GetRpcMethods
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -967,7 +967,7 @@ CcspCwmpSoappoBuildSoapReq_Inform
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -976,7 +976,7 @@ CcspCwmpSoappoBuildSoapReq_Inform
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -1298,7 +1298,7 @@ CcspCwmpSoappoBuildSoapReq_TransferComplete
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -1307,7 +1307,7 @@ CcspCwmpSoappoBuildSoapReq_TransferComplete
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -1544,7 +1544,7 @@ CcspCwmpSoappoBuildSoapReq_Kicked
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -1553,7 +1553,7 @@ CcspCwmpSoappoBuildSoapReq_Kicked
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -1792,7 +1792,7 @@ CcspCwmpSoappoBuildSoapReq_RequestDownload
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -1801,7 +1801,7 @@ CcspCwmpSoappoBuildSoapReq_RequestDownload
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -2260,7 +2260,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousTransferComplete
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -2269,7 +2269,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousTransferComplete
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -2600,7 +2600,7 @@ CcspCwmpSoappoBuildSoapReq_DUStateChangeComplete
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -2609,7 +2609,7 @@ CcspCwmpSoappoBuildSoapReq_DUStateChangeComplete
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -2887,7 +2887,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousDUStateChangeComplete
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -2896,7 +2896,7 @@ CcspCwmpSoappoBuildSoapReq_AutonomousDUStateChangeComplete
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -3160,7 +3160,7 @@ CcspCwmpSoappoBuildSoapRep_GetRPCMethods
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -3169,7 +3169,7 @@ CcspCwmpSoappoBuildSoapRep_GetRPCMethods
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -3330,7 +3330,7 @@ CcspCwmpSoappoBuildSoapRep_SetParameterValues
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -3339,7 +3339,7 @@ CcspCwmpSoappoBuildSoapRep_SetParameterValues
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -3619,7 +3619,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterValues
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -3628,7 +3628,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterValues
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -3902,7 +3902,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterNames
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -3911,7 +3911,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterNames
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -4042,7 +4042,7 @@ CcspCwmpSoappoBuildSoapRep_SetParameterAttributes
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -4051,7 +4051,7 @@ CcspCwmpSoappoBuildSoapRep_SetParameterAttributes
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -4430,7 +4430,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterAttributes
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -4439,7 +4439,7 @@ CcspCwmpSoappoBuildSoapRep_GetParameterAttributes
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -4625,7 +4625,7 @@ CcspCwmpSoappoBuildSoapRep_AddObject
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -4634,7 +4634,7 @@ CcspCwmpSoappoBuildSoapRep_AddObject
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -4795,7 +4795,7 @@ CcspCwmpSoappoBuildSoapRep_DeleteObject
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -4804,7 +4804,7 @@ CcspCwmpSoappoBuildSoapRep_DeleteObject
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -5057,7 +5057,7 @@ CcspCwmpSoappoBuildSoapRep_Download
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5066,7 +5066,7 @@ CcspCwmpSoappoBuildSoapRep_Download
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -5199,7 +5199,7 @@ CcspCwmpSoappoBuildSoapRep_Reboot
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5208,7 +5208,7 @@ CcspCwmpSoappoBuildSoapRep_Reboot
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -5340,7 +5340,7 @@ CcspCwmpSoappoBuildSoapRep_ChangeDUState
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5349,7 +5349,7 @@ CcspCwmpSoappoBuildSoapRep_ChangeDUState
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -5573,7 +5573,7 @@ CcspCwmpSoappoBuildSoapRep_GetQueuedTransfers
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5582,7 +5582,7 @@ CcspCwmpSoappoBuildSoapRep_GetQueuedTransfers
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -5713,7 +5713,7 @@ CcspCwmpSoappoBuildSoapRep_ScheduleInform
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5722,7 +5722,7 @@ CcspCwmpSoappoBuildSoapRep_ScheduleInform
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -5853,7 +5853,7 @@ CcspCwmpSoappoBuildSoapRep_SetVouchers
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -5862,7 +5862,7 @@ CcspCwmpSoappoBuildSoapRep_SetVouchers
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -6232,7 +6232,7 @@ CcspCwmpSoappoBuildSoapRep_GetOptions
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -6241,7 +6241,7 @@ CcspCwmpSoappoBuildSoapRep_GetOptions
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -6494,7 +6494,7 @@ CcspCwmpSoappoBuildSoapRep_Upload
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -6503,7 +6503,7 @@ CcspCwmpSoappoBuildSoapRep_Upload
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -6634,7 +6634,7 @@ CcspCwmpSoappoBuildSoapRep_FactoryReset
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -6643,7 +6643,7 @@ CcspCwmpSoappoBuildSoapRep_FactoryReset
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 
@@ -7003,7 +7003,7 @@ CcspCwmpSoappoBuildSoapRepFault
         goto EXIT;
     }
 
-    pXmlString = (PCHAR)CcspTr069PaAllocateMemory(length + 16);
+    pXmlString = (PCHAR)AnscAllocateMemory(length + 16);
 
     if( pXmlString == NULL)
     {
@@ -7012,7 +7012,7 @@ CcspCwmpSoappoBuildSoapRepFault
 
     if( AnscXmlDomNodeEncode(pRootNode, (PVOID)pXmlString, &length) != ANSC_STATUS_SUCCESS)
     {
-        CcspTr069PaFreeMemory(pXmlString);
+        AnscFreeMemory(pXmlString);
         pXmlString = NULL;
     }
 

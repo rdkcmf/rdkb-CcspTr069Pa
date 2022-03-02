@@ -120,7 +120,7 @@ CCSP_CWMP_STUN_INFO,  *PCCSP_CWMP_STUN_INFO;
 #define  CcspCwmpFreeStunInfo(stun_info)                                                    \
          {                                                                                  \
             CcspCwmpCleanStunInfo(stun_info);                                               \
-            CcspTr069PaFreeMemory   (stun_info);                                            \
+            AnscFreeMemory   (stun_info);                                                   \
          }
 
 

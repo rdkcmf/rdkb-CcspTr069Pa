@@ -131,7 +131,7 @@ CcspCwmpAcscoCreate
     /*
      * We create object by first allocating memory for holding the variables and member functions.
      */
-    pMyObject = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_ACS_CONNECTION_OBJECT));
+    pMyObject = (PCCSP_CWMP_ACS_CONNECTION_OBJECT)AnscAllocateMemory(sizeof(CCSP_CWMP_ACS_CONNECTION_OBJECT));
 
     if ( !pMyObject )
     {
@@ -203,41 +203,41 @@ CcspCwmpAcscoRemove
 
     if( pMyObject->AcsUrl != NULL)
     {
-        CcspTr069PaFreeMemory(pMyObject->AcsUrl);
+        AnscFreeMemory(pMyObject->AcsUrl);
 
         pMyObject->AcsUrl = NULL;
     }
 
     if( pMyObject->Username != NULL)
     {
-        CcspTr069PaFreeMemory(pMyObject->Username);
+        AnscFreeMemory(pMyObject->Username);
 
         pMyObject->Username = NULL;
     }
 
     if( pMyObject->Password != NULL)
     {
-        CcspTr069PaFreeMemory(pMyObject->Password);
+        AnscFreeMemory(pMyObject->Password);
 
         pMyObject->Password = NULL;
     }
 
     if ( pMyObject->AuthHeaderValue )
     {
-        CcspTr069PaFreeMemory(pMyObject->AuthHeaderValue);
+        AnscFreeMemory(pMyObject->AuthHeaderValue);
         pMyObject->AuthHeaderValue = NULL;
     }
 
     if ( pHttpBspIf )
     {
-        CcspTr069PaFreeMemory(pHttpBspIf);
+        AnscFreeMemory(pHttpBspIf);
 
         pMyObject->hHttpBspIf = (ANSC_HANDLE)NULL;
     }
 
     if ( pHttpAcmIf )
     {
-        CcspTr069PaFreeMemory(pHttpAcmIf);
+        AnscFreeMemory(pHttpAcmIf);
 
         pMyObject->hHttpAcmIf = (ANSC_HANDLE)NULL;
     }
@@ -353,7 +353,7 @@ CcspCwmpAcscoEnrollObjects
 
     if ( !pHttpBspIf )
     {
-        pHttpBspIf = (PHTTP_BSP_INTERFACE)CcspTr069PaAllocateMemory(sizeof(HTTP_BSP_INTERFACE));
+        pHttpBspIf = (PHTTP_BSP_INTERFACE)AnscAllocateMemory(sizeof(HTTP_BSP_INTERFACE));
 
         if ( !pHttpBspIf )
         {
@@ -382,7 +382,7 @@ CcspCwmpAcscoEnrollObjects
 
     if ( !pHttpAcmIf )
     {
-        pHttpAcmIf = (PHTTP_ACM_INTERFACE)CcspTr069PaAllocateMemory(sizeof(HTTP_ACM_INTERFACE));
+        pHttpAcmIf = (PHTTP_ACM_INTERFACE)AnscAllocateMemory(sizeof(HTTP_ACM_INTERFACE));
 
         if ( !pHttpAcmIf )
         {

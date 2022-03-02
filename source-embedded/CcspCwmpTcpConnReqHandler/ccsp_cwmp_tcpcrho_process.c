@@ -176,7 +176,7 @@ CcspCwmpTcpcrhoProcessRequest
             PCCSP_CWMP_ACS_BROKER_OBJECT     pCcspCwmpAcsBroker      = (PCCSP_CWMP_ACS_BROKER_OBJECT    )pCcspCwmpCpeController->hCcspCwmpAcsBroker;
             PCCSP_CWMP_MSO_INTERFACE         pCcspCwmpMsoIf          = (PCCSP_CWMP_MSO_INTERFACE        )pCcspCwmpAcsBroker->hCcspCwmpMsoIf;
 
-            pResponseMsg = (PUCHAR)CcspTr069PaAllocateMemory(ulResponseMsgLen);
+            pResponseMsg = (PUCHAR)AnscAllocateMemory(ulResponseMsgLen);
             if ( !pResponseMsg )
             {
                 return  ANSC_STATUS_RESOURCES;
@@ -203,7 +203,7 @@ CcspCwmpTcpcrhoProcessRequest
                             (ANSC_HANDLE)NULL
                         );
 
-                CcspTr069PaFreeMemory(pResponseMsg);
+                AnscFreeMemory(pResponseMsg);
 
                 /* send connection request */
 
@@ -271,7 +271,7 @@ CcspCwmpTcpcrhoProcessRequest
                 pSessInfo->NC             = 0;
             }
 
-            pResponseMsg = (PUCHAR)CcspTr069PaAllocateMemory(ulResponseMsgLen);
+            pResponseMsg = (PUCHAR)AnscAllocateMemory(ulResponseMsgLen);
             if ( !pResponseMsg )
             {
                 return  ANSC_STATUS_RESOURCES;
@@ -340,7 +340,7 @@ CcspCwmpTcpcrhoProcessRequest
                         (ANSC_HANDLE)NULL
                     );
 
-            CcspTr069PaFreeMemory(pResponseMsg);
+            AnscFreeMemory(pResponseMsg);
 
             if ( status == ANSC_STATUS_SUCCESS )
             {
@@ -391,7 +391,7 @@ CcspCwmpTcpcrhoProcessRequest
         {
             ulResponseBufferLen = 2048 + ulResLen;
 
-            pResponseBuffer = (char*)CcspTr069PaAllocateMemory(ulResponseBufferLen);
+            pResponseBuffer = (char*)AnscAllocateMemory(ulResponseBufferLen);
 
             if ( !pResponseBuffer )
             {
@@ -426,13 +426,13 @@ CcspCwmpTcpcrhoProcessRequest
 
             if ( pResponseBuffer )
             {
-                CcspTr069PaFreeMemory(pResponseBuffer);
+                AnscFreeMemory(pResponseBuffer);
             }
         }
 
         if ( pResBuf )
         {
-            CcspTr069PaFreeMemory(pResBuf);
+            AnscFreeMemory(pResBuf);
         }
     }
     else
@@ -442,7 +442,7 @@ CcspCwmpTcpcrhoProcessRequest
 
     if ( pUrlPath )
     {
-        CcspTr069PaFreeMemory(pUrlPath);
+        AnscFreeMemory(pUrlPath);
     }
 
     return  status;
@@ -605,7 +605,7 @@ CcspCwmpTcpcrhoVerifyCredential
  
     if ( pPassword )
     {
-        CcspTr069PaFreeMemory(pPassword);
+        AnscFreeMemory(pPassword);
     }
 
 EXIT:
@@ -617,12 +617,12 @@ EXIT:
 
     if ( pHostName )
     {
-        CcspTr069PaFreeMemory(pHostName);
+        AnscFreeMemory(pHostName);
     }
 
     if ( pUriPath )
     {
-        CcspTr069PaFreeMemory(pUriPath);
+        AnscFreeMemory(pUriPath);
     }
 
     return  status;

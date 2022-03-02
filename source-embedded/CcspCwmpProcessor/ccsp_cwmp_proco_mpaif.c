@@ -101,7 +101,7 @@
                 if ( pReturnStr )                                               \
                 {                                                               \
                     /* Entries in pParamNameArray cannot be freed */            \
-                    /* CcspTr069PaFreeMemory(pParam); */                        \
+                    /* AnscFreeMemory(pParam); */                               \
                     pParam = pReturnStr;                                        \
                 }                                                               \
             }
@@ -119,7 +119,7 @@
                 if ( pReturnStr )                                                   \
                 {                                                                   \
                     /* we are responsible for releasing the original string */      \
-                    CcspTr069PaFreeMemory(pParamName);                              \
+                    AnscFreeMemory(pParamName);                                     \
                     pParamName = pReturnStr;                                        \
                 }                                                                   \
             }
@@ -136,7 +136,7 @@
                 if ( pReturnStr )                                                   \
                 {                                                                   \
                     /* we are responsible for releasing the original string */      \
-                    CcspTr069PaFreeMemory(pParam);                                  \
+                    AnscFreeMemory(pParam);                                         \
                     pParam = pReturnStr;                                            \
                 }                                                                   \
             }
@@ -200,25 +200,25 @@ CcspCwmppoAddFunctionalComponents
 
     if ( ulFcArraySize == 0 )
     {
-        ppSubsysArray = (char**)CcspTr069PaAllocateMemory(sizeof(char*)*NumComp);
-        ppFcNameArray = (char**)CcspTr069PaAllocateMemory(sizeof(char*)*NumComp);
-        ppDbusPathArray = (char**)CcspTr069PaAllocateMemory(sizeof(char*)*NumComp);
+        ppSubsysArray = (char**)AnscAllocateMemory(sizeof(char*)*NumComp);
+        ppFcNameArray = (char**)AnscAllocateMemory(sizeof(char*)*NumComp);
+        ppDbusPathArray = (char**)AnscAllocateMemory(sizeof(char*)*NumComp);
         if ( !ppSubsysArray || !ppFcNameArray || !ppDbusPathArray )
         {
             /*RDKB-7325, CID-33562, CID-33319, CID-33249; preventing use after free */
             if(ppSubsysArray)
             {
-                CcspTr069PaFreeMemory(ppSubsysArray);
+                AnscFreeMemory(ppSubsysArray);
                 ppSubsysArray = NULL;
             }
             if(ppFcNameArray)
             {
-                CcspTr069PaFreeMemory(ppFcNameArray);
+                AnscFreeMemory(ppFcNameArray);
                 ppFcNameArray = NULL;
             }
             if(ppDbusPathArray)
             {
-                CcspTr069PaFreeMemory(ppDbusPathArray);
+                AnscFreeMemory(ppDbusPathArray);
                 ppDbusPathArray = NULL;
             }
         }
@@ -233,25 +233,25 @@ CcspCwmppoAddFunctionalComponents
         char**                  ppFnArray = NULL;
         char**                  ppDpArray = NULL;
 
-        ppSsArray = (char**)CcspTr069PaAllocateMemory(sizeof(char*)*(ulFcArraySize+NumComp));
-        ppFnArray = (char**)CcspTr069PaAllocateMemory(sizeof(char*)*(ulFcArraySize+NumComp));
-        ppDpArray = (char**)CcspTr069PaAllocateMemory(sizeof(char*)*(ulFcArraySize+NumComp));
+        ppSsArray = (char**)AnscAllocateMemory(sizeof(char*)*(ulFcArraySize+NumComp));
+        ppFnArray = (char**)AnscAllocateMemory(sizeof(char*)*(ulFcArraySize+NumComp));
+        ppDpArray = (char**)AnscAllocateMemory(sizeof(char*)*(ulFcArraySize+NumComp));
 
         if ( !ppSsArray || !ppFnArray || !ppDpArray )
         {
             if ( ppSsArray )
 	    {
-		CcspTr069PaFreeMemory(ppSsArray);
+		AnscFreeMemory(ppSsArray);
 		ppSsArray = NULL;
 	    }
             if ( ppFnArray )
 	    {
-		CcspTr069PaFreeMemory(ppFnArray);
+		AnscFreeMemory(ppFnArray);
 		ppFnArray = NULL;
 	    }
             if ( ppDpArray )
 	    {
-		CcspTr069PaFreeMemory(ppDpArray);
+		AnscFreeMemory(ppDpArray);
 		ppDpArray = NULL;
 	    }
             goto EXIT;
@@ -265,17 +265,17 @@ CcspCwmppoAddFunctionalComponents
         }
         if ( ppSubsysArray )
 	{
-	    CcspTr069PaFreeMemory(ppSubsysArray);
+	    AnscFreeMemory(ppSubsysArray);
 	    ppSubsysArray = NULL;
 	}
         if ( ppFcNameArray )
 	{
-	    CcspTr069PaFreeMemory(ppFcNameArray);
+	    AnscFreeMemory(ppFcNameArray);
 	    ppFcNameArray = NULL;
 	}
         if ( ppDbusPathArray )
 	{
-	    CcspTr069PaFreeMemory(ppDbusPathArray);
+	    AnscFreeMemory(ppDbusPathArray);
 	    ppDbusPathArray = NULL;
 	}
         ppSubsysArray = ppSsArray;
@@ -289,9 +289,9 @@ CcspCwmppoAddFunctionalComponents
     {
         for ( j = 0; (unsigned int)j < NumComp; j ++ )
         {
-            ppSubsysArray[k+j] = pSubsystem ? CcspTr069PaCloneString(pSubsystem) : NULL;
-            ppFcNameArray[k+j] = CcspTr069PaCloneString(ppComp[j]->componentName);
-            ppDbusPathArray[k+j] = CcspTr069PaCloneString(ppComp[j]->dbusPath);
+            ppSubsysArray[k+j] = pSubsystem ? AnscCloneString(pSubsystem) : NULL;
+            ppFcNameArray[k+j] = AnscCloneString(ppComp[j]->componentName);
+            ppDbusPathArray[k+j] = AnscCloneString(ppComp[j]->dbusPath);
         }
         ulFcArraySize += NumComp;
     }
@@ -472,7 +472,7 @@ CcspTr069PaMapFirstInternalAlias(
             if (bFreeMemory)
             {
                 /* Free previously allocated string if requested */
-                CcspTr069PaFreeMemory(*pParamName);
+                AnscFreeMemory(*pParamName);
             }
 
             *pParamName = name;
@@ -533,7 +533,7 @@ CcspTr069PaMapArrayToInternalAliases
         {
             while ( (InternalName = (char*)CcspTr069PA_GetNextInternalName(pInternalNames)) )
             {
-                pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
+                pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) AnscAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
 
                 if ( !pSListEntry )
                 {
@@ -550,7 +550,7 @@ CcspTr069PaMapArrayToInternalAliases
                 AnscQueuePushEntry(pOutParamList, &pSListEntry->Linkage);
 
                 // Add the same entry in the memory allocation list
-                pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
+                pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) AnscAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
 
                 if ( !pSListEntry )
                 {
@@ -573,7 +573,7 @@ CcspTr069PaMapArrayToInternalAliases
         }
         else
         {
-            pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
+            pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) AnscAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
 
             if ( !pSListEntry )
             {
@@ -609,7 +609,7 @@ CcspTr069PaMapToExternalAlias
     if (ExternalName)
     {
         /* We need to free previously allocated string */
-        CcspTr069PaFreeMemory(*pParamName);
+        AnscFreeMemory(*pParamName);
         *pParamName = ExternalName;
     }
 }
@@ -695,14 +695,14 @@ CcspCwmppoMpaCheckInstance
     BOOL                            bCheckInvalidInstance   = FALSE;
 
 
-    char *pOrigCheckParamN = CcspTr069PaCloneString(pParamName);
+    char *pOrigCheckParamN = AnscCloneString(pParamName);
     char *pCheckParamN = pOrigCheckParamN;
     CcspCwmppoMpaMapInvalidParamInstNumDmIntToCwmp(pCheckParamN);
     if(pOrigCheckParamN != pCheckParamN)
     {
         bCheckInvalidInstance = TRUE;
     }
-    CcspTr069PaFreeMemory(pCheckParamN);
+    AnscFreeMemory(pCheckParamN);
     return  bCheckInvalidInstance;
 }
 
@@ -981,7 +981,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
      *      - The SOAP detail element MUST contain a Fault structure defined in the
      *        "urn:dslforum-org:cwmp-1-0" namespace.
      */
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT) * ulArraySize);
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT) * ulArraySize);
 
     if ( !pCwmpSoapFault )
     {
@@ -1018,9 +1018,9 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
             CCSP_CWMP_SET_SOAP_FAULT(pCwmpSoapFault, CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs);
 
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = CcspTr069PaCloneString(pParameterValueArray[i].Name);
+            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = AnscCloneString(pParameterValueArray[i].Name);
             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName;
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
+            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
             pCwmpSoapFault->SetParamValuesFaultCount++;
 
             continue;
@@ -1029,9 +1029,9 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         {
             bFaultEncountered = TRUE;
 
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = CcspTr069PaCloneString(pParameterValueArray[i].Name);
+            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = AnscCloneString(pParameterValueArray[i].Name);
             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue;
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
+            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
             pCwmpSoapFault->SetParamValuesFaultCount++;
 
             continue;
@@ -1048,9 +1048,9 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
             CCSP_CWMP_SET_SOAP_FAULT(pCwmpSoapFault, CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName);
 
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = CcspTr069PaCloneString(pParameterValueArray[i].Name);
+            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = AnscCloneString(pParameterValueArray[i].Name);
             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName;
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
+            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
             pCwmpSoapFault->SetParamValuesFaultCount++;
 
             continue;
@@ -1123,7 +1123,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
         if ( NumSubsystems <= 0 )
         {
-            Subsystems[0] = CcspTr069PaCloneString(pCcspCwmpCpeController->SubsysName);    /* assume 'local' sub-system will be used */
+            Subsystems[0] = AnscCloneString(pCcspCwmpCpeController->SubsysName);    /* assume 'local' sub-system will be used */
             NumSubsystems = 1;
         }
         else if ( NumSubsystems > 1 )
@@ -1185,7 +1185,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
         }
 
         pNsList = 
-            (PCCSP_TR069PA_NSLIST)CcspTr069PaAllocateMemory
+            (PCCSP_TR069PA_NSLIST)AnscAllocateMemory
             (
              sizeof(CCSP_TR069PA_NSLIST)
             );
@@ -1225,7 +1225,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                     CcspCwmppoMpaMapParamInstNumCwmpToDmInt (pParamN);
                     if (pParamN == pValueInfo->parameterName)
                     {
-                        pParamN = CcspTr069PaCloneString (pValueInfo->parameterName);
+                        pParamN = AnscCloneString (pValueInfo->parameterName);
                     }
 
                     ParamName[i] = pParamN;
@@ -1271,7 +1271,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
             nNsCount = AnscQueueQueryDepth(&pFcNsList->NsList);
 
             pParamValues = 
-                (parameterValStruct_t*)CcspTr069PaAllocateMemory
+                (parameterValStruct_t*)AnscAllocateMemory
                 (
                  sizeof(parameterValStruct_t) * nNsCount
                 );
@@ -1417,7 +1417,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                     	flag_pInvalidParam = TRUE;
 
                     	// not success send appropriate parameter name
-                    	pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
+                    	pInvalidParam=AnscCloneString(pNsList->Args.paramValueInfo.parameterName);
                     }
 
                     match_found = 1;
@@ -1441,7 +1441,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                         flag_pInvalidParam = TRUE;
 
                         // not success send appropriate parameter name
-                        pInvalidParam=CcspTr069PaCloneString(pNsList->Args.paramValueInfo.parameterName);
+                        pInvalidParam=AnscCloneString(pNsList->Args.paramValueInfo.parameterName);
                         break;
                     }
                 }
@@ -1467,7 +1467,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
             if (pParamValues)
             {
-                CcspTr069PaFreeMemory(pParamValues);
+                AnscFreeMemory(pParamValues);
                 pParamValues = NULL;
             }
             rc = strcmp_s("Device.X_CISCO_COM_DeviceControl.ReinitCmMac",strlen("Device.X_CISCO_COM_DeviceControl.ReinitCmMac"),pNsList->Args.paramValueInfo.parameterName,&ind);
@@ -1475,7 +1475,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
             if((rc == EOK) && (!ind))
             {
                 /* If not success send appropriate parameter name*/
-                pInvalidParam=CcspTr069PaCloneString("Device.X_COMCAST_COM_CM.ReinitCmMac");
+                pInvalidParam=AnscCloneString("Device.X_COMCAST_COM_CM.ReinitCmMac");
             }
 
             if ( nResult != CCSP_SUCCESS )
@@ -1496,11 +1496,11 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName:
 
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
-                                CcspTr069PaCloneString(pInvalidParam);
+                                AnscCloneString(pInvalidParam);
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
                                 CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName;
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
-                                CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
+                                AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
                             /* set the primary fault code to 9003 */
                             nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
 
@@ -1509,11 +1509,11 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType:
 
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
-                                CcspTr069PaCloneString(pInvalidParam);
+                                AnscCloneString(pInvalidParam);
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
                                 CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType;
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
-                                CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamType);
+                                AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamType);
                             /* set the primary fault code to 9003 */
                             nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
 
@@ -1522,11 +1522,11 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue:
 
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
-                                CcspTr069PaCloneString(pInvalidParam);
+                                AnscCloneString(pInvalidParam);
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
                                 CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue;
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
-                                CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
+                                AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
                             /* set the primary fault code to 9003 */
                             nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
 
@@ -1535,11 +1535,11 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
                         case    CCSP_CWMP_CPE_CWMP_FaultCode_notWritable:
 
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = 
-                                CcspTr069PaCloneString(pInvalidParam);
+                                AnscCloneString(pInvalidParam);
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = 
                                 CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
                             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = 
-                                CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notWritable);
+                                AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notWritable);
                             /* set the primary fault code to 9003 */
                             nResult = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
 
@@ -1548,7 +1548,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
                     pCwmpSoapFault->SetParamValuesFaultCount++;
 
-                    CcspTr069PaFreeMemory(pInvalidParam);
+                    AnscFreeMemory(pInvalidParam);
                     pInvalidParam = NULL;
                 }
 
@@ -1561,7 +1561,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
             if ( pInvalidParam )
             {
-                CcspTr069PaFreeMemory(pInvalidParam);
+                AnscFreeMemory(pInvalidParam);
                 pInvalidParam = NULL;
             }
 
@@ -1599,7 +1599,7 @@ CcspCwmppoMpaSetParameterValuesWithWriteID
 
 #if 0 /*RDKB-7325, CID-33526, unused variable, leading to memory leak*/
             pParamValues = 
-                (parameterValStruct_t*)CcspTr069PaAllocateMemory
+                (parameterValStruct_t*)AnscAllocateMemory
                 (
                  sizeof(parameterValStruct_t) * nNsCount
                 );
@@ -1765,9 +1765,9 @@ EXIT2:
 
         if ( pInvalidParamName )
         {
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = CcspTr069PaCloneString(pInvalidParamName);
+            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].ParameterName = AnscCloneString(pInvalidParamName);
             pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName;
-            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
+            pCwmpSoapFault->SetParamValuesFaultArray[pCwmpSoapFault->SetParamValuesFaultCount].FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
             pCwmpSoapFault->SetParamValuesFaultCount++;
         }
     }
@@ -1817,7 +1817,7 @@ EXIT1:
         {
             if (ParamName[i] != NULL)
             {
-                CcspTr069PaFreeMemory(ParamName[i]);
+                AnscFreeMemory(ParamName[i]);
             }
         }
 
@@ -1946,7 +1946,7 @@ CcspCwmppoMpaGetParameterValues
      *      - The SOAP detail element MUST contain a Fault structure defined in the
      *        "urn:dslforum-org:cwmp-1-0" namespace.
      */
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT));
 
     if ( !pCwmpSoapFault )
     {
@@ -2011,7 +2011,7 @@ CcspCwmppoMpaGetParameterValues
         ERR_CHK(rc);
         if((rc == EOK) && (!ind))
 	{
-		pParamName = CcspTr069PaCloneString("Device.DeviceInfo.Manufacturer");
+		pParamName = AnscCloneString("Device.DeviceInfo.Manufacturer");
 		bDataModelReq = TRUE;
 	}
                 rc = strcmp_s("Device.X_COMCAST_COM_CM.ReinitCmMac",strlen("Device.X_COMCAST_COM_CM.ReinitCmMac"),pParamName,&ind);
@@ -2150,7 +2150,7 @@ CcspCwmppoMpaGetParameterValues
             nNsCount = AnscQueueQueryDepth(&pFcNsList->NsList);
 
             pParamNames = 
-                (char**)CcspTr069PaAllocateMemory
+                (char**)AnscAllocateMemory
                     (
                         sizeof(char *) * nNsCount
                     );
@@ -2193,7 +2193,7 @@ CcspCwmppoMpaGetParameterValues
 
                     if(pParamNames)
                     {
-                       CcspTr069PaFreeMemory(pParamNames);
+                       AnscFreeMemory(pParamNames);
                        pParamNames = NULL;
                     }
 
@@ -2236,7 +2236,7 @@ CcspCwmppoMpaGetParameterValues
                              {
                                  if(pParamValues[k]->parameterValue)
                                  {
-                                     CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
+                                     AnscFreeMemory(pParamValues[k]->parameterValue);
                                      pParamValues[k]->parameterValue = NULL;
                                  }
                                  pParamValues[k]->parameterValue = AnscCloneString(" ");
@@ -2260,7 +2260,7 @@ CcspCwmppoMpaGetParameterValues
                                 {
                                     if(pParamValues[k]->parameterValue)
                                     {
-                                         CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
+                                         AnscFreeMemory(pParamValues[k]->parameterValue);
                                          pParamValues[k]->parameterValue = NULL;
                                     }
                                     pParamValues[k]->parameterValue = AnscCloneString(" ");
@@ -2289,7 +2289,7 @@ CcspCwmppoMpaGetParameterValues
 
                         if(pParamValues[k]->parameterValue)
                         {
-                            CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
+                            AnscFreeMemory(pParamValues[k]->parameterValue);
                             pParamValues[k]->parameterValue = NULL;
                         }
                         pParamValues[k]->parameterValue=AnscCloneString(tmp);
@@ -2300,8 +2300,8 @@ CcspCwmppoMpaGetParameterValues
                                              ERR_CHK(rc);
                                              if((rc == EOK) && (!ind))
 					     {
-						 pParamValues[k]->parameterName = CcspTr069PaCloneString("Device.RootDataModelVersion");
-					         pParamValues[k]->parameterValue = CcspTr069PaCloneString(COSA_CURRENT_SUPPORT_VERSION);
+						 pParamValues[k]->parameterName = AnscCloneString("Device.RootDataModelVersion");
+					         pParamValues[k]->parameterValue = AnscCloneString(COSA_CURRENT_SUPPORT_VERSION);
 					     }
 						 bDataModelReq =FALSE;
                                          }
@@ -2344,12 +2344,12 @@ CcspCwmppoMpaGetParameterValues
                     {
                         if ( pParamValues[k]->parameterName )
                         {
-                            CcspTr069PaFreeMemory(pParamValues[k]->parameterName);
+                            AnscFreeMemory(pParamValues[k]->parameterName);
                             pParamValues[k]->parameterName = NULL;
                         }
                         if ( pParamValues[k]->parameterValue )
                         {
-                            CcspTr069PaFreeMemory(pParamValues[k]->parameterValue);
+                            AnscFreeMemory(pParamValues[k]->parameterValue);
                             pParamValues[k]->parameterValue = NULL;
                         }
                     }
@@ -2402,7 +2402,7 @@ CcspCwmppoMpaGetParameterValues
             PCCSP_CWMP_PARAM_VALUE  pCwmpPV;
 
             pParameterValueArray = 
-                (PCCSP_CWMP_PARAM_VALUE)CcspTr069PaAllocateMemory
+                (PCCSP_CWMP_PARAM_VALUE)AnscAllocateMemory
                     (
                         sizeof(CCSP_CWMP_PARAM_VALUE) * ulTotalParamCount
                     );
@@ -2428,10 +2428,10 @@ CcspCwmppoMpaGetParameterValues
                 if ( pCwmpPV->Value )
                 {
                     pCwmpPV->Value->Syntax              = SLAP_VAR_SYNTAX_string;
-                    pCwmpPV->Value->Variant.varString   = AnscCloneString(pNsList->Args.paramValueInfo.parameterValue); /* cannot use CcspTr069PaCloneString which causes crash */
+                    pCwmpPV->Value->Variant.varString   = AnscCloneString(pNsList->Args.paramValueInfo.parameterValue); /* cannot use AnscCloneString which causes crash */
                     if (pNsList->Args.paramValueInfo.parameterValue)
                     {
-                        CcspTr069PaFreeMemory(pNsList->Args.paramValueInfo.parameterValue);
+                        AnscFreeMemory(pNsList->Args.paramValueInfo.parameterValue);
                         pNsList->Args.paramValueInfo.parameterValue = NULL;
                     }
                 }
@@ -2439,7 +2439,7 @@ CcspCwmppoMpaGetParameterValues
                 {
                     if ( pNsList->Args.paramValueInfo.parameterValue )
                     {
-                        CcspTr069PaFreeMemory(pNsList->Args.paramValueInfo.parameterValue);
+                        AnscFreeMemory(pNsList->Args.paramValueInfo.parameterValue);
                         pNsList->Args.paramValueInfo.parameterValue = NULL;
                     }
                 }
@@ -2487,7 +2487,7 @@ EXIT2:
             CcspCwmpCleanParamValue((pParameterValueArray + i));
         }
 
-        CcspTr069PaFreeMemory(pParameterValueArray);
+        AnscFreeMemory(pParameterValueArray);
 	pParameterValueArray = NULL;
     }
 
@@ -2690,7 +2690,7 @@ CcspCwmppoMpaGetParameterNames
      *      - The SOAP detail element MUST contain a Fault structure defined in the
      *        "urn:dslforum-org:cwmp-1-0" namespace.
      */
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT));
 
     if ( !pCwmpSoapFault )
     {
@@ -2743,7 +2743,7 @@ CcspCwmppoMpaGetParameterNames
     {
         while ( (InternalName = (char*)CcspTr069PA_GetNextInternalName(pInternalNames)) )
         {
-            pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
+            pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) AnscAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
 
             if ( !pSListEntry )
             {
@@ -2767,7 +2767,7 @@ CcspCwmppoMpaGetParameterNames
     }
     else
     {
-        pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
+        pSListEntry = (PCCSP_TR069PA_STRING_SLIST_ENTRY) AnscAllocateMemory(sizeof(CCSP_TR069PA_STRING_SLIST_ENTRY));
 
         if ( !pSListEntry )
         {
@@ -2967,7 +2967,7 @@ CcspCwmppoMpaGetParameterNames
 /*
     CcspTr069PaTraceDebug(("The ulParameterCount = %u\n", (unsigned int)ulParameterCount));
 */
-    pCwmpParamInfoArray = (PCCSP_CWMP_PARAM_INFO)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_PARAM_INFO) * ulParameterCount);
+    pCwmpParamInfoArray = (PCCSP_CWMP_PARAM_INFO)AnscAllocateMemory(sizeof(CCSP_CWMP_PARAM_INFO) * ulParameterCount);
 
     if ( !pCwmpParamInfoArray )
     {
@@ -3014,7 +3014,7 @@ EXIT2:
             CcspCwmpCleanParamInfo((pCwmpParamInfoArray + i));
         }
 
-        CcspTr069PaFreeMemory(pCwmpParamInfoArray);
+        AnscFreeMemory(pCwmpParamInfoArray);
 	pCwmpParamInfoArray = NULL;
     }
 
@@ -3069,7 +3069,7 @@ EXIT1:
 
     if (pMappedParamPath)
     {
-        CcspTr069PaFreeMemory(pMappedParamPath);
+        AnscFreeMemory(pMappedParamPath);
     }
 
     CcspTr069FreeStringQueue(&ParamList, bAliasFound);
@@ -3169,7 +3169,7 @@ CcspCwmppoMpaSetParameterAttributes
      *      - The SOAP detail element MUST contain a Fault structure defined in the
      *        "urn:dslforum-org:cwmp-1-0" namespace.
      */
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
 
     if ( !pCwmpSoapFault )
     {
@@ -3190,7 +3190,7 @@ CcspCwmppoMpaSetParameterAttributes
     // TODO: this has to be reworked to multiple objects support
     for ( i = 0; i < ulArraySize; i++ )
     {
-        pSListEntry = (PCCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY) CcspTr069PaAllocateMemory(sizeof(CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY));
+        pSListEntry = (PCCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY) AnscAllocateMemory(sizeof(CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY));
         if ( pSListEntry )
         {
             CcspTr069PaMapFirstInternalAlias
@@ -3270,7 +3270,7 @@ CcspCwmppoMpaSetParameterAttributes
             }
 
             pNsList = 
-                (PCCSP_TR069PA_NSLIST)CcspTr069PaAllocateMemory
+                (PCCSP_TR069PA_NSLIST)AnscAllocateMemory
                     (
                         sizeof(CCSP_TR069PA_NSLIST)
                     );
@@ -3357,7 +3357,7 @@ CcspCwmppoMpaSetParameterAttributes
             nNsCount = AnscQueueQueryDepth(&pFcNsList->NsList);
 
             pParamAttributes = 
-                (parameterAttributeStruct_t*)CcspTr069PaAllocateMemory
+                (parameterAttributeStruct_t*)AnscAllocateMemory
                     (
                         sizeof(parameterAttributeStruct_t) * nNsCount
                     );
@@ -3399,7 +3399,7 @@ CcspCwmppoMpaSetParameterAttributes
 
             if(pParamAttributes)
             {
-                CcspTr069PaFreeMemory(pParamAttributes);
+                AnscFreeMemory(pParamAttributes);
                 pParamAttributes = NULL;
             }
 
@@ -3620,7 +3620,7 @@ CcspCwmppoMpaGetParameterAttributes
      *      - The SOAP detail element MUST contain a Fault structure defined in the
      *        "urn:dslforum-org:cwmp-1-0" namespace.
      */
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT));
 
     if ( !pCwmpSoapFault )
     {
@@ -3705,7 +3705,7 @@ CcspCwmppoMpaGetParameterAttributes
             }
 
             pNsList = 
-                (PCCSP_TR069PA_NSLIST)CcspTr069PaAllocateMemory
+                (PCCSP_TR069PA_NSLIST)AnscAllocateMemory
                     (
                         sizeof(CCSP_TR069PA_NSLIST)
                     );
@@ -3722,7 +3722,7 @@ CcspCwmppoMpaGetParameterAttributes
                 pNsList->NaType = CCSP_NORMALIZED_ACTION_TYPE_GPA;
                 pAttrInfo       = &pNsList->Args.paramAttrInfo;
 
-                pAttrInfo->parameterName = CcspTr069PaCloneString(pParamName);
+                pAttrInfo->parameterName = AnscCloneString(pParamName);
 
                 AnscQueuePushEntry(&pFcNsList->NsList, &pNsList->Linkage);
             }
@@ -3784,7 +3784,7 @@ CcspCwmppoMpaGetParameterAttributes
             nNsCount = AnscQueueQueryDepth(&pFcNsList->NsList);
 
             pParamNames = 
-                (char**)CcspTr069PaAllocateMemory
+                (char**)AnscAllocateMemory
                     (
                         sizeof(char *) * nNsCount
                     );
@@ -3826,7 +3826,7 @@ CcspCwmppoMpaGetParameterAttributes
 
             if(pParamNames)
             {
-                CcspTr069PaFreeMemory(pParamNames);
+                AnscFreeMemory(pParamNames);
                 pParamNames = NULL;
             }
 
@@ -3879,7 +3879,7 @@ CcspCwmppoMpaGetParameterAttributes
                     {
                         if ( ppCcspAttrArray[k]->parameterName )
                         {
-                            CcspTr069PaFreeMemory(ppCcspAttrArray[k]->parameterName);
+                            AnscFreeMemory(ppCcspAttrArray[k]->parameterName);
                             ppCcspAttrArray[k]->parameterName = NULL;
                         }
                     }
@@ -3931,7 +3931,7 @@ CcspCwmppoMpaGetParameterAttributes
             PCCSP_CWMP_PARAM_ATTRIB pCwmpPA;
 
             pParamAttrArray = 
-                (PCCSP_CWMP_PARAM_ATTRIB)CcspTr069PaAllocateMemory
+                (PCCSP_CWMP_PARAM_ATTRIB)AnscAllocateMemory
                     (
                         sizeof(CCSP_CWMP_PARAM_ATTRIB) * ulTotalParamCount
                     );
@@ -3958,7 +3958,7 @@ CcspCwmppoMpaGetParameterAttributes
 
                 pCwmpPA = &pParamAttrArray[ulParamAttrArraySize++];
                 //Saving the original param name for avoiding Aliasing and CWMPtoDML issues
-                pOrigName = CcspTr069PaCloneString(pNsList->Args.paramAttrInfo.parameterName);
+                pOrigName = AnscCloneString(pNsList->Args.paramAttrInfo.parameterName);
 
                 CcspTr069PaMapFirstInternalAlias
                 (
@@ -4007,14 +4007,14 @@ CcspCwmppoMpaGetParameterAttributes
                 //Assign the saved original param name back to the param name to be sent back in response to ACS
                 if ( pCwmpPA->Name )
                 {
-                    CcspTr069PaFreeMemory(pCwmpPA->Name);
+                    AnscFreeMemory(pCwmpPA->Name);
                 }
                 pCwmpPA->Name = pOrigName;
 
                 pCwmpPA->AccessList = NULL;
                 if ( pNsList->Args.paramAttrInfo.accessControlBitmask == CCSP_NS_ACCESS_SUBSCRIBER )
                 {
-                    pCwmpPA->AccessList = CcspTr069PaCloneString("Subscriber");
+                    pCwmpPA->AccessList = AnscCloneString("Subscriber");
                 }
             }                                                           
        }
@@ -4052,7 +4052,7 @@ EXIT2:
             CcspCwmpCleanParamAttrib((pParamAttrArray+i));
         }
 
-        CcspTr069PaFreeMemory(pParamAttrArray);
+        AnscFreeMemory(pParamAttrArray);
 	pParamAttrArray = NULL;
     }
 
@@ -4223,7 +4223,7 @@ CcspCwmppoMpaAddObject
      *      - The SOAP detail element MUST contain a Fault structure defined in the
      *        "urn:dslforum-org:cwmp-1-0" namespace.
      */
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
     if ( !pCwmpSoapFault )
     {
         returnStatus = ANSC_STATUS_RESOURCES;
@@ -4284,7 +4284,7 @@ CcspCwmppoMpaAddObject
     
     if ( NumSubsystems <= 0 )
     {
-        Subsystems[0] = CcspTr069PaCloneString(pCcspCwmpCpeController->SubsysName);    /* assume 'local' sub-system will be used */
+        Subsystems[0] = AnscCloneString(pCcspCwmpCpeController->SubsysName);    /* assume 'local' sub-system will be used */
         NumSubsystems = 1;
     }
     else if ( NumSubsystems > 1 )
@@ -4423,7 +4423,7 @@ EXIT1:
 
     if ( MappedInternalName )
     {
-        CcspTr069PaFreeMemory(MappedInternalName);
+        AnscFreeMemory(MappedInternalName);
     }
 
     return  returnStatus;
@@ -4512,7 +4512,7 @@ CcspCwmppoMpaDeleteObject
      *      - The SOAP detail element MUST contain a Fault structure defined in the
      *        "urn:dslforum-org:cwmp-1-2" namespace.
      */
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
 
     if ( !pCwmpSoapFault )
     {
@@ -4573,7 +4573,7 @@ CcspCwmppoMpaDeleteObject
     
     if ( NumSubsystems <= 0 )
     {
-        Subsystems[0] = CcspTr069PaCloneString(pCcspCwmpCpeController->SubsysName);    /* assume 'local' sub-system will be used */
+        Subsystems[0] = AnscCloneString(pCcspCwmpCpeController->SubsysName);    /* assume 'local' sub-system will be used */
         NumSubsystems = 1;
     }
     else if ( NumSubsystems > 1 )
@@ -4713,7 +4713,7 @@ EXIT1:
 
     if (MappedInternalName)
     {
-        CcspTr069PaFreeMemory(MappedInternalName);
+        AnscFreeMemory(MappedInternalName);
     }
 
     return  returnStatus;

@@ -229,7 +229,7 @@ CcspCwmpTcpcrhoParseBasicCredentials
     PUCHAR                          pString         = NULL;
     ULONG                           ulDecodedStringLen;
 
-    pString = (PUCHAR)CcspTr069PaAllocateMemory(ulSize + 1);
+    pString = (PUCHAR)AnscAllocateMemory(ulSize + 1);
     
     if (!pString)
     {
@@ -285,10 +285,10 @@ CcspCwmpTcpcrhoParseBasicCredentials
             pBasicCookie->Password[ulCopySize]  = 0;
         }
 
-        CcspTr069PaFreeMemory(pDecodedString);
+        AnscFreeMemory(pDecodedString);
     }
 
-    CcspTr069PaFreeMemory(pString);
+    AnscFreeMemory(pString);
 
     return TRUE;
 }
@@ -591,7 +591,7 @@ EXIT:
     {
         int                         nPathLen = pPathEnd - pPath;
 
-        *ppUrlPath = CcspTr069PaAllocateMemory(nPathLen + 1);
+        *ppUrlPath = AnscAllocateMemory(nPathLen + 1);
 
         if ( *ppUrlPath )
         {
@@ -602,7 +602,7 @@ EXIT:
 
     if ( pUrlPathOrg )
     {
-        CcspTr069PaFreeMemory(pUrlPathOrg);
+        AnscFreeMemory(pUrlPathOrg);
     }
 
     return  bValid;

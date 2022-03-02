@@ -148,8 +148,8 @@ CcspCwmpAcscoHttpGetCredential
     }
     else
     {
-        *ppUserName = (PUCHAR)CcspTr069PaCloneString(pMyObject->Username);
-        *ppPassword = (PUCHAR)CcspTr069PaCloneString(pMyObject->Password);
+        *ppUserName = (PUCHAR)AnscCloneString(pMyObject->Username);
+        *ppPassword = (PUCHAR)AnscCloneString(pMyObject->Password);
     }
 
     return returnStatus;

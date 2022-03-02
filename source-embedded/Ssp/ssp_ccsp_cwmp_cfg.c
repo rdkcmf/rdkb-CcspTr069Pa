@@ -133,7 +133,7 @@ CcspTr069PaSsp_XML_GetMultipleItemWithSameName
     
     if (pRootNode && ItemName && retVal)
     {
-        if(*retVal) { CcspTr069PaFreeMemory(*retVal); *retVal = NULL; }
+        if(*retVal) { AnscFreeMemory(*retVal); *retVal = NULL; }
         
         pChildNode = (PANSC_XML_DOM_NODE_OBJECT)
             AnscXmlDomNodeGetChildByName(pRootNode, ItemName);
@@ -151,21 +151,21 @@ CcspTr069PaSsp_XML_GetMultipleItemWithSameName
                 {
                     if(*retVal) 
                     {
-                        char* sptr = (char*)CcspTr069PaAllocateMemory(AnscSizeOfString(*retVal)+1+uLength+1);
+                        char* sptr = (char*)AnscAllocateMemory(AnscSizeOfString(*retVal)+1+uLength+1);
                         if(sptr == NULL) 
                         {
                             CcspTr069PaTraceWarning(("Failed to reallocate returnCA\n"));
-                            CcspTr069PaFreeMemory(*retVal);
+                            AnscFreeMemory(*retVal);
                             *retVal = NULL;
                             returnStatus =  ANSC_STATUS_RESOURCES;
                             goto EXIT;
                         }
 
                         _ansc_sprintf(sptr, "%s,%s", *retVal, buffer);
-                        CcspTr069PaFreeMemory(*retVal);
+                        AnscFreeMemory(*retVal);
                         *retVal = sptr;
                     }
-                    else *retVal = CcspTr069PaCloneString(buffer);
+                    else *retVal = AnscCloneString(buffer);
                 }
             }
             
@@ -201,7 +201,7 @@ CcspTr069PaSsp_XML_GetOneItemByName
            pChildNode->GetDataString(pChildNode, NULL, buffer, &uLength) == ANSC_STATUS_SUCCESS &&
            uLength > 0)
         {
-            *retVal = CcspTr069PaCloneString(buffer);
+            *retVal = AnscCloneString(buffer);
         }
     }    
     CcspTr069PaTraceDebug(("%s: %s = %s\n", __FUNCTION__, (ItemName)?(ItemName):"NULL", (*retVal)?(*retVal):"NULL"));                                                     
@@ -276,7 +276,7 @@ ANSC_STATUS CcspTr069PaSsp_JSON_GetItemByName    (
 				if ( partnerObjVal != NULL )
                                 {
 					buffer = partnerObjVal->valuestring;
-					*retVal = CcspTr069PaCloneString(buffer);
+					*retVal = AnscCloneString(buffer);
 				}
 				else {
                                         CcspTr069PaTraceWarning(("%s - Item Object is NULL\n", __FUNCTION__ ));

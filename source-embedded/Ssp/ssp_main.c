@@ -827,7 +827,7 @@ int  engage_tr069pa()
         if ( status != ANSC_STATUS_SUCCESS )
         {
             CcspTr069PaTraceError(("Failed to engage CCSP CWMP CPE Controller object!\n"));
-            CcspTr069PaFreeMemory(g_pCcspCwmpCpeController);
+            AnscFreeMemory(g_pCcspCwmpCpeController);
             g_pCcspCwmpCpeController = NULL;
         }
         else

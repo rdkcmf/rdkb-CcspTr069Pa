@@ -195,21 +195,21 @@ CCSP_CWMP_PARAM_DESCR,  *PCCSP_CWMP_PARAM_DESCR;
          {                                                                                  \
             if ( param_descr->Name )                                                        \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_descr->Name);                                   \
+                AnscFreeMemory(param_descr->Name);                                          \
                                                                                             \
                 param_descr->Name = NULL;                                                   \
             }                                                                               \
                                                                                             \
             if ( param_descr->DataType )                                                    \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_descr->DataType);                               \
+                AnscFreeMemory(param_descr->DataType);                                      \
                                                                                             \
                 param_descr->DataType = NULL;                                               \
             }                                                                               \
                                                                                             \
             if ( param_descr->Syntax )                                                      \
             {                                                                               \
-                CcspTr069PaFreeMemory(param_descr->Syntax);                                 \
+                AnscFreeMemory(param_descr->Syntax);                                        \
                                                                                             \
                 param_descr->Syntax = NULL;                                                 \
             }                                                                               \
@@ -218,7 +218,7 @@ CCSP_CWMP_PARAM_DESCR,  *PCCSP_CWMP_PARAM_DESCR;
 #define  CcspCwmpFreeParamDescr(param_descr)                                                \
          {                                                                                  \
             CcspCwmpCleanParamDescr(param_descr);                                           \
-            CcspTr069PaFreeMemory         (param_descr);                                    \
+            AnscFreeMemory         (param_descr);                                           \
          }
 
 #define  CCSP_CWMP_OBJECT_TYPE_reserved             0
@@ -248,13 +248,13 @@ CCSP_CWMP_OBJECT_DESCR,  *PCCSP_CWMP_OBJECT_DESCR;
          {                                                                                  \
             if ( object_descr->Name )                                                       \
             {                                                                               \
-                CcspTr069PaFreeMemory(object_descr->Name);                                  \
+                AnscFreeMemory(object_descr->Name);                                         \
                                                                                             \
                 object_descr->Name = NULL;                                                  \
             }                                                                               \
             if ( object_descr->hCcspCwmpTr69If )                                            \
             {                                                                               \
-                CcspTr069PaFreeMemory(object_descr->hCcspCwmpTr69If);                       \
+                AnscFreeMemory(object_descr->hCcspCwmpTr69If);                              \
                                                                                             \
                 object_descr->hCcspCwmpTr69If = NULL;                                       \
             }                                                                               \
@@ -263,7 +263,7 @@ CCSP_CWMP_OBJECT_DESCR,  *PCCSP_CWMP_OBJECT_DESCR;
 #define  CcspCwmpFreeObjectDescr(object_descr)                                              \
          {                                                                                  \
             CcspCwmpCleanObjectDescr(object_descr);                                         \
-            CcspTr069PaFreeMemory          (object_descr);                                  \
+            AnscFreeMemory          (object_descr);                                         \
          }
 
 

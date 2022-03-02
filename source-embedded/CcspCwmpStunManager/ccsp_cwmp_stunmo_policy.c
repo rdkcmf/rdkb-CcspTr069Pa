@@ -191,7 +191,7 @@ CcspCwmpStunmoApplyStunSettings
 
         AnscResolveHostName(pAcsHostName, server_ip4_addr.Dot);
 
-        CcspTr069PaFreeMemory(pAcsHostName);
+        AnscFreeMemory(pAcsHostName);
     }
 
     pStunSimpleClient->Cancel                 ((ANSC_HANDLE)pStunSimpleClient);
@@ -288,7 +288,7 @@ CcspCwmpStunmoGetAcsHostName
 
             nHostNameLen = pHostNameEnd - pHostName;
 
-            pAcsHostName = (char*)CcspTr069PaAllocateMemory(nHostNameLen + 1);
+            pAcsHostName = (char*)AnscAllocateMemory(nHostNameLen + 1);
             if ( pAcsHostName )
             {
                 AnscCopyMemory(pAcsHostName, pHostName, nHostNameLen);

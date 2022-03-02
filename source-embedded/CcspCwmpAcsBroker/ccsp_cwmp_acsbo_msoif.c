@@ -230,7 +230,7 @@ CcspCwmpAcsboMsoInform
     }
     else
     {
-        pCcspCwmpEvent = (PCCSP_CWMP_EVENT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_EVENT));
+        pCcspCwmpEvent = (PCCSP_CWMP_EVENT)AnscAllocateMemory(sizeof(CCSP_CWMP_EVENT));
     }
 
     if ( !pCcspCwmpEvent )
@@ -241,8 +241,8 @@ CcspCwmpAcsboMsoInform
     }
     else
     {
-        pCcspCwmpEvent->EventCode  = CcspTr069PaCloneString(pEventCode );
-        pCcspCwmpEvent->CommandKey = pCommandKey ? CcspTr069PaCloneString(pCommandKey) : NULL;
+        pCcspCwmpEvent->EventCode  = AnscCloneString(pEventCode );
+        pCcspCwmpEvent->CommandKey = pCommandKey ? AnscCloneString(pCommandKey) : NULL;
 
         /* Per TR-069 specification, if "0 BOOTSTRAP" event is included, all undelivered 
          * events must be discarded 

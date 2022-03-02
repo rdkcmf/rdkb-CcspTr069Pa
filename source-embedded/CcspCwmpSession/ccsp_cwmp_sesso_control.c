@@ -180,17 +180,17 @@ CcspCwmpsoConnectToAcs
 
     if ( pAcsUrl ) 
     {
-        CcspTr069PaFreeMemory(pAcsUrl);
+        AnscFreeMemory(pAcsUrl);
     }
 
     if ( pAcsUsername )
     {
-        CcspTr069PaFreeMemory(pAcsUsername);
+        AnscFreeMemory(pAcsUsername);
     }
 
     if ( pAcsPassword )
     {
-        CcspTr069PaFreeMemory(pAcsPassword);
+        AnscFreeMemory(pAcsPassword);
     }
 
     if (!pCcspCwmpAcsConnection->bActive )

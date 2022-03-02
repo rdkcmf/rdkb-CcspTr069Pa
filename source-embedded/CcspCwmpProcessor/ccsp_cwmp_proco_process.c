@@ -299,12 +299,12 @@ CcspCwmppoScheduleInform
 
     if ( pMyObject->SecheduledCommandKey )
     {
-        CcspTr069PaFreeMemory(pMyObject->SecheduledCommandKey);
+        AnscFreeMemory(pMyObject->SecheduledCommandKey);
 
         pMyObject->SecheduledCommandKey = NULL;
     }
 
-    pMyObject->SecheduledCommandKey = CcspTr069PaCloneString(pCommandKey);
+    pMyObject->SecheduledCommandKey = AnscCloneString(pCommandKey);
 
     pScheduleTimerObj->SetInterval((ANSC_HANDLE)pScheduleTimerObj, ulDelaySeconds * 1000);
     pScheduleTimerObj->Start      ((ANSC_HANDLE)pScheduleTimerObj);

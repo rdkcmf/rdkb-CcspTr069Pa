@@ -490,14 +490,14 @@ CcspCwmpTcpcrhoCalcDigResponse
     ANSC_CRYPTO_HASH                MD5Hash;
     PUCHAR                          pHA1, pHA2;
 
-    pDigRep = (PUCHAR)CcspTr069PaAllocateMemory(ANSC_MD5_OUTPUT_SIZE * 2 + 1);
+    pDigRep = (PUCHAR)AnscAllocateMemory(ANSC_MD5_OUTPUT_SIZE * 2 + 1);
     if ( !pDigRep )
     {
         return NULL;
     }
 
-    pHA1    = (PUCHAR)CcspTr069PaAllocateMemory(ANSC_MD5_OUTPUT_SIZE * 2 + 1);
-    pHA2    = (PUCHAR)CcspTr069PaAllocateMemory(ANSC_MD5_OUTPUT_SIZE * 2 + 1);
+    pHA1    = (PUCHAR)AnscAllocateMemory(ANSC_MD5_OUTPUT_SIZE * 2 + 1);
+    pHA2    = (PUCHAR)AnscAllocateMemory(ANSC_MD5_OUTPUT_SIZE * 2 + 1);
 
     if ( !pHA1 || !pHA2 )
     {
@@ -552,7 +552,7 @@ CcspCwmpTcpcrhoCalcDigResponse
     }
     ulSize  += ANSC_MD5_OUTPUT_SIZE * 2;
 
-    pBuf    = (char *)CcspTr069PaAllocateMemory(ulSize + 16);
+    pBuf    = (char *)AnscAllocateMemory(ulSize + 16);
 
     if ( !pBuf )
     {
@@ -571,7 +571,7 @@ CcspCwmpTcpcrhoCalcDigResponse
 
         AnscCryptoMd5Digest((PVOID)pBuf, AnscSizeOfString(pBuf), &MD5Hash);
 
-        CcspTr069PaFreeMemory(pBuf);
+        AnscFreeMemory(pBuf);
     }
 
     CcspCwmpTcpcrhoBinToHex(MD5Hash.Value, ANSC_MD5_OUTPUT_SIZE, pDigRep);
@@ -584,19 +584,19 @@ EXIT2:
 
     if ( pDigRep )
     {
-        CcspTr069PaFreeMemory(pDigRep);
+        AnscFreeMemory(pDigRep);
         pDigRep = NULL;
     }
 
 EXIT1:
     if ( pHA1 )
     {
-        CcspTr069PaFreeMemory(pHA1);
+        AnscFreeMemory(pHA1);
     }
 
     if ( pHA2)
     {
-        CcspTr069PaFreeMemory(pHA2);
+        AnscFreeMemory(pHA2);
     }
 
     return pDigRep;
@@ -701,7 +701,7 @@ CcspCwmpTcpcrhoCalcDigestHA1
         }
       }
 
-    pBuf  = (char *)CcspTr069PaAllocateMemory(ulSize + 16);
+    pBuf  = (char *)AnscAllocateMemory(ulSize + 16);
     if ( !pBuf )
     {
         status = ANSC_STATUS_RESOURCES;
@@ -733,7 +733,7 @@ CcspCwmpTcpcrhoCalcDigestHA1
             AnscCryptoMd5Digest((PVOID)pBuf, ulMsgSize, &MD5Hash);
         }
 
-        CcspTr069PaFreeMemory(pBuf);
+        AnscFreeMemory(pBuf);
 
         CcspCwmpTcpcrhoBinToHex(MD5Hash.Value, ANSC_MD5_OUTPUT_SIZE, pHA1);
     }
@@ -757,7 +757,7 @@ CcspCwmpTcpcrhoCalcDigestHA1
             }
         
        }
-        CcspTr069PaFreeMemory(pBuf);
+        AnscFreeMemory(pBuf);
     }
 
     return status;
@@ -845,7 +845,7 @@ CcspCwmpTcpcrhoCalcDigestHA2
     }
     }
 
-    pBuf    = (char *)CcspTr069PaAllocateMemory(ulSize + 16);
+    pBuf    = (char *)AnscAllocateMemory(ulSize + 16);
     if ( !pBuf )
     {
         status = ANSC_STATUS_RESOURCES;
@@ -869,7 +869,7 @@ CcspCwmpTcpcrhoCalcDigestHA2
         	AnscCryptoMd5Digest((PVOID)pBuf, AnscSizeOfString(pBuf), &MD5Hash);
         }
 
-        CcspTr069PaFreeMemory(pBuf);
+        AnscFreeMemory(pBuf);
     }
 
     CcspCwmpTcpcrhoBinToHex(MD5Hash.Value, ANSC_MD5_OUTPUT_SIZE, pHA2);
@@ -977,7 +977,7 @@ CcspCwmpTcpcrhoGetRequestHostUri
             goto EXIT;
         }
 
-        *ppHostName      = (PUCHAR)CcspTr069PaAllocateMemory(ulHostLen + 1);
+        *ppHostName      = (PUCHAR)AnscAllocateMemory(ulHostLen + 1);
         if ( *ppHostName )
         {
             AnscCopyMemory(*ppHostName, pHost, ulHostLen);
@@ -1048,7 +1048,7 @@ CcspCwmpTcpcrhoGetRequestHostUri
         {
             ulLen = pUriEnd - pPath + 1;
 
-            *ppUriPath = (PUCHAR)CcspTr069PaAllocateMemory(ulLen + 1);
+            *ppUriPath = (PUCHAR)AnscAllocateMemory(ulLen + 1);
 
             if ( *ppUriPath )
             {
@@ -1066,13 +1066,13 @@ EXIT:
     {
         if ( *ppHostName )
         {
-            CcspTr069PaFreeMemory(*ppHostName);
+            AnscFreeMemory(*ppHostName);
             *ppHostName = NULL;
         }
 
         if ( *ppUriPath )
         {
-            CcspTr069PaFreeMemory(*ppUriPath);
+            AnscFreeMemory(*ppUriPath);
             *ppUriPath = NULL;
         }
     }
@@ -1145,7 +1145,7 @@ CcspCwmpTcpcrhoGetAuthInfo
         return NULL;
     }
 
-    pHfoAuth  = (PHTTP_HFO_AUTHORIZATION)CcspTr069PaAllocateMemory(sizeof(HTTP_HFO_AUTHORIZATION));
+    pHfoAuth  = (PHTTP_HFO_AUTHORIZATION)AnscAllocateMemory(sizeof(HTTP_HFO_AUTHORIZATION));
 
     if ( !pHfoAuth )
     {
@@ -1156,7 +1156,7 @@ CcspCwmpTcpcrhoGetAuthInfo
 
     if ( CcspCwmpTcpcrhoParseCredentials((ANSC_HANDLE)pMyObject, (ANSC_HANDLE)pCredential, pHdrAuth + ulHdrValueOffset, ulHdrValueLen) == FALSE )
     {
-        CcspTr069PaFreeMemory(pHfoAuth);
+        AnscFreeMemory(pHfoAuth);
         return NULL;
     }
 
@@ -1176,7 +1176,7 @@ CcspCwmpTcpcrhoGetAuthInfo
 
         default:
 
-                CcspTr069PaFreeMemory(pHfoAuth);
+                AnscFreeMemory(pHfoAuth);
 
                 return NULL;    /* scheme not supported */
 
@@ -1187,7 +1187,7 @@ CcspCwmpTcpcrhoGetAuthInfo
 
     if ( !pAuthInfo )
     {
-        CcspTr069PaFreeMemory(pHfoAuth);
+        AnscFreeMemory(pHfoAuth);
         return NULL;
     }
 
@@ -1200,7 +1200,7 @@ CcspCwmpTcpcrhoGetAuthInfo
         if ( !pAuthInfo->pDigest )
         {
             HttpAuthInfoRemove(pAuthInfo);
-            CcspTr069PaFreeMemory(pHfoAuth);
+            AnscFreeMemory(pHfoAuth);
 
             return NULL;
         }
@@ -1210,8 +1210,8 @@ CcspCwmpTcpcrhoGetAuthInfo
     {
         PHTTP_CREDENTIAL_BASIC      pBasicCred  = &pCredential->Credential.Basic;
 
-        pAuthInfo->pUserName    = (PUCHAR)CcspTr069PaCloneString(pBasicCred->UserName);
-        pAuthInfo->pPassword    = (PUCHAR)CcspTr069PaCloneString(pBasicCred->Password);
+        pAuthInfo->pUserName    = (PUCHAR)AnscCloneString(pBasicCred->UserName);
+        pAuthInfo->pPassword    = (PUCHAR)AnscCloneString(pBasicCred->Password);
     }
     else
     {
@@ -1226,7 +1226,7 @@ CcspCwmpTcpcrhoGetAuthInfo
             );
     }
 
-    CcspTr069PaFreeMemory(pHfoAuth);
+    AnscFreeMemory(pHfoAuth);
 
     return pAuthInfo;
 }
@@ -1408,16 +1408,16 @@ CcspCwmpTcpcrhoGetDigestAuthInfo
             if ( ulCount > 1 )
             {
                 pAuthInfo->pDigest->pDomainURIs =
-                    (PHTTP_AUTHO_DIGEST_DOMAIN_URIS)CcspTr069PaAllocateMemory(sizeof(HTTP_AUTHO_DIGEST_DOMAIN_URIS));
+                    (PHTTP_AUTHO_DIGEST_DOMAIN_URIS)AnscAllocateMemory(sizeof(HTTP_AUTHO_DIGEST_DOMAIN_URIS));
 
                 if ( pAuthInfo->pDigest->pDomainURIs )
                 {
-                    PUCHAR      *pURIs  = (PUCHAR *)CcspTr069PaAllocateMemory(sizeof(PUCHAR) * ulCount);
+                    PUCHAR      *pURIs  = (PUCHAR *)AnscAllocateMemory(sizeof(PUCHAR) * ulCount);
                     ULONG       ulLen;
 
                     if ( !pURIs )
                     {
-                        CcspTr069PaFreeMemory(pAuthInfo->pDigest->pDomainURIs);
+                        AnscFreeMemory(pAuthInfo->pDigest->pDomainURIs);
                         pAuthInfo->pDigest->pDomainURIs = NULL;
                     }
                     else
@@ -1494,7 +1494,7 @@ CcspCwmpTcpcrhoGenBasicChallenge
     )
 {
     UNREFERENCED_PARAMETER(hThisObject);
-    return (PUCHAR)CcspTr069PaCloneString((char*)pRealm);
+    return (PUCHAR)AnscCloneString((char*)pRealm);
 }
 
 
@@ -1594,7 +1594,7 @@ CcspCwmpTcpcrhoGenDigestChallenge
 
     ulSize += 16;
 
-    pDigChal    = (char*)CcspTr069PaAllocateMemory(ulSize);
+    pDigChal    = (char*)AnscAllocateMemory(ulSize);
 
     if ( !pDigChal )
     {
@@ -1729,7 +1729,7 @@ CcspCwmpTcpcrhoGenBasicResponse
     }
 
     /* construct WWW-Authenticate header */
-    pHfoWwwAuth     = (PHTTP_HFO_WWW_AUTHENTICATE)CcspTr069PaAllocateMemory(sizeof(HTTP_HFO_WWW_AUTHENTICATE));
+    pHfoWwwAuth     = (PHTTP_HFO_WWW_AUTHENTICATE)AnscAllocateMemory(sizeof(HTTP_HFO_WWW_AUTHENTICATE));
 
     if ( pHfoWwwAuth )
     {
@@ -1749,12 +1749,12 @@ CcspCwmpTcpcrhoGenBasicResponse
         }
         status = CcspCwmpTcpcrhoGenResponse((ANSC_HANDLE)pMyObject, buffer, pulSize, (ANSC_HANDLE)pHfoWwwAuth);
 
-        CcspTr069PaFreeMemory(pHfoWwwAuth);
+        AnscFreeMemory(pHfoWwwAuth);
     }
 
     if ( pChalReq )
     {
-        CcspTr069PaFreeMemory(pChalReq);
+        AnscFreeMemory(pChalReq);
     }
 
     return status;
@@ -1860,7 +1860,7 @@ CcspCwmpTcpcrhoGenDigestResponse
     }
 
     /* construct WWW-Authenticate header */
-    pHfoWwwAuth     = (PHTTP_HFO_WWW_AUTHENTICATE)CcspTr069PaAllocateMemory(sizeof(HTTP_HFO_WWW_AUTHENTICATE));
+    pHfoWwwAuth     = (PHTTP_HFO_WWW_AUTHENTICATE)AnscAllocateMemory(sizeof(HTTP_HFO_WWW_AUTHENTICATE));
 
     if ( pHfoWwwAuth )
     {
@@ -1881,12 +1881,12 @@ CcspCwmpTcpcrhoGenDigestResponse
 
         status = CcspCwmpTcpcrhoGenResponse((ANSC_HANDLE)pMyObject, buffer, pulSize, (ANSC_HANDLE)pHfoWwwAuth);
 
-        CcspTr069PaFreeMemory(pHfoWwwAuth);
+        AnscFreeMemory(pHfoWwwAuth);
     }
 
     if ( pChalReq )
     {
-        CcspTr069PaFreeMemory(pChalReq);
+        AnscFreeMemory(pChalReq);
     }
 
     return status;
@@ -2412,7 +2412,7 @@ CcspCwmpTcpcrhoVerify
                 status = ANSC_STATUS_BAD_AUTH_DATA;
             }
 
-            CcspTr069PaFreeMemory(pDigRep);
+            AnscFreeMemory(pDigRep);
         }
 
         if ( status == ANSC_STATUS_SUCCESS && ulNonceTimeout != 0 )

@@ -441,11 +441,11 @@ CcspCwmpCpecoStatIfGetLastConnectionStatus
 
     if(pMyObject->cwmpStats.uLastConnectionStatus == CCSP_CWMP_CONNECTION_STATUS_FAILURE)
     {
-        return CcspTr069PaCloneString("Failed");
+        return AnscCloneString("Failed");
     }
     else
     {
-        return CcspTr069PaCloneString("Successful");
+        return AnscCloneString("Successful");
     }
 }
 

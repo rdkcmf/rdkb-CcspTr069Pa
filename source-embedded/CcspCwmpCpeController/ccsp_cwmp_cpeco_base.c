@@ -131,7 +131,7 @@ CcspCwmpCpecoCreate
     /*
      * We create object by first allocating memory for holding the variables and member functions.
      */
-    pMyObject = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_CPE_CONTROLLER_OBJECT));
+    pMyObject = (PCCSP_CWMP_CPE_CONTROLLER_OBJECT)AnscAllocateMemory(sizeof(CCSP_CWMP_CPE_CONTROLLER_OBJECT));
 
     if ( !pMyObject )
     {
@@ -212,11 +212,11 @@ CcspCwmpCpecoRemove
     {
         if ( pMyObject->Subsystem[i] )
         {
-            CcspTr069PaFreeMemory(pMyObject->Subsystem[i]);
+            AnscFreeMemory(pMyObject->Subsystem[i]);
         }
         if ( pMyObject->MBusPath[i] )
         {
-            CcspTr069PaFreeMemory(pMyObject->MBusPath[i]);
+            AnscFreeMemory(pMyObject->MBusPath[i]);
         }
     }
 
@@ -262,7 +262,7 @@ CcspCwmpCpecoRemove
 
     if( pCcspCwmpStatIf != NULL)
     {
-        CcspTr069PaFreeMemory(pCcspCwmpStatIf);
+        AnscFreeMemory(pCcspCwmpStatIf);
         pMyObject->hCcspCwmpStaIf = NULL;
     }
 
@@ -274,48 +274,48 @@ CcspCwmpCpecoRemove
 
     if ( pStartCwmpTimerIf )
     {
-        CcspTr069PaFreeMemory(pStartCwmpTimerIf);
+        AnscFreeMemory(pStartCwmpTimerIf);
         pMyObject->hStartCwmpTimerIf = NULL;
     }
 
     if ( pMyObject->PAName )
     {
-        CcspTr069PaFreeMemory(pMyObject->PAName);
+        AnscFreeMemory(pMyObject->PAName);
     }
 
     if ( pMyObject->PANameWithPrefix )
     {
-        CcspTr069PaFreeMemory(pMyObject->PANameWithPrefix);
+        AnscFreeMemory(pMyObject->PANameWithPrefix);
     }
 
     if ( pMyObject->CRName )
     {
-        CcspTr069PaFreeMemory(pMyObject->CRName);
+        AnscFreeMemory(pMyObject->CRName);
     }
 
     if ( pMyObject->CRNameWithPrefix )
     {
-        CcspTr069PaFreeMemory(pMyObject->CRNameWithPrefix);
+        AnscFreeMemory(pMyObject->CRNameWithPrefix);
     }
 
     if ( pMyObject->PAMapperFile )
     {
-        CcspTr069PaFreeMemory(pMyObject->PAMapperFile);
+        AnscFreeMemory(pMyObject->PAMapperFile);
     }
 
     if ( pMyObject->PACustomMapperFile )
     {
-        CcspTr069PaFreeMemory(pMyObject->PACustomMapperFile);
+        AnscFreeMemory(pMyObject->PACustomMapperFile);
     }
     
     if ( pMyObject->SdmXmlFile )
     {
-        CcspTr069PaFreeMemory(pMyObject->SdmXmlFile);
+        AnscFreeMemory(pMyObject->SdmXmlFile);
     }
 
     if ( pMyObject->OutboundIfName )
     {
-        CcspTr069PaFreeMemory(pMyObject->OutboundIfName);
+        AnscFreeMemory(pMyObject->OutboundIfName);
     }
 
     AnscCoRemove((ANSC_HANDLE)pMyObject);
@@ -476,7 +476,7 @@ CcspCwmpCpecoEnrollObjects
 
     if( !pCcspCwmpStatIf)
     {
-        pCcspCwmpStatIf = (PCCSP_CWMP_STAT_INTERFACE)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_STAT_INTERFACE));
+        pCcspCwmpStatIf = (PCCSP_CWMP_STAT_INTERFACE)AnscAllocateMemory(sizeof(CCSP_CWMP_STAT_INTERFACE));
 
         if ( !pCcspCwmpStatIf )
         {
@@ -536,7 +536,7 @@ CcspCwmpCpecoEnrollObjects
 
     if ( !pStartCwmpTimerIf )
     {
-        pStartCwmpTimerIf = (PANSC_TDO_CLIENT_OBJECT)CcspTr069PaAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
+        pStartCwmpTimerIf = (PANSC_TDO_CLIENT_OBJECT)AnscAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
 
         if ( !pStartCwmpTimerIf )
         {
@@ -619,10 +619,10 @@ CcspCwmpCpecoInitialize
     pMyObject->bActive                  = FALSE;
 
     pMyObject->bBootEventAdded          = FALSE;
-    pMyObject->pRootObject              = CcspTr069PaCloneString(DM_ROOTNAME);
+    pMyObject->pRootObject              = AnscCloneString(DM_ROOTNAME);
 
-    pMyObject->PAName                   = CcspTr069PaCloneString(CCSP_TR069PA_DEF_NAME);
-    pMyObject->CRName                   = CcspTr069PaCloneString(CCSP_CR_DEF_NAME);
+    pMyObject->PAName                   = AnscCloneString(CCSP_TR069PA_DEF_NAME);
+    pMyObject->CRName                   = AnscCloneString(CCSP_CR_DEF_NAME);
     pMyObject->PAMapperFile             = NULL;
     pMyObject->PACustomMapperFile       = NULL; 
     pMyObject->SdmXmlFile               = NULL;

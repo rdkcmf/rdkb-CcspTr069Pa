@@ -367,7 +367,7 @@ CcspCwmpsoAsyncProcessTask
         {
             if ( pMyObject->AcsMaxEnvelopes > 1 )
             {
-                pSoapMessage = (char*)CcspTr069PaAllocateMemory(ulMessageSize);
+                pSoapMessage = (char*)AnscAllocateMemory(ulMessageSize);
             }
             else
             {
@@ -469,13 +469,13 @@ CcspCwmpsoAsyncProcessTask
                 if ( pMyObject->AcsMaxEnvelopes <= 1 )
                 {
                     /* We have to keep "SoapEnvelope" in order to resend if requires */
-                    pSoapMessage = CcspTr069PaCloneString(pWmpsoAsyncReq->SoapEnvelope);
+                    pSoapMessage = AnscCloneString(pWmpsoAsyncReq->SoapEnvelope);
 
                     ulReqEnvelopeCount++;
 
                     if ( ulReqEnvelopeCount == 1 )
                     {
-                        pMethodName = CcspTr069PaCloneString(pWmpsoAsyncReq->MethodName);
+                        pMethodName = AnscCloneString(pWmpsoAsyncReq->MethodName);
                     }
                 }
                 else
@@ -509,7 +509,7 @@ CcspCwmpsoAsyncProcessTask
 
                     if ( ulReqEnvelopeCount == 0 )
                     {
-                        pMethodName = CcspTr069PaCloneString(pWmpsoAsyncReq->MethodName);
+                        pMethodName = AnscCloneString(pWmpsoAsyncReq->MethodName);
                     }
 
                     ulAvailableSize -= AnscSizeOfString(pWmpsoAsyncReq->SoapEnvelope);
@@ -557,12 +557,12 @@ CcspCwmpsoAsyncProcessTask
 
             if ( pMethodName )
             {
-                CcspTr069PaFreeMemory(pMethodName);
+                AnscFreeMemory(pMethodName);
             }
 
             if ( pSoapMessage )
             {
-                CcspTr069PaFreeMemory(pSoapMessage);
+                AnscFreeMemory(pSoapMessage);
                 pSoapMessage = NULL;
             }
 
@@ -666,7 +666,7 @@ EXIT:
 
     if ( pSoapMessage )
     {
-        CcspTr069PaFreeMemory(pSoapMessage);
+        AnscFreeMemory(pSoapMessage);
     }
     return  ANSC_STATUS_FAILURE;
 }

@@ -96,299 +96,299 @@ CCSP_CWMP_SET_SOAP_FAULT
     {
         case    CCSP_CWMP_CPE_CWMP_FaultCode_methodUnsupported:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_methodUnsupported);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_methodUnsupported);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_methodUnsupported);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_methodUnsupported);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_methodUnsupported;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_methodUnsupported);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_methodUnsupported);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_requestDenied:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_requestDenied);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_requestDenied);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_requestDenied);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_requestDenied);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_requestDenied;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_requestDenied);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_requestDenied);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_internalError:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_internalError);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_internalError);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_internalError);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_internalError);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_internalError;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_internalError);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_internalError);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidArgs);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidArgs);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidArgs);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidArgs);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidArgs);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidArgs);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_resources:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_resources);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_resources);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_resources);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_resources);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_resources;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_resources);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_resources);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidParamName);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidParamName);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidParamName);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidParamName);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidParamType);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidParamType);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidParamType);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidParamType);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamType);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamType);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidParamValue);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidParamValue);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidParamValue);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidParamValue);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_notWritable:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_notWritable);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_notWritable);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_notWritable);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_notWritable);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_notWritable;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notWritable);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notWritable);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_notifyRejected:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_notifyRejected);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_notifyRejected);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_notifyRejected);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_notifyRejected);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_notifyRejected;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notifyRejected);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notifyRejected);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_downloadFailure:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_downloadFailure);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_downloadFailure);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_downloadFailure);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_downloadFailure);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_downloadFailure;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_downloadFailure);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_downloadFailure);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_uploadFailure:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_uploadFailure);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_uploadFailure);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_uploadFailure);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_uploadFailure);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_uploadFailure;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_uploadFailure);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_uploadFailure);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_authFailure:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_authFailure);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_authFailure);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_authFailure);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_authFailure);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_authFailure;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_authFailure);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_authFailure);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_protUnsupported:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_protUnsupported);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_protUnsupported);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_protUnsupported);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_protUnsupported);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_protUnsupported;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_protUnsupported);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_protUnsupported);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_mcastJoinFailed:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_mcastJoinFailed);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_mcastJoinFailed);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_mcastJoinFailed);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_mcastJoinFailed);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_mcastJoinFailed;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_mcastJoinFailed);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_mcastJoinFailed);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_notReachFileServer:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_notReachFileServer);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_notReachFileServer);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_notReachFileServer);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_notReachFileServer);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_notReachFileServer;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notReachFileServer);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notReachFileServer);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_noAccessToFile:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_noAccessToFile);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_noAccessToFile);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_noAccessToFile);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_noAccessToFile);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_noAccessToFile;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_noAccessToFile);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_noAccessToFile);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_downloadIncomplete:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_downloadIncomplete);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_downloadIncomplete);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_downloadIncomplete);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_downloadIncomplete);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_downloadIncomplete;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_downloadIncomplete);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_downloadIncomplete);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_dlfileCorrputed:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_dlfileCorrputed);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_dlfileCorrputed);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_dlfileCorrputed);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_dlfileCorrputed);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_dlfileCorrputed;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_dlfileCorrputed);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_dlfileCorrputed);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_fileAuthFailure:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_fileAuthFailure);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_fileAuthFailure);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_fileAuthFailure);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_fileAuthFailure);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_fileAuthFailure;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_fileAuthFailure);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_fileAuthFailure);
 
                 break;
 
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_dlFailureWindow:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_dlFailureWindow);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_dlFailureWindow);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_dlFailureWindow);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_dlFailureWindow);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_dlFailureWindow;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_dlFailureWindow);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_dlFailureWindow);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_cancelXferFailure:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_cancelXferFailure);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_cancelXferFailure);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_cancelXferFailure);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_cancelXferFailure);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_cancelXferFailure;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_cancelXferFailure);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_cancelXferFailure);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidUUID:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidUUID);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidUUID);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidUUID);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidUUID);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_invalidUUID;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidUUID);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidUUID);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_UnknownExecEnv:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_UnknownExecEnv);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_UnknownExecEnv);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_UnknownExecEnv);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_UnknownExecEnv);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_UnknownExecEnv;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_UnknownExecEnv);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_UnknownExecEnv);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_ExecEnvDisabled:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_ExecEnvDisabled);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_ExecEnvDisabled);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_ExecEnvDisabled);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_ExecEnvDisabled);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_ExecEnvDisabled;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_ExecEnvDisabled);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_ExecEnvDisabled);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_DUMismatchEE:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DUMismatchEE);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DUMismatchEE);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DUMismatchEE);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DUMismatchEE);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_DUMismatchEE;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DUMismatchEE);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DUMismatchEE);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_DuplicateDU:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DuplicateDU);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DuplicateDU);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DuplicateDU);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DuplicateDU);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_DuplicateDU;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DuplicateDU);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DuplicateDU);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_NoResToInstall:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_NoResToInstall);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_NoResToInstall);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_NoResToInstall);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_NoResToInstall);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_NoResToInstall;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_NoResToInstall);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_NoResToInstall);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_UnknownDU:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_UnknownDU);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_UnknownDU);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_UnknownDU);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_UnknownDU);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_UnknownDU;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_UnknownDU);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_UnknownDU);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_InvalidDUState:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_InvalidDUState);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_InvalidDUState);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_InvalidDUState);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_InvalidDUState);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_InvalidDUState;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_InvalidDUState);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_InvalidDUState);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_DUNoDowngrade:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DUNoDowngrade);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DUNoDowngrade);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DUNoDowngrade);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DUNoDowngrade);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_DUNoDowngrade;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DUNoDowngrade);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DUNoDowngrade);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_DUUpdateNoVersion:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DUUpdateNoVersion);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DUUpdateNoVersion);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DUUpdateNoVersion);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DUUpdateNoVersion);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_DUUpdateNoVersion;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DUUpdateNoVersion);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DUUpdateNoVersion);
 
                 break;
 
         case    CCSP_CWMP_CPE_CWMP_FaultCode_DUUpdateVerExist:
 
-                pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DUUpdateVerExist);
-                pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DUUpdateVerExist);
+                pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_DUUpdateVerExist);
+                pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_DUUpdateVerExist);
                 pCwmpSoapFault->Fault.FaultCode     = CCSP_CWMP_CPE_CWMP_FaultCode_DUUpdateVerExist;
-                pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DUUpdateVerExist);
+                pCwmpSoapFault->Fault.FaultString   = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_DUUpdateVerExist);
 
                 break;
 
@@ -401,10 +401,10 @@ CCSP_CWMP_SET_SOAP_FAULT
 
                     _ansc_sprintf(buf, "Falult Code: %u", (unsigned int)faultCode);
 
-                    pCwmpSoapFault->soap_faultcode      = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_internalError);
-                    pCwmpSoapFault->soap_faultstring    = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_internalError);
+                    pCwmpSoapFault->soap_faultcode      = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_internalError);
+                    pCwmpSoapFault->soap_faultstring    = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_internalError);
                     pCwmpSoapFault->Fault.FaultCode     = faultCode;
-                    pCwmpSoapFault->Fault.FaultString   = CcspTr069PaCloneString(buf);
+                    pCwmpSoapFault->Fault.FaultString   = AnscCloneString(buf);
                 }
 
                 break;
@@ -432,13 +432,13 @@ CcspTr069FreeStringArray
     {
         if ( pStringArray[i] )
         {
-            CcspTr069PaFreeMemory(pStringArray[i]);
+            AnscFreeMemory(pStringArray[i]);
         }
     }
 
     if ( bFreeArrayAsWell )
     {
-        CcspTr069PaFreeMemory(pStringArray);
+        AnscFreeMemory(pStringArray);
     }
 }
 
@@ -507,10 +507,10 @@ CcspTr069FreeStringQueue(PQUEUE_HEADER pQueueHeader, BOOL bFreeValue)
 
         if ( bFreeValue )
         {
-            CcspTr069PaFreeMemory(pSListEntry->Value);
+            AnscFreeMemory(pSListEntry->Value);
         }
 
-        CcspTr069PaFreeMemory(pSListEntry);
+        AnscFreeMemory(pSListEntry);
     }
 }
 
@@ -525,7 +525,7 @@ CcspTr069FreeParamAttrQueue(PQUEUE_HEADER pQueueHeader)
     {
         pSListEntry = ACCESS_CCSP_TR069PA_PARAM_ATTR_SLIST_ENTRY(pLink);
 
-        CcspTr069PaFreeMemory(pSListEntry);
+        AnscFreeMemory(pSListEntry);
     }
 }
 
@@ -544,10 +544,10 @@ CcspTr069FreeStringSList(PSLIST_HEADER pSListHeader, BOOL bFreeValue)
         {
             if ( bFreeValue )
             {
-                CcspTr069PaFreeMemory(pSListEntry->Value);
+                AnscFreeMemory(pSListEntry->Value);
             }
 
-            CcspTr069PaFreeMemory(pSListEntry);
+            AnscFreeMemory(pSListEntry);
         }
     }
 }
@@ -631,7 +631,7 @@ CcspTr069PaIsGpnNsInQueue
     do {                                                                                                \
         PCCSP_PARAM_VALUE_INFO   pParamValueInfo;                                                       \
         pNsList =                                                                                       \
-            (PCCSP_TR069PA_NSLIST)CcspTr069PaAllocateMemory                                             \
+            (PCCSP_TR069PA_NSLIST)AnscAllocateMemory                                                    \
                 (sizeof(CCSP_TR069PA_NSLIST));                                                          \
                                                                                                         \
         if ( pNsList )                                                                                  \
@@ -652,7 +652,7 @@ CcspTr069PaIsGpnNsInQueue
     do {                                                                                                \
         PCCSP_PARAM_NAME_INFO    pParamNameInfo;                                                        \
         pNsList =                                                                                       \
-            (PCCSP_TR069PA_NSLIST)CcspTr069PaAllocateMemory                                             \
+            (PCCSP_TR069PA_NSLIST)AnscAllocateMemory                                                    \
                 (sizeof(CCSP_TR069PA_NSLIST));                                                          \
                                                                                                         \
         if ( pNsList )                                                                                  \
@@ -672,7 +672,7 @@ CcspTr069PaIsGpnNsInQueue
     do {                                                                                                \
         PCCSP_PARAM_ATTR_INFO    pParamAttrInfo;                                                        \
         pNsList =                                                                                       \
-            (PCCSP_TR069PA_NSLIST)CcspTr069PaAllocateMemory                                             \
+            (PCCSP_TR069PA_NSLIST)AnscAllocateMemory                                                    \
                 (sizeof(CCSP_TR069PA_NSLIST));                                                          \
                                                                                                         \
         if ( pNsList )                                                                                  \
@@ -699,12 +699,12 @@ CcspTr069PaIsGpnNsInQueue
                             CCSP_PARAM_NAME_INFO* pInfo;                                                \
                             pInfo = &(pNsList)->Args.paramInfo;                                         \
                             if ( pInfo->parameterName )                                                 \
-                                CcspTr069PaFreeMemory(pInfo->parameterName);                            \
+                                AnscFreeMemory(pInfo->parameterName);                                   \
                         }                                                                               \
                                                                                                         \
                         break;                                                                          \
             }                                                                                           \
-            CcspTr069PaFreeMemory(pNsList);                                                             \
+            AnscFreeMemory(pNsList);                                                                    \
     } while (0)
 
 
@@ -729,17 +729,17 @@ CCSP_TR069PA_FC_NSLIST, *PCCSP_TR069PA_FC_NSLIST;
                                                                                                         \
         if ( (pFcNsList)->Subsystem )                                                                   \
         {                                                                                               \
-            CcspTr069PaFreeMemory((pFcNsList)->Subsystem);                                              \
+            AnscFreeMemory((pFcNsList)->Subsystem);                                                     \
         }                                                                                               \
                                                                                                         \
         if ( (pFcNsList)->FCName )                                                                      \
         {                                                                                               \
-            CcspTr069PaFreeMemory((pFcNsList)->FCName);                                                 \
+            AnscFreeMemory((pFcNsList)->FCName);                                                        \
         }                                                                                               \
                                                                                                         \
         if ( (pFcNsList)->DBusPath )                                                                    \
         {                                                                                               \
-            CcspTr069PaFreeMemory((pFcNsList)->DBusPath);                                               \
+            AnscFreeMemory((pFcNsList)->DBusPath);                                                      \
         }                                                                                               \
                                                                                                         \
         pSLinkEntry = AnscQueuePopEntry((&((pFcNsList)->NsList)));                                      \
@@ -750,7 +750,7 @@ CCSP_TR069PA_FC_NSLIST, *PCCSP_TR069PA_FC_NSLIST;
                                                                                                         \
             CcspTr069PaFreeNsList(pNsList);                                                             \
         }                                                                                               \
-        CcspTr069PaFreeMemory(pFcNsList);                                                               \
+        AnscFreeMemory(pFcNsList);                                                                      \
     } while (0)
 
 
@@ -814,16 +814,16 @@ CcspTr069PaFindFcNsList
         if ( !pFcNsList )                                                                               \
         {                                                                                               \
             pFcNsList =                                                                                 \
-                (PCCSP_TR069PA_FC_NSLIST)CcspTr069PaAllocateMemory                                      \
+                (PCCSP_TR069PA_FC_NSLIST)AnscAllocateMemory                                             \
                     (                                                                                   \
                         sizeof(CCSP_TR069PA_FC_NSLIST)                                                  \
                     );                                                                                  \
                                                                                                         \
             if ( pFcNsList )                                                                            \
             {                                                                                           \
-                pFcNsList->Subsystem= pSubSystem ? CcspTr069PaCloneString(pSubSystem) : NULL;           \
-                pFcNsList->FCName   = pFcName? CcspTr069PaCloneString(pFcName) : NULL;                  \
-                pFcNsList->DBusPath = pDbusPath ? CcspTr069PaCloneString(pDbusPath) : NULL;             \
+                pFcNsList->Subsystem= pSubSystem ? AnscCloneString(pSubSystem) : NULL;                  \
+                pFcNsList->FCName   = pFcName? AnscCloneString(pFcName) : NULL;                         \
+                pFcNsList->DBusPath = pDbusPath ? AnscCloneString(pDbusPath) : NULL;                    \
                 AnscQueueInitializeHeader(&pFcNsList->NsList);                                          \
                                                                                                         \
                 AnscQueuePushEntry(pFcNsListQueue, &pFcNsList->Linkage);                                \
@@ -843,7 +843,7 @@ CcspStringToCalendarTime
     ULONG                           ulFieldIndex   = 0;
     char                            temp_char [5];
 
-    pUniversalTime = (PANSC_UNIVERSAL_TIME)CcspTr069PaAllocateMemory(sizeof(ANSC_UNIVERSAL_TIME));
+    pUniversalTime = (PANSC_UNIVERSAL_TIME)AnscAllocateMemory(sizeof(ANSC_UNIVERSAL_TIME));
 
     if ( !pUniversalTime )
     {
@@ -963,7 +963,7 @@ CcspCalendarTimeToString
         PANSC_UNIVERSAL_TIME        pUniversalTime
     )
 {
-    char*                           var_string     = (char*)CcspTr069PaAllocateMemory(32);
+    char*                           var_string     = (char*)AnscAllocateMemory(32);
 
     if ( !var_string )
     {

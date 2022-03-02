@@ -116,15 +116,15 @@ CCSP_TR069_CDS_Install, *PCCSP_TR069_CDS_Install;
 #define  CcspTr069CdsInstallClean(iop)                                                  \
     do {                                                                                \
         if ( (iop)->Url )                                                               \
-            CcspTr069PaFreeMemory((iop)->Url);                                          \
+            AnscFreeMemory((iop)->Url);                                                 \
         if ( (iop)->Uuid )                                                              \
-            CcspTr069PaFreeMemory((iop)->Uuid);                                         \
+            AnscFreeMemory((iop)->Uuid);                                                \
         if ( (iop)->Username )                                                          \
-            CcspTr069PaFreeMemory((iop)->Username);                                     \
+            AnscFreeMemory((iop)->Username);                                            \
         if ( (iop)->Password )                                                          \
-            CcspTr069PaFreeMemory((iop)->Password);                                     \
+            AnscFreeMemory((iop)->Password);                                            \
         if ( (iop)->ExecEnvRef )                                                        \
-            CcspTr069PaFreeMemory((iop)->ExecEnvRef);                                   \
+            AnscFreeMemory((iop)->ExecEnvRef);                                          \
     } while (0)
 
 
@@ -143,15 +143,15 @@ CCSP_TR069_CDS_Update, *PCCSP_TR069_CDS_Update;
 #define  CcspTr069CdsUpdateClean(uop)                                                   \
     do {                                                                                \
         if ( (uop)->Uuid )                                                              \
-            CcspTr069PaFreeMemory((uop)->Uuid);                                         \
+            AnscFreeMemory((uop)->Uuid);                                                \
         if ( (uop)->Version )                                                           \
-            CcspTr069PaFreeMemory((uop)->Version);                                      \
+            AnscFreeMemory((uop)->Version);                                             \
         if ( (uop)->Url )                                                               \
-            CcspTr069PaFreeMemory((uop)->Url);                                          \
+            AnscFreeMemory((uop)->Url);                                                 \
         if ( (uop)->Username )                                                          \
-            CcspTr069PaFreeMemory((uop)->Username);                                     \
+            AnscFreeMemory((uop)->Username);                                            \
         if ( (uop)->Password )                                                          \
-            CcspTr069PaFreeMemory((uop)->Password);                                     \
+            AnscFreeMemory((uop)->Password);                                            \
     } while (0)
 
 
@@ -166,9 +166,9 @@ CCSP_TR069_CDS_Uninstall, *PCCSP_TR069_CDS_Uninstall;
 #define  CcspTr069CdsUninstallClean(uiop)                                               \
     do {                                                                                \
         if ( (uiop)->Uuid )                                                             \
-            CcspTr069PaFreeMemory((uiop)->Uuid);                                        \
+            AnscFreeMemory((uiop)->Uuid);                                               \
         if ( (uiop)->Version )                                                          \
-            CcspTr069PaFreeMemory((uiop)->Version);                                     \
+            AnscFreeMemory((uiop)->Version);                                            \
     } while (0)
 
 
@@ -199,7 +199,7 @@ CCSP_TR069_CDS_REQ, *PCCSP_TR069_CDS_REQ;
     do {                                                                                            \
         int                         i;                                                              \
         if ( (CdsReq)->CommandKey )                                                                 \
-            CcspTr069PaFreeMemory((CdsReq)->CommandKey);                                            \
+            AnscFreeMemory((CdsReq)->CommandKey);                                                   \
         for ( i = 0; i < (CdsReq)->NumOperations; i ++ )                                            \
         {                                                                                           \
             if ( (CdsReq)->Operations[i].Op == CCSP_TR069_CDS_OP_Install )                          \
@@ -215,7 +215,7 @@ CCSP_TR069_CDS_REQ, *PCCSP_TR069_CDS_REQ;
 #define  CcspTr069CdsReqRemove(CdsReq)                                                              \
     do {                                                                                            \
         CcspTr069CdsReqClean(CdsReq);                                                               \
-        CcspTr069PaFreeMemory(CdsReq);                                                              \
+        AnscFreeMemory(CdsReq);                                                                     \
     } while (0)
 
 
@@ -251,21 +251,21 @@ CCSP_TR069_CDS_OpResult, *PCCSP_TR069_CDS_OpResult;
 #define  CcspTr069CdsOpResultClean(dscResult)                                           \
     do {                                                                                \
         if ( (dscResult)->FaultString )                                                 \
-            CcspTr069PaFreeMemory((dscResult)->FaultString);                            \
+            AnscFreeMemory((dscResult)->FaultString);                                   \
         if ( (dscResult)->Uuid )                                                        \
-            CcspTr069PaFreeMemory((dscResult)->Uuid);                                   \
+            AnscFreeMemory((dscResult)->Uuid);                                          \
         if ( (dscResult)->DeploymentUnitRef )                                           \
-            CcspTr069PaFreeMemory((dscResult)->DeploymentUnitRef);                      \
+            AnscFreeMemory((dscResult)->DeploymentUnitRef);                             \
         if ( (dscResult)->Version )                                                     \
-            CcspTr069PaFreeMemory((dscResult)->Version);                                \
+            AnscFreeMemory((dscResult)->Version);                                       \
         if ( (dscResult)->CurrentState )                                                \
-            CcspTr069PaFreeMemory((dscResult)->CurrentState);                           \
+            AnscFreeMemory((dscResult)->CurrentState);                                  \
         if ( (dscResult)->ExecutionUnitRefList )                                        \
-            CcspTr069PaFreeMemory((dscResult)->ExecutionUnitRefList);                   \
+            AnscFreeMemory((dscResult)->ExecutionUnitRefList);                          \
         if ( (dscResult)->StartTime )                                                   \
-            CcspTr069PaFreeMemory((dscResult)->StartTime);                              \
+            AnscFreeMemory((dscResult)->StartTime);                                     \
         if ( (dscResult)->CompleteTime )                                                \
-            CcspTr069PaFreeMemory((dscResult)->CompleteTime);                           \
+            AnscFreeMemory((dscResult)->CompleteTime);                                  \
     } while (0)
 
 
@@ -283,21 +283,21 @@ CCSP_TR069_DSCC_REQ, *PCCSP_TR069_DSCC_REQ;
     do {                                                                                \
         int                         i;                                                  \
         if ( (DsccReq)->CommandKey )                                                    \
-            CcspTr069PaFreeMemory((DsccReq)->CommandKey);                               \
+            AnscFreeMemory((DsccReq)->CommandKey);                                      \
         for ( i = 0; i < (DsccReq)->NumResults; i ++ )                                  \
         {                                                                               \
             CcspTr069CdsOpResultClean(&((DsccReq)->Results[i]));                        \
         }                                                                               \
         if ( (DsccReq)->Results )                                                       \
         {                                                                               \
-            CcspTr069PaFreeMemory((DsccReq)->Results);                                  \
+            AnscFreeMemory((DsccReq)->Results);                                         \
         }                                                                               \
     } while (0)
 
 #define  CcspTr069DsccReqRemove(DsccReq)                                                \
     do {                                                                                \
         CcspTr069DsccReqClean(DsccReq);                                                 \
-        CcspTr069PaFreeMemory(DsccReq);                                                 \
+        AnscFreeMemory(DsccReq);                                                        \
     } while (0)
 
 
@@ -336,23 +336,23 @@ CCSP_TR069_ADSCC_OpResult, *PCCSP_TR069_ADSCC_OpResult;
 #define  CcspTr069AdsccOpResultClean(adscResult)                                        \
     do {                                                                                \
         if ( (adscResult)->FaultString )                                                \
-            CcspTr069PaFreeMemory((adscResult)->FaultString);                           \
+            AnscFreeMemory((adscResult)->FaultString);                                  \
         if ( (adscResult)->Uuid )                                                       \
-            CcspTr069PaFreeMemory((adscResult)->Uuid);                                  \
+            AnscFreeMemory((adscResult)->Uuid);                                         \
         if ( (adscResult)->DeploymentUnitRef )                                          \
-            CcspTr069PaFreeMemory((adscResult)->DeploymentUnitRef);                     \
+            AnscFreeMemory((adscResult)->DeploymentUnitRef);                            \
         if ( (adscResult)->Version )                                                    \
-            CcspTr069PaFreeMemory((adscResult)->Version);                               \
+            AnscFreeMemory((adscResult)->Version);                                      \
         if ( (adscResult)->OperationPerformed )                                         \
-            CcspTr069PaFreeMemory((adscResult)->OperationPerformed);                    \
+            AnscFreeMemory((adscResult)->OperationPerformed);                           \
         if ( (adscResult)->CurrentState )                                               \
-            CcspTr069PaFreeMemory((adscResult)->CurrentState);                          \
+            AnscFreeMemory((adscResult)->CurrentState);                                 \
         if ( (adscResult)->ExecutionUnitRefList )                                       \
-            CcspTr069PaFreeMemory((adscResult)->ExecutionUnitRefList);                  \
+            AnscFreeMemory((adscResult)->ExecutionUnitRefList);                         \
         if ( (adscResult)->StartTime )                                                  \
-            CcspTr069PaFreeMemory((adscResult)->StartTime);                             \
+            AnscFreeMemory((adscResult)->StartTime);                                    \
         if ( (adscResult)->CompleteTime )                                               \
-            CcspTr069PaFreeMemory((adscResult)->CompleteTime);                          \
+            AnscFreeMemory((adscResult)->CompleteTime);                                 \
     } while (0)
 
 
@@ -375,7 +375,7 @@ CCSP_TR069_ADSCC_REQ, *PCCSP_TR069_ADSCC_REQ;
         }                                                                               \
         if ( (AdsccReq)->Results )                                                      \
         {                                                                               \
-            CcspTr069PaFreeMemory((AdsccReq)->Results);                                 \
+            AnscFreeMemory((AdsccReq)->Results);                                        \
         }                                                                               \
     } while (0)
 
@@ -383,7 +383,7 @@ CCSP_TR069_ADSCC_REQ, *PCCSP_TR069_ADSCC_REQ;
 #define  CcspTr069AdsccReqRemove(AdscReq)                                               \
     do {                                                                                \
         CcspTr069AdsccReqClean(AdscReq);                                                \
-        CcspTr069PaFreeMemory(AdscReq);                                                 \
+        AnscFreeMemory(AdscReq);                                                        \
     } while (0)
 
 

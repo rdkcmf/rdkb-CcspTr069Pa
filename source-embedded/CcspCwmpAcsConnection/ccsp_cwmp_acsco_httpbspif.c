@@ -154,7 +154,7 @@ CcspCwmpAcscoHttpBspPolish
     else
     {
         size_t  size_cookies    = len + pMyObject->NumCookies*2;
-    	char    *cookies        = (char *)CcspTr069PaAllocateMemory(size_cookies);
+    	char    *cookies        = (char *)AnscAllocateMemory(size_cookies);
 
     	if (cookies) {
         	AnscZeroMemory(cookies, size_cookies);
@@ -168,7 +168,7 @@ CcspCwmpAcscoHttpBspPolish
                 if(rc!=EOK)
                {
                  ERR_CHK(rc);
-                 CcspTr069PaFreeMemory(cookies);
+                 AnscFreeMemory(cookies);
                  return ANSC_STATUS_FAILURE;
                }
             	if ( i < pMyObject->NumCookies - 1 )
@@ -177,7 +177,7 @@ CcspCwmpAcscoHttpBspPolish
                     if(rc!=EOK)
                     {
                         ERR_CHK(rc);
-                        CcspTr069PaFreeMemory(cookies);
+                        AnscFreeMemory(cookies);
                         return ANSC_STATUS_FAILURE;
                     }
                 }
@@ -191,7 +191,7 @@ CcspCwmpAcscoHttpBspPolish
 				);
 
 			CcspTr069PaTraceDebug(("Add Cookie into message: %s\n", cookies));
-			CcspTr069PaFreeMemory(cookies);
+			AnscFreeMemory(cookies);
     	}
     }
 
@@ -344,8 +344,8 @@ CcspCwmpAcscoHttpBspBrowse
         /* Authorization header in request */
         pAuthHeaderValue = pHttpBmoReq->GetHeaderValueById((ANSC_HANDLE)pHttpBmoReq, HTTP_HEADER_ID_AUTHORIZATION);
 
-        if ( pMyObject->AuthHeaderValue ) CcspTr069PaFreeMemory(pMyObject->AuthHeaderValue);
-        pMyObject->AuthHeaderValue = pAuthHeaderValue ? CcspTr069PaCloneString(pAuthHeaderValue) : NULL;
+        if ( pMyObject->AuthHeaderValue ) AnscFreeMemory(pMyObject->AuthHeaderValue);
+        pMyObject->AuthHeaderValue = pAuthHeaderValue ? AnscCloneString(pAuthHeaderValue) : NULL;
     }
 
     /* look for Set-Cookie headers */
@@ -360,13 +360,13 @@ CcspCwmpAcscoHttpBspBrowse
 
         while ( pCookie != NULL && AnscSizeOfString(pCookie) > 0)
         {
-            pCookieHeader = CcspTr069PaAllocateMemory(AnscSizeOfString(pCookie) + 16);
+            pCookieHeader = AnscAllocateMemory(AnscSizeOfString(pCookie) + 16);
 
             if ( pCookieHeader )
                 _ansc_sprintf(pCookieHeader, "Set-Cookie2: %s", pCookie);
 
             pMyObject->AddCookie((ANSC_HANDLE)pMyObject, pCookieHeader);
-            CcspTr069PaFreeMemory(pCookieHeader);
+            AnscFreeMemory(pCookieHeader);
 
             pCookie = pHttpBmoRep->GetHeaderValueById2((ANSC_HANDLE)pHttpBmoRep, HTTP_HEADER_ID_SET_COOKIE2, ++ulCookieIndex);
         }
@@ -388,13 +388,13 @@ CcspCwmpAcscoHttpBspBrowse
 
         while ( pCookie && AnscSizeOfString(pCookie) )
         {
-            pCookieHeader = CcspTr069PaAllocateMemory(AnscSizeOfString(pCookie) + 16);
+            pCookieHeader = AnscAllocateMemory(AnscSizeOfString(pCookie) + 16);
 
             if ( pCookieHeader )
                 _ansc_sprintf(pCookieHeader, "Set-Cookie: %s", pCookie);
 
             pMyObject->AddCookie((ANSC_HANDLE)pMyObject, pCookieHeader);
-            CcspTr069PaFreeMemory(pCookieHeader);
+            AnscFreeMemory(pCookieHeader);
 
             pCookie = pHttpBmoRep->GetHeaderValueById2((ANSC_HANDLE)pHttpBmoRep, HTTP_HEADER_ID_SET_COOKIE, ++ulCookieIndex);
         }
@@ -453,7 +453,7 @@ CcspCwmpAcscoHttpBspBrowse
         CcspTr069PaTraceInfo(("ACS URL moved (HTTP code=%lu) to: %s\n", ulCode, pHeaderLocation));
 
         pHttpGetReq->ulContentSize = AnscSizeOfString(pHeaderLocation);
-        pHttpGetReq->pContent      = CcspTr069PaCloneString(pHeaderLocation);
+        pHttpGetReq->pContent      = AnscCloneString(pHeaderLocation);
         pHttpGetReq->bIsRedirect   = TRUE;
 
         /* notify underlying HTTP Webc Transaction object to clearn request
@@ -472,7 +472,7 @@ CcspCwmpAcscoHttpBspBrowse
         }
         else
         {
-            pHttpResponse = (char*)CcspTr069PaAllocateMemory(ulResponseSize + 1);  /* we must leave room for the NULL terminator */
+            pHttpResponse = (char*)AnscAllocateMemory(ulResponseSize + 1);  /* we must leave room for the NULL terminator */
 
             if ( !pHttpResponse )
             {
@@ -636,7 +636,7 @@ CcspCwmpAcscoHttpBspNotify
                         CcspTr069PaTraceInfo(("ACS URL moved (HTTP code=%lu) to: %s\n", ulCode, pHeaderLocation));
 
                         pHttpGetReq->ulContentSize = AnscSizeOfString(pHeaderLocation);
-                        pHttpGetReq->pContent      = CcspTr069PaCloneString(pHeaderLocation);
+                        pHttpGetReq->pContent      = AnscCloneString(pHeaderLocation);
                         pHttpGetReq->bIsRedirect   = TRUE;
                     }
 
@@ -807,7 +807,7 @@ CcspCwmpAcscoHttpAddCookie
         return ANSC_STATUS_DISCARD;
     }
 
-    pCookieValue = (PCHAR)CcspTr069PaAllocateMemory(AnscSizeOfString(pCookie) + 64);
+    pCookieValue = (PCHAR)AnscAllocateMemory(AnscSizeOfString(pCookie) + 64);
 
     if( NULL == pCookieValue )
     {
@@ -841,12 +841,12 @@ CcspCwmpAcscoHttpAddCookie
             }
         }
 
-        pMyObject->Cookies[pMyObject->NumCookies++] = CcspTr069PaCloneString(pCookieValue + 8);
+        pMyObject->Cookies[pMyObject->NumCookies++] = AnscCloneString(pCookieValue + 8);
 
-        CcspTr069PaFreeMemory(pHfoSetCookie);
+        AnscFreeMemory(pHfoSetCookie);
     }
 
-    CcspTr069PaFreeMemory(pCookieValue);
+    AnscFreeMemory(pCookieValue);
 
     return returnStatus;
 }
@@ -888,7 +888,7 @@ CcspCwmpAcscoHttpRemoveCookies
     {
         if ( pMyObject->Cookies[i] )
         {
-            CcspTr069PaFreeMemory(pMyObject->Cookies[i]);
+            AnscFreeMemory(pMyObject->Cookies[i]);
             pMyObject->Cookies[i] = NULL;
         }
     }
@@ -1009,7 +1009,7 @@ CcspCwmpAcscoHttpDelCookie
 
     if ( pCookie )
     {
-        CcspTr069PaFreeMemory(pCookie);
+        AnscFreeMemory(pCookie);
     }
 
     return ANSC_STATUS_SUCCESS;

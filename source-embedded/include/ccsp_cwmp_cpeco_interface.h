@@ -142,26 +142,26 @@ CCSP_CWMP_STATISTICS,  *PCCSP_CWMP_STATISTICS;
         int                         i;                                                  \
         for (i = 0; i < numParams; i ++)                                                \
         {                                                                               \
-            if ( names[i] ) CcspTr069PaFreeMemory(names[i]);                            \
-            if ( values[i] ) CcspVariableClean(CcspTr069PaFreeMemory, values[i]);       \
+            if ( names[i] ) AnscFreeMemory(names[i]);                                   \
+            if ( values[i] ) CcspVariableClean(AnscFreeMemory, values[i]);              \
         }                                                                               \
-        CcspTr069PaFreeMemory(names);                                                   \
-        CcspTr069PaFreeMemory(values);                                                  \
+        AnscFreeMemory(names);                                                          \
+        AnscFreeMemory(values);                                                         \
     } while (0)
 
 #define  CcspCwmpCpecoAllocateStringArray(numParams, sarray)                                \
-    sarray = (char**)CcspTr069PaAllocateMemory(numParams * sizeof(char*))
+    sarray = (char**)AnscAllocateMemory(numParams * sizeof(char*))
 
 #define  CcspCwmpCpecoRemoveParamNameStringValues(numParams, names, values)                 \
     do {                                                                                \
         int                         i;                                                  \
         for (i = 0; i < numParams; i ++)                                                \
         {                                                                               \
-            if ( names[i] ) CcspTr069PaFreeMemory(names[i]);                            \
-            if ( values[i] ) CcspTr069PaFreeMemory(values[i]);                          \
+            if ( names[i] ) AnscFreeMemory(names[i]);                                   \
+            if ( values[i] ) AnscFreeMemory(values[i]);                                 \
         }                                                                               \
-        CcspTr069PaFreeMemory(names);                                                   \
-        CcspTr069PaFreeMemory(values);                                                  \
+        AnscFreeMemory(names);                                                          \
+        AnscFreeMemory(values);                                                         \
     } while (0)
 
 

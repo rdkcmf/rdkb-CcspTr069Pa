@@ -256,7 +256,7 @@ CcspCwmppoGetAcsInfo
     {
         usTcpCrHostPort = (USHORT)_ansc_atoi(tcpCrHostPort);
 
-        CcspTr069PaFreeMemory(tcpCrHostPort);
+        AnscFreeMemory(tcpCrHostPort);
 
         if ( usTcpCrHostPort!= 0 && usTcpCrHostPort != tcpCrProperty.HostPort )
         {
@@ -284,7 +284,7 @@ CcspCwmppoGetAcsInfo
 
     if ( pValue )
     {
-        CcspTr069PaFreeMemory(pValue);
+        AnscFreeMemory(pValue);
     }
 */
 
@@ -322,7 +322,7 @@ CcspCwmppoGetAcsInfo
         if ( pCalendarTime )
         {
             pProperty->PeriodicInformTime = *pCalendarTime;
-            CcspTr069PaFreeMemory(pCalendarTime);
+            AnscFreeMemory(pCalendarTime);
         }
 
         bPiChanged = TRUE;
@@ -334,7 +334,7 @@ CcspCwmppoGetAcsInfo
 
     if ( pPeriodicInformTime )
     {
-        CcspTr069PaFreeMemory(pPeriodicInformTime);
+        AnscFreeMemory(pPeriodicInformTime);
     }
 
     /* Configure Period Inform */
@@ -369,7 +369,7 @@ CcspCwmppoGetAcsInfo
             bAcsUrlChanged = TRUE;
         }
 
-        CcspTr069PaFreeMemory(pValue);
+        AnscFreeMemory(pValue);
     }
 
     if ( !bCwmpStarted && bCwmpEnabled )

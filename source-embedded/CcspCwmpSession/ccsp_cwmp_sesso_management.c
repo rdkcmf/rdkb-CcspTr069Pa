@@ -491,7 +491,7 @@ CcspCwmpsoAddModifiedParameter
 
     if ( pMyObject->ModifiedParamCount >= CCSP_CWMPSO_MAX_PARAM_NUMBER )
     {
-        CcspTr069PaFreeMemory(pParamName);
+        AnscFreeMemory(pParamName);
 
         return  ANSC_STATUS_RESOURCES;
     }
@@ -514,10 +514,10 @@ CcspCwmpsoAddModifiedParameter
 
                 if ( pMyObject->ModifiedParamValueArray[i] )
                 {
-                    CcspTr069PaFreeMemory(pMyObject->ModifiedParamValueArray[i]);
+                    AnscFreeMemory(pMyObject->ModifiedParamValueArray[i]);
                 }
 
-                pMyObject->ModifiedParamValueArray[i] = CcspTr069PaCloneString(pParamValue);
+                pMyObject->ModifiedParamValueArray[i] = AnscCloneString(pParamValue);
                 pMyObject->ModifiedParamTypeArray [i] = CwmpDataType;
 
                 break;
@@ -527,8 +527,8 @@ CcspCwmpsoAddModifiedParameter
 
     if( !bExist)
     {
-        pMyObject->ModifiedParamArray     [pMyObject->ModifiedParamCount]   = CcspTr069PaCloneString(pParamName);
-        pMyObject->ModifiedParamValueArray[pMyObject->ModifiedParamCount]   = CcspTr069PaCloneString(pParamValue);
+        pMyObject->ModifiedParamArray     [pMyObject->ModifiedParamCount]   = AnscCloneString(pParamName);
+        pMyObject->ModifiedParamValueArray[pMyObject->ModifiedParamCount]   = AnscCloneString(pParamValue);
         pMyObject->ModifiedParamTypeArray [pMyObject->ModifiedParamCount++] = CwmpDataType;
     }
 
@@ -537,7 +537,7 @@ CcspCwmpsoAddModifiedParameter
      */
     if ( TRUE )
     {
-        PCCSP_CWMP_EVENT            pCcspCwmpEvent = (PCCSP_CWMP_EVENT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_EVENT));
+        PCCSP_CWMP_EVENT            pCcspCwmpEvent = (PCCSP_CWMP_EVENT)AnscAllocateMemory(sizeof(CCSP_CWMP_EVENT));
 
         if ( !pCcspCwmpEvent )
         {
@@ -545,7 +545,7 @@ CcspCwmpsoAddModifiedParameter
         }
         else
         {
-            pCcspCwmpEvent->EventCode  = CcspTr069PaCloneString(CCSP_CWMP_INFORM_EVENT_NAME_ValueChange);
+            pCcspCwmpEvent->EventCode  = AnscCloneString(CCSP_CWMP_INFORM_EVENT_NAME_ValueChange);
             pCcspCwmpEvent->CommandKey = NULL;
         }
 
@@ -599,7 +599,7 @@ CcspCwmpsoDelAllParameters
     {
         if ( pMyObject->ModifiedParamArray[i] )
         {
-            CcspTr069PaFreeMemory(pMyObject->ModifiedParamArray[i]);
+            AnscFreeMemory(pMyObject->ModifiedParamArray[i]);
 
             pMyObject->ModifiedParamArray[i] = NULL;
         }

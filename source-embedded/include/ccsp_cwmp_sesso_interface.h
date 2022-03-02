@@ -555,7 +555,7 @@ CCSP_CWMPSO_ASYNC_REQUEST,  *PCCSP_CWMPSO_ASYNC_REQUEST;
 #define  CcspCwmpsoAllocAsyncRequest(async_req)                                             \
          {                                                                                  \
             async_req =                                                                     \
-                (PCCSP_CWMPSO_ASYNC_REQUEST)CcspTr069PaAllocateMemory                       \
+                (PCCSP_CWMPSO_ASYNC_REQUEST)AnscAllocateMemory                              \
                         (                                                                   \
                             sizeof(CCSP_CWMPSO_ASYNC_REQUEST)                               \
                         );                                                                  \
@@ -585,21 +585,21 @@ CCSP_CWMPSO_ASYNC_REQUEST,  *PCCSP_CWMPSO_ASYNC_REQUEST;
          {                                                                                  \
             if ( async_req->MethodName )                                                    \
             {                                                                               \
-                CcspTr069PaFreeMemory(async_req->MethodName);                               \
+                AnscFreeMemory(async_req->MethodName);                                      \
                                                                                             \
                 async_req->MethodName = NULL;                                               \
             }                                                                               \
                                                                                             \
             if ( async_req->RequestID )                                                     \
             {                                                                               \
-                CcspTr069PaFreeMemory(async_req->RequestID);                                \
+                AnscFreeMemory(async_req->RequestID);                                       \
                                                                                             \
                 async_req->RequestID = NULL;                                                \
             }                                                                               \
                                                                                             \
             if ( async_req->SoapEnvelope )                                                  \
             {                                                                               \
-                CcspTr069PaFreeMemory(async_req->SoapEnvelope);                             \
+                AnscFreeMemory(async_req->SoapEnvelope);                                    \
                                                                                             \
                 async_req->SoapEnvelope = NULL;                                             \
             }                                                                               \
@@ -615,7 +615,7 @@ CCSP_CWMPSO_ASYNC_REQUEST,  *PCCSP_CWMPSO_ASYNC_REQUEST;
             }                                                                               \
                                                                                             \
             AnscFreeEvent     (&async_req->AsyncEvent);                                     \
-            CcspTr069PaFreeMemory(async_req);                                               \
+            AnscFreeMemory(async_req);                                                      \
          }
 
 typedef  struct
@@ -633,7 +633,7 @@ CCSP_CWMPSO_ASYNC_RESPONSE,  *PCCSP_CWMPSO_ASYNC_RESPONSE;
 #define  CcspCwmpsoAllocAsyncResponse(async_rep)                                            \
          {                                                                                  \
             async_rep =                                                                     \
-                (PCCSP_CWMPSO_ASYNC_RESPONSE)CcspTr069PaAllocateMemory                      \
+                (PCCSP_CWMPSO_ASYNC_RESPONSE)AnscAllocateMemory                             \
                         (                                                                   \
                             sizeof(CCSP_CWMPSO_ASYNC_RESPONSE)                              \
                         );                                                                  \
@@ -649,12 +649,12 @@ CCSP_CWMPSO_ASYNC_RESPONSE,  *PCCSP_CWMPSO_ASYNC_RESPONSE;
          {                                                                                  \
             if ( async_rep->SoapEnvelope )                                                  \
             {                                                                               \
-                CcspTr069PaFreeMemory(async_rep->SoapEnvelope);                             \
+                AnscFreeMemory(async_rep->SoapEnvelope);                                    \
                                                                                             \
                 async_rep->SoapEnvelope = NULL;                                             \
             }                                                                               \
                                                                                             \
-            CcspTr069PaFreeMemory(async_rep);                                               \
+            AnscFreeMemory(async_rep);                                                      \
          }
 
 #endif

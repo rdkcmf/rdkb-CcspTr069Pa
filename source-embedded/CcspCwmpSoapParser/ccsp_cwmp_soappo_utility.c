@@ -703,12 +703,12 @@ CcspCwmpSoappoUtilGetParamValue
 		return ANSC_STATUS_FAILURE;
 	}
 
-    pCwmpParam->Name = CcspTr069PaCloneString(pValue);
+    pCwmpParam->Name = AnscCloneString(pValue);
 
     length = 1024;
     AnscZeroMemory(pValue, length);
 
-    pSlapVariable = (PSLAP_VARIABLE)CcspTr069PaAllocateMemory(sizeof(SLAP_VARIABLE));
+    pSlapVariable = (PSLAP_VARIABLE)AnscAllocateMemory(sizeof(SLAP_VARIABLE));
 
     if ( !pSlapVariable )
     {
@@ -739,7 +739,7 @@ CcspCwmpSoappoUtilGetParamValue
     {
         CcspTr069PaTraceError(("Failed to get the string parameter value.\n"));
 
-        CcspTr069PaFreeMemory(pSlapVariable);
+        AnscFreeMemory(pSlapVariable);
 
         pCwmpParam->Value = NULL;
     }
@@ -748,7 +748,7 @@ CcspCwmpSoappoUtilGetParamValue
         pSlapVariable->ContentType       = SLAP_CONTENT_TYPE_UNSPECIFIED;
         pSlapVariable->UsageType         = 0;
         pSlapVariable->Syntax            = SLAP_VAR_SYNTAX_string;
-        pSlapVariable->Variant.varString = CcspTr069PaCloneString(pHugeValue);
+        pSlapVariable->Variant.varString = AnscCloneString(pHugeValue);
     }
 
     pCwmpParam->Tr069DataType = CCSP_CWMP_TR069_DATA_TYPE_Unspecified;
@@ -906,7 +906,7 @@ CcspCwmpSoappoUtilGetParamAttribute
         return returnStatus;
     }
 
-    pParamAttr->Name = CcspTr069PaCloneString(pValue);
+    pParamAttr->Name = AnscCloneString(pValue);
 
     /*
      * Get the notification change flag
@@ -1050,7 +1050,7 @@ CcspCwmpSoappoUtilGetParamAttribute
 
     if( pBegin != pValue)
     {
-        pParamAttr->AccessList = CcspTr069PaCloneString(pValue);
+        pParamAttr->AccessList = AnscCloneString(pValue);
     }
 
     return returnStatus;
@@ -1357,7 +1357,7 @@ CcspCwmpSoappoUtilProcessInvalidArgumentRequest
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault   = (PCCSP_CWMP_SOAP_FAULT)NULL;
     PCCSP_CWMP_MCO_INTERFACE             pCcspCwmpMcoIf       = (PCCSP_CWMP_MCO_INTERFACE)hCcspCwmpMcoIf;
 
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
 
     if ( !pCwmpSoapFault )
     {
@@ -1365,10 +1365,10 @@ CcspCwmpSoappoUtilProcessInvalidArgumentRequest
     }
     else
     {
-        pCwmpSoapFault->soap_faultcode           = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidArgs);
-        pCwmpSoapFault->soap_faultstring         = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidArgs);
+        pCwmpSoapFault->soap_faultcode           = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidArgs);
+        pCwmpSoapFault->soap_faultstring         = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidArgs);
         pCwmpSoapFault->Fault.FaultCode          = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
-        pCwmpSoapFault->Fault.FaultString        = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidArgs);
+        pCwmpSoapFault->Fault.FaultString        = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidArgs);
         pCwmpSoapFault->SetParamValuesFaultCount = 0;
     }
 
@@ -1407,7 +1407,7 @@ CcspCwmpSoappoUtilProcessInvalidArgumentSPVRequest
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault   = (PCCSP_CWMP_SOAP_FAULT)NULL;
     PCCSP_CWMP_MCO_INTERFACE             pCcspCwmpMcoIf       = (PCCSP_CWMP_MCO_INTERFACE)hCcspCwmpMcoIf;
 
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT) + sizeof(CCSP_CWMP_SET_PARAM_FAULT));
 
     if ( !pCwmpSoapFault )
     {
@@ -1415,35 +1415,35 @@ CcspCwmpSoappoUtilProcessInvalidArgumentSPVRequest
     }
     else
     {
-        pCwmpSoapFault->soap_faultcode           = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidArgs);
-        pCwmpSoapFault->soap_faultstring         = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidArgs);
+        pCwmpSoapFault->soap_faultcode           = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_invalidArgs);
+        pCwmpSoapFault->soap_faultstring         = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_invalidArgs);
         pCwmpSoapFault->Fault.FaultCode          = CCSP_CWMP_CPE_CWMP_FaultCode_invalidArgs;
-        pCwmpSoapFault->Fault.FaultString        = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidArgs);
+        pCwmpSoapFault->Fault.FaultString        = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidArgs);
         pCwmpSoapFault->SetParamValuesFaultCount = 0;
 
         if ( pParamName && *pParamName != 0 )
         {
             pCwmpSoapFault->SetParamValuesFaultCount = 1;
-            pCwmpSoapFault->SetParamValuesFaultArray[0].ParameterName = CcspTr069PaCloneString(pParamName);
+            pCwmpSoapFault->SetParamValuesFaultArray[0].ParameterName = AnscCloneString(pParamName);
             pCwmpSoapFault->SetParamValuesFaultArray[0].FaultCode     = CwmpSpvFaultCode;
 
             switch ( CwmpSpvFaultCode )
             {
                 case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamName: 
                         pCwmpSoapFault->SetParamValuesFaultArray[0].FaultString = 
-                            CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
+                            AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamName);
                         break;
                 case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamType: 
                         pCwmpSoapFault->SetParamValuesFaultArray[0].FaultString = 
-                            CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamType);
+                            AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamType);
                         break;
                 case    CCSP_CWMP_CPE_CWMP_FaultCode_invalidParamValue: 
                         pCwmpSoapFault->SetParamValuesFaultArray[0].FaultString = 
-                            CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
+                            AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_invalidParamValue);
                         break;
                 case    CCSP_CWMP_CPE_CWMP_FaultCode_notWritable: 
                         pCwmpSoapFault->SetParamValuesFaultArray[0].FaultString = 
-                            CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notWritable);
+                            AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_notWritable);
                         break;
             }
         }
@@ -1501,7 +1501,7 @@ CcspCwmpSoappoUtilProcessTooManyEnvelopes
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault   = (PCCSP_CWMP_SOAP_FAULT)NULL;
     PCCSP_CWMP_MCO_INTERFACE             pCcspCwmpMcoIf       = (PCCSP_CWMP_MCO_INTERFACE)hCcspCwmpMcoIf;
 
-    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
+    pCwmpSoapFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
 
     if ( !pCwmpSoapFault )
     {
@@ -1509,10 +1509,10 @@ CcspCwmpSoappoUtilProcessTooManyEnvelopes
     }
     else
     {
-        pCwmpSoapFault->soap_faultcode           = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faultcode_maxEnvExceeded);
-        pCwmpSoapFault->soap_faultstring         = CcspTr069PaCloneString(CCSP_CWMP_CPE_SOAP_faulttext_maxEnvExceeded);
+        pCwmpSoapFault->soap_faultcode           = AnscCloneString(CCSP_CWMP_CPE_SOAP_faultcode_maxEnvExceeded);
+        pCwmpSoapFault->soap_faultstring         = AnscCloneString(CCSP_CWMP_CPE_SOAP_faulttext_maxEnvExceeded);
         pCwmpSoapFault->Fault.FaultCode          = CCSP_CWMP_CPE_CWMP_FaultCode_maxEnvExceeded;
-        pCwmpSoapFault->Fault.FaultString        = CcspTr069PaCloneString(CCSP_CWMP_CPE_CWMP_FaultText_maxEnvExceeded);
+        pCwmpSoapFault->Fault.FaultString        = AnscCloneString(CCSP_CWMP_CPE_CWMP_FaultText_maxEnvExceeded);
         pCwmpSoapFault->SetParamValuesFaultCount = 0;
     }
 

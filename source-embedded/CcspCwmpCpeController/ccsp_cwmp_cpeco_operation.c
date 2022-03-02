@@ -298,7 +298,7 @@ CcspCwmpCpecoAllocateMemory
         size_t                      size 
     )
 {
-    return  CcspTr069PaAllocateMemory(size);
+    return  AnscAllocateMemory(size);
 }
 
 void 
@@ -307,7 +307,7 @@ CcspCwmpCpecoFreeMemory
         void *                      ptr 
    )
 {
-    CcspTr069PaFreeMemory(ptr);
+    AnscFreeMemory(ptr);
 }
 */
 

@@ -209,7 +209,7 @@ CcspCwmpSoappoProcessSoapHeader
             }
 
             pCwmpHeader->ElementMask   |= CCSP_CWMP_SOAP_HEADER_ID;
-            pCwmpHeader->ID             = CcspTr069PaCloneString(pValueBuf);
+            pCwmpHeader->ID             = AnscCloneString(pValueBuf);
             ulValueSize                 = 128;
         }
         else if( AnscEqualString(pNodeName, CCSP_CWMP_HOLDREQUESTS, TRUE))
@@ -392,7 +392,7 @@ CcspCwmpSoappoProcessRequest_SetParameterValues
 	if( uParamCount > 0)
 	{
 		pParamArray = (PCCSP_CWMP_PARAM_VALUE)
-			CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_PARAM_VALUE) * uParamCount);
+			AnscAllocateMemory(sizeof(CCSP_CWMP_PARAM_VALUE) * uParamCount);
 
 		if( pParamArray == NULL)
 		{
@@ -532,7 +532,7 @@ EXIT:
             CcspCwmpCleanParamValue(pParamValue);
         }
 
-        CcspTr069PaFreeMemory(pParamArray);
+        AnscFreeMemory(pParamArray);
     }
 
 	if( pAtoName != NULL)
@@ -653,12 +653,12 @@ CcspCwmpSoappoProcessRequest_GetParameterValues
 
             if( length > 0)
             {
-                pStringArray->Array.arrayString[i] = CcspTr069PaCloneString(pValue);
+                pStringArray->Array.arrayString[i] = AnscCloneString(pValue);
             }
             else
             {
                 CcspTr069PaTraceWarning(("Empty Parameter Name in 'GetParameterValue'.\n"));
-                pStringArray->Array.arrayString[i] = CcspTr069PaCloneString(DM_ROOTNAME);
+                pStringArray->Array.arrayString[i] = AnscCloneString(DM_ROOTNAME);
             }
 
             i ++;
@@ -913,7 +913,7 @@ CcspCwmpSoappoProcessRequest_SetParameterAttributes
     if( uParamCount > 0)
     {
         pParamArray = (PCCSP_CWMP_SET_PARAM_ATTRIB)
-            CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SET_PARAM_ATTRIB) * uParamCount);
+            AnscAllocateMemory(sizeof(CCSP_CWMP_SET_PARAM_ATTRIB) * uParamCount);
 
         if( pParamArray == NULL)
         {
@@ -985,7 +985,7 @@ EXIT:
             CcspCwmpCleanSetParamAttrib(pParamAttr);
         }
 
-        CcspTr069PaFreeMemory(pParamArray);
+        AnscFreeMemory(pParamArray);
     }
 
     return returnStatus;
@@ -1100,13 +1100,13 @@ CcspCwmpSoappoProcessRequest_GetParameterAttributes
 
             if( length > 0)
             {
-                pStringArray->Array.arrayString[i] = CcspTr069PaCloneString(pValue);
+                pStringArray->Array.arrayString[i] = AnscCloneString(pValue);
             }
             else
             {
 				CcspTr069PaTraceWarning(("Empty Parameter Name in 'GetParameterAttributes'.\n"));
 
-				pStringArray->Array.arrayString[i] = CcspTr069PaCloneString(DM_ROOTNAME);
+				pStringArray->Array.arrayString[i] = AnscCloneString(DM_ROOTNAME);
             }
 
             i ++;
@@ -1148,7 +1148,7 @@ EXIT:
         {
             if (pStringArray->Array.arrayString[i] != NULL)
             {
-                CcspTr069PaFreeMemory(pStringArray->Array.arrayString[i]);
+                AnscFreeMemory(pStringArray->Array.arrayString[i]);
                 pStringArray->Array.arrayString[i] = NULL;
             }
         }
@@ -1637,7 +1637,7 @@ CcspCwmpSoappoProcessRequest_Download
 
     }
 
-    pDownReq->CommandKey = CcspTr069PaCloneString(pValue);
+    pDownReq->CommandKey = AnscCloneString(pValue);
 
     /*
      * Get FileType
@@ -1671,7 +1671,7 @@ CcspCwmpSoappoProcessRequest_Download
         goto EXIT2;
     }
 
-    pDownReq->FileType = CcspTr069PaCloneString(pValue);
+    pDownReq->FileType = AnscCloneString(pValue);
 
     /*
      * Get URL
@@ -1708,7 +1708,7 @@ CcspCwmpSoappoProcessRequest_Download
 
     }
 
-    pDownReq->Url = CcspTr069PaCloneString(pValue);
+    pDownReq->Url = AnscCloneString(pValue);
 
     /*
      * Get UserName
@@ -1744,7 +1744,7 @@ CcspCwmpSoappoProcessRequest_Download
         goto EXIT2;
     }
 
-    pDownReq->Username = CcspTr069PaCloneString(pValue);
+    pDownReq->Username = AnscCloneString(pValue);
 
     /*
      * Get Password
@@ -1780,7 +1780,7 @@ CcspCwmpSoappoProcessRequest_Download
         goto EXIT2;
     }
 
-    pDownReq->Password = CcspTr069PaCloneString(pValue);
+    pDownReq->Password = AnscCloneString(pValue);
 
     /*
      * Get FileSize
@@ -1846,7 +1846,7 @@ CcspCwmpSoappoProcessRequest_Download
         goto EXIT2;
     }
 
-    pDownReq->TargetFileName = CcspTr069PaCloneString(pValue);
+    pDownReq->TargetFileName = AnscCloneString(pValue);
 
     /*
      * Get DelaySeconds
@@ -1912,7 +1912,7 @@ CcspCwmpSoappoProcessRequest_Download
         goto EXIT2;
     }
 
-    pDownReq->SuccessUrl = CcspTr069PaCloneString(pValue);
+    pDownReq->SuccessUrl = AnscCloneString(pValue);
 
     /*
      * Get FailureURL
@@ -1948,7 +1948,7 @@ CcspCwmpSoappoProcessRequest_Download
         goto EXIT2;
     }
 
-    pDownReq->FailureUrl = CcspTr069PaCloneString(pValue);
+    pDownReq->FailureUrl = AnscCloneString(pValue);
 
     /*
      * Call the 'Download' of CcspCwmpMco Interface
@@ -2076,7 +2076,7 @@ CcspCwmpSoappoProcessRequest_Upload
         goto EXIT2;
     }
 
-    pUploadReq->CommandKey = CcspTr069PaCloneString(pValue);
+    pUploadReq->CommandKey = AnscCloneString(pValue);
 
     /*
      * Get FileType
@@ -2112,7 +2112,7 @@ CcspCwmpSoappoProcessRequest_Upload
         goto EXIT2;
     }
 
-    pUploadReq->FileType = CcspTr069PaCloneString(pValue);
+    pUploadReq->FileType = AnscCloneString(pValue);
 
     /*
      * Get URL
@@ -2148,7 +2148,7 @@ CcspCwmpSoappoProcessRequest_Upload
         goto EXIT2;
     }
 
-    pUploadReq->Url = CcspTr069PaCloneString(pValue);
+    pUploadReq->Url = AnscCloneString(pValue);
 
     /*
      * Get UserName
@@ -2184,7 +2184,7 @@ CcspCwmpSoappoProcessRequest_Upload
         goto EXIT2;
     }
 
-    pUploadReq->Username = CcspTr069PaCloneString(pValue);
+    pUploadReq->Username = AnscCloneString(pValue);
 
     /*
      * Get Password
@@ -2220,7 +2220,7 @@ CcspCwmpSoappoProcessRequest_Upload
         goto EXIT2;
     }
 
-    pUploadReq->Password = CcspTr069PaCloneString(pValue);
+    pUploadReq->Password = AnscCloneString(pValue);
 
     /*
      * Get DelaySeconds
@@ -2372,7 +2372,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpInstall->Url = CcspTr069PaCloneString(buffer);
+                pOpInstall->Url = AnscCloneString(buffer);
             }
 
             /* parse UUID */
@@ -2384,7 +2384,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpInstall->Uuid = CcspTr069PaCloneString(buffer);
+                pOpInstall->Uuid = AnscCloneString(buffer);
             }
 
             /* parse Username */
@@ -2396,7 +2396,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpInstall->Username = CcspTr069PaCloneString(buffer);
+                pOpInstall->Username = AnscCloneString(buffer);
             }
 
             /* parse Password */
@@ -2408,7 +2408,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpInstall->Password = CcspTr069PaCloneString(buffer);
+                pOpInstall->Password = AnscCloneString(buffer);
             }
 
             /* parse ExecutionEnvRef */
@@ -2420,7 +2420,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpInstall->ExecEnvRef = CcspTr069PaCloneString(buffer);
+                pOpInstall->ExecEnvRef = AnscCloneString(buffer);
             }
         }
         else if ( AnscEqualString(pNodeName, "UpdateOpStruct", FALSE) )
@@ -2438,7 +2438,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpUpdate->Uuid = CcspTr069PaCloneString(buffer);
+                pOpUpdate->Uuid = AnscCloneString(buffer);
             }
 
             /* parse Version */
@@ -2450,7 +2450,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpUpdate->Version = CcspTr069PaCloneString(buffer);
+                pOpUpdate->Version = AnscCloneString(buffer);
             }
 
             /* parse URL */
@@ -2462,7 +2462,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpUpdate->Url = CcspTr069PaCloneString(buffer);
+                pOpUpdate->Url = AnscCloneString(buffer);
             }
 
             /* parse Username */
@@ -2474,7 +2474,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpUpdate->Username = CcspTr069PaCloneString(buffer);
+                pOpUpdate->Username = AnscCloneString(buffer);
             }
 
             /* parse Password */
@@ -2486,7 +2486,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpUpdate->Password = CcspTr069PaCloneString(buffer);
+                pOpUpdate->Password = AnscCloneString(buffer);
             }
         }
         else if ( AnscEqualString(pNodeName, "UninstallOpStruct", FALSE) )
@@ -2504,7 +2504,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpUninstall->Uuid = CcspTr069PaCloneString(buffer);
+                pOpUninstall->Uuid = AnscCloneString(buffer);
             }
 
             /* parse Version */
@@ -2516,7 +2516,7 @@ CcspCwmpSoappoParse_ChangeDUState_Req_Operations
                 AnscXmlDomNodeGetDataString((ANSC_HANDLE)pNode, NULL, buffer, &ulBufSize);
                 buffer[ulBufSize] = 0;
             
-                pOpUninstall->Version = CcspTr069PaCloneString(buffer);
+                pOpUninstall->Version = AnscCloneString(buffer);
             }
         }
 
@@ -2621,7 +2621,7 @@ CcspCwmpSoappoProcessRequest_ChangeDUState
      */
     if ( returnStatus == ANSC_STATUS_SUCCESS && pCcspCwmpMcoIf != NULL )
     {
-        pCcspCdsReq->CommandKey = CcspTr069PaCloneString(pValue);
+        pCcspCdsReq->CommandKey = AnscCloneString(pValue);
 
         returnStatus =
             pCcspCwmpMcoIf->ChangeDUState
@@ -2891,11 +2891,11 @@ CcspCwmpSoappoProcessRequest_SetVouchers
 
             if( length > 0)
             {
-                pStringArray->Array.arrayString[i] = CcspTr069PaCloneString(pValue);
+                pStringArray->Array.arrayString[i] = AnscCloneString(pValue);
             }
             else
             {
-                pStringArray->Array.arrayString[i] = CcspTr069PaCloneString("");
+                pStringArray->Array.arrayString[i] = AnscCloneString("");
             }
 
             i ++;
@@ -3645,7 +3645,7 @@ CcspCwmpSoappoProcessResponse_GetRPCMethods
         }
         else if( length > 0)
         {
-            pStringArray->Array.arrayString[i] = CcspTr069PaCloneString(pBuffer);
+            pStringArray->Array.arrayString[i] = AnscCloneString(pBuffer);
         }
 
         i ++;
@@ -3764,11 +3764,11 @@ CcspCwmpSoappoProcessResponse_Kicked
     }
     else if( length > 0)
     {
-        return CcspTr069PaCloneString(pBuffer);
+        return AnscCloneString(pBuffer);
     }
     else
     {
-        return CcspTr069PaCloneString("");
+        return AnscCloneString("");
     }
 
     return NULL;
@@ -3820,7 +3820,7 @@ CcspCwmpSoappoProcessResponse
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
 
     pCcspCwmpSoapRep = (PCCSP_CWMP_SOAP_RESPONSE)
-        CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_RESPONSE));
+        AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_RESPONSE));
 
     if( pCcspCwmpSoapRep == NULL)
     {
@@ -4066,7 +4066,7 @@ CcspCwmpSoappoProcessFault
     ANSC_STATUS                     returnStatus    = ANSC_STATUS_SUCCESS;
 
     pCcspCwmpSoapRep = (PCCSP_CWMP_SOAP_RESPONSE)
-        CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_RESPONSE));
+        AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_RESPONSE));
 
     if( pCcspCwmpSoapRep == NULL)
     {
@@ -4150,7 +4150,7 @@ CcspCwmpSoappoProcessFault
      /*
       * Process the Fault message
       */
-     pCwmpFault = (PCCSP_CWMP_SOAP_FAULT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
+     pCwmpFault = (PCCSP_CWMP_SOAP_FAULT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_FAULT));
 
      if( pCwmpFault == NULL)
      {
@@ -4187,7 +4187,7 @@ CcspCwmpSoappoProcessFault
         goto EXIT;
      }
 
-    pCwmpFault->soap_faultcode = CcspTr069PaCloneString(pValueBuf);
+    pCwmpFault->soap_faultcode = AnscCloneString(pValueBuf);
 
      /* Get "faultstring" value */
      pChildNode = (PANSC_XML_DOM_NODE_OBJECT)
@@ -4215,7 +4215,7 @@ CcspCwmpSoappoProcessFault
         goto EXIT;
      }
 
-     pCwmpFault->soap_faultstring = CcspTr069PaCloneString(pValueBuf);
+     pCwmpFault->soap_faultstring = AnscCloneString(pValueBuf);
 
      /* Get the "detail" information */
      pXmlNode = (PANSC_XML_DOM_NODE_OBJECT)
@@ -4312,7 +4312,7 @@ CcspCwmpSoappoProcessFault
         goto EXIT;
      }
 
-    pCwmpFault->Fault.FaultString = CcspTr069PaCloneString(pValueBuf);
+    pCwmpFault->Fault.FaultString = AnscCloneString(pValueBuf);
 
     /* check "SetParameterValuesFault */
     pChildNode = (PANSC_XML_DOM_NODE_OBJECT)
@@ -4358,7 +4358,7 @@ CcspCwmpSoappoProcessFault
                 goto EXIT;
              }
 
-            pCwmpParamFault->ParameterName = CcspTr069PaCloneString(pValueBuf);
+            pCwmpParamFault->ParameterName = AnscCloneString(pValueBuf);
 
             /* get "FaultCode" value */
              pTempNode = (PANSC_XML_DOM_NODE_OBJECT)
@@ -4414,7 +4414,7 @@ CcspCwmpSoappoProcessFault
                 goto EXIT;
              }
 
-            pCwmpParamFault->FaultString = CcspTr069PaCloneString(pValueBuf);
+            pCwmpParamFault->FaultString = AnscCloneString(pValueBuf);
 
          }
          else

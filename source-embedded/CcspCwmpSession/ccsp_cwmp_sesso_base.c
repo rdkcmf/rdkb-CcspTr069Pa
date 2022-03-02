@@ -129,7 +129,7 @@ CcspCwmpsoCreate
     /*
      * We create object by first allocating memory for holding the variables and member functions.
      */
-    pMyObject = (PCCSP_CWMP_SESSION_OBJECT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SESSION_OBJECT));
+    pMyObject = (PCCSP_CWMP_SESSION_OBJECT)AnscAllocateMemory(sizeof(CCSP_CWMP_SESSION_OBJECT));
 
     if ( !pMyObject )
     {
@@ -211,7 +211,7 @@ CcspCwmpsoRemove
 
     if ( pSessionTimerIf )
     {
-        CcspTr069PaFreeMemory(pSessionTimerIf);
+        AnscFreeMemory(pSessionTimerIf);
     }
 
     if ( pRetryTimerObj )
@@ -221,7 +221,7 @@ CcspCwmpsoRemove
 
     if ( pRetryTimerIf )
     {
-        CcspTr069PaFreeMemory(pRetryTimerIf);
+        AnscFreeMemory(pRetryTimerIf);
     }
 
     if ( pDelayedActiveNotifTimerObj )
@@ -231,7 +231,7 @@ CcspCwmpsoRemove
 
     if ( pDelayedActiveNotifTimerIf )
     {
-        CcspTr069PaFreeMemory(pDelayedActiveNotifTimerIf);
+        AnscFreeMemory(pDelayedActiveNotifTimerIf);
     }
 
     if ( pCcspCwmpAcsConnection )
@@ -243,7 +243,7 @@ CcspCwmpsoRemove
 
     if ( pCcspCwmpMcoIf )
     {
-        CcspTr069PaFreeMemory(pCcspCwmpMcoIf);
+        AnscFreeMemory(pCcspCwmpMcoIf);
 
         pMyObject->hCcspCwmpMcoIf = (ANSC_HANDLE)NULL;
     }
@@ -330,7 +330,7 @@ CcspCwmpsoEnrollObjects
 
     if ( !pSessionTimerIf )
     {
-        pSessionTimerIf = (PANSC_TDO_CLIENT_OBJECT)CcspTr069PaAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
+        pSessionTimerIf = (PANSC_TDO_CLIENT_OBJECT)AnscAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
 
         if ( !pSessionTimerIf )
         {
@@ -375,7 +375,7 @@ CcspCwmpsoEnrollObjects
 
     if ( !pRetryTimerIf )
     {
-        pRetryTimerIf = (PANSC_TDO_CLIENT_OBJECT)CcspTr069PaAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
+        pRetryTimerIf = (PANSC_TDO_CLIENT_OBJECT)AnscAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
 
         if ( !pRetryTimerIf )
         {
@@ -418,7 +418,7 @@ CcspCwmpsoEnrollObjects
 
     if ( !pDelayedActiveNotifTimerIf )
     {
-        pDelayedActiveNotifTimerIf = (PANSC_TDO_CLIENT_OBJECT)CcspTr069PaAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
+        pDelayedActiveNotifTimerIf = (PANSC_TDO_CLIENT_OBJECT)AnscAllocateMemory(sizeof(ANSC_TDO_CLIENT_OBJECT));
 
         if ( !pDelayedActiveNotifTimerIf )
         {
@@ -460,7 +460,7 @@ CcspCwmpsoEnrollObjects
 
     if ( !pCcspCwmpMcoIf )
     {
-        pCcspCwmpMcoIf = (PCCSP_CWMP_MCO_INTERFACE)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_MCO_INTERFACE));
+        pCcspCwmpMcoIf = (PCCSP_CWMP_MCO_INTERFACE)AnscAllocateMemory(sizeof(CCSP_CWMP_MCO_INTERFACE));
 
         if ( !pCcspCwmpMcoIf )
         {

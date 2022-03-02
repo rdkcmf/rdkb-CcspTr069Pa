@@ -289,7 +289,7 @@ CcspCwmpCpecoGetParamValues
             CcspCwmpCleanParamValue((&pCwmpValArray[i]));
         }
 
-        CcspTr069PaFreeMemory(pCwmpValArray);
+        AnscFreeMemory(pCwmpValArray);
     }
 
     return  returnStatus;
@@ -420,12 +420,12 @@ CcspCwmpCpecoGetParamStringValues
             CcspCwmpCleanParamValue((&pCwmpValArray[i]));
         }
 
-        CcspTr069PaFreeMemory(pCwmpValArray);
+        AnscFreeMemory(pCwmpValArray);
     }
 
     if ( pSlapNameArray )
     {
-        CcspTr069PaFreeMemory(pSlapNameArray);
+        AnscFreeMemory(pSlapNameArray);
     }
 
     return  returnStatus;
@@ -547,7 +547,7 @@ CcspCwmpCpecoSetParamValues
     PCCSP_CWMP_SOAP_FAULT           pCwmpSoapFault    = (PCCSP_CWMP_SOAP_FAULT        )NULL;
     ULONG                           i;
 
-    pCwmpValArray = (PCCSP_CWMP_PARAM_VALUE)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_PARAM_VALUE) * NumOfParams);
+    pCwmpValArray = (PCCSP_CWMP_PARAM_VALUE)AnscAllocateMemory(sizeof(CCSP_CWMP_PARAM_VALUE) * NumOfParams);
     if ( !pCwmpValArray )
     {
         returnStatus = ANSC_STATUS_RESOURCES;
@@ -581,7 +581,7 @@ EXIT:
 
     if ( pCwmpValArray )
     {
-        CcspTr069PaFreeMemory(pCwmpValArray);
+        AnscFreeMemory(pCwmpValArray);
     }
 
     return  returnStatus;
@@ -797,15 +797,15 @@ CcspCwmpCpecoDelayedDelObjectsTask
 
     if ( pDdoTaskCtx->pObjectName )
     {
-        CcspTr069PaFreeMemory(pDdoTaskCtx->pObjectName);
+        AnscFreeMemory(pDdoTaskCtx->pObjectName);
     }
 
     if ( pDdoTaskCtx->pInsNumbers )
     {
-        CcspTr069PaFreeMemory(pDdoTaskCtx->pInsNumbers);
+        AnscFreeMemory(pDdoTaskCtx->pInsNumbers);
     }
 
-    CcspTr069PaFreeMemory(pDdoTaskCtx);
+    AnscFreeMemory(pDdoTaskCtx);
 
     return  ANSC_STATUS_SUCCESS;
 }
@@ -838,7 +838,7 @@ CcspCwmpCpecoDeleteObjects
         PCCSP_CWMP_CPECO_DDO_TASK_CTX    pDdoTaskCtx = NULL;
 
         pDdoTaskCtx = 
-            (PCCSP_CWMP_CPECO_DDO_TASK_CTX)CcspTr069PaAllocateMemory
+            (PCCSP_CWMP_CPECO_DDO_TASK_CTX)AnscAllocateMemory
                 (
                     sizeof(CCSP_CWMP_CPECO_DDO_TASK_CTX)
                 );
@@ -852,7 +852,7 @@ CcspCwmpCpecoDeleteObjects
         pDdoTaskCtx->NumInstances       = NumInstances;
         pDdoTaskCtx->pObjectName        = AnscCloneString(pObjectName);
         pDdoTaskCtx->DelaySeconds       = DelaySeconds;
-        pDdoTaskCtx->pInsNumbers        = (PULONG)CcspTr069PaAllocateMemory(sizeof(ULONG) * NumInstances);
+        pDdoTaskCtx->pInsNumbers        = (PULONG)AnscAllocateMemory(sizeof(ULONG) * NumInstances);
         if ( pDdoTaskCtx->pInsNumbers )
         {
             AnscCopyMemory(pDdoTaskCtx->pInsNumbers, pInsNumbers, NumInstances * sizeof(ULONG));
@@ -993,7 +993,7 @@ CcspCwmpCpecoMonitorOpState
     }
 
     pParamAttrs = 
-        (PCCSP_CWMP_SET_PARAM_ATTRIB)CcspTr069PaAllocateMemory
+        (PCCSP_CWMP_SET_PARAM_ATTRIB)AnscAllocateMemory
             (
                 sizeof(CCSP_CWMP_SET_PARAM_ATTRIB) * NumInstances
             );
@@ -1050,7 +1050,7 @@ CcspCwmpCpecoMonitorOpState
             CcspCwmpCleanSetParamAttrib((pParamAttrs+i));
         }
 
-        CcspTr069PaFreeMemory(pParamAttrs);
+        AnscFreeMemory(pParamAttrs);
     }
     else
     {
@@ -1068,7 +1068,7 @@ CcspCwmpCpecoMonitorOpState
         {
             CcspCwmpCleanSetParamAttrib((pParamAttrs + i));
         }
-        CcspTr069PaFreeMemory(pParamAttrs);
+        AnscFreeMemory(pParamAttrs);
 
         *ppCwmpFault = pCwmpFault;
     }
@@ -1221,7 +1221,7 @@ CcspCwmpCpecoSetPAName
 
     if ( pMyObject->PAName )
     {
-        CcspTr069PaFreeMemory(pMyObject->PAName);
+        AnscFreeMemory(pMyObject->PAName);
     }
 
     if ( !pName )
@@ -1230,7 +1230,7 @@ CcspCwmpCpecoSetPAName
     }
     else
     {
-        pMyObject->PAName = CcspTr069PaCloneString(pName);
+        pMyObject->PAName = AnscCloneString(pName);
         
         if ( !pMyObject->PAName )
         {
@@ -1240,11 +1240,11 @@ CcspCwmpCpecoSetPAName
 
     if ( pMyObject->PANameWithPrefix )
     {
-        CcspTr069PaFreeMemory(pMyObject->PANameWithPrefix);
+        AnscFreeMemory(pMyObject->PANameWithPrefix);
     }
 
     nLen = (pMyObject->PAName?AnscSizeOfString(pMyObject->PAName):0) + (pMyObject->SubsysName ? AnscSizeOfString(pMyObject->SubsysName) : 0) + 2;
-    pMyObject->PANameWithPrefix = (char*)CcspTr069PaAllocateMemory(nLen);
+    pMyObject->PANameWithPrefix = (char*)AnscAllocateMemory(nLen);
 
     if ( !pMyObject->PANameWithPrefix )
     {
@@ -1347,7 +1347,7 @@ CcspCwmpCpecoSetSubsysName
 
     if ( pMyObject->SubsysName )
     {
-        CcspTr069PaFreeMemory(pMyObject->SubsysName);
+        AnscFreeMemory(pMyObject->SubsysName);
     }
 
     if ( !pName )
@@ -1356,7 +1356,7 @@ CcspCwmpCpecoSetSubsysName
     }
     else
     {
-        pMyObject->SubsysName = CcspTr069PaCloneString(pName);
+        pMyObject->SubsysName = AnscCloneString(pName);
         
         if ( !pMyObject->SubsysName )
         {
@@ -1366,11 +1366,11 @@ CcspCwmpCpecoSetSubsysName
 
     if ( pMyObject->PANameWithPrefix )
     {
-        CcspTr069PaFreeMemory(pMyObject->PANameWithPrefix);
+        AnscFreeMemory(pMyObject->PANameWithPrefix);
     }
 
     nLen = AnscSizeOfString(pMyObject->PAName) + (pMyObject->SubsysName ? AnscSizeOfString(pMyObject->SubsysName) : 0) + 2;
-    pMyObject->PANameWithPrefix = (char*)CcspTr069PaAllocateMemory(nLen);
+    pMyObject->PANameWithPrefix = (char*)AnscAllocateMemory(nLen);
 
     if ( !pMyObject->PANameWithPrefix )
     {
@@ -1394,11 +1394,11 @@ CcspCwmpCpecoSetSubsysName
 
     if (pMyObject->CRNameWithPrefix)
     {
-        CcspTr069PaFreeMemory(pMyObject->CRNameWithPrefix);
+        AnscFreeMemory(pMyObject->CRNameWithPrefix);
         pMyObject->CRNameWithPrefix = NULL;
     }
     nLen = AnscSizeOfString(pMyObject->CRName) + (pMyObject->SubsysName ? AnscSizeOfString(pMyObject->SubsysName) : 0) + 2;
-    pMyObject->CRNameWithPrefix = (char*)CcspTr069PaAllocateMemory(nLen);
+    pMyObject->CRNameWithPrefix = (char*)AnscAllocateMemory(nLen);
 
     if ( !pMyObject->CRNameWithPrefix )
     {
@@ -1500,7 +1500,7 @@ CcspCwmpCpecoSetCRName
 
     if ( pMyObject->CRName )
     {
-        CcspTr069PaFreeMemory(pMyObject->CRName);
+        AnscFreeMemory(pMyObject->CRName);
     }
 
     if ( !pName )
@@ -1511,18 +1511,18 @@ CcspCwmpCpecoSetCRName
     {
         int                         nLen;
 
-        pMyObject->CRName = CcspTr069PaCloneString(pName);
+        pMyObject->CRName = AnscCloneString(pName);
         
         returnStatus = ( pMyObject->CRName != NULL );
 
         if ( pMyObject->CRNameWithPrefix )
         {
-            CcspTr069PaFreeMemory(pMyObject->CRNameWithPrefix);
+            AnscFreeMemory(pMyObject->CRNameWithPrefix);
             pMyObject->CRNameWithPrefix = NULL;
         }     
 
         nLen = (pMyObject->CRName?AnscSizeOfString(pMyObject->CRName):0) + (pMyObject->SubsysName ? AnscSizeOfString(pMyObject->SubsysName) : 0) + 2;
-        pMyObject->CRNameWithPrefix = (char*)CcspTr069PaAllocateMemory(nLen);
+        pMyObject->CRNameWithPrefix = (char*)AnscAllocateMemory(nLen);
 
         if ( !pMyObject->CRNameWithPrefix )
         {
@@ -1644,8 +1644,8 @@ CcspCwmpCpecoSetCRBusPath
 
     if ( i >= pMyObject->NumSubsystems )
     {
-        pMyObject->Subsystem[pMyObject->NumSubsystems  ] = pSubsystem ? CcspTr069PaCloneString(pSubsystem) : NULL;
-        pMyObject->MBusPath  [pMyObject->NumSubsystems++] = CcspTr069PaCloneString(pBusPath);
+        pMyObject->Subsystem[pMyObject->NumSubsystems  ] = pSubsystem ? AnscCloneString(pSubsystem) : NULL;
+        pMyObject->MBusPath  [pMyObject->NumSubsystems++] = AnscCloneString(pBusPath);
     }
 
     return  returnStatus;
@@ -1739,7 +1739,7 @@ CcspCwmpCpecoSetPAMapperFile
 
     if ( pMyObject->PAMapperFile )
     {
-        CcspTr069PaFreeMemory(pMyObject->PAMapperFile);
+        AnscFreeMemory(pMyObject->PAMapperFile);
     }
 
     if ( !pName )
@@ -1748,7 +1748,7 @@ CcspCwmpCpecoSetPAMapperFile
     }
     else
     {
-        pMyObject->PAMapperFile = CcspTr069PaCloneString(pName);
+        pMyObject->PAMapperFile = AnscCloneString(pName);
         
         returnStatus = ( pMyObject->PAMapperFile != NULL );
     }
@@ -1797,7 +1797,7 @@ CcspCwmpCpecoSetPACustomMapperFile
 
     if ( pMyObject->PACustomMapperFile )
     {
-        CcspTr069PaFreeMemory(pMyObject->PACustomMapperFile);
+        AnscFreeMemory(pMyObject->PACustomMapperFile);
     }
 
     if ( !pName )
@@ -1806,7 +1806,7 @@ CcspCwmpCpecoSetPACustomMapperFile
     }
     else
     {
-        pMyObject->PACustomMapperFile = CcspTr069PaCloneString(pName);
+        pMyObject->PACustomMapperFile = AnscCloneString(pName);
 
         returnStatus = ( pMyObject->PACustomMapperFile != NULL );
     }
@@ -2137,7 +2137,7 @@ CcspCwmpCpecoGetParamDataType
 
     if ( NumSystems == 0 )
     {
-        Subsystems[0] = CcspTr069PaCloneString(pMyObject->SubsysName);
+        Subsystems[0] = AnscCloneString(pMyObject->SubsysName);
         NumSystems    = 1;
         pSubsystem    = Subsystems[0];
     }

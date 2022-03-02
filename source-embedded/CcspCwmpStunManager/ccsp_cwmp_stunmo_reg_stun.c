@@ -138,7 +138,7 @@ CcspCwmpStunmoRegGetStunInfo
            ERR_CHK(rc);
            return   ANSC_STATUS_FAILURE;
         }
-        CcspTr069PaFreeMemory(pValue);
+        AnscFreeMemory(pValue);
     }
 
     pCcspCwmpStunInfo->STUNServerPort = 
@@ -163,7 +163,7 @@ CcspCwmpStunmoRegGetStunInfo
            return  ANSC_STATUS_FAILURE;
        }
 
-        CcspTr069PaFreeMemory(pValue);
+        AnscFreeMemory(pValue);
     }
 
     pValue =
@@ -181,7 +181,7 @@ CcspCwmpStunmoRegGetStunInfo
            ERR_CHK(rc);
            return ANSC_STATUS_FAILURE;
         }
-        CcspTr069PaFreeMemory(pValue);
+        AnscFreeMemory(pValue);
     }
 
     pCcspCwmpStunInfo->STUNMaximumKeepAlivePeriod =

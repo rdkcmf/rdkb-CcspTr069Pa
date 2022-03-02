@@ -125,7 +125,7 @@ CcspCwmpTcpcrhoCreate
     /*
      * We create object by first allocating memory for holding the variables and member functions.
      */
-    pMyObject = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_TCPCR_HANDLER_OBJECT));
+    pMyObject = (PCCSP_CWMP_TCPCR_HANDLER_OBJECT)AnscAllocateMemory(sizeof(CCSP_CWMP_TCPCR_HANDLER_OBJECT));
 
     if ( !pMyObject )
     {
@@ -194,7 +194,7 @@ CcspCwmpTcpcrhoRemove
 
     if ( pDstoWorker )
     {
-        CcspTr069PaFreeMemory(pDstoWorker);
+        AnscFreeMemory(pDstoWorker);
 
         pMyObject->hDstoWorker = (ANSC_HANDLE)NULL;
     }
@@ -240,7 +240,7 @@ CcspCwmpTcpcrhoEnrollObjects
 
     if ( !pDstoWorker )
     {
-        pDstoWorker = (PANSC_DSTO_WORKER_OBJECT)CcspTr069PaAllocateMemory(sizeof(ANSC_DSTO_WORKER_OBJECT));
+        pDstoWorker = (PANSC_DSTO_WORKER_OBJECT)AnscAllocateMemory(sizeof(ANSC_DSTO_WORKER_OBJECT));
 
         if ( !pDstoWorker )
         {

@@ -127,7 +127,7 @@ CcspCwmpSoappoCreate
     /*
      * We create object by first allocating memory for holding the variables and member functions.
      */
-    pMyObject = (PCCSP_CWMP_SOAP_PARSER_OBJECT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_SOAP_PARSER_OBJECT));
+    pMyObject = (PCCSP_CWMP_SOAP_PARSER_OBJECT)AnscAllocateMemory(sizeof(CCSP_CWMP_SOAP_PARSER_OBJECT));
 
     if ( !pMyObject )
     {

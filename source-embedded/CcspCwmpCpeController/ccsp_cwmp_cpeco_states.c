@@ -306,13 +306,13 @@ CcspCwmpCpecoSetRootObject
 
     if ( pMyObject->pRootObject )
     {
-        CcspTr069PaFreeMemory(pMyObject->pRootObject);
+        AnscFreeMemory(pMyObject->pRootObject);
         pMyObject->pRootObject = NULL;
     }
 
     if ( pRootObject )
     {
-        pMyObject->pRootObject = CcspTr069PaCloneString(pRootObject);
+        pMyObject->pRootObject = AnscCloneString(pRootObject);
     }
 
     return ANSC_STATUS_SUCCESS;

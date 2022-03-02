@@ -367,56 +367,56 @@ CCSP_CWMP_MCO_DOWNLOAD_REQ,  *PCCSP_CWMP_MCO_DOWNLOAD_REQ;
          {                                                                                  \
             if ( download_req->CommandKey )                                                 \
             {                                                                               \
-                CcspTr069PaFreeMemory(download_req->CommandKey);                            \
+                AnscFreeMemory(download_req->CommandKey);                                   \
                                                                                             \
                 download_req->CommandKey = NULL;                                            \
             }                                                                               \
                                                                                             \
             if ( download_req->FileType )                                                   \
             {                                                                               \
-                CcspTr069PaFreeMemory(download_req->FileType);                              \
+                AnscFreeMemory(download_req->FileType);                                     \
                                                                                             \
                 download_req->FileType = NULL;                                              \
             }                                                                               \
                                                                                             \
             if ( download_req->Url )                                                        \
             {                                                                               \
-                CcspTr069PaFreeMemory(download_req->Url);                                   \
+                AnscFreeMemory(download_req->Url);                                          \
                                                                                             \
                 download_req->Url = NULL;                                                   \
             }                                                                               \
                                                                                             \
             if ( download_req->Username )                                                   \
             {                                                                               \
-                CcspTr069PaFreeMemory(download_req->Username);                              \
+                AnscFreeMemory(download_req->Username);                                     \
                                                                                             \
                 download_req->Username = NULL;                                              \
             }                                                                               \
                                                                                             \
             if ( download_req->Password )                                                   \
             {                                                                               \
-                CcspTr069PaFreeMemory(download_req->Password);                              \
+                AnscFreeMemory(download_req->Password);                                     \
                                                                                             \
                 download_req->Password = NULL;                                              \
             }                                                                               \
                                                                                             \
             if ( download_req->TargetFileName )                                             \
             {                                                                               \
-                CcspTr069PaFreeMemory(download_req->TargetFileName);                        \
+                AnscFreeMemory(download_req->TargetFileName);                               \
                                                                                             \
                 download_req->TargetFileName = NULL;                                        \
             }                                                                               \
                                                                                             \
             if ( download_req->SuccessUrl )                                                 \
             {                                                                               \
-                CcspTr069PaFreeMemory(download_req->SuccessUrl);                            \
+                AnscFreeMemory(download_req->SuccessUrl);                                   \
                                                                                             \
                 download_req->SuccessUrl = NULL;                                            \
             }                                                                               \
                                                                                             \
             if ( download_req->FailureUrl )                                                 \
             {                                                                               \
-                CcspTr069PaFreeMemory(download_req->FailureUrl);                            \
+                AnscFreeMemory(download_req->FailureUrl);                                   \
                                                                                             \
                 download_req->FailureUrl = NULL;                                            \
             }                                                                               \
@@ -425,7 +425,7 @@ CCSP_CWMP_MCO_DOWNLOAD_REQ,  *PCCSP_CWMP_MCO_DOWNLOAD_REQ;
 #define  CcspCwmpMcoFreeDownloadReq(download_req)                                               \
          {                                                                                  \
             CcspCwmpMcoCleanDownloadReq(download_req);                                          \
-            CcspTr069PaFreeMemory         (download_req);                                   \
+            AnscFreeMemory         (download_req);                                          \
          }
 
 /*
@@ -449,35 +449,35 @@ CCSP_CWMP_MCO_UPLOAD_REQ,  *PCCSP_CWMP_MCO_UPLOAD_REQ;
          {                                                                                  \
             if ( upload_req->CommandKey )                                                   \
             {                                                                               \
-                CcspTr069PaFreeMemory(upload_req->CommandKey);                              \
+                AnscFreeMemory(upload_req->CommandKey);                                     \
                                                                                             \
                 upload_req->CommandKey = NULL;                                              \
             }                                                                               \
                                                                                             \
             if ( upload_req->FileType )                                                     \
             {                                                                               \
-                CcspTr069PaFreeMemory(upload_req->FileType);                                \
+                AnscFreeMemory(upload_req->FileType);                                       \
                                                                                             \
                 upload_req->FileType = NULL;                                                \
             }                                                                               \
                                                                                             \
             if ( upload_req->Url )                                                          \
             {                                                                               \
-                CcspTr069PaFreeMemory(upload_req->Url);                                     \
+                AnscFreeMemory(upload_req->Url);                                            \
                                                                                             \
                 upload_req->Url = NULL;                                                     \
             }                                                                               \
                                                                                             \
             if ( upload_req->Username )                                                     \
             {                                                                               \
-                CcspTr069PaFreeMemory(upload_req->Username);                                \
+                AnscFreeMemory(upload_req->Username);                                       \
                                                                                             \
                 upload_req->Username = NULL;                                                \
             }                                                                               \
                                                                                             \
             if ( upload_req->Password )                                                     \
             {                                                                               \
-                CcspTr069PaFreeMemory(upload_req->Password);                                \
+                AnscFreeMemory(upload_req->Password);                                       \
                                                                                             \
                 upload_req->Password = NULL;                                                \
             }                                                                               \
@@ -486,7 +486,7 @@ CCSP_CWMP_MCO_UPLOAD_REQ,  *PCCSP_CWMP_MCO_UPLOAD_REQ;
 #define  CcspCwmpMcoFreeUploadReq(upload_req)                                                   \
          {                                                                                  \
             CcspCwmpMcoCleanUploadReq(upload_req);                                              \
-            CcspTr069PaFreeMemory       (upload_req);                                       \
+            AnscFreeMemory       (upload_req);                                              \
          }
 
 

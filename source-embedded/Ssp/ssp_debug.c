@@ -378,7 +378,7 @@ void ssp_testGPN()
             CcspCwmpCleanParamInfo((&pParamInfoArray[i]));
         }   
 
-        CcspTr069PaFreeMemory(pParamInfoArray);
+        AnscFreeMemory(pParamInfoArray);
     }
 
     if ( pCwmpSoapFault )
@@ -508,7 +508,7 @@ void ssp_testGPV()
             CcspCwmpCleanParamValue((&pParamValueArray[i]));
         }   
 
-        CcspTr069PaFreeMemory(pParamValueArray);
+        AnscFreeMemory(pParamValueArray);
     }
 
     if ( pCwmpSoapFault )
@@ -682,7 +682,7 @@ void ssp_testGPA()
             CcspCwmpCleanParamAttrib((&pParamAttrArray[i]));
         }   
 
-        CcspTr069PaFreeMemory(pParamAttrArray);
+        AnscFreeMemory(pParamAttrArray);
     }
 
     if ( pCwmpSoapFault )

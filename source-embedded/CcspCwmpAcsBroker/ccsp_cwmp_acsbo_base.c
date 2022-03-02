@@ -128,7 +128,7 @@ CcspCwmpAcsboCreate
     /*
      * We create object by first allocating memory for holding the variables and member functions.
      */
-    pMyObject = (PCCSP_CWMP_ACS_BROKER_OBJECT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_ACS_BROKER_OBJECT));
+    pMyObject = (PCCSP_CWMP_ACS_BROKER_OBJECT)AnscAllocateMemory(sizeof(CCSP_CWMP_ACS_BROKER_OBJECT));
 
     if ( !pMyObject )
     {
@@ -197,7 +197,7 @@ CcspCwmpAcsboRemove
 
     if ( pCcspCwmpMsoIf )
     {
-        CcspTr069PaFreeMemory(pCcspCwmpMsoIf);
+        AnscFreeMemory(pCcspCwmpMsoIf);
 
         pMyObject->hCcspCwmpMsoIf = (ANSC_HANDLE)NULL;
     }
@@ -244,7 +244,7 @@ CcspCwmpAcsboEnrollObjects
 
     if ( !pCcspCwmpMsoIf )
     {
-        pCcspCwmpMsoIf = (PCCSP_CWMP_MSO_INTERFACE)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_MSO_INTERFACE));
+        pCcspCwmpMsoIf = (PCCSP_CWMP_MSO_INTERFACE)AnscAllocateMemory(sizeof(CCSP_CWMP_MSO_INTERFACE));
 
         if ( !pCcspCwmpMsoIf )
         {

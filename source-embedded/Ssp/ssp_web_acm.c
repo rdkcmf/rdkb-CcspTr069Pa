@@ -151,12 +151,12 @@ ssp_BbhmWebAcmIfGetCredential
 
     if ( pConnReqUsername )
     {
-        CcspTr069PaFreeMemory(pConnReqUsername);
+        AnscFreeMemory(pConnReqUsername);
     }
 
     if ( pConnReqPassword )
     {
-        CcspTr069PaFreeMemory(pConnReqPassword);
+        AnscFreeMemory(pConnReqPassword);
     }
 
     return  returnStatus;

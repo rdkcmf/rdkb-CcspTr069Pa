@@ -127,7 +127,7 @@ CcspCwmpStunmoCreate
     /*
      * We create object by first allocating memory for holding the variables and member functions.
      */
-    pMyObject = (PCCSP_CWMP_STUN_MANAGER_OBJECT)CcspTr069PaAllocateMemory(sizeof(CCSP_CWMP_STUN_MANAGER_OBJECT));
+    pMyObject = (PCCSP_CWMP_STUN_MANAGER_OBJECT)AnscAllocateMemory(sizeof(CCSP_CWMP_STUN_MANAGER_OBJECT));
 
     if ( !pMyObject )
     {
@@ -197,7 +197,7 @@ CcspCwmpStunmoRemove
 
     if ( pStunBsmIf )
     {
-        CcspTr069PaFreeMemory(pStunBsmIf);
+        AnscFreeMemory(pStunBsmIf);
 
         pMyObject->hStunBsmIf = (ANSC_HANDLE)NULL;
     }
@@ -252,7 +252,7 @@ CcspCwmpStunmoEnrollObjects
 
     if ( !pStunBsmIf )
     {
-        pStunBsmIf = (PSTUN_BSM_INTERFACE)CcspTr069PaAllocateMemory(sizeof(STUN_BSM_INTERFACE));
+        pStunBsmIf = (PSTUN_BSM_INTERFACE)AnscAllocateMemory(sizeof(STUN_BSM_INTERFACE));
 
         if ( !pStunBsmIf )
         {
