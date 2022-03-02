@@ -1718,8 +1718,8 @@ CcspCwmppoProcessPvcSignal
 
             if ( pCcspCwmpCpeController->SubsysName )
             {
-                AnscCopyString((char*)buf, (char*)pCcspCwmpCpeController->SubsysName);
-                len = AnscSizeOfString(buf);
+                len = strlen(pCcspCwmpCpeController->SubsysName);
+                memcpy(buf, pCcspCwmpCpeController->SubsysName, len + 1);
             }
             AnscCopyMemory((char*)buf + len, (char*)pVC->parameterName, pSep - pVC->parameterName + 1);
             buf[len + pSep - pVC->parameterName + 1] = 0;
