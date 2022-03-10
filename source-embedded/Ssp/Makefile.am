@@ -20,18 +20,12 @@ AM_CFLAGS = -D_ANSC_LINUX
 AM_CFLAGS += -D_ANSC_USER
 AM_CFLAGS += -D_ANSC_LITTLE_ENDIAN_
 AM_CFLAGS += -D_CCSP_CWMP_TCP_CONNREQ_HANDLER
-AM_LDFLAGS = -lccsp_common
-AM_LDFLAGS += -lsyscfg
-AM_LDFLAGS += -lsysevent
-AM_LDFLAGS += -lutapi 
-AM_LDFLAGS += -lutctx
-AM_LDFLAGS += -lprint_uptime
 
-AM_CPPFLAGS = -Wall -Werror
 ACLOCAL_AMFLAGS = -I m4
-hardware_platform = i686-linux-gnu
+
 bin_PROGRAMS = CcspTr069PaSsp
-CcspTr069PaSsp_CPPFLAGS = -I$(top_srcdir)/source-embedded/DslhManagementServer -I$(top_srcdir)/source-embedded/include $(CPPFLAGS)
+
+CcspTr069PaSsp_CPPFLAGS = -I$(top_srcdir)/source-embedded/DslhManagementServer -I$(top_srcdir)/source-embedded/include
 CcspTr069PaSsp_SOURCES = ssp_main.c ssp_ccsp_cwmp_cfg.c ssp_web_acm.c ssp_debug.c ccsp_tr069_pa_custom_apis.c \
     ../CcspCwmpAcsConnection/ccsp_cwmp_acsco_process.c \
     ../CcspCwmpAcsConnection/ccsp_cwmp_acsco_states.c \
