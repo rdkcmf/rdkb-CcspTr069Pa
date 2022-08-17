@@ -305,74 +305,74 @@ CcspCwmpSoappoUtilGetCwmpMethod
         BOOL                        bFromServer
     )
 {
-    if(AnscEqualString(pMethodName,"GetRPCMethods",TRUE))
+    if (strcmp(pMethodName, "GetRPCMethods") == 0)
     {
         return CCSP_CWMP_METHOD_GetRPCMethods;
     }
 
     if( !bFromServer)
     {
-        if(AnscEqualString(pMethodName,"SetParameterValues",TRUE))
+        if (strcmp(pMethodName, "SetParameterValues") == 0)
         {
             return CCSP_CWMP_METHOD_SetParameterValues;
         }
-        else if(AnscEqualString(pMethodName,"GetParameterValues",TRUE))
+        else if (strcmp(pMethodName, "GetParameterValues") == 0)
         {
             return CCSP_CWMP_METHOD_GetParameterValues;
         }
-        else if(AnscEqualString(pMethodName,"GetParameterNames",TRUE))
+        else if (strcmp(pMethodName, "GetParameterNames") == 0)
         {
             return CCSP_CWMP_METHOD_GetParameterNames;
         }
-        else if(AnscEqualString(pMethodName,"SetParameterAttributes",TRUE))
+        else if (strcmp(pMethodName, "SetParameterAttributes") == 0)
         {
             return CCSP_CWMP_METHOD_SetParameterAttributes;
         }
-        else if(AnscEqualString(pMethodName,"GetParameterAttributes",TRUE))
+        else if (strcmp(pMethodName, "GetParameterAttributes") == 0)
         {
             return CCSP_CWMP_METHOD_GetParameterAttributes;
         }
-        else if(AnscEqualString(pMethodName,"AddObject",TRUE))
+        else if (strcmp(pMethodName, "AddObject") == 0)
         {
             return CCSP_CWMP_METHOD_AddObject;
         }
-        else if(AnscEqualString(pMethodName,"DeleteObject",TRUE))
+        else if (strcmp(pMethodName, "DeleteObject") == 0)
         {
             return CCSP_CWMP_METHOD_DeleteObject;
         }
-        else if(AnscEqualString(pMethodName,"Reboot",TRUE))
+        else if (strcmp(pMethodName, "Reboot") == 0)
         {
             return CCSP_CWMP_METHOD_Reboot;
         }
-        else if(AnscEqualString(pMethodName,"Download",TRUE))
+        else if (strcmp(pMethodName, "Download") == 0)
         {
             return CCSP_CWMP_METHOD_Download;
         }
-        else if(AnscEqualString(pMethodName,"Upload",TRUE))
+        else if (strcmp(pMethodName, "Upload") == 0)
         {
             return CCSP_CWMP_METHOD_Upload;
         }
-        else if(AnscEqualString(pMethodName,"FactoryReset",TRUE))
+        else if (strcmp(pMethodName, "FactoryReset") == 0)
         {
             return CCSP_CWMP_METHOD_FactoryReset;
         }
-        else if(AnscEqualString(pMethodName,"ChangeDUState",TRUE))
+        else if (strcmp(pMethodName, "ChangeDUState") == 0)
         {
             return CCSP_CWMP_METHOD_ChangeDUState;
         }
-        else if(AnscEqualString(pMethodName,"GetQueuedTransfers",TRUE))
+        else if (strcmp(pMethodName, "GetQueuedTransfers") == 0)
         {
             return CCSP_CWMP_METHOD_GetQueuedTransfers;
         }
-        else if(AnscEqualString(pMethodName,"ScheduleInform",TRUE))
+        else if (strcmp(pMethodName, "ScheduleInform") == 0)
         {
             return CCSP_CWMP_METHOD_ScheduleInform;
         }
-        else if(AnscEqualString(pMethodName,"SetVouchers",TRUE))
+        else if (strcmp(pMethodName, "SetVouchers") == 0)
         {
             return CCSP_CWMP_METHOD_SetVouchers;
         }
-        else if(AnscEqualString(pMethodName,"GetOptions",TRUE))
+        else if (strcmp(pMethodName, "GetOptions") == 0)
         {
             return CCSP_CWMP_METHOD_GetOptions;
         }
@@ -385,31 +385,31 @@ CcspCwmpSoappoUtilGetCwmpMethod
     }
     else
     {
-        if(AnscEqualString(pMethodName,"Inform",TRUE))
+        if (strcmp(pMethodName, "Inform") == 0)
         {
             return CCSP_CWMP_METHOD_Inform;
         }
-        else if(AnscEqualString(pMethodName,"TransferComplete",TRUE))
+        else if (strcmp(pMethodName, "TransferComplete") == 0)
         {
             return CCSP_CWMP_METHOD_TransferComplete;
         }
-        else if(AnscEqualString(pMethodName,"AutonomousTransferComplete",TRUE))
+        else if (strcmp(pMethodName, "AutonomousTransferComplete") == 0)
         {
             return CCSP_CWMP_METHOD_AutonomousTransferComplete;
         }
-        else if(AnscEqualString(pMethodName, "DUStateChangeComplete",TRUE))
+        else if (strcmp(pMethodName, "DUStateChangeComplete") == 0)
         {
             return CCSP_CWMP_METHOD_DUStateChangeComplete;
         }
-        else if(AnscEqualString(pMethodName, "AutonomousDUStateChangeComplete",TRUE))
+        else if (strcmp(pMethodName, "AutonomousDUStateChangeComplete") == 0)
         {
             return CCSP_CWMP_METHOD_AutonomousDUStateChangeComplete;
         }
-        else if(AnscEqualString(pMethodName,"RequestDownload",TRUE))
+        else if (strcmp(pMethodName, "RequestDownload") == 0)
         {
             return CCSP_CWMP_METHOD_RequestDownload;
         }
-        else if(AnscEqualString(pMethodName,"Kicked",TRUE))
+        else if (strcmp(pMethodName, "Kicked") == 0)
         {
             return CCSP_CWMP_METHOD_Kicked;
         }

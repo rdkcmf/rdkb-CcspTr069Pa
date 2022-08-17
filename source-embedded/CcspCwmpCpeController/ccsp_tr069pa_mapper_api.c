@@ -456,19 +456,19 @@ LoadRpcMapper
 
     if(pRpcNode == NULL) return;
 
-    if(AnscEqualString(pRpcNode->Name, "Download", TRUE))
+    if (strcmp(pRpcNode->Name, "Download") == 0)
         pMap->RpcType = CCSP_TR069_RPC_TYPE_Download;
-    else if(AnscEqualString(pRpcNode->Name, "Upload", TRUE))
+    else if (strcmp(pRpcNode->Name, "Upload") == 0)
         pMap->RpcType = CCSP_TR069_RPC_TYPE_Upload;
-    else if(AnscEqualString(pRpcNode->Name, "Reboot", TRUE))
+    else if (strcmp(pRpcNode->Name, "Reboot") == 0)
         pMap->RpcType = CCSP_TR069_RPC_TYPE_Reboot;
-    else if(AnscEqualString(pRpcNode->Name, "FactoryReset", TRUE))
+    else if (strcmp(pRpcNode->Name, "FactoryReset") == 0)
         pMap->RpcType = CCSP_TR069_RPC_TYPE_FactoryReset;
-    else if(AnscEqualString(pRpcNode->Name, "InstallPackage", TRUE))
+    else if (strcmp(pRpcNode->Name, "InstallPackage") == 0)
         pMap->RpcType = CCSP_TR069_RPC_TYPE_InstallPackage;
-    else if(AnscEqualString(pRpcNode->Name, "UpdatePackage", TRUE))
+    else if (strcmp(pRpcNode->Name, "UpdatePackage") == 0)
         pMap->RpcType = CCSP_TR069_RPC_TYPE_UpdatePackage;
-    else if(AnscEqualString(pRpcNode->Name, "RemovePackage", TRUE))
+    else if (strcmp(pRpcNode->Name, "RemovePackage") == 0)
         pMap->RpcType = CCSP_TR069_RPC_TYPE_RemovePackage;
     else 
         pMap->RpcType = CCSP_TR069_RPC_TYPE_Unknown;
@@ -991,7 +991,7 @@ CcspTr069PA_LoadFromXMLFile(void*  pXMLHandle)
     {
         //CcspTr069PaTraceDebug(("%s childNodeQueue depth: %d\n", pChildNode->Name, pChildNode->ChildNodeQueue.Depth));
 
-        if(AnscEqualString(pChildNode->Name, "ErrorMapper", TRUE))
+        if (strcmp(pChildNode->Name, "ErrorMapper") == 0)
         {
             NumOfErrMaps = pChildNode->ChildNodeQueue.Depth;
             CcspTr069CpeErrMaps = (PCCSP_TR069_CPEERR_MAP) AnscAllocateMemory(NumOfErrMaps * sizeof(CCSP_TR069_CPEERR_MAP));
@@ -1006,7 +1006,7 @@ CcspTr069PA_LoadFromXMLFile(void*  pXMLHandle)
             }
         }
         /* CWMP_2_DM_INT_INSTANCE_NUMBER_MAPPING */
-        else if(AnscEqualString(pChildNode->Name, "InstanceMapper", TRUE))
+        else if (strcmp(pChildNode->Name, "InstanceMapper") == 0)
         {
             CcspTr069PaTraceWarning(("InstanceMapper loading...\n"));
             NumOfInstanceMaps = pChildNode->ChildNodeQueue.Depth;
@@ -1021,7 +1021,7 @@ CcspTr069PA_LoadFromXMLFile(void*  pXMLHandle)
                 pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
             }
         }
-        else if(AnscEqualString(pChildNode->Name, "RpcMapper", TRUE))
+        else if (strcmp(pChildNode->Name, "RpcMapper") == 0)
         {
             NumOfRpcMaps = pChildNode->ChildNodeQueue.Depth;
             CcspTr069RpcMaps = (PCCSP_TR069_RPC_MAP) AnscAllocateMemory(NumOfRpcMaps * sizeof(CCSP_TR069_RPC_MAP));
@@ -1035,7 +1035,7 @@ CcspTr069PA_LoadFromXMLFile(void*  pXMLHandle)
                 pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
             }
         }
-        else if (AnscEqualString(pChildNode->Name, "ParamList", TRUE))
+        else if (strcmp(pChildNode->Name, "ParamList") == 0)
         {
             pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetHeadChild(pChildNode);
             while (pListNode != NULL)
@@ -1045,7 +1045,7 @@ CcspTr069PA_LoadFromXMLFile(void*  pXMLHandle)
                 pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetNextChild(pChildNode, pListNode);
             }
         }
-        else if (AnscEqualString(pChildNode->Name, "AliasList", TRUE))
+        else if (strcmp(pChildNode->Name, "AliasList") == 0)
         {
             pListNode = (PANSC_XML_DOM_NODE_OBJECT)pChildNode->GetHeadChild(pChildNode);
             while (pListNode != NULL)
