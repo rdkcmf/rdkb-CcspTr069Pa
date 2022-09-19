@@ -1000,6 +1000,9 @@ CcspManagementServer_RegisterWanInterface()
     errno_t rc = -1;
     rc = strcpy_s(pFirstUpstreamIpInterfaceIpv4AddrTbl, sizeof(pFirstUpstreamIpInterfaceIpv4AddrTbl), pFirstUpstreamIpInterface);
     ERR_CHK(rc);
+    if(strlen(pFirstUpstreamIpInterfaceIpv4AddrTbl) == 0){
+    	rc = strcpy_s(pFirstUpstreamIpInterfaceIpv4AddrTbl, sizeof(pFirstUpstreamIpInterfaceIpv4AddrTbl), "Device.IP.Interface.1.");
+    }
     rc = strcat_s(pFirstUpstreamIpInterfaceIpv4AddrTbl, sizeof(pFirstUpstreamIpInterfaceIpv4AddrTbl),  "IPv4Address.");
     ERR_CHK(rc);
     parameterInfoStruct_t **parameterInfo = NULL;
