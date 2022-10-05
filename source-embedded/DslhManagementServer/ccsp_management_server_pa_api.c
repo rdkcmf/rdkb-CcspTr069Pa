@@ -148,7 +148,7 @@ CcspManagementServer_GenerateDefaultPassword
 #if defined (INTEL_PUMA7)
 //Intel Proposed RDKB Generic Bug Fix from XB6 SDK
 //Used to obtain the output from the shell for the given cmd
-static void _get_shell_output(FILE *fp, char * out, int len)
+void _get_shell_output(FILE *fp, char * out, int len)
 {    
     char * p;
     if (fp)
@@ -171,7 +171,14 @@ void ReadTr69TlvData()
 
 #if defined (INTEL_PUMA7)
 	//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
-	char out[MAX_BUF_SIZE];
+	char out[MAX_BUF_SIZE] = {0};
+#endif
+	Tr69TlvData *object2=malloc(sizeof(Tr69TlvData));
+#if !defined (INTEL_PUMA7)
+	FILE * file= fopen(TR69_TLVDATA_FILE, "rb");
+#else
+	//Intel Proposed RDKB Generic Bug Fix from XB6 SDK
+	FILE *file = NULL;
 	int watchdog = NO_OF_RETRY;
         FILE *fp = NULL;
 	int ret = 0;
@@ -198,16 +205,9 @@ void ReadTr69TlvData()
 	{
 		fprintf(stderr, "\n%s(): Ccsp_GwProvApp haven't been able to initialize TLV Data.\n", __FUNCTION__);
 	}
+
+	file = fopen(TR69_TLVDATA_FILE, "rb");
 #endif
-
-	FILE *file = fopen(TR69_TLVDATA_FILE, "rb");
-	Tr69TlvData *object2 = NULL;
-
-	if (file != NULL)
-	{
-		object2 = malloc(sizeof(Tr69TlvData));
-	}
-
 	if ((file != NULL) && (object2) && (access(ETHWAN_FILE, F_OK) != 0)) //RDKB-40531: As T69_TLVDATA_FILE should not be considered for ETHWAN mode
 	{
 		size_t nm = fread(object2, sizeof(Tr69TlvData), 1, file);
