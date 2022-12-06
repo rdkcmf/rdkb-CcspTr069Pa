@@ -203,7 +203,7 @@ void ReadTr69TlvData()
 
 	if ( watchdog == 0 )
 	{
-		fprintf(stderr, "\n%s(): Ccsp_GwProvApp haven't been able to initialize TLV Data.\n", __FUNCTION__);
+		AnscTraceVerbose(("%s(): Ccsp_GwProvApp haven't been able to initialize TLV Data.\n", __FUNCTION__));
 	}
 
 	file = fopen(TR69_TLVDATA_FILE, "rb");
